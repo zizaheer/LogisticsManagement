@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <base href="./">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="Łukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>Logistics Management by Retoll</title>
+    <!-- Icons-->
+    <link href="~/lib/vendors/from-coreui/icons/css/coreui-icons.min.css" rel="stylesheet">
+    <link href="~/lib/vendors/flag-icon-css/css/flag-icon.min.css" rel="stylesheet">
+    <link href="~/lib/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/lib/vendors/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
+    <!-- Main styles for this application-->
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/lib/css/style.css" rel="stylesheet">
+    <link href="~/lib/vendors/pace-progress/css/pace.min.css" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics-->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        // Shared ID
+        gtag('config', 'UA-118965717-3');
+        // Bootstrap ID
+        gtag('config', 'UA-118965717-5');
+    </script>
+</head>
+<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+    <header class="app-header navbar">
+        <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#" style="width:200px;">
+            <img class="navbar-brand-full" src="~/lib/img/mfi-logo.jpg" width="150" height="35" alt="mfi logo">
+        </a>
+        <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <ul class="nav navbar-nav d-md-down-none">
+            <li class="nav-item px-3">
+                <a class="nav-link" href="#">Dashboard</a>
+            </li>
+            <li class="nav-item px-3">
+                <a class="nav-link" href="#">Users</a>
+            </li>
+            <li class="nav-item px-3">
+                <a class="nav-link" href="#">Settings</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav ml-auto" style="padding-right:20px">
+            <li class="nav-item d-md-down-none">
+                <a class="nav-link" href="#">
+                    <i class="icon-bell"></i>
+                    <span class="badge badge-pill badge-danger">5</span>
+                </a>
+            </li>
+            <li>
+
+            </li>
+        </ul>
+
+    </header>
+    <div class="app-body">
+        <div class="sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                            <i class="nav-icon icon-speedometer"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#">
+                            <i class="nav-icon icon-rocket"></i> Delivery Module
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Index">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-anchor"></i> New Delivery Order
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Dispatch">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-plane"></i> Dispatch Order
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Pickup">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Pickup Order
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="PassOff">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Pass-off Order
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Deliver">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Deliver Order
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#">
+                            <i class="nav-icon icon-puzzle"></i> Misc. Module
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="MiscellaneousOrder" asp-action="Index">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-anchor"></i> New Misc. Order
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="MiscellaneousOrder" asp-action="StorageOrder">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> New Storage Order
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="MiscellaneousOrder" asp-action="StorageDelivery">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Storage Delivery
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-title"><hr style="border-color:#6b6b6b" /></li>
+
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#">
+                            <i class="nav-icon icon-briefcase"></i> Invoice & Payments
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="InvoiceAndPayments" asp-action="Index">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-book-open"></i> Create invoice
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="InvoiceAndPayments" asp-action="Payment">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-note"></i> Record payment
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#">
+                            <i class="nav-icon icon-list"></i> Payroll
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Payroll" asp-action="Index">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-magnifier-add"></i> Create payroll
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Payroll" asp-action="PayStaff">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-bubbles"></i> Pay Staff
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#">
+                            <i class="nav-icon icon-calculator"></i> Reports
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Report" asp-action="Index">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-magnifier-add"></i> Delivery order status
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Report" asp-action="AccountReceivable">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-bubbles"></i> Account receivable
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Report" asp-action="AccountPayable">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-bubbles"></i> Account payable
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-title"><hr style="border-color:#6b6b6b" /></li>
+
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#">
+                            <i class="nav-icon icon-star"></i> Administration
+                        </a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Index">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Customer
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Employee">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Employee
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="SignIn">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Employee Sign-In
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="AppUser">
+                                    0
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> User
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Payee">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Payee
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="BillPayment">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Bill payment
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Tariff">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Tariff
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Configuration">
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Configuration
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+        <main class="main">
+            <!-- Breadcrumb-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+            <div class="container-fluid">
+                <div class="animated fadeIn">
+                    @RenderBody()
+                </div>
+            </div>
+        </main>
+
+    </div>
+    <footer class="app-footer">
+        <div class="ml-auto">
+            <span style="font-size:.8em">Developed by <a href="https://www.retoll.com/" target="_blank"> <img src="~/lib/img/retoll-logo.png" width="15" height="15" /> Retoll inc.</a> Third party <a asp-area="" asp-controller="Credits" asp-action="Index">credits</a></span>
+        </div>
+    </footer>
+
+    @*@RenderSection("scripts", true)*@
+    
+    <!-- CoreUI and necessary plugins-->
+    <script src="~/lib/vendors/jquery/js/jquery.min.js"></script>
+    <script src="~/lib/vendors/popper.js/js/popper.min.js"></script>
+    <script src="~/lib/vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/lib/vendors/pace-progress/js/pace.min.js"></script>
+    <script src="~/lib/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js"></script>
+    <script src="~/lib/vendors/from-coreui/coreui/js/coreui.min.js"></script>
+    <!-- Plugins and scripts required by this view-->
+    @*<script src="~/lib/vendors/chart.js/js/Chart.min.js"></script>*@
+    <script src="~/lib/vendors/from-coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js"></script>
+    @*<script src="~/lib/js/main.js"></script>*@
+</body>
+</html>

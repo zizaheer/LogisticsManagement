@@ -1,0 +1,21 @@
+﻿@model List<LogisticsManagement_Poco.App_UserGroupPoco>
+@{
+    ViewData["Title"] = "Page Title";
+}
+
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this content page.</p>
+
+<div>
+    @foreach (var item in Model)
+    {
+        <div>
+            Id: @item.Id
+        </div>
+        <div>
+            Name: @item.GroupName
+        </div>
+    }
+</div>

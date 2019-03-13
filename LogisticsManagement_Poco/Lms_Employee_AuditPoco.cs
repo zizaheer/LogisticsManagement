@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
+
+namespace LogisticsManagement_Poco
+{
+    [Table("Lms_Employee_Audit")]
+    public class Lms_Employee_AuditPoco
+    {
+        public Lms_EmployeePoco employeePoco { get; set; }
+        public string changeStatusFlag { get; set; }
+    }
+}
