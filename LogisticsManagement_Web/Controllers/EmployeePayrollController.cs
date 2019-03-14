@@ -9,17 +9,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LogisticsManagement_Web.Controllers
 {
-    public class CreditsController : Controller
+    public class EmployeePayrollController : Controller
     {
+        private Lms_EmployeePayrollLogic _employeePayrollLogic;
         private readonly LogisticsContext _dbContext;
 
-        public CreditsController(LogisticsContext dbContext)
+        public EmployeePayrollController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
+            _employeePayrollLogic = new Lms_EmployeePayrollLogic(new EntityFrameworkGenericRepository<Lms_EmployeePayrollPoco>(_dbContext));
         }
 
         public IActionResult Index()
         {
+            var customerList = _employeePayrollLogic.GetAllList();
             return View();
         }
     }

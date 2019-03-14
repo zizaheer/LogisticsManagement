@@ -7,19 +7,23 @@ using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace LogisticsManagement_Web.Controllers
 {
-    public class CreditsController : Controller
+    public class AddressController : Controller
     {
+        private Lms_AddressLogic _addressLogic;
         private readonly LogisticsContext _dbContext;
 
-        public CreditsController(LogisticsContext dbContext)
+        public AddressController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
+            _addressLogic = new Lms_AddressLogic(new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
         }
 
         public IActionResult Index()
         {
+            var customerList = _addressLogic.GetAllList();
             return View();
         }
     }

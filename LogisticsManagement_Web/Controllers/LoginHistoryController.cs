@@ -9,17 +9,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LogisticsManagement_Web.Controllers
 {
-    public class CreditsController : Controller
+    public class LoginHistoryController : Controller
     {
+        private App_LoginHistoryLogic _loginHistoryLogic;
         private readonly LogisticsContext _dbContext;
 
-        public CreditsController(LogisticsContext dbContext)
+        public LoginHistoryController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
+            _loginHistoryLogic = new App_LoginHistoryLogic(new EntityFrameworkGenericRepository<App_LoginHistoryPoco>(_dbContext));
         }
 
         public IActionResult Index()
         {
+            var customerList = _loginHistoryLogic.GetAllList();
             return View();
         }
     }

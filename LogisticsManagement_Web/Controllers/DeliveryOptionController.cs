@@ -9,17 +9,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LogisticsManagement_Web.Controllers
 {
-    public class CreditsController : Controller
+    public class DeliveryOptionController : Controller
     {
+        private Lms_DeliveryOptionLogic _deliveryOptionLogic;
         private readonly LogisticsContext _dbContext;
 
-        public CreditsController(LogisticsContext dbContext)
+        public DeliveryOptionController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
+            _deliveryOptionLogic = new Lms_DeliveryOptionLogic(new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
         }
 
         public IActionResult Index()
         {
+            var customerList = _deliveryOptionLogic.GetAllList();
             return View();
         }
     }

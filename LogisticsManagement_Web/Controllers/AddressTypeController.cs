@@ -9,17 +9,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LogisticsManagement_Web.Controllers
 {
-    public class CreditsController : Controller
+    public class AddressTypeController : Controller
     {
+        private Lms_AddressTypeLogic _addressTypeLogic;
         private readonly LogisticsContext _dbContext;
 
-        public CreditsController(LogisticsContext dbContext)
+        public AddressTypeController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
+            _addressTypeLogic = new Lms_AddressTypeLogic(new EntityFrameworkGenericRepository<Lms_AddressTypePoco>(_dbContext));
         }
 
         public IActionResult Index()
         {
+            var customerList = _addressTypeLogic.GetAllList();
             return View();
         }
     }

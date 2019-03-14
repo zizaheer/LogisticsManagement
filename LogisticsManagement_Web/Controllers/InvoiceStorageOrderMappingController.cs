@@ -9,17 +9,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LogisticsManagement_Web.Controllers
 {
-    public class CreditsController : Controller
+    public class InvoiceStorageOrderMappingController : Controller
     {
+        private Lms_InvoiceStorageOrderMappingLogic _invoiceStorageOrderMappingLogic;
         private readonly LogisticsContext _dbContext;
 
-        public CreditsController(LogisticsContext dbContext)
+        public InvoiceStorageOrderMappingController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
+            _invoiceStorageOrderMappingLogic = new Lms_InvoiceStorageOrderMappingLogic(new EntityFrameworkGenericRepository<Lms_InvoiceStorageOrderMappingPoco>(_dbContext));
         }
 
         public IActionResult Index()
         {
+            var customerList = _invoiceStorageOrderMappingLogic.GetAllList();
             return View();
         }
     }

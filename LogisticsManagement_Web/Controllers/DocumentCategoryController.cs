@@ -9,17 +9,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LogisticsManagement_Web.Controllers
 {
-    public class CreditsController : Controller
+    public class DocumentCategoryController : Controller
     {
+        private App_DocumentCategoryLogic _documentCategoryLogic;
         private readonly LogisticsContext _dbContext;
 
-        public CreditsController(LogisticsContext dbContext)
+        public DocumentCategoryController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
+            _documentCategoryLogic = new App_DocumentCategoryLogic(new EntityFrameworkGenericRepository<App_DocumentCategoryPoco>(_dbContext));
         }
 
         public IActionResult Index()
         {
+            var customerList = _documentCategoryLogic.GetAllList();
             return View();
         }
     }

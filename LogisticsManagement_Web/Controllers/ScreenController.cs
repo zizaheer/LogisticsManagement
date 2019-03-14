@@ -7,19 +7,23 @@ using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace LogisticsManagement_Web.Controllers
 {
-    public class CreditsController : Controller
+    public class ScreenController : Controller
     {
+        private App_ScreenLogic _screenLogic;
         private readonly LogisticsContext _dbContext;
 
-        public CreditsController(LogisticsContext dbContext)
+        public ScreenController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
+            _screenLogic = new App_ScreenLogic(new EntityFrameworkGenericRepository<App_ScreenPoco>(_dbContext));
         }
 
         public IActionResult Index()
         {
+            var customerList = _screenLogic.GetAllList();
             return View();
         }
     }
