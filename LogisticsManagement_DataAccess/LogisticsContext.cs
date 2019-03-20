@@ -84,5 +84,12 @@ namespace LogisticsManagement_DataAccess
         DbSet<Lms_StorageOrderDelivery_AuditPoco> lmsStorageOrderDelivery_AuditPocos { get; set; }
 
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Lms_AccTransactionDetailPoco>().HasKey(table => new { table.Id, table.TransactionNo });
+            modelBuilder.Entity<Lms_StorageOrderAdditionalServicePoco>().HasKey(table => new { table.Id, table.AdditionalServiceId });
+
+        }
+
     }
 }

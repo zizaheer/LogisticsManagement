@@ -18,7 +18,7 @@ namespace LogisticsManagement_Poco
         public string DeliveredBy { get; set; }
         public string ReceivedBy { get; set; }
         public string ProofOfDeliveryNote { get; set; }
-        public byte?[] ProofOfDeliverySignature { get; set; }
+        public byte[] ProofOfDeliverySignature { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
     }

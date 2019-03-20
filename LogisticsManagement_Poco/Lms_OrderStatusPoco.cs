@@ -28,7 +28,7 @@ namespace LogisticsManagement_Poco
         public DateTime? DeliveredDatetime { get; set; }
         public string ProofOfDeliveryNote { get; set; }
         public string ReceivedByName { get; set; }
-        public byte?[] ReceivedBySignature { get; set; }
+        public byte[] ReceivedBySignature { get; set; }
         public DateTime StatusLastUpdatedOn { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }

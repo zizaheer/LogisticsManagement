@@ -50,5 +50,7 @@ namespace LogisticsManagement_Poco
         public string Remarks { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
+
+        public List<Lms_OrderStatusPoco> orderStatusPocos { get; set; }
     }
 }
