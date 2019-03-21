@@ -12,8 +12,8 @@ namespace LogisticsManagement_Poco
         [Key]
         [Column("CustomerId")]
         public int Id { get; set; }
-        public int CustomerNumber { get; set; }
-        public int AccountId { get; set; }
+        public string CustomerNumber { get; set; }
+        public int? AccountId { get; set; }
         public string CustomerName { get; set; }
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }
@@ -25,7 +25,7 @@ namespace LogisticsManagement_Poco
         public string ContactPersonNumber { get; set; }
         public bool IsGstApplicable { get; set; }
         public decimal? DiscountPercentage { get; set; }
-        public Byte InvoiceDueDays { get; set; }
+        public byte? InvoiceDueDays { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }

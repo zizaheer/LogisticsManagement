@@ -30,7 +30,7 @@ namespace LogisticsManagement_Web.Controllers
         {
             ViewBag.Tariffs = GetTariffs();
             ViewBag.DeliveryOptions = GetDeliveryOptions();
-            ViewBag.Customers = GetCustomers();
+            ViewBag.Customers = GetCustomers().OrderBy(c=>c.CustomerName);
             ViewBag.DeliveryTypes = Enum.GetValues(typeof(OrderType)).Cast<OrderType>();
 
             return View(ViewBag);
