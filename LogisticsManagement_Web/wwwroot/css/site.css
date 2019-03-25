@@ -14,8 +14,8 @@ for details on configuring this project to bundle and minify static web assets. 
 .dashboard-task-button {
     display: block;
     padding: 10px;
-    border: 1px solid #c7c1c1;
-    background-color: aliceblue;
+    border: 1px solid #d8d8d8;
+    /*background-color: aliceblue;*/
     text-align: center;
 }
 
@@ -25,9 +25,3 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 
-.btn-group-xs > .btn, .btn-xs {
-    padding: 2px;
-    font-size: .2rem;
-    line-height: .3em;
-    border-radius: .2rem;
-}
