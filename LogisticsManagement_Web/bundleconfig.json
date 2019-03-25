@@ -12,8 +12,8 @@
     "inputFiles": [
       "wwwroot/js/site.js",
       "wwwroot/js/app-user.js",
-      "wwwroot/js/site2.js",
-      "wwwroot/js/site3.js"
+      "wwwroot/js/tariff.js",
+      "wwwroot/js/order.js"
     ]
   }
 ]

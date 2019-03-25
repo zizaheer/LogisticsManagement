@@ -23,8 +23,8 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var customerList = _tariffLogic.GetAllList();
-            return View();
+            var tarrifList = _tariffLogic.GetAllList();
+            return View(tarrifList);
         }
     }
 }

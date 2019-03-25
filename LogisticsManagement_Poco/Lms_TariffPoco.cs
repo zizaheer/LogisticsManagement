@@ -12,14 +12,14 @@ namespace LogisticsManagement_Poco
         [Key]
         [Column("TariffId")]
         public int Id { get; set; }
-        public int CityId { get; set; }
-        public int DeliveryOptionId { get; set; }
-        public int VehicleTypeId { get; set; }
-        public int UnitTypeId { get; set; }
-        public int WeightScaleId { get; set; }
-        public int UptoWeight { get; set; }
-        public int FirstUnitPrice { get; set; }
-        public int PerUnitPrice { get; set; }
+        public int? CityId { get; set; }
+        public int? DeliveryOptionId { get; set; }
+        public int? VehicleTypeId { get; set; }
+        public int? UnitTypeId { get; set; }
+        public int? WeightScaleId { get; set; }
+        public decimal? UptoWeight { get; set; }
+        public decimal? FirstUnitPrice { get; set; }
+        public decimal? PerUnitPrice { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
     }

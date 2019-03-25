@@ -23,3 +23,11 @@ for details on configuring this project to bundle and minify static web assets. 
     max-width:90%;
     height:auto;
 }
+
+
+.btn-group-xs > .btn, .btn-xs {
+    padding: 2px;
+    font-size: .2rem;
+    line-height: .3em;
+    border-radius: .2rem;
+}

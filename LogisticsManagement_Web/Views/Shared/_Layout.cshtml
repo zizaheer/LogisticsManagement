@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="~/lib/css/style.css" rel="stylesheet">
     <link href="~/lib/vendors/pace-progress/css/pace.min.css" rel="stylesheet">
+
     <!-- Global site tag (gtag.js) - Google Analytics-->
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
     <script>
@@ -45,26 +46,41 @@
         <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <ul class="nav navbar-nav d-md-down-none">
-            <li class="nav-item px-3">
-                <a class="nav-link" href="#">Dashboard</a>
-            </li>
-            <li class="nav-item px-3">
-                <a class="nav-link" href="#">Users</a>
-            </li>
-            <li class="nav-item px-3">
-                <a class="nav-link" href="#">Settings</a>
-            </li>
-        </ul>
+        <ul class="nav navbar-nav d-md-down-none"></ul>
         <ul class="nav navbar-nav ml-auto" style="padding-right:20px">
+            <li class="nav-item px-3">
+                <a class="nav-link" href="#"><i class="fa fa-sign-in"></i> Sign-In/Out</a>
+            </li>
+            <li class="nav-item px-3">
+                <a class="nav-link" href="#"><i class="fa fa-gear"></i> Settings</a>
+            </li>
             <li class="nav-item d-md-down-none">
                 <a class="nav-link" href="#">
                     <i class="icon-bell"></i>
                     <span class="badge badge-pill badge-danger">5</span>
                 </a>
             </li>
-            <li>
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <i class="img-avatar fa fa-user-circle" style="font-size:1.5em; padding-top:5px"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <div class="dropdown-header text-center">
+                        <strong>Account</strong>
+                    </div>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-user"></i> Profile
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-wrench"></i> Settings
+                    </a>
 
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-lock"></i> Logout
+                    </a>
+                </div>
             </li>
         </ul>
 
@@ -81,32 +97,37 @@
 
                     <li class="nav-item nav-dropdown">
                         <a class="nav-link nav-dropdown-toggle" href="#">
-                            <i class="nav-icon icon-rocket"></i> Delivery Module
+                            <i class="nav-icon icon-rocket"></i> Operations
                         </a>
                         <ul class="nav-dropdown-items">
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Index">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-anchor"></i> New Delivery Order
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-anchor"></i> Delivery Order
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Dispatch">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-plane"></i> Dispatch Order
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-puzzle"></i> Misc. Order
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Pickup">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Pickup Order
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Storage Order
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="PassOff">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Pass-off Order
+                                    <span style="padding-left:10px"></span><i class="nav-icon icon-book-open"></i> Invoice
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Deliver">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Deliver Order
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-list"></i> Payroll
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Deliver">
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-money"></i> Make Payment
                                 </a>
                             </li>
                         </ul>
@@ -114,65 +135,44 @@
 
                     <li class="nav-item nav-dropdown">
                         <a class="nav-link nav-dropdown-toggle" href="#">
-                            <i class="nav-icon icon-puzzle"></i> Misc. Module
+                            <i class="nav-icon fa fa-user-circle"></i> Administration
                         </a>
                         <ul class="nav-dropdown-items">
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="MiscellaneousOrder" asp-action="Index">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-anchor"></i> New Misc. Order
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Index">
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-user-plus"></i> Customer
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="MiscellaneousOrder" asp-action="StorageOrder">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> New Storage Order
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Employee">
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-vcard"></i> Employee
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="AppUser">
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-user-circle-o"></i> User
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="MiscellaneousOrder" asp-action="StorageDelivery">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Storage Delivery
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Payee">
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-institution"></i> Payee
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Tariff" asp-action="Index">
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-sliders"></i> Tariff
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Configuration">
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-gears"></i> Configuration
                                 </a>
                             </li>
                         </ul>
                     </li>
 
-                    <li class="nav-title"><hr style="border-color:#6b6b6b" /></li>
-
-                    <li class="nav-item nav-dropdown">
-                        <a class="nav-link nav-dropdown-toggle" href="#">
-                            <i class="nav-icon icon-briefcase"></i> Invoice & Payments
-                        </a>
-                        <ul class="nav-dropdown-items">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="InvoiceAndPayments" asp-action="Index">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-book-open"></i> Create invoice
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="InvoiceAndPayments" asp-action="Payment">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-note"></i> Record payment
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item nav-dropdown">
-                        <a class="nav-link nav-dropdown-toggle" href="#">
-                            <i class="nav-icon icon-list"></i> Payroll
-                        </a>
-                        <ul class="nav-dropdown-items">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Payroll" asp-action="Index">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-magnifier-add"></i> Create payroll
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Payroll" asp-action="PayStaff">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-bubbles"></i> Pay Staff
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
+                    <li class="nav-item"><div class="dropdown-divider" style="padding:10px; border-color:#378ba7"></div></li>
                     <li class="nav-item nav-dropdown">
                         <a class="nav-link nav-dropdown-toggle" href="#">
                             <i class="nav-icon icon-calculator"></i> Reports
@@ -180,82 +180,35 @@
                         <ul class="nav-dropdown-items">
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Report" asp-action="Index">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-magnifier-add"></i> Delivery order status
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-clipboard"></i> Orders
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Report" asp-action="AccountReceivable">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-bubbles"></i> Account receivable
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-mail-reply"></i> Account receivable
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Report" asp-action="AccountPayable">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-bubbles"></i> Account payable
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-title"><hr style="border-color:#6b6b6b" /></li>
-
-                    <li class="nav-item nav-dropdown">
-                        <a class="nav-link nav-dropdown-toggle" href="#">
-                            <i class="nav-icon icon-star"></i> Administration
-                        </a>
-                        <ul class="nav-dropdown-items">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Index">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Customer
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Employee">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Employee
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="SignIn">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Employee Sign-In
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="AppUser">
-                                    0
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> User
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Payee">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Payee
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="BillPayment">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Bill payment
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Tariff">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Tariff
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Configuration">
-                                    <span style="padding-left:10px"></span><i class="nav-icon icon-star"></i> Configuration
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                    <span style="padding-left:10px"></span><i class="nav-icon fa fa-mail-forward"></i> Account payable
                                 </a>
                             </li>
                         </ul>
                     </li>
                 </ul>
             </nav>
-
         </div>
-        <main class="main">
+        <main class="main" style="background-color:#fbfbfb">
             <!-- Breadcrumb-->
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
+                @{ 
+                    var controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+                    var actionName = this.ViewContext.RouteData.Values["action"].ToString();
+                }
+                <li class="breadcrumb-item"><a asp-controller="@controllerName" asp-action="Index">@controllerName </a></li>
+                <li class="breadcrumb-item active">@actionName</li>
             </ol>
+
             <div class="container-fluid">
                 <div class="animated fadeIn">
                     @RenderBody()
@@ -271,11 +224,11 @@
     </footer>
 
     @*@RenderSection("scripts", true)*@
-    
+
     <!-- CoreUI and necessary plugins-->
     <script src="~/lib/vendors/jquery/js/jquery.min.js"></script>
-    <script src="~/lib/vendors/popper.js/js/popper.min.js"></script>
     <script src="~/lib/vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/lib/vendors/popper.js/js/popper.min.js"></script>
     <script src="~/lib/vendors/pace-progress/js/pace.min.js"></script>
     <script src="~/lib/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js"></script>
     <script src="~/lib/vendors/from-coreui/coreui/js/coreui.min.js"></script>
@@ -283,5 +236,9 @@
     @*<script src="~/lib/vendors/chart.js/js/Chart.min.js"></script>*@
     <script src="~/lib/vendors/from-coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js"></script>
     @*<script src="~/lib/js/main.js"></script>*@
+
+    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-datatables/datatables.min.css" />
+    <script type="text/javascript" src="~/lib/bootstrap-datatables/datatables.min.js"></script>
+    <script src="~/js/site.min.js"></script>
 </body>
 </html>

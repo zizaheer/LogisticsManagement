@@ -25,5 +25,10 @@ namespace LogisticsManagement_Web.Controllers
             var customerList = _configurationLogic.GetAllList();
             return View();
         }
+
+        public IActionResult Update(int id)
+        {
+            return View();
+        }
     }
 }
