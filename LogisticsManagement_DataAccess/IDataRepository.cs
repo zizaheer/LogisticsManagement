@@ -13,6 +13,12 @@ namespace LogisticsManagement_DataAccess
 
         IList<T> GetAllList(params Expression<Func<T,object>>[] navigationProperties);
 
+        //void AddSingle(T item);
+
+        //void UpdateSingle(T item);
+
+        //void RemoveSingle(T item);
+
         void Add(params T[] items);
 
         void Update(params T[] items);

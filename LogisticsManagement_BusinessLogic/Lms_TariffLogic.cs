@@ -33,6 +33,23 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Add/Update/Remove Methods
 
+
+        //public override void AddSingle(Lms_TariffPoco userGroupPoco)
+        //{
+        //    base.AddSingle(userGroupPoco);
+        //}
+
+        //public override void UpdateSingle(Lms_TariffPoco userGroupPoco)
+        //{
+        //    base.UpdateSingle(userGroupPoco);
+        //}
+
+        //public override void RemoveSingle(Lms_TariffPoco userGroupPoco)
+        //{
+        //    base.RemoveSingle(userGroupPoco);
+        //}
+
+
         public override void Add(Lms_TariffPoco[] userGroupPocos)
         {
             base.Add(userGroupPocos);

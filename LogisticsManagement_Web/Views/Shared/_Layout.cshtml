@@ -48,13 +48,12 @@
         </button>
         <ul class="nav navbar-nav d-md-down-none"></ul>
         <ul class="nav navbar-nav ml-auto" style="padding-right:20px">
-            <li class="nav-item px-3">
-                <a class="nav-link" href="#"><i class="fa fa-sign-in"></i> Sign-In/Out</a>
+            <li class="nav-item px-1">
+                <a class="nav-link" href="#">
+                    <img src="~/images/flaticons-64x64/employee-signin.png" style="width:25px; height:25px" />
+                </a>
             </li>
-            <li class="nav-item px-3">
-                <a class="nav-link" href="#"><i class="fa fa-gear"></i> Settings</a>
-            </li>
-            <li class="nav-item d-md-down-none">
+            <li class="nav-item d-md-down-none px-5">
                 <a class="nav-link" href="#">
                     <i class="icon-bell"></i>
                     <span class="badge badge-pill badge-danger">5</span>
@@ -62,7 +61,8 @@
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <i class="img-avatar fa fa-user-circle" style="font-size:1.5em; padding-top:5px"></i>
+                    <img src="~/images/fatcow-icons-32x32/user-3.png" style="border:1px solid #097cb0; border-radius:50%; padding:2px; width:23px; height:23px;background-color:#a9f7e1" />
+
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <div class="dropdown-header text-center">
@@ -74,8 +74,6 @@
                     <a class="dropdown-item" href="#">
                         <i class="fa fa-wrench"></i> Settings
                     </a>
-
-                    <div class="dropdown-divider"></div>
 
                     <a class="dropdown-item" href="#">
                         <i class="fa fa-lock"></i> Logout
@@ -211,12 +209,43 @@
 
             <div class="container-fluid">
                 <div class="animated fadeIn">
+                    <script src="~/lib/vendors/jquery/js/jquery.min.js"></script>
+                    <script src="~/lib/vendors/bootstrap/js/bootstrap.min.js"></script>
+                    <script src="~/js/site.min.js"></script>
+                    <div class="modal fade" id="alert-modal" tabindex="-1" role="dialog" aria-labelledby="alert-modalLabel" style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog" role="document" id="modalDialogType">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title"><label id="lblModalTitle">Title</label></h4>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        <img id="imgAlertType" width="48" height="48" />
+                                        <span style="padding-left: 15px">
+                                            <label id="modalContent"></label>
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" type="button" id="btnProceed">Proceed</button>
+                                    <button class="btn btn-secondary" type="button" data-dismiss="modal" id="btnClose">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     @RenderBody()
+
                 </div>
             </div>
         </main>
 
     </div>
+
+    
+
     <footer class="app-footer">
         <div class="ml-auto">
             <span style="font-size:.8em">Developed by <a href="https://www.retoll.com/" target="_blank"> <img src="~/lib/img/retoll-logo.png" width="15" height="15" /> Retoll inc.</a> Third party <a asp-area="" asp-controller="Credits" asp-action="Index">credits</a></span>
@@ -226,19 +255,18 @@
     @*@RenderSection("scripts", true)*@
 
     <!-- CoreUI and necessary plugins-->
-    <script src="~/lib/vendors/jquery/js/jquery.min.js"></script>
-    <script src="~/lib/vendors/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/lib/vendors/popper.js/js/popper.min.js"></script>
+
+    @*<script src="~/lib/vendors/popper.js/js/popper.min.js"></script>*@
     <script src="~/lib/vendors/pace-progress/js/pace.min.js"></script>
     <script src="~/lib/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js"></script>
     <script src="~/lib/vendors/from-coreui/coreui/js/coreui.min.js"></script>
     <!-- Plugins and scripts required by this view-->
     @*<script src="~/lib/vendors/chart.js/js/Chart.min.js"></script>*@
-    <script src="~/lib/vendors/from-coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js"></script>
+    @*<script src="~/lib/vendors/from-coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js"></script>*@
     @*<script src="~/lib/js/main.js"></script>*@
 
     <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-datatables/datatables.min.css" />
     <script type="text/javascript" src="~/lib/bootstrap-datatables/datatables.min.js"></script>
-    <script src="~/js/site.min.js"></script>
+   
 </body>
 </html>

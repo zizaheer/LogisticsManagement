@@ -3,5 +3,39 @@
 // Write your JavaScript code.
 
 // Please refer to bundleconfig.json where the js files are being minified as site.min.js which is referenced on _Layout template.
-// Every UI may have its own js file and recommended to bundle together in site.min.js
+$(document).ready(function () {
+    $('.lms_dataTable').DataTable();
+});
 
+function SetAlertType(alertType, messageContent) {
+
+    $('#lblModalTitle').text('');
+    $('#modalDialogType').removeClass();
+    $('#imgAlertType').removeAttr('src');
+    $('#btnProceed').show();
+    $('#modalContent').text(messageContent);
+
+    if (alertType === 'Info') {
+        $('#lblModalTitle').text('Information');
+        $('#modalDialogType').addClass('modal-dialog modal-lg modal-info');
+        $('#imgAlertType').attr('src', '/images/icon-archive/info.png');
+    }
+    else if (alertType === 'Warning') {
+        $('#lblModalTitle').text('Warning!');
+        $('#modalDialogType').addClass('modal-dialog modal-lg modal-warning');
+        $('#imgAlertType').attr('src', '/images/icon-archive/warning.png');
+    }
+    else if (alertType === 'Success') {
+        $('#lblModalTitle').text('Operation successful!');
+        $('#modalDialogType').addClass('modal-dialog modal-lg modal-success');
+        $('#imgAlertType').attr('src', '/images/icon-archive/tick.png');
+        $('#btnProceed').hide();
+    }
+    else if (alertType === 'Failed') {
+        $('#lblModalTitle').text('Operation failed!');
+        $('#modalDialogType').addClass('modal-dialog modal-lg modal-danger');
+        $('#imgAlertType').attr('src', '/images/icon-archive/fail.png');
+        $('#btnProceed').hide();
+    }
+   
+}

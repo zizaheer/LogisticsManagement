@@ -31,6 +31,22 @@ namespace LogisticsManagement_BusinessLogic
             return _repository.GetFilteredList(d => d.Id == id).ToList();
         }
 
+
+        public virtual void AddSingle(TPoco poco)
+        {
+            _repository.Add(poco);
+        }
+
+        public virtual void UpdateSingle(TPoco poco)
+        {
+            _repository.Update(poco);
+        }
+
+        public virtual void RemoveSingle(TPoco poco)
+        {
+            _repository.Remove(poco);
+        }
+
         public virtual void Add(TPoco[] pocos)
         {
             _repository.Add(pocos);

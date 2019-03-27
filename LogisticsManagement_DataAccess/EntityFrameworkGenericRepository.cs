@@ -15,7 +15,7 @@ namespace LogisticsManagement_DataAccess
         {
             _context = context;
         }
-       
+
         public void CallStoredProcedure(string procName, params Tuple<string, string>[] parameters)
         {
             throw new NotImplementedException();
@@ -25,7 +25,7 @@ namespace LogisticsManagement_DataAccess
         {
             IQueryable<T> dbQuery = _context.Set<T>();
 
-            foreach(var navProp in navigationProperties)
+            foreach (var navProp in navigationProperties)
             {
                 dbQuery = dbQuery.Include<T, object>(navProp);
             }
@@ -58,6 +58,24 @@ namespace LogisticsManagement_DataAccess
             return dbQuery.Where(where).FirstOrDefault();
         }
 
+        //public void AddSingle(T item)
+        //{
+        //    _context.Entry(item).State = EntityState.Added;
+        //    _context.SaveChanges();
+        //}
+
+        //public void UpdateSingle(T item)
+        //{
+        //    _context.Entry(item).State = EntityState.Modified;
+        //    _context.SaveChanges();
+        //}
+
+        //public void RemoveSingle(T item)
+        //{
+        //    _context.Entry(item).State = EntityState.Deleted;
+        //    _context.SaveChanges();
+        //}
+
         public void Add(params T[] items)
         {
             foreach (var item in items)
@@ -69,7 +87,7 @@ namespace LogisticsManagement_DataAccess
 
         public void Update(params T[] items)
         {
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 _context.Entry(item).State = EntityState.Modified;
             }
@@ -85,6 +103,5 @@ namespace LogisticsManagement_DataAccess
             _context.SaveChanges();
         }
 
-        
     }
 }
