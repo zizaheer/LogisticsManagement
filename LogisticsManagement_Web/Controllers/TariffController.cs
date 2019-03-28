@@ -76,6 +76,8 @@ namespace LogisticsManagement_Web.Controllers
                     _tariffLogic.Add(pocos);
                 }
 
+                var ffff = _tariffLogic.GetAllList();
+
                 result = true;
             }
             catch (Exception ex)
