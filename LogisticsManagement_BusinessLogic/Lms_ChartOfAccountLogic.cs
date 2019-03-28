@@ -50,6 +50,5 @@ namespace LogisticsManagement_BusinessLogic
 
         #endregion
 
-
     }
 }

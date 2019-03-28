@@ -64,8 +64,6 @@ $('#frmTariffForm').submit(function (event) {
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
             //SetAlertType('Success', 'Data has been removed.');
-            console.log('Success');
-            window.location.href = 'Tariff/Index';
         },
         error: function (result) {
             //SetAlertType('Failed', 'An error occured during deleting the data.');

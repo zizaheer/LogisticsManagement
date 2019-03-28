@@ -22,7 +22,13 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var customerList = _employeeLogic.GetAllList();
+            var employeeList = _employeeLogic.GetAllList();
+            return View();
+        }
+
+        public IActionResult AddOrUpdate([FromBody]dynamic data)
+        {
+
             return View();
         }
     }

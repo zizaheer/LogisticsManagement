@@ -6,121 +6,205 @@
     ViewData["Title"] = "Tarrif";
 }
 
+<form id="frmTariffForm">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header" style="background-color: #3b80a9;color: #fff;">
+                    <strong><i class="fa fa-sliders"></i> Tariff</strong>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-sm-1">
+                            <input class="form-control" id="txtTariffId" placeholder="ID" type="number" value="" />
+                        </div>
+                        <div class="form-group col-sm-1" style="padding-left: 0px;">
+                            <button id="btnFindTariff" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-2">
+                            @*<label for="txtCity">Delivery</label>*@
+                            <select class="form-control" id="ddlDeliveryOptionId">
+                                @foreach (var deliveryOption in Model.DeliveryOptions)
+                                {
+                                    var selected = false;
+                                    if (deliveryOption.Id == 1)
+                                    {
+                                        selected = true;
+                                    }
+                                    <option value="@deliveryOption.Id" selected="@selected">@deliveryOption.OptionName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            @*<label for="txtCity">City</label>*@
+                            <select class="form-control" id="ddlCityId">
+                                <option value="0">-- Select --</option>
+                                @foreach (var city in Model.Cities)
+                                {
+                                    var selected = false;
+                                    if (city.Id == 335)
+                                    {
+                                        selected = true;
+                                    }
+                                    <option value="@city.Id" selected="@selected">@city.CityName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="form-group col-sm-1">
+                            @*<label for="txtCity">Transport</label>*@
+                            <select class="form-control" id="ddlVehicleTypeId">
+                                @foreach (var vehicleType in Model.VehicleTypes)
+                                {
+                                    var selected = false;
+                                    if (vehicleType.Id == 1)
+                                    {
+                                        selected = true;
+                                    }
+                                    <option value="@vehicleType.Id" selected="@selected">@vehicleType.TypeName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group col-sm-1">
+                            @*<label for="txtCity">Unit</label>*@
+                            <select class="form-control" id="ddlUnitTypeId" disabled>
+                                @foreach (var unitType in Model.UnitTypes)
+                                {
+                                    var selected = false;
+                                    if (unitType.Id == 2)
+                                    {
+                                        selected = true;
+                                    }
+                                    <option value="@unitType.Id" selected="@selected">@unitType.TypeName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            @*<label for="txtCity">Weight</label>*@
+                            <select class="form-control" id="ddlWeightScaleId" disabled>
+                                @foreach (var weightScale in Model.WeightScales)
+                                {
+                                    var selected = false;
+                                    if (weightScale.Id == 1)
+                                    {
+                                        selected = true;
+                                    }
+                                    <option value="@weightScale.Id" selected="@selected">@weightScale.ScaleName (@weightScale.ShortCode)</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-2">
+                            <input class="form-control" id="txtFirstUnitPrice" placeholder="First Unit Price" type="number" value="0.00" />
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <input class="form-control" id="txtPerUnitPrice" placeholder="Per Unit Price" type="number" value="0.00" />
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <input class="form-control" id="hfCreateDate" type="hidden" value='@DateTime.Now' />
+                            <input class="form-control" id="hfCreatedBy" type="hidden" value='1' />
+                        </div>
+                    </div>
+
+
+                    <hr />
+                    <button type="button" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
+                    <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
-            <div class="card-header" style="background-color: #3b80a9;color: #fff;">
-                <strong><i class="fa fa-sliders"></i> Tariff</strong>
+            <div class="card-header" style="background-color: #c3c3c3;">
+                <strong><i class="fa fa-sliders"></i> Available Tariffs</strong>
+                <div class="card-header-actions">
+                    <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
+                        <i class="icon-arrow-up"></i>
+                    </a>
+                </div>
             </div>
+            <div class="collapse show" id="collapseDatatable">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="tariff-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" width=100%>
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>City</th>
+                                        <th>Delivery</th>
+                                        <th>Transport</th>
+                                        <th>Unit</th>
+                                        <th>First Unit</th>
+                                        <th>Per Unit</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Tariffs.OrderByDescending(c => c.Id))
+                                    {
+                                        <tr>
+                                            <td>@item.Id</td>
+                                            <td>
+                                                @{
+                                                    var cityName = Model.Cities.Where(c => c.Id == item.CityId).FirstOrDefault().CityName;
+                                                    @cityName
+                                                }
 
-            <div class="card-body">
-                <div class="row">
-                    <div class="form-group col-sm-1">
-                        <input class="form-control" id="txtTariffId" placeholder="ID" />
-                    </div>
-                    <div class="form-group col-sm-1" style="padding-left: 0px;">
-                        <button id="btnFindTariff" class="btn btn-secondary"><i class="fa fa-search"></i></button>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-sm-2">
-                        @*<label for="txtCity">Delivery</label>*@
-                        <select class="form-control">
-                            @foreach (var deliveryOption in Model.DeliveryOptions)
-                            {
-                                var selected = false;
-                                if (deliveryOption.Id == 1)
-                                {
-                                    selected = true;
-                                }
-                                <option value="@deliveryOption.Id" selected="@selected">@deliveryOption.OptionName</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group col-sm-2">
-                        @*<label for="txtCity">City</label>*@
-                        <select class="form-control">
-                            <option value="0">-- Select --</option>
-                            @foreach (var city in Model.Cities)
-                            {
-                                var selected = false;
-                                if (city.Id == 335)
-                                {
-                                    selected = true;
-                                }
-                                <option value="@city.Id" selected="@selected">@city.CityName</option>
-                            }
-                        </select>
-                    </div>
-                </div>
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var deliveryOptionName = Model.DeliveryOptions.Where(c => c.Id == item.DeliveryOptionId).FirstOrDefault().OptionName;
+                                                    @deliveryOptionName
+                                                }
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var vehicleTypeName = Model.VehicleTypes.Where(c => c.Id == item.VehicleTypeId).FirstOrDefault().TypeName;
+                                                    @vehicleTypeName
+                                                }
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var unitTypename = Model.UnitTypes.Where(c => c.Id == item.UnitTypeId).FirstOrDefault().TypeName;
+                                                    @unitTypename
+                                                }
+                                            </td>
+                                            <td>@item.FirstUnitPrice</td>
+                                            <td>@item.PerUnitPrice</td>
+                                            <td>
+                                                <button id="btnEdit" data-tariff='@Json.Serialize(item)' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
+                                                <button id="btnDelete" data-tariff='@Json.Serialize(item)' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                                            </td>
+                                        </tr>
+                                    }
 
 
-                <div class="row">
-                    <div class="form-group col-sm-1">
-                        @*<label for="txtCity">Transport</label>*@
-                        <select class="form-control">
-                            @foreach (var vehicleType in Model.VehicleTypes)
-                            {
-                                var selected = false;
-                                if (vehicleType.Id == 1)
-                                {
-                                    selected = true;
-                                }
-                                <option value="@vehicleType.Id" selected="@selected">@vehicleType.TypeName</option>
-                            }
-                        </select>
-                    </div>
-
-                    <div class="form-group col-sm-1">
-                        @*<label for="txtCity">Unit</label>*@
-                        <select class="form-control" disabled>
-                            @foreach (var unitType in Model.UnitTypes)
-                            {
-                                var selected = false;
-                                if (unitType.Id == 2)
-                                {
-                                    selected = true;
-                                }
-                                <option value="@unitType.Id" selected="@selected">@unitType.TypeName</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group col-sm-2">
-                        @*<label for="txtCity">Weight</label>*@
-                        <select class="form-control" disabled>
-                            @foreach (var weightScale in Model.WeightScales)
-                            {
-                                var selected = false;
-                                if (weightScale.Id == 1)
-                                {
-                                    selected = true;
-                                }
-                                <option value="@weightScale.Id" selected="@selected">@weightScale.ScaleName (@weightScale.ShortCode)</option>
-                            }
-                        </select>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="form-group col-sm-2">
-                        <input class="form-control" id="txtFirstUnitPrice" placeholder="First Unit Price" />
-                    </div>
-                    <div class="form-group col-sm-2">
-                        <input class="form-control" id="txtPerUnitPrice" placeholder="Per Unit Price" />
-                    </div>
-                </div>
-
-
-                <hr />
-                <button type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i> New</button>
-                <button type="button" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
-
             </div>
         </div>
     </div>
 </div>
+@*<partial name="_PartialView" />*@
 
-@Html.RenderPartialAsync("_PartialView")
 
 <script src="~/js/tariff.js"></script>
