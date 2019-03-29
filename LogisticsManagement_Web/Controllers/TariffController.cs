@@ -33,7 +33,6 @@ namespace LogisticsManagement_Web.Controllers
             return View(GetTariffData());
         }
 
-
         [HttpGet]
         public IActionResult Get()
         {
@@ -49,61 +48,68 @@ namespace LogisticsManagement_Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public IActionResult Add([FromBody]dynamic tariffData)
+
+        [HttpGet]
+        public IActionResult PartialViewDataTable()
         {
-            try
-            {
-                var serializedData = JsonConvert.SerializeObject(tariffData);
-                Lms_TariffPoco[] pocos = JsonConvert.DeserializeObject<Lms_TariffPoco[]>(serializedData);
-
-                _tariffLogic.Add(pocos);
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return View();
+            return PartialView("_PartialView", GetTariffData());
         }
 
-        [HttpPut]
-        public IActionResult Update([FromBody]dynamic tariffData)
+
+        [HttpPost]
+        public IActionResult AddOrUpdate([FromBody]dynamic tariffData)
         {
+            var result = false;
             try
             {
                 var serializedData = JsonConvert.SerializeObject(tariffData);
                 Lms_TariffPoco[] pocos = JsonConvert.DeserializeObject<Lms_TariffPoco[]>(serializedData);
 
-                _tariffLogic.Update(pocos);
+                pocos.FirstOrDefault().CreateDate = DateTime.Now;
+                pocos.FirstOrDefault().CreatedBy = 1;
+                if (pocos.FirstOrDefault().Id > 0)
+                {
+                    _tariffLogic.Update(pocos);
+                }
+                else
+                {
+                    _tariffLogic.Add(pocos);
+                }
+
+                var ffff = _tariffLogic.GetAllList();
+
+                result = true;
             }
             catch (Exception ex)
             {
 
             }
 
-            return View();
+            return Json(result);
         }
 
         [HttpPost]
         public IActionResult Remove([FromBody]dynamic tariffData)
         {
+            bool result = false;
             try
             {
                 var serializedData = JsonConvert.SerializeObject(tariffData);
                 Lms_TariffPoco[] pocos = JsonConvert.DeserializeObject<Lms_TariffPoco[]>(serializedData);
 
                 _tariffLogic.Remove(pocos);
+                result = true;
             }
             catch (Exception ex)
             {
 
             }
-            return PartialView("_PartialView", GetTariffData());
+            return Json(result);
         }
 
         private TariffViewModel GetTariffData()
         {
+            _tariffLogic = new Lms_TariffLogic(new EntityFrameworkGenericRepository<Lms_TariffPoco>(_dbContext));
             _cityLogic = new App_CityLogic(new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
             _deliveryOptionLogic = new Lms_DeliveryOptionLogic(new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
             _vehicleTypeLogic = new Lms_VehicleTypeLogic(new EntityFrameworkGenericRepository<Lms_VehicleTypePoco>(_dbContext));
@@ -112,7 +118,7 @@ namespace LogisticsManagement_Web.Controllers
 
             TariffViewModel tariffViewModel = new TariffViewModel();
 
-            tariffViewModel.Tariffs = _tariffLogic.GetAllList();
+            tariffViewModel.Tariffs = _tariffLogic.GetAllList().ToList();
             tariffViewModel.Cities = _cityLogic.GetAllList();
             tariffViewModel.DeliveryOptions = _deliveryOptionLogic.GetAllList();
             tariffViewModel.VehicleTypes = _vehicleTypeLogic.GetAllList();

@@ -6,24 +6,36 @@ using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace LogisticsManagement_Web.Controllers
 {
-    public class UserController : Controller
+    public class LoginController : Controller
     {
         private App_UserLogic _userLogic;
         private readonly LogisticsContext _dbContext;
 
-        public UserController(LogisticsContext dbContext)
+        public LoginController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
             _userLogic = new App_UserLogic(new EntityFrameworkGenericRepository<App_UserPoco>(_dbContext));
         }
 
+
         public IActionResult Index()
         {
-            var userList = _userLogic.GetAllList();
             return View();
+        }
+
+        public IActionResult Login(string userName, string userPassword)
+        {
+            var userData = _userLogic.GetAllList().Where(c => c.UserName == userName && c.Password == userPassword).ToList();
+            if (userData != null && userData.Count > 0)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
