@@ -76,7 +76,7 @@ namespace LogisticsManagement_Web.Controllers
                     _tariffLogic.Add(pocos);
                 }
 
-                var ffff = _tariffLogic.GetAllList();
+                var ffff = _tariffLogic.GetList();
 
                 result = true;
             }
@@ -118,12 +118,12 @@ namespace LogisticsManagement_Web.Controllers
 
             TariffViewModel tariffViewModel = new TariffViewModel();
 
-            tariffViewModel.Tariffs = _tariffLogic.GetAllList().ToList();
-            tariffViewModel.Cities = _cityLogic.GetAllList();
-            tariffViewModel.DeliveryOptions = _deliveryOptionLogic.GetAllList();
-            tariffViewModel.VehicleTypes = _vehicleTypeLogic.GetAllList();
-            tariffViewModel.UnitTypes = _unitTypeLogic.GetAllList();
-            tariffViewModel.WeightScales = _weightScaleLogic.GetAllList();
+            tariffViewModel.Tariffs = _tariffLogic.GetList();
+            tariffViewModel.Cities = _cityLogic.GetList();
+            tariffViewModel.DeliveryOptions = _deliveryOptionLogic.GetList();
+            tariffViewModel.VehicleTypes = _vehicleTypeLogic.GetList();
+            tariffViewModel.UnitTypes = _unitTypeLogic.GetList();
+            tariffViewModel.WeightScales = _weightScaleLogic.GetList();
 
             return tariffViewModel;
         }

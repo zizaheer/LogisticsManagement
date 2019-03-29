@@ -14,38 +14,53 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<Lms_AdditionalServicePoco> GetAllList()
+        public override List<Lms_AdditionalServicePoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<Lms_AdditionalServicePoco> GetFilteredList(int id)
+        public override List<Lms_AdditionalServicePoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override Lms_AdditionalServicePoco GetSinglePoco(int id)
+        public override Lms_AdditionalServicePoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(Lms_AdditionalServicePoco[] userGroupPocos)
+        public override Lms_AdditionalServicePoco Add(Lms_AdditionalServicePoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(Lms_AdditionalServicePoco[] userGroupPocos)
+        public override Lms_AdditionalServicePoco Update(Lms_AdditionalServicePoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(Lms_AdditionalServicePoco[] userGroupPocos)
+        public override void Remove(Lms_AdditionalServicePoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(Lms_AdditionalServicePoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(Lms_AdditionalServicePoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(Lms_AdditionalServicePoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion

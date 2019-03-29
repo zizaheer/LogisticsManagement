@@ -16,33 +16,32 @@ namespace LogisticsManagement_BusinessLogic
             _repository = repository;
         }
 
-        public virtual TPoco GetSinglePoco(int id)
+        public virtual TPoco GetSingleById(int id)
         {
             return _repository.GetSingle(d => d.Id == id);
         }
 
-        public virtual List<TPoco> GetAllList()
+        public virtual List<TPoco> GetList()
         {
-            return _repository.GetAllList().ToList();
+            return _repository.GetList().ToList();
         }
 
-        public virtual List<TPoco> GetFilteredList(int id)
+        public virtual List<TPoco> GetListById(int id)
         {
-            return _repository.GetFilteredList(d => d.Id == id).ToList();
+            return _repository.GetList(d => d.Id == id).ToList();
         }
 
-
-        public virtual void AddSingle(TPoco poco)
+        public virtual TPoco Add(TPoco poco)
         {
-            _repository.Add(poco);
+            return _repository.Add(poco);
         }
 
-        public virtual void UpdateSingle(TPoco poco)
+        public virtual TPoco Update(TPoco poco)
         {
-            _repository.Update(poco);
+            return _repository.Update(poco);
         }
 
-        public virtual void RemoveSingle(TPoco poco)
+        public virtual void Remove(TPoco poco)
         {
             _repository.Remove(poco);
         }

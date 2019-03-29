@@ -8,13 +8,22 @@ using LogisticsManagement_Poco;
 using Microsoft.AspNetCore.Mvc;
 using LogisticsManagement_Web.Models;
 using System.Diagnostics;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LogisticsManagement_Web.Controllers
 {
     public class HomeController : Controller
     {
+        IMemoryCache _memoryCache;
+
+        public HomeController(IMemoryCache memoryCache)
+        {
+            _memoryCache = memoryCache;
+        }
+
         public IActionResult Index()
         {
+            _memoryCache.
             return View();
         }
 

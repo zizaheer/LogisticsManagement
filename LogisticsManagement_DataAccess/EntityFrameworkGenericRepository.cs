@@ -21,7 +21,7 @@ namespace LogisticsManagement_DataAccess
             throw new NotImplementedException();
         }
 
-        public IList<T> GetAllList(params Expression<Func<T, object>>[] navigationProperties)
+        public IList<T> GetList(params Expression<Func<T, object>>[] navigationProperties)
         {
             IQueryable<T> dbQuery = _context.Set<T>();
 
@@ -34,7 +34,7 @@ namespace LogisticsManagement_DataAccess
             return listData;
         }
 
-        public IList<T> GetFilteredList(Func<T, bool> where, params Expression<Func<T, object>>[] navigationProperties)
+        public IList<T> GetList(Func<T, bool> where, params Expression<Func<T, object>>[] navigationProperties)
         {
             IQueryable<T> dbQuery = _context.Set<T>();
 
@@ -58,23 +58,25 @@ namespace LogisticsManagement_DataAccess
             return dbQuery.Where(where).FirstOrDefault();
         }
 
-        //public void AddSingle(T item)
-        //{
-        //    _context.Entry(item).State = EntityState.Added;
-        //    _context.SaveChanges();
-        //}
+        public T Add(T item)
+        {
+            _context.Entry(item).State = EntityState.Added;
+            _context.SaveChanges();
+            return item;
+        }
 
-        //public void UpdateSingle(T item)
-        //{
-        //    _context.Entry(item).State = EntityState.Modified;
-        //    _context.SaveChanges();
-        //}
+        public T Update(T item)
+        {
+            _context.Entry(item).State = EntityState.Modified;
+            _context.SaveChanges();
+            return item;
+        }
 
-        //public void RemoveSingle(T item)
-        //{
-        //    _context.Entry(item).State = EntityState.Deleted;
-        //    _context.SaveChanges();
-        //}
+        public void Remove(T item)
+        {
+            _context.Entry(item).State = EntityState.Deleted;
+            _context.SaveChanges();
+        }
 
         public void Add(params T[] items)
         {

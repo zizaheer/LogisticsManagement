@@ -14,43 +14,55 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<Lms_WeightScalePoco> GetAllList()
+        public override List<Lms_WeightScalePoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<Lms_WeightScalePoco> GetFilteredList(int id)
+        public override List<Lms_WeightScalePoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override Lms_WeightScalePoco GetSinglePoco(int id)
+        public override Lms_WeightScalePoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(Lms_WeightScalePoco[] userGroupPocos)
+        public override Lms_WeightScalePoco Add(Lms_WeightScalePoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(Lms_WeightScalePoco[] userGroupPocos)
+        public override Lms_WeightScalePoco Update(Lms_WeightScalePoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(Lms_WeightScalePoco[] userGroupPocos)
+        public override void Remove(Lms_WeightScalePoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(Lms_WeightScalePoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(Lms_WeightScalePoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(Lms_WeightScalePoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion
-
-
-
     }
 }

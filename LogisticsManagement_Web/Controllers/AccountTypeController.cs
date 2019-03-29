@@ -23,7 +23,7 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var typeList = _accountTypeLogic.GetAllList();
+            var typeList = _accountTypeLogic.GetList();
             return View();
         }
     }

@@ -3,6 +3,7 @@ using LogisticsManagement_DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace LogisticsManagement_BusinessLogic
 {
@@ -14,42 +15,130 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<App_UserPoco> GetAllList()
+        public override List<App_UserPoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<App_UserPoco> GetFilteredList(int id)
+        public override List<App_UserPoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override App_UserPoco GetSinglePoco(int id)
+        public override App_UserPoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
+        }
+
+        public App_UserPoco GetSingleByUserName(string userName)
+        {
+            return _repository.GetSingle(d => d.UserName.Contains(userName, StringComparison.OrdinalIgnoreCase));
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(App_UserPoco[] userGroupPocos)
+        public override App_UserPoco Add(App_UserPoco poco)
         {
-            base.Add(userGroupPocos);
+            poco.Password = GetBase64String(poco.Password);
+            return base.Add(poco);
         }
 
-        public override void Update(App_UserPoco[] userGroupPocos)
+        public override App_UserPoco Update(App_UserPoco poco)
         {
-            base.Update(userGroupPocos);
+            poco.Password = GetBase64String(poco.Password);
+            return base.Update(poco);
         }
 
-        public override void Remove(App_UserPoco[] userGroupPocos)
+        public override void Remove(App_UserPoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(App_UserPoco[] pocos)
+        {
+            foreach (var poco in pocos)
+            {
+                poco.Password = GetBase64String(poco.Password);
+            }
+            base.Add(pocos);
+        }
+
+        public override void Update(App_UserPoco[] pocos)
+        {
+            foreach (var poco in pocos)
+            {
+                poco.Password = GetBase64String(poco.Password);
+            }
+            base.Update(pocos);
+        }
+
+        public override void Remove(App_UserPoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion
 
+        #region App Logic/Rules
+
+        public bool IsCredentialsValid(string userName, string password, out string message)
+        {
+            bool result = false;
+            message = "";
+
+            var userData = GetSingleByUserName(userName);
+
+            if (userData != null)
+            {
+                if (userData.IsActive)
+                {
+                    if (ComparePassword(password, userData.Password))
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        message = "Password is invalid";
+                    }
+                }
+                else
+                {
+                    message = "User is inactive";
+                }
+            }
+            else
+            {
+                message = "Username is not found.";
+            }
+
+            return result;
+        }
+
+        private bool ComparePassword(string suppliedValue, string storedValue)
+        {
+            if (GetBase64String(suppliedValue) == storedValue)
+                return true;
+            else
+                return false;
+        }
+
+        private string GetBase64String(string value)
+        {
+            var byteArrayValue = GetPassowrdHash(value);
+            return Convert.ToBase64String(byteArrayValue);
+        }
+
+        private static byte[] GetPassowrdHash(string value)
+        {
+            HashAlgorithm hashAlgorithm = SHA256.Create();
+            var byteArrayValue = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(value));
+
+            return byteArrayValue;
+        }
+
+        #endregion
 
     }
 }

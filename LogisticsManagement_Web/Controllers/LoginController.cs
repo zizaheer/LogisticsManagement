@@ -29,13 +29,27 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Login(string userName, string userPassword)
         {
-            var userData = _userLogic.GetAllList().Where(c => c.UserName == userName && c.Password == userPassword).ToList();
-            if (userData != null && userData.Count > 0)
+            string outMessage = "";
+
+            if (_userLogic.IsCredentialsValid(userName, userPassword, out outMessage))
             {
                 return RedirectToAction("Index", "Home");
             }
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult Logout()
+        {
+            string outMessage = "";
+
+            if (_userLogic.IsCredentialsValid(userName, userPassword, out outMessage))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

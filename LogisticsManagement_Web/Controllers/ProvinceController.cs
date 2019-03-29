@@ -23,7 +23,7 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var customerList = _provinceLogic.GetAllList();
+            var customerList = _provinceLogic.GetList();
             return View();
         }
     }

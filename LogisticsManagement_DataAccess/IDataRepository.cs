@@ -9,15 +9,15 @@ namespace LogisticsManagement_DataAccess
     {
         T GetSingle(Func<T, bool> where, params Expression<Func<T, object>>[] navigationProperties);
 
-        IList<T> GetFilteredList(Func<T,bool> where, params Expression<Func<T,object>>[] navigationProperties);
+        IList<T> GetList(Func<T,bool> where, params Expression<Func<T,object>>[] navigationProperties);
 
-        IList<T> GetAllList(params Expression<Func<T,object>>[] navigationProperties);
+        IList<T> GetList(params Expression<Func<T,object>>[] navigationProperties);
 
-        //void AddSingle(T item);
+        T Add(T item);
 
-        //void UpdateSingle(T item);
+        T Update(T item);
 
-        //void RemoveSingle(T item);
+        void Remove(T item);
 
         void Add(params T[] items);
 

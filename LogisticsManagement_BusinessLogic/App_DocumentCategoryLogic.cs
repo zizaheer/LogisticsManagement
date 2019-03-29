@@ -14,38 +14,53 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<App_DocumentCategoryPoco> GetAllList()
+        public override List<App_DocumentCategoryPoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<App_DocumentCategoryPoco> GetFilteredList(int id)
+        public override List<App_DocumentCategoryPoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override App_DocumentCategoryPoco GetSinglePoco(int id)
+        public override App_DocumentCategoryPoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(App_DocumentCategoryPoco[] userGroupPocos)
+        public override App_DocumentCategoryPoco Add(App_DocumentCategoryPoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(App_DocumentCategoryPoco[] userGroupPocos)
+        public override App_DocumentCategoryPoco Update(App_DocumentCategoryPoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(App_DocumentCategoryPoco[] userGroupPocos)
+        public override void Remove(App_DocumentCategoryPoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(App_DocumentCategoryPoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(App_DocumentCategoryPoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(App_DocumentCategoryPoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion

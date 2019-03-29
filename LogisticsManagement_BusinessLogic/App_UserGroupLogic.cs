@@ -14,38 +14,53 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<App_UserGroupPoco> GetAllList()
+        public override List<App_UserGroupPoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<App_UserGroupPoco> GetFilteredList(int id)
+        public override List<App_UserGroupPoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override App_UserGroupPoco GetSinglePoco(int id)
+        public override App_UserGroupPoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(App_UserGroupPoco[] userGroupPocos)
+        public override App_UserGroupPoco Add(App_UserGroupPoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(App_UserGroupPoco[] userGroupPocos)
+        public override App_UserGroupPoco Update(App_UserGroupPoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(App_UserGroupPoco[] userGroupPocos)
+        public override void Remove(App_UserGroupPoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(App_UserGroupPoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(App_UserGroupPoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(App_UserGroupPoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion

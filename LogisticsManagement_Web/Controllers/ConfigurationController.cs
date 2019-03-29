@@ -23,7 +23,7 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ViewBag.TaxToCall = Enum.GetValues(typeof(TaxToCall)).Cast<TaxToCall>();
-            var configuration = _configurationLogic.GetAllList().FirstOrDefault();
+            var configuration = _configurationLogic.GetSingleById(1);
             return View(configuration);
         }
 

@@ -23,7 +23,7 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var customerList = _vehicleTypeLogic.GetAllList();
+            var customerList = _vehicleTypeLogic.GetList();
             return View();
         }
     }

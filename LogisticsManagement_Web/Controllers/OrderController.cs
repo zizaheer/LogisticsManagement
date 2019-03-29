@@ -41,19 +41,19 @@ namespace LogisticsManagement_Web.Controllers
         private List<Lms_TariffPoco> GetTariffs()
         {
             Lms_TariffLogic tariffLogic = new Lms_TariffLogic(new EntityFrameworkGenericRepository<Lms_TariffPoco>(_dbContext));
-            return tariffLogic.GetAllList();
+            return tariffLogic.GetList();
         }
 
         private List<Lms_DeliveryOptionPoco> GetDeliveryOptions()
         {
             Lms_DeliveryOptionLogic deliveryOptionLogic = new Lms_DeliveryOptionLogic(new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
-            return deliveryOptionLogic.GetAllList();
+            return deliveryOptionLogic.GetList();
         }
 
         private List<Lms_CustomerPoco> GetCustomers()
         {
             Lms_CustomerLogic customerLogic = new Lms_CustomerLogic(new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
-            return customerLogic.GetAllList();
+            return customerLogic.GetList();
         }
        
     }

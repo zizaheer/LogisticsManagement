@@ -14,38 +14,53 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<Lms_CustomerEmployeeMappingPoco> GetAllList()
+        public override List<Lms_CustomerEmployeeMappingPoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<Lms_CustomerEmployeeMappingPoco> GetFilteredList(int id)
+        public override List<Lms_CustomerEmployeeMappingPoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override Lms_CustomerEmployeeMappingPoco GetSinglePoco(int id)
+        public override Lms_CustomerEmployeeMappingPoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(Lms_CustomerEmployeeMappingPoco[] userGroupPocos)
+        public override Lms_CustomerEmployeeMappingPoco Add(Lms_CustomerEmployeeMappingPoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(Lms_CustomerEmployeeMappingPoco[] userGroupPocos)
+        public override Lms_CustomerEmployeeMappingPoco Update(Lms_CustomerEmployeeMappingPoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(Lms_CustomerEmployeeMappingPoco[] userGroupPocos)
+        public override void Remove(Lms_CustomerEmployeeMappingPoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(Lms_CustomerEmployeeMappingPoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(Lms_CustomerEmployeeMappingPoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(Lms_CustomerEmployeeMappingPoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion

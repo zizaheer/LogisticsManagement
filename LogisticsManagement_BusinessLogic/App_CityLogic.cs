@@ -14,38 +14,53 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<App_CityPoco> GetAllList()
+        public override List<App_CityPoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<App_CityPoco> GetFilteredList(int id)
+        public override List<App_CityPoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override App_CityPoco GetSinglePoco(int id)
+        public override App_CityPoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(App_CityPoco[] userGroupPocos)
+        public override App_CityPoco Add(App_CityPoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(App_CityPoco[] userGroupPocos)
+        public override App_CityPoco Update(App_CityPoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(App_CityPoco[] userGroupPocos)
+        public override void Remove(App_CityPoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(App_CityPoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(App_CityPoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(App_CityPoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion

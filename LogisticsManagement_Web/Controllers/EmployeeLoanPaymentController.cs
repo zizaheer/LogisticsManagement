@@ -22,7 +22,7 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var customerList = _employeeLoanPaymentLogic.GetAllList();
+            var customerList = _employeeLoanPaymentLogic.GetList();
             return View();
         }
     }

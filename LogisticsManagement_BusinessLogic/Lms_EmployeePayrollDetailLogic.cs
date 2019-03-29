@@ -14,38 +14,53 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<Lms_EmployeePayrollDetailPoco> GetAllList()
+        public override List<Lms_EmployeePayrollDetailPoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<Lms_EmployeePayrollDetailPoco> GetFilteredList(int id)
+        public override List<Lms_EmployeePayrollDetailPoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override Lms_EmployeePayrollDetailPoco GetSinglePoco(int id)
+        public override Lms_EmployeePayrollDetailPoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(Lms_EmployeePayrollDetailPoco[] userGroupPocos)
+        public override Lms_EmployeePayrollDetailPoco Add(Lms_EmployeePayrollDetailPoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(Lms_EmployeePayrollDetailPoco[] userGroupPocos)
+        public override Lms_EmployeePayrollDetailPoco Update(Lms_EmployeePayrollDetailPoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(Lms_EmployeePayrollDetailPoco[] userGroupPocos)
+        public override void Remove(Lms_EmployeePayrollDetailPoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(Lms_EmployeePayrollDetailPoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(Lms_EmployeePayrollDetailPoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(Lms_EmployeePayrollDetailPoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion

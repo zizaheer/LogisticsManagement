@@ -14,38 +14,53 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<Lms_AccTransactionDetailPoco> GetAllList()
+        public override List<Lms_AccTransactionDetailPoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<Lms_AccTransactionDetailPoco> GetFilteredList(int id)
+        public override List<Lms_AccTransactionDetailPoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override Lms_AccTransactionDetailPoco GetSinglePoco(int id)
+        public override Lms_AccTransactionDetailPoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(Lms_AccTransactionDetailPoco[] userGroupPocos)
+        public override Lms_AccTransactionDetailPoco Add(Lms_AccTransactionDetailPoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(Lms_AccTransactionDetailPoco[] userGroupPocos)
+        public override Lms_AccTransactionDetailPoco Update(Lms_AccTransactionDetailPoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(Lms_AccTransactionDetailPoco[] userGroupPocos)
+        public override void Remove(Lms_AccTransactionDetailPoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(Lms_AccTransactionDetailPoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(Lms_AccTransactionDetailPoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(Lms_AccTransactionDetailPoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion

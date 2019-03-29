@@ -14,38 +14,53 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<Lms_EmployeeLoanPaymentPoco> GetAllList()
+        public override List<Lms_EmployeeLoanPaymentPoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<Lms_EmployeeLoanPaymentPoco> GetFilteredList(int id)
+        public override List<Lms_EmployeeLoanPaymentPoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override Lms_EmployeeLoanPaymentPoco GetSinglePoco(int id)
+        public override Lms_EmployeeLoanPaymentPoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(Lms_EmployeeLoanPaymentPoco[] userGroupPocos)
+        public override Lms_EmployeeLoanPaymentPoco Add(Lms_EmployeeLoanPaymentPoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(Lms_EmployeeLoanPaymentPoco[] userGroupPocos)
+        public override Lms_EmployeeLoanPaymentPoco Update(Lms_EmployeeLoanPaymentPoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(Lms_EmployeeLoanPaymentPoco[] userGroupPocos)
+        public override void Remove(Lms_EmployeeLoanPaymentPoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(Lms_EmployeeLoanPaymentPoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(Lms_EmployeeLoanPaymentPoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(Lms_EmployeeLoanPaymentPoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion

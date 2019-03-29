@@ -14,19 +14,19 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<Lms_TariffPoco> GetAllList()
+        public override List<Lms_TariffPoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<Lms_TariffPoco> GetFilteredList(int id)
+        public override List<Lms_TariffPoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override Lms_TariffPoco GetSinglePoco(int id)
+        public override Lms_TariffPoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
@@ -34,35 +34,35 @@ namespace LogisticsManagement_BusinessLogic
         #region Add/Update/Remove Methods
 
 
-        //public override void AddSingle(Lms_TariffPoco userGroupPoco)
-        //{
-        //    base.AddSingle(userGroupPoco);
-        //}
-
-        //public override void UpdateSingle(Lms_TariffPoco userGroupPoco)
-        //{
-        //    base.UpdateSingle(userGroupPoco);
-        //}
-
-        //public override void RemoveSingle(Lms_TariffPoco userGroupPoco)
-        //{
-        //    base.RemoveSingle(userGroupPoco);
-        //}
-
-
-        public override void Add(Lms_TariffPoco[] userGroupPocos)
+        public override Lms_TariffPoco Add(Lms_TariffPoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(Lms_TariffPoco[] userGroupPocos)
+        public override Lms_TariffPoco Update(Lms_TariffPoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(Lms_TariffPoco[] userGroupPocos)
+        public override void Remove(Lms_TariffPoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+
+        public override void Add(Lms_TariffPoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(Lms_TariffPoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(Lms_TariffPoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion

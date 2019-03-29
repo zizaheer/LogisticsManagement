@@ -14,38 +14,53 @@ namespace LogisticsManagement_BusinessLogic
 
         #region Get Methods
 
-        public override List<Lms_ChartOfAccountPoco> GetAllList()
+        public override List<Lms_ChartOfAccountPoco> GetList()
         {
-            return base.GetAllList();
+            return base.GetList();
         }
 
-        public override List<Lms_ChartOfAccountPoco> GetFilteredList(int id)
+        public override List<Lms_ChartOfAccountPoco> GetListById(int id)
         {
-            return base.GetFilteredList(id);
+            return base.GetListById(id);
         }
 
-        public override Lms_ChartOfAccountPoco GetSinglePoco(int id)
+        public override Lms_ChartOfAccountPoco GetSingleById(int id)
         {
-            return base.GetSinglePoco(id);
+            return base.GetSingleById(id);
         }
 
         #endregion
 
         #region Add/Update/Remove Methods
 
-        public override void Add(Lms_ChartOfAccountPoco[] userGroupPocos)
+        public override Lms_ChartOfAccountPoco Add(Lms_ChartOfAccountPoco poco)
         {
-            base.Add(userGroupPocos);
+            return base.Add(poco);
         }
 
-        public override void Update(Lms_ChartOfAccountPoco[] userGroupPocos)
+        public override Lms_ChartOfAccountPoco Update(Lms_ChartOfAccountPoco poco)
         {
-            base.Update(userGroupPocos);
+            return base.Update(poco);
         }
 
-        public override void Remove(Lms_ChartOfAccountPoco[] userGroupPocos)
+        public override void Remove(Lms_ChartOfAccountPoco poco)
         {
-            base.Remove(userGroupPocos);
+            base.Remove(poco);
+        }
+
+        public override void Add(Lms_ChartOfAccountPoco[] pocos)
+        {
+            base.Add(pocos);
+        }
+
+        public override void Update(Lms_ChartOfAccountPoco[] pocos)
+        {
+            base.Update(pocos);
+        }
+
+        public override void Remove(Lms_ChartOfAccountPoco[] pocos)
+        {
+            base.Remove(pocos);
         }
 
         #endregion
