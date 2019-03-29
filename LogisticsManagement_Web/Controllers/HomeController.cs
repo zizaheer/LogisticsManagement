@@ -23,7 +23,8 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            _memoryCache.
+
+            //_memoryCache.TryGetValue(CacheKeys.Cities, )
             return View();
         }
 

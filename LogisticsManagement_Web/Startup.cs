@@ -35,6 +35,8 @@ namespace LogisticsManagement_Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(20));
+
             services.AddMemoryCache();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSingleton(Configuration);
@@ -129,6 +131,8 @@ namespace LogisticsManagement_Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseSession(); // app.UseSession should be placed before app.UseMvc
 
             app.UseMvc(routes =>
             {

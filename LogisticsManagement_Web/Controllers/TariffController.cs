@@ -128,5 +128,6 @@ namespace LogisticsManagement_Web.Controllers
             return tariffViewModel;
         }
 
+        
     }
 }

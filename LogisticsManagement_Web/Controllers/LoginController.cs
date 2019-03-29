@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -15,6 +16,7 @@ namespace LogisticsManagement_Web.Controllers
         private App_UserLogic _userLogic;
         private readonly LogisticsContext _dbContext;
 
+        ISession Session;
         public LoginController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
@@ -33,6 +35,8 @@ namespace LogisticsManagement_Web.Controllers
 
             if (_userLogic.IsCredentialsValid(userName, userPassword, out outMessage))
             {
+                Session.SetString("","");
+
                 return RedirectToAction("Index", "Home");
             }
 
@@ -41,13 +45,6 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Logout()
         {
-            string outMessage = "";
-
-            if (_userLogic.IsCredentialsValid(userName, userPassword, out outMessage))
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
             return RedirectToAction("Index");
         }
 
