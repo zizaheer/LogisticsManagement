@@ -10,5 +10,15 @@ namespace LogisticsManagement_Poco
         ReturnOrder,
         MiscellaneousOrder,
     }
-    
+
+    public enum TaxToCall
+    {
+        GST = 1,
+        HST,
+        PST,
+        QST,
+        TAX,
+        VAT
+    }
+
 }
