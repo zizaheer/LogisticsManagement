@@ -12,7 +12,7 @@ function GetFormData() {
         discountPercentage: $('#txtSpecialDiscount').val(),
         invoiceDueDays: $('#txtInvoiceDueDays').val(),
         isGstApplicable: $('#chkIsGstApplicable').val(),
-        isActive: $('#chkIsGstApplicable').val(),
+        isActive: $('#chkIsGstApplicable').is(':checked') ? 1 : 0,
         mailingAddressId: $('#chkIsGstApplicable').val(),
         billingAddressId: $('#chkIsGstApplicable').val(),
         unitNumber: $('#chkIsGstApplicable').val(),
@@ -22,6 +22,10 @@ function GetFormData() {
         countryId: $('#chkIsGstApplicable').val(),
         postCode: $('#chkIsGstApplicable').val(),
         contactPersonName: $('#chkIsGstApplicable').val(),
+        fax: $('#chkIsGstApplicable').val(),
+        fax: $('#chkIsGstApplicable').val(),
+        fax: $('#chkIsGstApplicable').val(),
+        Fax
 
 
         deliveryOptionId: $('#ddlDeliveryOptionId').val(),
