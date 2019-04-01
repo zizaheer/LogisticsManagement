@@ -35,7 +35,7 @@ namespace LogisticsManagement_Web.Controllers
 
             if (_userLogic.IsCredentialsValid(userName, userPassword, out outMessage))
             {
-                Session.SetString("","");
+                //Session.SetString("","");
 
                 return RedirectToAction("Index", "Home");
             }

@@ -28,17 +28,12 @@
                         <select class="form-control">
                             @foreach (var item in ViewBag.TaxToCall)
                             {
-                                var selected = false;
-                                if (item.Id == 1)
-                                {
-                                    selected = true;
-                                }
-                                <option value="@item.Id" selected="@selected">@item</option>
+                                <option value="@item" selected="selected">@item</option>
                             }
                         </select>
                     </div>
                     <div class="form-group col-sm-2">
-                       
+
                     </div>
                 </div>
 
