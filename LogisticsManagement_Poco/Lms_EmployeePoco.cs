@@ -18,6 +18,14 @@ namespace LogisticsManagement_Poco
         public string LastName { get; set; }
         public string DriverLicenseNo { get; set; }
         public string SocialInsuranceNo { get; set; }
+        public string UnitNumber { get; set; }
+        public string HouseNumber { get; set; }
+        public string StreetNumber { get; set; }
+        public string AddressLine { get; set; }
+        public int? CityId { get; set; }
+        public int? ProvinceId { get; set; }
+        public int? CountryId { get; set; }
+        public string PostCode { get; set; }
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }
         public string FaxNumber { get; set; }
@@ -27,7 +35,7 @@ namespace LogisticsManagement_Poco
         public decimal? HourlyRate { get; set; }
         public bool? IsSalaried { get; set; }
         public decimal? SalaryAmount { get; set; }
-        public int? SalaryTerm { get; set; }
+        public byte? SalaryTerm { get; set; }
         public bool? IsCommissionProvided { get; set; }
         public decimal? CommissionPercentage { get; set; }
         public bool? IsFuelChargeProvided { get; set; }
@@ -35,7 +43,7 @@ namespace LogisticsManagement_Poco
         public decimal? RadioInsuranceAmount { get; set; }
         public decimal? InsuranceAmount { get; set; }
         public int? TermDays { get; set; }
-        public bool IsEmployeeActive { get; set; }
+        public bool IsActive { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
     }

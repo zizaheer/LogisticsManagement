@@ -6,6 +6,7 @@ using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
 using LogisticsManagement_Web.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -52,7 +53,7 @@ namespace LogisticsManagement_Web.Controllers
         [HttpGet]
         public IActionResult PartialViewDataTable()
         {
-            return PartialView("_PartialView", GetTariffData());
+            return PartialView("_PartialViewTariffData", GetTariffData());
         }
 
 

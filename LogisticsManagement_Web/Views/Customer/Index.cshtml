@@ -1,5 +1,5 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model TariffViewModel
+@model CustomerViewModel
 
 
 @{
@@ -16,24 +16,237 @@
 
                 <div class="card-body">
                     <div class="row">
-                        <div class="form-group col-sm-1">
-                            <input class="form-control" id="txtCustomerId" placeholder="ID" type="number" />
+                        <div class="form-group col-sm-2">
+                            <input class="form-control" id="txtCustomerId" placeholder="" type="number" name="txtCustomerId" />
                         </div>
                         <div class="form-group col-sm-1" style="padding-left: 0px;">
-                            <button id="btnFindCustomer" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+                            <button id="btnFindCustomer" name="btnFindCustomer" class="btn btn-secondary"><i class="fa fa-search"></i></button>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtFirstName" placeholder="ID" type="text" value="0" />
+                        <div class="form-group col-sm-6">
+                            <input class="form-control" id="txtCustomerName" placeholder="Customer Name" type="text" name="txtCustomerName" />
                         </div>
-                        <div class="form-group col-sm-1" style="padding-left: 0px;">
-                            <button id="btnFindTariff" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-2">
+                            <input class="form-control" id="txtSpecialDiscount" placeholder="Special discount (%)" type="number" name="txtSpecialDiscount" />
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <input class="form-control" id="txtInvoiceDueDays" placeholder="Invoice Due Days" type="number" name="txtInvoiceDueDays" />
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <input id="chkIsGstApplicable" type="checkbox" name="chkIsGstApplicable" /> GST Applicable?
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <select class="form-control" id="txtMailingAddressId">
+                                <option value=0 selected> -- Assign Employee -- </option>
+                                @foreach (var employee in Model.Employees)
+                                {
+                                    <option value=@employee.Id> @employee.FirstName  @employee.LastName (@employee.EmployeeNumber)</option>
+                                }
+                            </select>
+                        </div>
 
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-1 col-form-label">Address type</label>
+                        <div class="col-md-9 col-form-label">
+                            <div class="form-check form-check-inline mr-1">
+                                <input class="form-check-input" id="addressType1" type="radio" value="1" name="addressType">
+                                <label class="form-check-label" for="addressType1">Mailing only</label>
+                            </div>
+                            <div class="form-check form-check-inline mr-1">
+                                <input class="form-check-input" id="addressType2" type="radio" value="2" name="addressType">
+                                <label class="form-check-label" for="addressType2">Billing only</label>
+                            </div>
+                            <div class="form-check form-check-inline mr-1">
+                                <input class="form-check-input" id="addressType3" type="radio" value="3" name="addressType">
+                                <label class="form-check-label" for="addressType3">Both</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="card" id="cardBillingAddress" style="display:block">
+                                <div class="card-header">
+                                    <i class="fa fa-send"></i>Billing Address
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-9">
+                                            <div class="form-group">
+                                                <input class="form-control" id="txtBillingAddressLine" type="text" name="txtBillingAddressLine" placeholder="Address Line1" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <input class="form-control" id="txtBillingAddressUnit" type="text" name="txtBillingAddressUnit" placeholder="Unit #" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-5">
+                                            <select class="form-control" id="ddlBillingCityId" name="ddlBillingCityId">
+                                                <option value="0">-- Select --</option>
+                                                @foreach (var city in Model.Cities)
+                                                {
+                                                    var selected = false;
+                                                    if (city.Id == 335)
+                                                    {
+                                                        selected = true;
+                                                    }
+                                                    <option value="@city.Id" selected="@selected">@city.CityName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-3">
+                                            <select class="form-control" id="ddlBillingProvinceId" name="ddlBillingProvinceId">
+                                                <option value="0">-- Select --</option>
+                                                @foreach (var province in Model.Provinces)
+                                                {
+                                                    var selected = false;
+                                                    if (province.Id == 7)
+                                                    {
+                                                        selected = true;
+                                                    }
+                                                    <option value="@province.Id" selected="@selected">@province.ShortCode</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <select class="form-control" id="ddlBillingCountryId" name="ddlBillingCountryId">
+                                                <option value="0">-- Select --</option>
+                                                @foreach (var country in Model.Countries)
+                                                {
+                                                    var selected = false;
+                                                    if (country.Id == 41)
+                                                    {
+                                                        selected = true;
+                                                    }
+                                                    <option value="@country.Id" selected="@selected">@country.CountryName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="form-group col-sm-3">
+                                            <input class="form-control" id="txtBillingPostCode" type="text" name="txtBillingPostCode" placeholder="Postcode" />
+                                        </div>
+                                        <div class="form-group col-sm-5">
+                                            <input class="form-control" id="txtBillingPrimaryPhoneNumber" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="txtBillingPrimaryPhoneNumber" placeholder="Phone" />
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <input class="form-control" id="txtBillingFaxNumber" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="txtBillingFaxNumber" placeholder="Fax" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-6">
+                                            <input class="form-control" id="txtBillingContactPerson" type="text" name="txtBillingContactPerson" placeholder="Contact person" />
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <input class="form-control" id="txtBillingEmailAddress" type="email" name="txtBillingEmailAddress" placeholder="Email address" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fa fa-send"></i>Mailing/Warehouse Address
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-9">
+                                            <div class="form-group">
+                                                <input class="form-control" id="txtMailingAddressLine" type="text" name="txtMailingAddressLine" placeholder="Address Line1" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <input class="form-control" id="txtMailingAddressUnit" type="text" name="txtMailingAddressUnit" placeholder="Unit #" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-5">
+                                            <select class="form-control" id="ddlMailingCityId" name="">
+                                                <option value="0">-- Select --</option>
+                                                @foreach (var city in Model.Cities)
+                                                {
+                                                    var selected = false;
+                                                    if (city.Id == 335)
+                                                    {
+                                                        selected = true;
+                                                    }
+                                                    <option value="@city.Id" selected="@selected">@city.CityName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-3">
+                                            <select class="form-control" id="ddlMailingProvinceId" name="">
+                                                <option value="0">-- Select --</option>
+                                                @foreach (var province in Model.Provinces)
+                                                {
+                                                    var selected = false;
+                                                    if (province.Id == 7)
+                                                    {
+                                                        selected = true;
+                                                    }
+                                                    <option value="@province.Id" selected="@selected">@province.ShortCode</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <select class="form-control" id="ddlMailingCountryId">
+                                                <option value="0">-- Select --</option>
+                                                @foreach (var country in Model.Countries)
+                                                {
+                                                    var selected = false;
+                                                    if (country.Id == 41)
+                                                    {
+                                                        selected = true;
+                                                    }
+                                                    <option value="@country.Id" selected="@selected">@country.CountryName</option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-3">
+                                            <input class="form-control" id="txtMailingPostCode" type="text" name="txtMailingPostCode" placeholder="Postcode" />
+                                        </div>
+                                        <div class="form-group col-sm-5">
+                                            <input class="form-control" id="txtMailingPrimaryPhoneNumber" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="txtMailingPrimaryPhoneNumber" placeholder="Phone" />
+                                        </div> <div class="form-group col-sm-4">
+                                            <input class="form-control" id="txtMailingFaxNumber" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="txtMailingFaxNumber" placeholder="Fax" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-6">
+                                            <input class="form-control" id="txtMailingContactPerson" type="text" name="txtMailingContactPerson" placeholder="Contact person" />
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <input class="form-control" id="txtMailingEmailAddress" type="email" name="txtMailingEmailAddress" placeholder="Email address" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <hr />
                     <button type="button" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
@@ -45,6 +258,6 @@
     </div>
 </form>
 
-<partial name="_PartialViewEmployeeData" />
+<partial name="_PartialViewCustomerData" />
 
-<script src="~/js/employee.js"></script>
+<script src="~/js/customer.js"></script>

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using LogisticsManagement_Web.Models;
 using System.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace LogisticsManagement_Web.Controllers
 {
@@ -23,8 +25,11 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-
-            //_memoryCache.TryGetValue(CacheKeys.Cities, )
+            var userData = JsonConvert.DeserializeObject<App_UserPoco>(HttpContext.Session.GetString("UserData"));
+            if (userData == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             return View();
         }
 

@@ -16,7 +16,6 @@ namespace LogisticsManagement_Web.Controllers
         private App_UserLogic _userLogic;
         private readonly LogisticsContext _dbContext;
 
-        ISession Session;
         public LoginController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
@@ -31,12 +30,9 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Login(string userName, string userPassword)
         {
-            string outMessage = "";
-
-            if (_userLogic.IsCredentialsValid(userName, userPassword, out outMessage))
+            if (_userLogic.IsCredentialsValid(userName, userPassword, out App_UserPoco outUserData))
             {
-                //Session.SetString("","");
-
+                HttpContext.Session.SetString("UserData", JsonConvert.SerializeObject(outUserData));
                 return RedirectToAction("Index", "Home");
             }
 
@@ -45,6 +41,7 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Logout()
         {
+            HttpContext.Session.Remove("UserData");
             return RedirectToAction("Index");
         }
 

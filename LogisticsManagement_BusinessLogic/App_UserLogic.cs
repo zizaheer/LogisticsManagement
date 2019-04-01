@@ -83,12 +83,12 @@ namespace LogisticsManagement_BusinessLogic
 
         #region App Logic/Rules
 
-        public bool IsCredentialsValid(string userName, string password, out string message)
+        public bool IsCredentialsValid(string userName, string password, out App_UserPoco outUserData)
         {
             bool result = false;
-            message = "";
 
             var userData = GetSingleByUserName(userName);
+            outUserData = userData;
 
             if (userData != null)
             {
@@ -97,20 +97,9 @@ namespace LogisticsManagement_BusinessLogic
                     if (ComparePassword(password, userData.Password))
                     {
                         result = true;
-                    }
-                    else
-                    {
-                        message = "Password is invalid";
+                        outUserData = userData;
                     }
                 }
-                else
-                {
-                    message = "User is inactive";
-                }
-            }
-            else
-            {
-                message = "Username is not found.";
             }
 
             return result;

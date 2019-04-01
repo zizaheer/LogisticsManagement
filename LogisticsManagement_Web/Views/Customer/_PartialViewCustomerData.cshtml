@@ -1,0 +1,113 @@
+﻿@using LogisticsManagement_Web.Models;
+@model CustomerViewModel
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header" style="background-color: #c3c3c3;">
+                <strong><i class="fa fa-sliders"></i> Customers</strong>
+                <div class="card-header-actions">
+                    <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
+                        <i class="icon-arrow-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <input type="hidden" id="hfMaxCustomerNumber" name="hfMaxCustomerNumber" value="@Model.Customers.Max(c=>c.CustomerNumber)" />
+            </div>
+            <div class="collapse show" id="collapseDatatable">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="customer-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" width=100%>
+                                <thead>
+                                    <tr>
+                                        <th>Number</th>
+                                        <th>Name</th>
+                                        <th>MailingAddress</th>
+                                        <th>BillingAddress</th>
+                                        <th>Special Discount(%)</th>
+                                        <th>Invoice Due(days)</th>
+                                        <th>Active?</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Customers.OrderByDescending(c => c.CustomerNumber))
+                                    {
+                                        var mailingAddressString = "N/A";
+                                        var billingAddressString = "N/A";
+                                        var discount = 0.00;
+                                        var dueDays = 0;
+
+                                        if (item.MailingAddressId != null)
+                                        {
+                                            var mailingAddress = Model.Addressess.Where(c => c.Id == item.MailingAddressId).FirstOrDefault();
+                                            mailingAddressString = mailingAddress.UnitNumber + "    " + mailingAddress.AddressLine + ", " + mailingAddress.PostCode;
+                                        }
+
+                                        if (item.BillingAddressId != null)
+                                        {
+                                            var billinAddress = Model.Addressess.Where(c => c.Id == item.BillingAddressId).FirstOrDefault();
+                                            billingAddressString = billinAddress.UnitNumber + "    " + billinAddress.AddressLine + ", " + billinAddress.PostCode;
+                                        }
+
+                                        <tr>
+                                            <td>
+                                            
+                                            @item.CustomerNumber</td>
+                                            <td>
+                                                @item.CustomerName
+                                            </td>
+                                            <td>
+                                                @mailingAddressString
+                                            </td>
+                                            <td>
+                                                @billingAddressString
+                                            </td>
+                                            <td>
+                                                @{ 
+                                                    if (item.DiscountPercentage == null)
+                                                    {
+                                                        @discount;
+                                                    }
+                                                    else
+                                                    {
+                                                        @item.DiscountPercentage;
+                                                    }
+                                                }
+                                            </td>
+                                            <td>
+                                                @{
+                                                    if (item.InvoiceDueDays == null)
+                                                    {
+                                                        @dueDays;
+                                                    }
+                                                    else {
+                                                        @item.InvoiceDueDays;
+                                                    }
+
+                                                }
+                                            </td>
+                                            <td>
+                                                @item.IsActive
+                                            </td>
+
+                                            <td>
+                                                <button id="btnEdit" data-customer='@Json.Serialize(item)' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
+                                                <button id="btnDelete" data-customer='@Json.Serialize(item)' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
