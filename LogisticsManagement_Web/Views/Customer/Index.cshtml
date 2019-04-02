@@ -13,6 +13,10 @@
                 <div class="card-header" style="background-color: #3b80a9;color: #fff;">
                     <strong><i class="fa fa-sliders"></i> Customer</strong>
                 </div>
+                <div>
+                    <input type="hidden" id="hfMailingAddressId" name="hfMailingAddressId" />
+                    <input type="hidden" id="hfBillingAddressId" name="hfBillingAddressId" />
+                </div>
 
                 <div class="card-body">
                     <div class="row">
@@ -42,14 +46,17 @@
                     </div>
 
                     <div class="row">
-                        <div class="form-group col-sm-6">
-                            <select class="form-control" id="txtMailingAddressId">
+                        <div class="form-group col-sm-5">
+                            <select class="form-control" id="ddlEmployeeId">
                                 <option value=0 selected> -- Assign Employee -- </option>
                                 @foreach (var employee in Model.Employees)
                                 {
-                                    <option value=@employee.Id> @employee.FirstName  @employee.LastName (@employee.EmployeeNumber)</option>
+                                    <option value=@employee.EmployeeNumber> @employee.FirstName  @employee.LastName (@employee.EmployeeNumber)</option>
                                 }
                             </select>
+                        </div>
+                        <div class="form-group col-sm-2" style="padding-left: 0px;">
+                            <a asp-controller="Employee" asp-action="Index">Add employee</a>
                         </div>
 
                     </div>
@@ -58,12 +65,12 @@
                         <label class="col-md-1 col-form-label">Address type</label>
                         <div class="col-md-9 col-form-label">
                             <div class="form-check form-check-inline mr-1">
-                                <input class="form-check-input" id="addressType1" type="radio" value="1" name="addressType">
-                                <label class="form-check-label" for="addressType1">Mailing only</label>
+                                <input class="form-check-input" id="addressType1" type="radio" value="1" name="addressType" checked>
+                                <label class="form-check-label" for="addressType1">Billing only</label>
                             </div>
                             <div class="form-check form-check-inline mr-1">
                                 <input class="form-check-input" id="addressType2" type="radio" value="2" name="addressType">
-                                <label class="form-check-label" for="addressType2">Billing only</label>
+                                <label class="form-check-label" for="addressType2">Mailing only</label>
                             </div>
                             <div class="form-check form-check-inline mr-1">
                                 <input class="form-check-input" id="addressType3" type="radio" value="3" name="addressType">
@@ -74,7 +81,7 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <div class="card" id="cardBillingAddress" style="display:block">
+                            <div class="card" id="cardBillingAddress">
                                 <div class="card-header">
                                     <i class="fa fa-send"></i>Billing Address
                                 </div>
@@ -82,13 +89,22 @@
                                     <div class="row">
                                         <div class="col-sm-9">
                                             <div class="form-group">
-                                                <input class="form-control" id="txtBillingAddressLine" type="text" name="txtBillingAddressLine" placeholder="Address Line1" />
+                                                @{
+                                                    var addressLines = Model.Addressess.Select(n => new LogisticsManagement_Poco.Lms_AddressPoco { Id = n.Id, AddressLine = n.AddressLine });
+                                                }
+                                                @*<input class="form-control" id="txtBillingAddressLine" type="text" data-billingaddressline='@Json.Serialize(addressLines)' name="txtBillingAddressLine" placeholder="Address Line" />*@
+                                                <select class="form-control" id="ddlSelectAddressId" name="ddlSelectAddressId">
+                                                    @foreach (var address in Model.Addressess)
+                                                    {
+                                                        <option value="@address.Id">@address.AddressLine</option>
+                                                    }
+                                                </select>
                                             </div>
                                         </div>
 
                                         <div class="col-sm-3">
                                             <div class="form-group">
-                                                <input class="form-control" id="txtBillingAddressUnit" type="text" name="txtBillingAddressUnit" placeholder="Unit #" />
+                                                <input class="form-control" id="txtBillingAddressUnit" type="text" name="txtBillingAddressUnit" placeholder="Unit " />
                                             </div>
                                         </div>
                                     </div>
@@ -160,28 +176,28 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" id="cardMailingAddress">
                             <div class="card">
                                 <div class="card-header">
-                                    <i class="fa fa-send"></i>Mailing/Warehouse Address
+                                    <i class="fa fa-send"></i>Mailing/Warehouse Address <span style="float:right"> <input type="checkbox" name="chkIsSameAsBilling" value="" /> Same as billing</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-9">
                                             <div class="form-group">
-                                                <input class="form-control" id="txtMailingAddressLine" type="text" name="txtMailingAddressLine" placeholder="Address Line1" />
+                                                <input class="form-control" id="txtMailingAddressLine" type="text" name="txtMailingAddressLine" placeholder="Address Line" />
                                             </div>
                                         </div>
 
                                         <div class="col-sm-3">
                                             <div class="form-group">
-                                                <input class="form-control" id="txtMailingAddressUnit" type="text" name="txtMailingAddressUnit" placeholder="Unit #" />
+                                                <input class="form-control" id="txtMailingAddressUnit" type="text" name="txtMailingAddressUnit" placeholder="Unit " />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-sm-5">
-                                            <select class="form-control" id="ddlMailingCityId" name="">
+                                            <select class="form-control" id="ddlMailingCityId" name="ddlMailingCityId">
                                                 <option value="0">-- Select --</option>
                                                 @foreach (var city in Model.Cities)
                                                 {
@@ -195,7 +211,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-sm-3">
-                                            <select class="form-control" id="ddlMailingProvinceId" name="">
+                                            <select class="form-control" id="ddlMailingProvinceId" name="ddlMailingProvinceId">
                                                 <option value="0">-- Select --</option>
                                                 @foreach (var province in Model.Provinces)
                                                 {
@@ -209,7 +225,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-sm-4">
-                                            <select class="form-control" id="ddlMailingCountryId">
+                                            <select class="form-control" id="ddlMailingCountryId" name="ddlMailingCountryId">
                                                 <option value="0">-- Select --</option>
                                                 @foreach (var country in Model.Countries)
                                                 {

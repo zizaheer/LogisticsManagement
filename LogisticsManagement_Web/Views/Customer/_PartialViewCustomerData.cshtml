@@ -43,20 +43,29 @@
 
                                         if (item.MailingAddressId != null)
                                         {
+                                            mailingAddressString = "";
                                             var mailingAddress = Model.Addressess.Where(c => c.Id == item.MailingAddressId).FirstOrDefault();
-                                            mailingAddressString = mailingAddress.UnitNumber + "    " + mailingAddress.AddressLine + ", " + mailingAddress.PostCode;
+
+                                            mailingAddressString = string.IsNullOrEmpty(mailingAddress.UnitNumber)==true ? "" : mailingAddress.UnitNumber + ", ";
+                                            mailingAddressString = mailingAddressString + (string.IsNullOrEmpty(mailingAddress.AddressLine) == true ? "" : mailingAddress.AddressLine + ", ");
+                                            mailingAddressString = mailingAddressString + " " + mailingAddress.PostCode;
                                         }
 
                                         if (item.BillingAddressId != null)
                                         {
-                                            var billinAddress = Model.Addressess.Where(c => c.Id == item.BillingAddressId).FirstOrDefault();
-                                            billingAddressString = billinAddress.UnitNumber + "    " + billinAddress.AddressLine + ", " + billinAddress.PostCode;
+                                            billingAddressString = "";
+                                            var billingAddress = Model.Addressess.Where(c => c.Id == item.BillingAddressId).FirstOrDefault();
+
+                                            billingAddressString = string.IsNullOrEmpty(billingAddress.UnitNumber) == true ? "" : billingAddress.UnitNumber + ", ";
+                                            billingAddressString = billingAddressString + (string.IsNullOrEmpty(billingAddress.AddressLine) == true ? "" : billingAddress.AddressLine + ", ");
+                                            billingAddressString = billingAddressString + " " + billingAddress.PostCode;
                                         }
 
                                         <tr>
                                             <td>
-                                            
-                                            @item.CustomerNumber</td>
+
+                                                @item.CustomerNumber
+                                            </td>
                                             <td>
                                                 @item.CustomerName
                                             </td>
@@ -67,7 +76,7 @@
                                                 @billingAddressString
                                             </td>
                                             <td>
-                                                @{ 
+                                                @{
                                                     if (item.DiscountPercentage == null)
                                                     {
                                                         @discount;
@@ -84,7 +93,8 @@
                                                     {
                                                         @dueDays;
                                                     }
-                                                    else {
+                                                    else
+                                                    {
                                                         @item.InvoiceDueDays;
                                                     }
 
@@ -95,7 +105,7 @@
                                             </td>
 
                                             <td>
-                                                <button id="btnEdit" data-customer='@Json.Serialize(item)' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
+                                                <button id="btnEdit" data-customer='@Json.Serialize(item)' data-billingaddress='@Json.Serialize(Model.Addressess.Where(c=>c.Id==item.BillingAddressId).FirstOrDefault())' data-mailingaddress='@Json.Serialize(Model.Addressess.Where(c=>c.Id==item.MailingAddressId).FirstOrDefault())' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
                                                 <button id="btnDelete" data-customer='@Json.Serialize(item)' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
                                             </td>
                                         </tr>

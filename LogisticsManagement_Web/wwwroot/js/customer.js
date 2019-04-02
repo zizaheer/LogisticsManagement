@@ -1,45 +1,55 @@
-﻿var customerData;
+﻿
+var customerData;
 
 
 $(document).ready(function () {
     ClearForm();
+    $('#cardMailingAddress *').attr('disabled', 'disabled');
 });
 
 function GetFormData() {
-    var data = {
+    var customerData = {
         id: $('#txtCustomerId').val(),
         customerName: $('#txtCustomerName').val(),
         discountPercentage: $('#txtSpecialDiscount').val(),
         invoiceDueDays: $('#txtInvoiceDueDays').val(),
-        isGstApplicable: $('#chkIsGstApplicable').val(),
+        isGstApplicable: $('#chkIsGstApplicable').is(':checked') ? 1 : 0,
         isActive: $('#chkIsGstApplicable').is(':checked') ? 1 : 0,
-        mailingAddressId: $('#chkIsGstApplicable').val(),
-        billingAddressId: $('#chkIsGstApplicable').val(),
-        unitNumber: $('#chkIsGstApplicable').val(),
-        addressLine: $('#chkIsGstApplicable').val(),
-        cityId: $('#chkIsGstApplicable').val(),
-        provinceId: $('#chkIsGstApplicable').val(),
-        countryId: $('#chkIsGstApplicable').val(),
-        postCode: $('#chkIsGstApplicable').val(),
-        contactPersonName: $('#chkIsGstApplicable').val(),
-        fax: $('#chkIsGstApplicable').val(),
-        fax: $('#chkIsGstApplicable').val(),
-        fax: $('#chkIsGstApplicable').val(),
-        Fax
-
-
-        deliveryOptionId: $('#ddlDeliveryOptionId').val(),
-        cityId: $('#ddlCityId').val(),
-        vehicleTypeId: $('#ddlVehicleTypeId').val(),
-        unitTypeId: $('#ddlUnitTypeId').val(),
-        weightScaleId: $('#ddlWeightScaleId').val(),
-        firstUnitPrice: $('#txtFirstUnitPrice').val(),
-        perUnitPrice: $('#txtPerUnitPrice').val(),
-        createDate: $('#hfCreateDate').val(),
-        createdBy: $('#hfCreatedBy').val()
+        mailingAddressId: $('#hfMailingAddressId').val(),
+        billingAddressId: $('#hfBillingAddressId').val(),
+        employeeNumber: $('#ddlEmployeeId').val()
     };
 
-    return data;
+    var billingAddressData = {
+        billingAddressId: $('#hfBillingAddressId').val(),
+        unitNumber: $('#txtBillingAddressUnit').val(),
+        addressLine: $('#txtBillingAddressLine').val(),
+        cityId: $('#ddlBillingCityId').val(),
+        provinceId: $('#ddlBillingProvinceId').val(),
+        countryId: $('#ddlBillingCountryId').val(),
+        postCode: $('#txtBillingPostCode').val(),
+        contactPersonName: $('#txtBillingContactPerson').val(),
+        fax: $('#txtBillingFaxNumber').val(),
+        primaryPhoneNumber: $('#txtBillingPrimaryPhoneNumber').val(),
+        emailAddress1: $('#txtBillingEmailAddress').val()
+    };
+
+    var mailingAddressData = {
+        billingAddressId: $('#hfMailingAddressId').val(),
+        unitNumber: $('#txtMailingAddressUnit').val(),
+        addressLine: $('#txtMailingAddressLine').val(),
+        cityId: $('#ddlMailingCityId').val(),
+        provinceId: $('#ddlMailingProvinceId').val(),
+        countryId: $('#ddlMailingCountryId').val(),
+        postCode: $('#txtMailingPostCode').val(),
+        contactPersonName: $('#txtMailingContactPerson').val(),
+        fax: $('#txtMailingFaxNumber').val(),
+        primaryPhoneNumber: $('#txtMailingPrimaryPhoneNumber').val(),
+        emailAddress1: $('#txtMailingEmailAddress').val()
+    };
+
+
+    return [customerData, billingAddressData, mailingAddressData];
 }
 
 function ClearForm() {
@@ -55,6 +65,24 @@ function ClearForm() {
     $('#txtPerUnitPrice').val();
 
 }
+
+$('input[type=radio][name=addressType]').change(function () {
+
+    var addOption = $("input[name='addressType']:checked").val();
+    if (addOption === '1') {
+        $('#cardBillingAddress *').removeAttr('disabled');
+        $('#cardMailingAddress *').attr('disabled', 'disabled');
+    }
+    else if (addOption === '2') {
+        $('#cardBillingAddress *').attr('disabled', 'disabled');
+        $('#cardMailingAddress *').removeAttr('disabled');
+    }
+    else {
+        $('#cardBillingAddress *').removeAttr('disabled');
+        $('#cardMailingAddress *').removeAttr('disabled');
+    }
+
+});
 
 $('#btnNew').on('click', function () {
     ClearForm();
@@ -72,20 +100,28 @@ $('.btnEdit').on('click', function () {
     $('#txtPerUnitPrice').val(data.perUnitPrice);
 });
 
+$(function () {
+    var addressLineModel = $('#txtBillingAddressLine').attr('data-billingaddressline');
+    console.log(addressLineModel);
+    $("#txtBillingAddressLine").autocomplete({
+        source: addressLineModel
+    });
+});
 
+$('#ddlSelectAddressId').editableSelect();
 
-$('#frmTariffForm').submit(function (event) {
+$('#frmCustomerForm').submit(function (event) {
     var data = GetFormData();
     $.ajax({
-        url: 'Tariff/AddOrUpdate',
+        url: 'Customer/AddOrUpdate',
         type: 'POST',
-        data: JSON.stringify([data]),
+        data: JSON.stringify(data),
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
             //SetAlertType('Success', 'Data has been removed.');
             console.log('Success');
-            window.location.href = 'Tariff/Index';
+            window.location.href = 'Customer/Index';
         },
         error: function (result) {
             //SetAlertType('Failed', 'An error occured during deleting the data.');
@@ -95,19 +131,19 @@ $('#frmTariffForm').submit(function (event) {
 
 $('.btnDelete').on('click', function () {
     SetAlertType('Warning', 'The data will be deleted. Are you sure you want ot continue?');
-    tariffData = $(this).data('tariff');
+    customerData = $(this).data('customer');
 });
 $('#btnProceed').on('click', function () {
-    if (tariffData !== null) {
-        RemoveTariff(tariffData);
+    if (customerData !== null) {
+        RemoveCustomer(customerData);
     }
 });
 
-function RemoveTariff(tariffData) {
+function RemoveCustomer(customerData) {
     $.ajax({
-        url: 'Tariff/Remove',
+        url: 'Customer/Remove',
         type: 'POST',
-        data: JSON.stringify([tariffData]),
+        data: JSON.stringify([customerData]),
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
