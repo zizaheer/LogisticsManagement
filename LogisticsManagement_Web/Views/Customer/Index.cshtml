@@ -92,16 +92,10 @@
                                                 @{
                                                     var addressLines = Model.Addressess.Select(n => new LogisticsManagement_Poco.Lms_AddressPoco { Id = n.Id, AddressLine = n.AddressLine });
                                                 }
-                                                @*<input class="form-control" id="txtBillingAddressLine" type="text" data-billingaddressline='@Json.Serialize(addressLines)' name="txtBillingAddressLine" placeholder="Address Line" />*@
-                                                <select class="form-control" id="ddlSelectAddressId" name="ddlSelectAddressId">
-                                                    @foreach (var address in Model.Addressess)
-                                                    {
-                                                        <option value="@address.Id">@address.AddressLine</option>
-                                                    }
-                                                </select>
+                                                <input class="form-control" id="txtBillingAddressLine" name="txtBillingAddressLine" placeholder="Address Line" />
+                                                <input class="form-control" id="city-code" name="citycode" value="" type="number" readonly>
                                             </div>
                                         </div>
-
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <input class="form-control" id="txtBillingAddressUnit" type="text" name="txtBillingAddressUnit" placeholder="Unit " />
@@ -275,5 +269,6 @@
 </form>
 
 <partial name="_PartialViewCustomerData" />
+
 
 <script src="~/js/customer.js"></script>

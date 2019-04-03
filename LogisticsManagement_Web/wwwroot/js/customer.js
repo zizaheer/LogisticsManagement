@@ -2,6 +2,22 @@
 var customerData;
 
 
+
+$(function () {
+    var availableTags = [
+        "ActionScript",
+        "AppleScript",
+        "Asp",
+        "BASIC",
+        "C"
+    ];
+    $("#txtBillingAddressLine").autocomplete({
+        source: availableTags
+    });
+});
+
+
+
 $(document).ready(function () {
     ClearForm();
     $('#cardMailingAddress *').attr('disabled', 'disabled');
@@ -100,15 +116,9 @@ $('.btnEdit').on('click', function () {
     $('#txtPerUnitPrice').val(data.perUnitPrice);
 });
 
-$(function () {
-    var addressLineModel = $('#txtBillingAddressLine').attr('data-billingaddressline');
-    console.log(addressLineModel);
-    $("#txtBillingAddressLine").autocomplete({
-        source: addressLineModel
-    });
-});
 
-$('#ddlSelectAddressId').editableSelect();
+
+//$('#ddlSelectAddressId').editableSelect();
 
 $('#frmCustomerForm').submit(function (event) {
     var data = GetFormData();
