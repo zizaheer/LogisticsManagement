@@ -1,13 +1,87 @@
 ﻿var customerData;
+var addressData;
+var employeeData;
+var cityData;
+var provinceData;
+var countryData;
+var addressLineForAutocomplete;
 
+$(document).ready(function () {
+    MaskPhoneNumber('#txtBillingPrimaryPhoneNumber');
+});
 
 
 $(function () {
-    var availableTags = GetListObject("Customer/Get");
-    $("#txtBillingAddressLine").autocomplete({
-        source: availableTags
+    addressLineForAutocomplete = GetListObject('Address/GetAddressesForAutoComplete');
+    $('#txtBillingAddressLine').autocomplete({
+        minLength: 0,
+        source: JSON.parse(addressLineForAutocomplete),
+        focus: function (event, ui) {
+            $('#txtBillingAddressLine').val(ui.item.label);
+            return false;
+        },
+        select: function (event, ui) {
+            $('#hfBillingAddressId').val(ui.item.Id);
+            $('#txtBillingAddressLine').val(ui.item.label);
+            $('#txtBillingAddressUnit').val(ui.item.UnitNumber);
+
+            $('#txtBillingPostCode').val(ui.item.PostCode);
+            $('#txtBillingPrimaryPhoneNumber').val(ui.item.PostCode);
+            $('#txtBillingFaxNumber').val(ui.item.PostCode);
+            $('#txtBillingContactPerson').val(ui.item.PostCode);
+            $('#txtBillingEmailAddress').val(ui.item.PostCode);
+            
+
+            return false;
+        }
     });
+
+
+
+
+
+    ddlBillingCityId
+    ddlBillingProvinceId
+    ddlBillingCountryId
+    
+    
+    
+    
+    
+
+
+    txtMailingAddressLine
+    txtMailingAddressUnit
+    ddlMailingCityId
+    ddlMailingProvinceId
+    ddlMailingCountryId
+    txtMailingPostCode
+    txtMailingPrimaryPhoneNumber
+    txtMailingFaxNumber
+    txtMailingContactPerson
+    txtMailingEmailAddress
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
+
+
+
 
 //var dataCust = JSON.parse(GetListObject('Customer/GetAll'));
 //$.each(dataCust, function (k, v) {
@@ -17,7 +91,10 @@ $(function () {
 //    console.log(zone);
 
 //});
+$('#txtBillingAddressLine').on('change', function () {
 
+
+});
 
 
 $(document).ready(function () {
@@ -27,7 +104,7 @@ $(document).ready(function () {
 
 function GetFormData() {
     var customerData = {
-        id: $('#txtCustomerId').val() == "" ? "0" : $('#txtCustomerId').val(),
+        id: $('#txtCustomerId').val() === "" ? "0" : $('#txtCustomerId').val(),
         customerName: $('#txtCustomerName').val(),
         discountPercentage: $('#txtSpecialDiscount').val(),
         invoiceDueDays: $('#txtInvoiceDueDays').val(),

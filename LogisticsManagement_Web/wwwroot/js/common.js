@@ -23,9 +23,10 @@ function GetListObject(actionUrl) {
 function GetSingleObjectById(actionUrl, id) {
 
     $.ajax({
-        url: actionUrl + '/' + id,
+        url: actionUrl,
         type: 'GET',
         dataType: 'json',
+        data: id,
         success: function (result) {
             return result;
         },
@@ -33,4 +34,8 @@ function GetSingleObjectById(actionUrl, id) {
             return result;
         }
     });
+}
+
+function MaskPhoneNumber(element) {
+    $(element).mask('000-000-0000');
 }

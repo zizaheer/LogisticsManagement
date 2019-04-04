@@ -6,8 +6,8 @@
 $(document).ready(function () {
     $('.lms_dataTable').DataTable({
         //"aaSorting": [], // This 'aaSorting':[] disables the auto sortig when loading the datatable
-        "order": [[0, "desc"]],
-        pageLength: 5
+        "order": [[0, "desc"]]
+        //pageLength: 5
     });
 });
 

@@ -6,6 +6,7 @@ using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace LogisticsManagement_Web.Controllers
 {
@@ -30,6 +31,19 @@ namespace LogisticsManagement_Web.Controllers
         {
 
             return View();
+        }
+
+
+        public JsonResult GetEmployees()
+        {
+            var employeeList = _employeeLogic.GetList();
+            return Json(JsonConvert.SerializeObject(employeeList));
+        }
+
+        public JsonResult GetEmployeeById(string id)
+        {
+            var employeeList = _employeeLogic.GetList();
+            return Json(JsonConvert.SerializeObject(employeeList));
         }
     }
 }
