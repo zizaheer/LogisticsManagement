@@ -11,6 +11,7 @@ namespace LogisticsManagement_Poco
     {
         [Key]
         [Column("CategoryId")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int CategoryName { get; set; }
         public bool IsActive { get; set; }

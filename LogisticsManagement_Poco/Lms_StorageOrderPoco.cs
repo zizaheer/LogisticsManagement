@@ -11,6 +11,7 @@ namespace LogisticsManagement_Poco
     {
         [Key]
         [Column("StorageOrderId")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string StorageOrderNumber { get; set; }
         public int CustomerId { get; set; }

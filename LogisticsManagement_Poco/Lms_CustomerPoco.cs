@@ -11,6 +11,7 @@ namespace LogisticsManagement_Poco
     {
         [Key]
         [Column("CustomerId")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string CustomerNumber { get; set; }
         public int? AccountId { get; set; }

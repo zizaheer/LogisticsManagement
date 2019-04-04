@@ -11,6 +11,7 @@ namespace LogisticsManagement_Poco
     {
         [Key]
         [Column("CityId")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string CityName { get; set; }
         public int ProvinceId { get; set; }

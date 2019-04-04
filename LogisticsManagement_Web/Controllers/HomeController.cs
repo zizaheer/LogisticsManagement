@@ -31,6 +31,7 @@ namespace LogisticsManagement_Web.Controllers
                 return RedirectToAction("Index", "Login");
             }
             return View();
+            
         }
 
         public IActionResult Privacy()

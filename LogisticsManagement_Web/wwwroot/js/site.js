@@ -5,8 +5,9 @@
 // Please refer to bundleconfig.json where the js files are being minified as site.min.js which is referenced on _Layout template.
 $(document).ready(function () {
     $('.lms_dataTable').DataTable({
-        "aaSorting": [], // This 'aaSorting':[] disables the auto sortig when loading the datatable
-        pageLength:5
+        //"aaSorting": [], // This 'aaSorting':[] disables the auto sortig when loading the datatable
+        "order": [[0, "desc"]],
+        pageLength: 5
     });
 });
 

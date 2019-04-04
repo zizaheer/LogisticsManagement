@@ -1,20 +1,22 @@
-﻿
-var customerData;
+﻿var customerData;
 
 
 
 $(function () {
-    var availableTags = [
-        "ActionScript",
-        "AppleScript",
-        "Asp",
-        "BASIC",
-        "C"
-    ];
+    var availableTags = GetListObject("Customer/Get");
     $("#txtBillingAddressLine").autocomplete({
         source: availableTags
     });
 });
+
+//var dataCust = JSON.parse(GetListObject('Customer/GetAll'));
+//$.each(dataCust, function (k, v) {
+//    var zone = JSON.stringify(k, v);
+//    //zone = zone.replace(/"/g, '');
+//    //$('#zone').append('<option value="' + zone + '">' + zone + '</option>');
+//    console.log(zone);
+
+//});
 
 
 
@@ -25,7 +27,7 @@ $(document).ready(function () {
 
 function GetFormData() {
     var customerData = {
-        id: $('#txtCustomerId').val(),
+        id: $('#txtCustomerId').val() == "" ? "0" : $('#txtCustomerId').val(),
         customerName: $('#txtCustomerName').val(),
         discountPercentage: $('#txtSpecialDiscount').val(),
         invoiceDueDays: $('#txtInvoiceDueDays').val(),
@@ -70,15 +72,15 @@ function GetFormData() {
 
 function ClearForm() {
 
-    $('#txtTariffId').attr('disabled', 'disabled');
-    $('#txtTariffId').val();
-    $('#ddlDeliveryOptionId').val();
-    $('#ddlCityId').val();
-    $('#ddlVehicleTypeId').val();
-    $('#ddlUnitTypeId').val();
-    $('#ddlWeightScaleId').val();
-    $('#txtFirstUnitPrice').val();
-    $('#txtPerUnitPrice').val();
+    $('#txtCustomerId').attr('disabled', 'disabled');
+    $('#txtCustomerName').val();
+    $('#txtSpecialDiscount').val();
+    $('#txtInvoiceDueDays').val();
+    $('#chkIsGstApplicable').val();
+    $('#hfMailingAddressId').val();
+    $('#hfBillingAddressId').val();
+    $('#ddlEmployeeId').val();
+   // $('#txtPerUnitPrice').val();
 
 }
 
@@ -105,7 +107,7 @@ $('#btnNew').on('click', function () {
 });
 
 $('.btnEdit').on('click', function () {
-    var data = $(this).data('tariff');
+    var data = $(this).data('customer');
     $('#txtTariffId').val(data.id);
     $('#ddlDeliveryOptionId').val(data.deliveryOptionId);
     $('#ddlCityId').val(data.cityId);

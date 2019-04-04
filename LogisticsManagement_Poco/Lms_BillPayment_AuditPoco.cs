@@ -10,6 +10,7 @@ namespace LogisticsManagement_Poco
     public class Lms_BillPayment_AuditPoco
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AutoId { get; set; }
         public Lms_BillPaymentPoco billPaymentPoco { get; set; }
         public string changeStatusFlag { get; set; }

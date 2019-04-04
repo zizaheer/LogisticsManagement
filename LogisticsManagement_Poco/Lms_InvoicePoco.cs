@@ -11,6 +11,7 @@ namespace LogisticsManagement_Poco
     {
         [Key]
         [Column("InvoiceId")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string InvoiceNumber { get; set; }
         public decimal? TotalInvoiceAmount { get; set; }
