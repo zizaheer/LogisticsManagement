@@ -38,10 +38,41 @@ $(function () {
         }
     });
 
+    $('#txtMailingAddressLine').autocomplete({
+        minLength: 0,
+        source: JSON.parse(addressLineForAutocomplete),
+        focus: function (event, ui) {
+            $('#txtMailingAddressLine').val(ui.item.label);
+            return false;
+        },
+        select: function (event, ui) {
+            $('#hfMailingAddressId').val(ui.item.Id);
+            $('#txtMailingAddressLine').val(ui.item.AddressLine);
+            $('#txtMailingAddressUnit').val(ui.item.UnitNumber);
+
+            $('#txtMailingPostCode').val(ui.item.PostCode);
+            $('#txtMailingPrimaryPhoneNumber').val(ui.item.PrimaryPhoneNumber);
+            $('#txtMailingFaxNumber').val(ui.item.Fax);
+            $('#txtMailingContactPerson').val(ui.item.ContactPersonName);
+            $('#txtMailingEmailAddress').val(ui.item.EmailAddress1);
+            $('#ddlMailingCityId').val(ui.item.CityId);
+            $('#ddlMailingProvinceId').val(ui.item.ProvinceId);
+            $('#ddlMailingCountryId').val(ui.item.CountryId);
+
+            return false;
+        }
+    });
+
+    
+    
+    
+    
+    
+    
+    
+    
 
 
-
-
     
     
     
@@ -50,18 +81,8 @@ $(function () {
     
     
     
-
-
-    txtMailingAddressLine
-    txtMailingAddressUnit
-    ddlMailingCityId
-    ddlMailingProvinceId
-    ddlMailingCountryId
-    txtMailingPostCode
-    txtMailingPrimaryPhoneNumber
-    txtMailingFaxNumber
-    txtMailingContactPerson
-    txtMailingEmailAddress
+    
+    
 
 
 
@@ -93,9 +114,9 @@ $(function () {
 //    console.log(zone);
 
 //});
-$('#txtBillingAddressLine').on('change', function () {
+$('#chkIsSameAsBilling').on('change', function () {
 
-
+    if ($('#chkIsSameAsBilling'))
 });
 
 
