@@ -32,6 +32,11 @@ namespace LogisticsManagement_BusinessLogic
             return _repository.GetList(d => d.Id == id).ToList();
         }
 
+        public virtual int GetMaxId()
+        {
+            return _repository.GetMaxId(c=>c.Id); 
+        }
+
         public virtual TPoco Add(TPoco poco)
         {
             return _repository.Add(poco);

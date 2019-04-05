@@ -8,7 +8,9 @@ using LogisticsManagement_Poco;
 using LogisticsManagement_Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace LogisticsManagement_Web.Controllers
 {
@@ -22,9 +24,11 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_WeightScaleLogic _weightScaleLogic;
 
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public TariffController(LogisticsContext dbContext)
+        public TariffController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
             _tariffLogic = new Lms_TariffLogic(new EntityFrameworkGenericRepository<Lms_TariffPoco>(_dbContext));
         }
@@ -111,7 +115,7 @@ namespace LogisticsManagement_Web.Controllers
         private TariffViewModel GetTariffData()
         {
             _tariffLogic = new Lms_TariffLogic(new EntityFrameworkGenericRepository<Lms_TariffPoco>(_dbContext));
-            _cityLogic = new App_CityLogic(new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
+            _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
             _deliveryOptionLogic = new Lms_DeliveryOptionLogic(new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
             _vehicleTypeLogic = new Lms_VehicleTypeLogic(new EntityFrameworkGenericRepository<Lms_VehicleTypePoco>(_dbContext));
             _unitTypeLogic = new Lms_UnitTypeLogic(new EntityFrameworkGenericRepository<Lms_UnitTypePoco>(_dbContext));

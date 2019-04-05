@@ -3,6 +3,7 @@ using LogisticsManagement_DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace LogisticsManagement_BusinessLogic
 {
@@ -29,12 +30,21 @@ namespace LogisticsManagement_BusinessLogic
             return base.GetSingleById(id);
         }
 
+        public override int GetMaxId()
+        {
+            return base.GetMaxId();
+        }
+
         #endregion
 
         #region Add/Update/Remove Methods
 
         public override Lms_ChartOfAccountPoco Add(Lms_ChartOfAccountPoco poco)
         {
+            var newAccount = GetList().Where(c => c.AccountTypeId == poco.AccountTypeId).OrderByDescending(c=>c.AccountNo).FirstOrDefault().AccountNo;
+            poco.AccountNo = (Convert.ToInt32(newAccount) + 1).ToString().PadLeft(8,'0');
+            poco.CreateDate = DateTime.Now;
+
             return base.Add(poco);
         }
 

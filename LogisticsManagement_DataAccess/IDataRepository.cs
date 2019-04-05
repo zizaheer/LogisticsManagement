@@ -26,5 +26,7 @@ namespace LogisticsManagement_DataAccess
         void Remove(params T[] items);
 
         void CallStoredProcedure(string procName, params Tuple<string,string>[] parameters);
+
+        int GetMaxId(Func<T, int> columnName);
     }
 }

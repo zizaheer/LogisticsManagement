@@ -58,6 +58,12 @@ namespace LogisticsManagement_DataAccess
             return dbQuery.Where(where).FirstOrDefault();
         }
 
+        public int GetMaxId(Func<T, int> columnName)
+        {
+            var GetMaxId = _context.Set<T>().Max(columnName);
+            return GetMaxId;
+        }
+
         public T Add(T item)
         {
             _context.Entry(item).State = EntityState.Added;
@@ -105,5 +111,6 @@ namespace LogisticsManagement_DataAccess
             _context.SaveChanges();
         }
 
+       
     }
 }

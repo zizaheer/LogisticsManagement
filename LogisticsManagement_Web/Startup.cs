@@ -35,6 +35,7 @@ namespace LogisticsManagement_Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddDistributedMemoryCache();
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(20));
 
             services.AddMemoryCache();

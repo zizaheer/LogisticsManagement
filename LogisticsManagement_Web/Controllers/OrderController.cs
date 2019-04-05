@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
+using LogisticsManagement_Web.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Web;
 using Microsoft.Extensions.Caching.Memory;
-using System.Dynamic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace LogisticsManagement_Web.Controllers
 {
@@ -19,9 +21,11 @@ namespace LogisticsManagement_Web.Controllers
         
         private Lms_OrderLogic _orderLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public OrderController(LogisticsContext dbContext)
+        public OrderController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
             _orderLogic = new Lms_OrderLogic(new EntityFrameworkGenericRepository<Lms_OrderPoco>(_dbContext));
         }
@@ -52,7 +56,7 @@ namespace LogisticsManagement_Web.Controllers
 
         private List<Lms_CustomerPoco> GetCustomers()
         {
-            Lms_CustomerLogic customerLogic = new Lms_CustomerLogic(new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+            Lms_CustomerLogic customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
             return customerLogic.GetList();
         }
        

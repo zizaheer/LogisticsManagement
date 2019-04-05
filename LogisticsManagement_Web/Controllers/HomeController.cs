@@ -17,6 +17,7 @@ namespace LogisticsManagement_Web.Controllers
     public class HomeController : Controller
     {
         IMemoryCache _memoryCache;
+        SessionData sessionData = new SessionData();
 
         public HomeController(IMemoryCache memoryCache)
         {
@@ -25,8 +26,8 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var userData = JsonConvert.DeserializeObject<App_UserPoco>(HttpContext.Session.GetString("UserData"));
-            if (userData == null)
+            sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
+            if (sessionData == null)
             {
                 return RedirectToAction("Index", "Login");
             }

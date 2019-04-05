@@ -21,4 +21,11 @@ namespace LogisticsManagement_Poco
         VAT
     }
 
+    public enum AccountType
+    {
+        Asset = 1,
+        Liability,
+        Income,
+        Expense
+    }
 }

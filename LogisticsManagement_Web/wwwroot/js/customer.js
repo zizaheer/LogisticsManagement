@@ -7,7 +7,9 @@ var countryData;
 var addressLineForAutocomplete;
 
 $(document).ready(function () {
+
     MaskPhoneNumber('#txtBillingPrimaryPhoneNumber');
+    MaskPhoneNumber('#txtMailingPrimaryPhoneNumber');
 });
 
 
@@ -33,7 +35,7 @@ $(function () {
             $('#ddlBillingCityId').val(ui.item.CityId);
             $('#ddlBillingProvinceId').val(ui.item.ProvinceId);
             $('#ddlBillingCountryId').val(ui.item.CountryId);
-            
+
             return false;
         }
     });
@@ -63,26 +65,26 @@ $(function () {
         }
     });
 
-    
-    
-    
-    
-    
-    
-    
-    
 
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -105,25 +107,23 @@ $(function () {
 
 
 
-
-//var dataCust = JSON.parse(GetListObject('Customer/GetAll'));
-//$.each(dataCust, function (k, v) {
-//    var zone = JSON.stringify(k, v);
-//    //zone = zone.replace(/"/g, '');
-//    //$('#zone').append('<option value="' + zone + '">' + zone + '</option>');
-//    console.log(zone);
-
-//});
 $('#chkIsSameAsBilling').on('change', function () {
+    if ($('#chkIsSameAsBilling').is(':checked') === true) {
 
-    if ($('#chkIsSameAsBilling'))
+        $('#hfMailingAddressId').val($('#hfBillingAddressId').val());
+        $('#txtMailingAddressUnit').val($('#txtBillingAddressUnit').val());
+        $('#txtMailingAddressLine').val($('#txtBillingAddressLine').val());
+        $('#ddlMailingCityId').val($('#ddlBillingCityId').val());
+        $('#ddlMailingProvinceId').val($('#ddlBillingProvinceId').val());
+        $('#ddlMailingCountryId').val($('#ddlBillingCountryId').val());
+        $('#txtMailingPostCode').val($('#txtBillingPostCode').val());
+        $('#txtMailingContactPerson').val($('#txtBillingContactPerson').val());
+        $('#txtMailingFaxNumber').val($('#txtBillingFaxNumber').val());
+        $('#txtMailingPrimaryPhoneNumber').val($('#txtBillingPrimaryPhoneNumber').val());
+        $('#txtMailingEmailAddress').val($('#txtBillingEmailAddress').val());
+    }
 });
 
-
-$(document).ready(function () {
-    ClearForm();
-    $('#cardMailingAddress *').attr('disabled', 'disabled');
-});
 
 function GetFormData() {
     var customerData = {
@@ -170,19 +170,7 @@ function GetFormData() {
     return [customerData, billingAddressData, mailingAddressData];
 }
 
-function ClearForm() {
 
-    $('#txtCustomerId').attr('disabled', 'disabled');
-    $('#txtCustomerName').val();
-    $('#txtSpecialDiscount').val();
-    $('#txtInvoiceDueDays').val();
-    $('#chkIsGstApplicable').val();
-    $('#hfMailingAddressId').val();
-    $('#hfBillingAddressId').val();
-    $('#ddlEmployeeId').val();
-   // $('#txtPerUnitPrice').val();
-
-}
 
 $('input[type=radio][name=addressType]').change(function () {
 
@@ -202,9 +190,6 @@ $('input[type=radio][name=addressType]').change(function () {
 
 });
 
-$('#btnNew').on('click', function () {
-    ClearForm();
-});
 
 $('.btnEdit').on('click', function () {
     var data = $(this).data('customer');
@@ -218,9 +203,19 @@ $('.btnEdit').on('click', function () {
     $('#txtPerUnitPrice').val(data.perUnitPrice);
 });
 
+$('#loadData').on('click', function () {
+
+    var customers = GetListObject('Customer/GetCustomers');
+    var parsedData = JSON.parse(customers);
+
+    $.each(parsedData, (index, item) => {
+        var itemdata = item;
+        console.log(item);
+        $('#tBodyCustomer').html('<tr> <td>' + 2 + '</td> </tr>');
+    });
 
 
-//$('#ddlSelectAddressId').editableSelect();
+});
 
 $('#frmCustomerForm').submit(function (event) {
     var data = GetFormData();
