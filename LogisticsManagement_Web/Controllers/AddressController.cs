@@ -40,11 +40,12 @@ namespace LogisticsManagement_Web.Controllers
             var addressList = _addressLogic.GetList();
 
             List<AddressViewModelForAutoComplete> addressesForAutoComplete = new List<AddressViewModelForAutoComplete>();
-            if (addressList.Count > 0) {
-                foreach (var address in addressList) {
-
+            if (addressList.Count > 0)
+            {
+                foreach (var address in addressList)
+                {
                     AddressViewModelForAutoComplete addressForAutoComplete = new AddressViewModelForAutoComplete();
-                    addressForAutoComplete.label = address.AddressLine;
+                    addressForAutoComplete.label = (address.UnitNumber == null ? "" : address.UnitNumber + ", ") + address.AddressLine + "  (" + address.Id + ")";
                     addressForAutoComplete.value = address.Id.ToString();
 
                     addressForAutoComplete.Id = address.Id.ToString();
@@ -67,7 +68,7 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetAddressLines()
         {
-            var addressList = _addressLogic.GetList().Select(c=>c.AddressLine);
+            var addressList = _addressLogic.GetList().Select(c => c.AddressLine);
             return Json(JsonConvert.SerializeObject(addressList));
         }
 

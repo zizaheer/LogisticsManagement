@@ -22,16 +22,18 @@ $(function () {
         },
         select: function (event, ui) {
             $('#hfBillingAddressId').val(ui.item.Id);
-            $('#txtBillingAddressLine').val(ui.item.label);
+            $('#txtBillingAddressLine').val(ui.item.AddressLine);
             $('#txtBillingAddressUnit').val(ui.item.UnitNumber);
 
             $('#txtBillingPostCode').val(ui.item.PostCode);
-            $('#txtBillingPrimaryPhoneNumber').val(ui.item.PostCode);
-            $('#txtBillingFaxNumber').val(ui.item.PostCode);
-            $('#txtBillingContactPerson').val(ui.item.PostCode);
-            $('#txtBillingEmailAddress').val(ui.item.PostCode);
+            $('#txtBillingPrimaryPhoneNumber').val(ui.item.PrimaryPhoneNumber);
+            $('#txtBillingFaxNumber').val(ui.item.Fax);
+            $('#txtBillingContactPerson').val(ui.item.ContactPersonName);
+            $('#txtBillingEmailAddress').val(ui.item.EmailAddress1);
+            $('#ddlBillingCityId').val(ui.item.CityId);
+            $('#ddlBillingProvinceId').val(ui.item.ProvinceId);
+            $('#ddlBillingCountryId').val(ui.item.CountryId);
             
-
             return false;
         }
     });
@@ -40,9 +42,9 @@ $(function () {
 
 
 
-    ddlBillingCityId
-    ddlBillingProvinceId
-    ddlBillingCountryId
+    
+    
+    
     
     
     

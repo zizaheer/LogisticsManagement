@@ -39,3 +39,7 @@ function GetSingleObjectById(actionUrl, id) {
 function MaskPhoneNumber(element) {
     $(element).mask('000-000-0000');
 }
+
+function MaskDate(element) {
+    $(element).mask('00/00/0000');
+}
