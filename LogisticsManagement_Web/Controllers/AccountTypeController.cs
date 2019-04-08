@@ -19,7 +19,6 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_AccountTypeLogic _accountTypeLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
 
         public AccountTypeController(LogisticsContext dbContext)
         {

@@ -18,7 +18,6 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_AccTransactionDetailLogic _accTransactionDetailLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
 
         public AccTransactionDetailController(LogisticsContext dbContext)
         {

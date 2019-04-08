@@ -18,12 +18,13 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_ChartOfAccountLogic _chartOfAccountLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public ChartOfAccountController(LogisticsContext dbContext)
+        public ChartOfAccountController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
-            _chartOfAccountLogic = new Lms_ChartOfAccountLogic(new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
+            _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
         }
 
         public IActionResult Index()

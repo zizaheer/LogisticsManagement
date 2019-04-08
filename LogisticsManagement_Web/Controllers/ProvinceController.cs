@@ -18,11 +18,13 @@ namespace LogisticsManagement_Web.Controllers
     {
         private App_ProvinceLogic _provinceLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public ProvinceController(LogisticsContext dbContext)
+        public ProvinceController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
-            _provinceLogic = new App_ProvinceLogic(new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
+            _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
         }
 
         public IActionResult Index()

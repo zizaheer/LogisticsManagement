@@ -18,12 +18,13 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_AccountBalanceLogic _accountBalanceLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public AccountBalanceController(LogisticsContext dbContext)
+        public AccountBalanceController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
-            _accountBalanceLogic = new Lms_AccountBalanceLogic(new EntityFrameworkGenericRepository<Lms_AccountBalancePoco>(_dbContext));
+            _accountBalanceLogic = new Lms_AccountBalanceLogic(_cache , new EntityFrameworkGenericRepository<Lms_AccountBalancePoco>(_dbContext));
         }
 
         public IActionResult Index()

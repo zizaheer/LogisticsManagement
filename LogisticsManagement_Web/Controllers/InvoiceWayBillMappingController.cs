@@ -18,11 +18,13 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_InvoiceWayBillMappingLogic _invoiceWayBillMappingLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public InvoiceWayBillMappingController(LogisticsContext dbContext)
+        public InvoiceWayBillMappingController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
-            _invoiceWayBillMappingLogic = new Lms_InvoiceWayBillMappingLogic(new EntityFrameworkGenericRepository<Lms_InvoiceWayBillMappingPoco>(_dbContext));
+            _invoiceWayBillMappingLogic = new Lms_InvoiceWayBillMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_InvoiceWayBillMappingPoco>(_dbContext));
         }
 
         public IActionResult Index()

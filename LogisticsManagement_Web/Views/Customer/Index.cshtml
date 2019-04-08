@@ -35,10 +35,7 @@
                         <div class="form-group col-sm-4">
                             <select class="form-control" id="ddlEmployeeId">
                                 <option value=0 selected> -- Assign Employee -- </option>
-                                @foreach (var employee in Model.Employees.OrderBy(c=>c.FirstName))
-                                {
-                                    <option value=@employee.EmployeeNumber> @employee.FirstName  @employee.LastName (@employee.EmployeeNumber)</option>
-                                }
+                               
                             </select>
                         </div>
                         <div class="form-group col-sm-2" style="padding-left: 0px;">
@@ -259,7 +256,6 @@
                     <hr />
                     <button type="reset" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
                     <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
-
                 </div>
             </div>
         </div>

@@ -18,12 +18,13 @@ namespace LogisticsManagement_Web.Controllers
     {
         private App_CountryLogic _countryLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public CountryController(LogisticsContext dbContext)
+        public CountryController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
-            _countryLogic = new App_CountryLogic(new EntityFrameworkGenericRepository<App_CountryPoco>(_dbContext));
+            _countryLogic = new App_CountryLogic(_cache, new EntityFrameworkGenericRepository<App_CountryPoco>(_dbContext));
         }
 
         public IActionResult Index()

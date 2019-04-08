@@ -97,3 +97,10 @@ function RemoveTariff(tariffData) {
         }
     });
 }
+
+
+function GetEmployees()
+{
+    GetListObject('Employee/GetEmployees')
+
+}

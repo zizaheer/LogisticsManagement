@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
@@ -64,6 +65,8 @@ namespace LogisticsManagement_Web.Controllers
                     Lms_AddressPoco mailingAddressPoco = JsonConvert.DeserializeObject<Lms_AddressPoco>(JsonConvert.SerializeObject(customerData[2]));
 
                     var addressData = GetCustomerData().Addressess;
+                    int billingAddressId = 0;
+                    int mailingAddressId = 0;
 
                     if (customerPoco.Id > 0)
                     {
@@ -71,7 +74,11 @@ namespace LogisticsManagement_Web.Controllers
                     }
                     else
                     {
-                        Lms_ChartOfAccountLogic _chartOfAccountLogic = new Lms_ChartOfAccountLogic(new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
+                        //using (var scope = new TransactionScope(TransactionScopeOption.Required))
+                        //{
+
+                        //}
+                        Lms_ChartOfAccountLogic _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
                         var _chartOfAccountPoco = new Lms_ChartOfAccountPoco();
 
                         _chartOfAccountPoco.AccountTypeId = 1;
@@ -85,22 +92,23 @@ namespace LogisticsManagement_Web.Controllers
                         customerPoco.CustomerNumber = (_customerLogic.GetMaxId() + 1).ToString();
                         customerPoco.AccountId = _chartOfAccountLogic.Add(_chartOfAccountPoco).Id;
 
-                        if (billingAddressPoco.Id < 1)
+                        if (billingAddressPoco !=null && billingAddressPoco.Id < 1)
                         {
                             var matchingAddress1 = addressData.Where(c => c.UnitNumber == billingAddressPoco.UnitNumber && c.AddressLine == billingAddressPoco.AddressLine).FirstOrDefault();
-                            var matchingAddress2 = addressData.Where(c => c.UnitNumber == mailingAddressPoco.UnitNumber && c.AddressLine == mailingAddressPoco.AddressLine).FirstOrDefault();
-                            if (matchingAddress1 == null)
-                            {
-                                Lms_AddressLogic _addressLogic = new Lms_AddressLogic(new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
-                                _addressLogic.Add(billingAddressPoco);
-                            }
 
+                            _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
+                             billingAddressId = matchingAddress1 == null ? _addressLogic.Add(billingAddressPoco).Id : _addressLogic.Update(billingAddressPoco).Id;
+                        }
+                        if (mailingAddressPoco != null && mailingAddressPoco.Id < 1)
+                        {
+                            var matchingAddress2 = addressData.Where(c => c.UnitNumber == mailingAddressPoco.UnitNumber && c.AddressLine == mailingAddressPoco.AddressLine).FirstOrDefault();
+
+                            _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
+                            mailingAddressId = matchingAddress2 == null ? _addressLogic.Add(mailingAddressPoco).Id : _addressLogic.Update(mailingAddressPoco).Id;
                         }
 
-
-
-
-
+                        customerPoco.BillingAddressId = billingAddressId;
+                        customerPoco.MailingAddressId = mailingAddressId;
 
                         _customerLogic.Add(customerPoco);
                     }
@@ -138,85 +146,19 @@ namespace LogisticsManagement_Web.Controllers
         private CustomerViewModel GetCustomerData()
         {
             CustomerViewModel customerViewModel = new CustomerViewModel();
-            List<Lms_AddressPoco> _addresses;
-            List<Lms_CustomerPoco> _customers;
-            List<Lms_EmployeePoco> _employees;
-            List<App_CityPoco> _cities;
-            List<App_ProvincePoco> _provinces;
-            List<App_CountryPoco> _countries;
-
-            #region Set Caching 
-            // TO-DO: This set-get caching mechanism should be optimized in a seperate function
-
-            //if (!_cache.TryGetValue(CacheKeys.Addresses, out _addresses))
-            //{
-            //    _addressLogic = new Lms_AddressLogic(new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
-            //    _addresses = _addressLogic.GetList();
-
-            //    var cacheEntryOptions = new MemoryCacheEntryOptions()
-            //        .SetSlidingExpiration(TimeSpan.FromDays(3));
-            //    _cache.Set(CacheKeys.Addresses, _addresses, cacheEntryOptions);
-            //}
-
-            //if (!_cache.TryGetValue(CacheKeys.Customers, out _customers))
-            //{
-            //    _customers = _customerLogic.GetList();
-            //    var cacheEntryOptions = new MemoryCacheEntryOptions()
-            //        .SetSlidingExpiration(TimeSpan.FromDays(3));
-            //    _cache.Set(CacheKeys.Customers, _customers, cacheEntryOptions);
-            //}
-
-            //if (!_cache.TryGetValue(CacheKeys.Employees, out _employees))
-            //{
-            //    _employeeLogic = new Lms_EmployeeLogic(new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
-            //    _employees = _employeeLogic.GetList();
-
-            //    var cacheEntryOptions = new MemoryCacheEntryOptions()
-            //        .SetSlidingExpiration(TimeSpan.FromDays(3));
-            //    _cache.Set(CacheKeys.Employees, _employees, cacheEntryOptions);
-            //}
-
-            //if (!_cache.TryGetValue(CacheKeys.Cities, out _cities))
-            //{
-            //    _cityLogic = new App_CityLogic(new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
-            //    _cities = _cityLogic.GetList();
-
-            //    var cacheEntryOptions = new MemoryCacheEntryOptions()
-            //        .SetSlidingExpiration(TimeSpan.FromDays(3));
-            //    _cache.Set(CacheKeys.Cities, _cities, cacheEntryOptions);
-            //}
-
-            //if (!_cache.TryGetValue(CacheKeys.Provinces, out _provinces))
-            //{
-            //    _provinceLogic = new App_ProvinceLogic(new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
-            //    _provinces = _provinceLogic.GetList();
-
-            //    var cacheEntryOptions = new MemoryCacheEntryOptions()
-            //        .SetSlidingExpiration(TimeSpan.FromDays(3));
-            //    _cache.Set(CacheKeys.Provinces, _provinces, cacheEntryOptions);
-            //}
-
-            //if (!_cache.TryGetValue(CacheKeys.Countries, out _countries))
-            //{
-            //    _countryLogic = new App_CountryLogic(new EntityFrameworkGenericRepository<App_CountryPoco>(_dbContext));
-            //    _countries = _countryLogic.GetList();
-
-            //    var cacheEntryOptions = new MemoryCacheEntryOptions()
-            //        .SetSlidingExpiration(TimeSpan.FromDays(3));
-            //    _cache.Set(CacheKeys.Countries, _countries, cacheEntryOptions);
-            //}
-
-            #endregion
-
-
             customerViewModel.Customers = _customerLogic.GetList();
 
-            //customerViewModel.Addressess = _cache.Get<List<Lms_AddressPoco>>(CacheKeys.Addresses);
-            //customerViewModel.Customers = _cache.Get<List<Lms_CustomerPoco>>(CacheKeys.Customers);
-            //customerViewModel.Employees = _cache.Get<List<Lms_EmployeePoco>>(CacheKeys.Employees);
-            //customerViewModel.Cities = _cache.Get<List<App_CityPoco>>(CacheKeys.Cities);
-            //customerViewModel.Provinces = _cache.Get<List<App_ProvincePoco>>(CacheKeys.Provinces);
-            //customerViewModel.Countries = _cache.Get<List<App_CountryPoco>>(CacheKeys.Countries);
+            _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
+            _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
+            _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
+            _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
+            _countryLogic = new App_CountryLogic(_cache, new EntityFrameworkGenericRepository<App_CountryPoco>(_dbContext));
+
+            customerViewModel.Addressess = _addressLogic.GetList();
+            customerViewModel.Employees = _employeeLogic.GetList();
+            customerViewModel.Cities = _cityLogic.GetList();
+            customerViewModel.Provinces = _provinceLogic.GetList();
+            customerViewModel.Countries = _countryLogic.GetList();
 
             return customerViewModel;
         }

@@ -19,12 +19,13 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_AdditionalServiceLogic _additionalServiceLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public AdditionalServiceController(LogisticsContext dbContext)
+        public AdditionalServiceController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
-            _additionalServiceLogic = new Lms_AdditionalServiceLogic(new EntityFrameworkGenericRepository<Lms_AdditionalServicePoco>(_dbContext));
+            _additionalServiceLogic = new Lms_AdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_AdditionalServicePoco>(_dbContext));
         }
 
         public IActionResult Index()

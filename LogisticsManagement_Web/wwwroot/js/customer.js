@@ -10,6 +10,7 @@ $(document).ready(function () {
 
     MaskPhoneNumber('#txtBillingPrimaryPhoneNumber');
     MaskPhoneNumber('#txtMailingPrimaryPhoneNumber');
+    FillEmployeeDropDown();
 });
 
 
@@ -125,50 +126,7 @@ $('#chkIsSameAsBilling').on('change', function () {
 });
 
 
-function GetFormData() {
-    var customerData = {
-        id: $('#txtCustomerId').val() === "" ? "0" : $('#txtCustomerId').val(),
-        customerName: $('#txtCustomerName').val(),
-        discountPercentage: $('#txtSpecialDiscount').val(),
-        invoiceDueDays: $('#txtInvoiceDueDays').val(),
-        isGstApplicable: $('#chkIsGstApplicable').is(':checked') ? 1 : 0,
-        isActive: $('#chkIsGstApplicable').is(':checked') ? 1 : 0,
-        mailingAddressId: $('#hfMailingAddressId').val(),
-        billingAddressId: $('#hfBillingAddressId').val(),
-        employeeNumber: $('#ddlEmployeeId').val()
-    };
 
-    var billingAddressData = {
-        billingAddressId: $('#hfBillingAddressId').val(),
-        unitNumber: $('#txtBillingAddressUnit').val(),
-        addressLine: $('#txtBillingAddressLine').val(),
-        cityId: $('#ddlBillingCityId').val(),
-        provinceId: $('#ddlBillingProvinceId').val(),
-        countryId: $('#ddlBillingCountryId').val(),
-        postCode: $('#txtBillingPostCode').val(),
-        contactPersonName: $('#txtBillingContactPerson').val(),
-        fax: $('#txtBillingFaxNumber').val(),
-        primaryPhoneNumber: $('#txtBillingPrimaryPhoneNumber').val(),
-        emailAddress1: $('#txtBillingEmailAddress').val()
-    };
-
-    var mailingAddressData = {
-        billingAddressId: $('#hfMailingAddressId').val(),
-        unitNumber: $('#txtMailingAddressUnit').val(),
-        addressLine: $('#txtMailingAddressLine').val(),
-        cityId: $('#ddlMailingCityId').val(),
-        provinceId: $('#ddlMailingProvinceId').val(),
-        countryId: $('#ddlMailingCountryId').val(),
-        postCode: $('#txtMailingPostCode').val(),
-        contactPersonName: $('#txtMailingContactPerson').val(),
-        fax: $('#txtMailingFaxNumber').val(),
-        primaryPhoneNumber: $('#txtMailingPrimaryPhoneNumber').val(),
-        emailAddress1: $('#txtMailingEmailAddress').val()
-    };
-
-
-    return [customerData, billingAddressData, mailingAddressData];
-}
 
 
 
@@ -193,27 +151,36 @@ $('input[type=radio][name=addressType]').change(function () {
 
 $('.btnEdit').on('click', function () {
     var data = $(this).data('customer');
-    $('#txtTariffId').val(data.id);
-    $('#ddlDeliveryOptionId').val(data.deliveryOptionId);
-    $('#ddlCityId').val(data.cityId);
-    $('#ddlVehicleTypeId').val(data.vehicleTypeId);
-    $('#ddlUnitTypeId').val(data.unitTypeId);
-    $('#ddlWeightScaleId').val(data.weightScaleId);
-    $('#txtFirstUnitPrice').val(data.firstUnitPrice);
-    $('#txtPerUnitPrice').val(data.perUnitPrice);
+
+
+
+
 });
 
 $('#loadData').on('click', function () {
 
-    var customers = GetListObject('Customer/GetCustomers');
-    var parsedData = JSON.parse(customers);
+    var table = $('#customer-list').DataTable({
+        "ajax": GetListObject('Customer/GetCustomers'),
 
-    $.each(parsedData, (index, item) => {
-        var itemdata = item;
-        console.log(item);
-        $('#tBodyCustomer').html('<tr> <td>' + 2 + '</td> </tr>');
+        "columnDefs": [{
+            "targets": -1,
+            "data": null,
+            "defaultContent": "<button>Click!</button>"
+        }]
     });
 
+    $('#loadData').on('click', function () {
+
+        var data = table.row($(this).parents('tr')).data();
+
+        jQuery("#tblEntAttributes tbody").append(newRowContent);
+
+    });
+    //var customers = GetListObject('Customer/GetCustomers');
+    //var parsedData = JSON.parse(customers);
+
+    //$('#loadDataTable').load('Customer/PartialViewDataTable');
+    
 
 });
 
@@ -261,4 +228,59 @@ function RemoveCustomer(customerData) {
             SetAlertType('Failed', 'An error occured during deleting the data.');
         }
     });
+}
+
+function GetFormData() {
+    var customerData = {
+        id: $('#txtCustomerId').val() === "" ? "0" : $('#txtCustomerId').val(),
+        customerName: $('#txtCustomerName').val(),
+        discountPercentage: $('#txtSpecialDiscount').val(),
+        invoiceDueDays: $('#txtInvoiceDueDays').val(),
+        isGstApplicable: $('#chkIsGstApplicable').is(':checked') ? 1 : 0,
+        isActive: $('#chkIsGstApplicable').is(':checked') ? 1 : 0,
+        mailingAddressId: $('#hfMailingAddressId').val(),
+        billingAddressId: $('#hfBillingAddressId').val(),
+        employeeNumber: $('#ddlEmployeeId').val()
+    };
+
+    var billingAddressData = {
+        billingAddressId: $('#hfBillingAddressId').val(),
+        unitNumber: $('#txtBillingAddressUnit').val(),
+        addressLine: $('#txtBillingAddressLine').val(),
+        cityId: $('#ddlBillingCityId').val(),
+        provinceId: $('#ddlBillingProvinceId').val(),
+        countryId: $('#ddlBillingCountryId').val(),
+        postCode: $('#txtBillingPostCode').val(),
+        contactPersonName: $('#txtBillingContactPerson').val(),
+        fax: $('#txtBillingFaxNumber').val(),
+        primaryPhoneNumber: $('#txtBillingPrimaryPhoneNumber').val(),
+        emailAddress1: $('#txtBillingEmailAddress').val()
+    };
+
+    var mailingAddressData = {
+        billingAddressId: $('#hfMailingAddressId').val(),
+        unitNumber: $('#txtMailingAddressUnit').val(),
+        addressLine: $('#txtMailingAddressLine').val(),
+        cityId: $('#ddlMailingCityId').val(),
+        provinceId: $('#ddlMailingProvinceId').val(),
+        countryId: $('#ddlMailingCountryId').val(),
+        postCode: $('#txtMailingPostCode').val(),
+        contactPersonName: $('#txtMailingContactPerson').val(),
+        fax: $('#txtMailingFaxNumber').val(),
+        primaryPhoneNumber: $('#txtMailingPrimaryPhoneNumber').val(),
+        emailAddress1: $('#txtMailingEmailAddress').val()
+    };
+
+
+    return [customerData, billingAddressData, mailingAddressData];
+}
+
+function FillEmployeeDropDown()
+{
+    var employees = GetListObject('Employee/GetEmployees');
+    var employeedropDown = $('#ddlEmployeeId');
+    $.each(employees, function (index, item) {
+        $employeedropDown.append($('<option/>').val(this.Id).text(this.FirstName + this.LastName));
+    });
+
 }

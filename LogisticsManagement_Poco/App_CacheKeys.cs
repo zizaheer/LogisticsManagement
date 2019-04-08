@@ -14,6 +14,14 @@ namespace LogisticsManagement_Poco
         public static string Customers { get { return "_Customers"; } }
         public static string Employees { get { return "_Employees"; } }
 
+        public static string AccountBalances { get { return "_AccountBalances"; } }
+        public static string AdditionalServices { get { return "_AdditionalServices"; } }
+        public static string Accounts { get { return "_Accounts"; } }
+        public static string EmployeePayrolls { get { return "_EmployeePayrolls"; } }
+        public static string EmployeePayrollDetails { get { return "_EmployeePayrollDetails"; } }
+        public static string Invoices { get { return "_Invoices"; } }
+        public static string InvoiceMappings { get { return "_InvoiceMappings"; } }
+
         public static string City { get { return "_City"; } }
         public static string Country { get { return "_Country"; } }
         public static string Province { get { return "_Province"; } }
