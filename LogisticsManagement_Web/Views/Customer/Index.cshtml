@@ -9,7 +9,7 @@
 <form id="frmCustomerForm">
     <div class="row">
         <div class="col-sm-12">
-            
+
             <div class="card">
                 <div class="card-header" style="background-color: #3b80a9;color: #fff;">
                     <strong><i class="fa fa-sliders"></i> Customer</strong>
@@ -22,7 +22,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtCustomerId" placeholder="" type="number" name="txtCustomerId" />
+                            <input class="form-control" id="txtCustomerId" placeholder="" type="number" name="txtCustomerId" readonly />
                         </div>
                         <div class="form-group col-sm-1" style="padding-left: 0px;">
                             <button id="btnFindCustomer" name="btnFindCustomer" class="btn btn-secondary"><i class="fa fa-search"></i></button>
@@ -47,14 +47,14 @@
 
                     <div class="row">
                         <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtSpecialDiscount" placeholder="Special discount (%)" type="number" name="txtSpecialDiscount" />
+                            <input class="form-control" id="txtSpecialDiscount" placeholder="Special discount (%)" type="number" maxlength="2" name="txtSpecialDiscount" />
                         </div>
                         <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtInvoiceDueDays" placeholder="Invoice Due Days" type="number" name="txtInvoiceDueDays" />
+                            <input class="form-control" id="txtInvoiceDueDays" placeholder="Invoice Due Days" type="number" maxlength="2" name="txtInvoiceDueDays" />
                         </div>
                         <div class="form-group col-sm-2">
                             <div class="form-check form-check-inline mr-1">
-                                <input class="form-check-input" id="isGstApplicable" type="checkbox" name="isGstApplicable" >
+                                <input class="form-check-input" id="isGstApplicable" type="checkbox" name="isGstApplicable">
                                 <label class="form-check-label" for="isGstApplicable">GST Applicable?</label>
                             </div>
                         </div>
@@ -269,7 +269,11 @@
             <div class="card-header" style="background-color: #c3c3c3;">
                 <strong><i class="fa fa-sliders"></i> Customers</strong>
                 <div class="card-header-actions">
-                    <button id="loadData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
+                    <span id="spinnerLoadingDataTable" style="display:none">
+                        <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                        <span style="margin-right:20px">Loading...</span>
+                    </span>
+                    <button id="btnDownloadData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
                     <span style="display:none" id="loadingSpinner"><i class="fa fa-circle-o-notch"></i></span>
                     <span>&nbsp;&nbsp;</span>
                     <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">

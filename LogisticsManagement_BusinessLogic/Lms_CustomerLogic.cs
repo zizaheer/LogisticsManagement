@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using System.Data.SqlClient;
+using System.Data;
+using Newtonsoft.Json;
 
 namespace LogisticsManagement_BusinessLogic
 {
@@ -106,11 +108,59 @@ namespace LogisticsManagement_BusinessLogic
 
         #endregion
 
-        public  string GetCustomerData(Lms_CustomerPoco parameters)
+        public string CreateNewCustomer(Lms_CustomerPoco customerPoco, Lms_AddressPoco billingAddressPoco, Lms_AddressPoco mailingAddressPoco, int branchId, bool isMailingBillingAddressSame = true )
         {
-            string jsonOutPut = "";
-            var param1 = new SqlParameter("@Query", parameters.CustomerName);
-            var outPut = base.CallStoredProcedure("EXEC SearchCustomerByName @Query", param1 );
+            if (JsonConvert.SerializeObject(billingAddressPoco) != JsonConvert.SerializeObject(mailingAddressPoco))
+            {
+                isMailingBillingAddressSame = false;
+            }
+
+            SqlParameter[] sqlParameters = {
+                new SqlParameter("@CustomerName", SqlDbType.VarChar, 50) { Value = customerPoco.CustomerName },
+                new SqlParameter("@BranchId", SqlDbType.Int) { Value = branchId },
+                new SqlParameter("@IsGstApplicable", SqlDbType.Bit) { Value = customerPoco.IsGstApplicable },
+                new SqlParameter("@DiscountPercentage", SqlDbType.Decimal) { Value = customerPoco.DiscountPercentage },
+                new SqlParameter("@InvoiceDueDays", SqlDbType.Int) { Value = customerPoco.InvoiceDueDays },
+                new SqlParameter("@MailingAddressId", SqlDbType.Int) { Value = customerPoco.MailingAddressId },
+                new SqlParameter("@BillingAddressId", SqlDbType.Int) { Value = customerPoco.BillingAddressId },
+                new SqlParameter("@IsMailingBillingAddressSame", SqlDbType.Bit) { Value = isMailingBillingAddressSame },
+                new SqlParameter("@CreatedBy", SqlDbType.Int) { Value = customerPoco.CreatedBy },
+
+                new SqlParameter("@BillingUnitNo", SqlDbType.VarChar, 50) { Value = billingAddressPoco.UnitNumber },
+                new SqlParameter("@BillingAddressLine", SqlDbType.VarChar, 150) { Value = billingAddressPoco.AddressLine },
+                new SqlParameter("@BillingCityId", SqlDbType.Int) { Value = billingAddressPoco.CityId },
+                new SqlParameter("@BillingProvinceId", SqlDbType.Int) { Value = billingAddressPoco.ProvinceId },
+                new SqlParameter("@BillingCountryId", SqlDbType.Int) { Value = billingAddressPoco.CountryId },
+                new SqlParameter("@BillingPostCode", SqlDbType.VarChar, 50) { Value = billingAddressPoco.PostCode },
+                new SqlParameter("@BillingContactPersonName", SqlDbType.VarChar, 200) { Value = billingAddressPoco.ContactPersonName },
+                new SqlParameter("@BillingPhoneNumber", SqlDbType.VarChar, 150) { Value = billingAddressPoco.PrimaryPhoneNumber },
+                new SqlParameter("@BillingFaxNumber", SqlDbType.VarChar, 150) { Value = billingAddressPoco.Fax },
+                new SqlParameter("@BillingEmailAddress", SqlDbType.VarChar, 200) { Value = billingAddressPoco.EmailAddress1 },
+
+                new SqlParameter("@MailingUnitNo", SqlDbType.VarChar, 50) { Value = mailingAddressPoco.UnitNumber },
+                new SqlParameter("@MailingAddressLine", SqlDbType.VarChar, 150) { Value = mailingAddressPoco.AddressLine },
+                new SqlParameter("@MailingCityId", SqlDbType.Int) { Value = mailingAddressPoco.CityId },
+                new SqlParameter("@MailingProvinceId", SqlDbType.Int) { Value = mailingAddressPoco.ProvinceId },
+                new SqlParameter("@MailingCountryId", SqlDbType.Int) { Value = mailingAddressPoco.CountryId },
+                new SqlParameter("@MailingPostCode", SqlDbType.VarChar, 50) { Value = mailingAddressPoco.PostCode },
+                new SqlParameter("@MailingContactPersonName", SqlDbType.VarChar, 200) { Value = mailingAddressPoco.ContactPersonName },
+                new SqlParameter("@MailingPhoneNumber", SqlDbType.VarChar, 150) { Value = mailingAddressPoco.PrimaryPhoneNumber },
+                new SqlParameter("@MailingFaxNumber", SqlDbType.VarChar, 150) { Value = mailingAddressPoco.Fax },
+                new SqlParameter("@MailingEmailAddress", SqlDbType.VarChar, 200) { Value = mailingAddressPoco.EmailAddress1 },
+            };
+
+            StringBuilder query = new StringBuilder();
+            query.Append("EXEC CreateNewCustomer ");
+            query.Append("@CustomerName, @BranchId, @IsGstApplicable, @DiscountPercentage, @InvoiceDueDays, @MailingAddressId, ");
+            query.Append("@BillingAddressId, @IsMailingBillingAddressSame, @CreatedBy, ");
+
+            query.Append("@BillingUnitNo, @BillingAddressLine, @BillingCityId, @BillingProvinceId, @BillingCountryId, @BillingPostCode, ");
+            query.Append("@BillingContactPersonName, @BillingPhoneNumber, @BillingFaxNumber, @BillingEmailAddress, ");
+
+            query.Append("@MailingUnitNo, @MailingAddressLine, @MailingCityId, @MailingProvinceId, @MailingCountryId, @MailingPostCode, ");
+            query.Append("@MailingContactPersonName, @MailingPhoneNumber, @MailingFaxNumber, @MailingEmailAddress ");
+
+            var outPut = base.CallStoredProcedure(query.ToString(), sqlParameters);
 
             return outPut;
         }

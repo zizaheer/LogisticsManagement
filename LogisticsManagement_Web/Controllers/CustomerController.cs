@@ -55,9 +55,7 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult AddOrUpdate([FromBody]dynamic customerData)
         {
             ValidateSession();
-            var result = false;
-            int billingAddressId = 0;
-            int mailingAddressId = 0;
+            var result = "";
 
             try
             {
@@ -68,7 +66,6 @@ namespace LogisticsManagement_Web.Controllers
                     Lms_AddressPoco mailingAddressPoco = JsonConvert.DeserializeObject<Lms_AddressPoco>(JsonConvert.SerializeObject(customerData[2]));
 
                     var addressData = GetCustomerData().Addressess;
-                    
 
                     if (customerPoco.Id > 0)
                     {
@@ -86,55 +83,13 @@ namespace LogisticsManagement_Web.Controllers
                     }
                     else
                     {
-                        //using (var scope = new TransactionScope(TransactionScopeOption.Required))
-                        //{
-
-                        //}
-                        Lms_ChartOfAccountLogic _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
-                        var _chartOfAccountPoco = new Lms_ChartOfAccountPoco();
-
-                        _chartOfAccountPoco.AccountTypeId = 1;
-                        _chartOfAccountPoco.AccountName = customerPoco.CustomerName;
-                        _chartOfAccountPoco.BranchId = (int)sessionData.BranchId;
-                        _chartOfAccountPoco.InitialBalance = 0;
-                        _chartOfAccountPoco.IsActive = true;
-                        _chartOfAccountPoco.Remarks = "Customer Account";
-                        _chartOfAccountPoco.CreatedBy = sessionData.UserId;
-
-                        customerPoco.CustomerNumber = (_customerLogic.GetMaxId() + 1).ToString();
-                        customerPoco.AccountId = _chartOfAccountLogic.Add(_chartOfAccountPoco).Id;
-
-                        if (billingAddressPoco !=null && billingAddressPoco.Id < 1)
+                        var customerId = _customerLogic.CreateNewCustomer(customerPoco, billingAddressPoco, mailingAddressPoco, (int)sessionData.BranchId);
+                        if (!string.IsNullOrEmpty(customerId))
                         {
-                            var matchingAddress1 = addressData.Where(c => c.UnitNumber == billingAddressPoco.UnitNumber && c.AddressLine == billingAddressPoco.AddressLine).FirstOrDefault();
-                            _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
-
-                            //if (matchingAddress1 == null)
-                            //{
-                            //    var addAdd = _addressLogic.Add(billingAddressPoco);
-                            //}
-                            //else
-                            //{
-                            //    var addUpdated = _addressLogic.Update(matchingAddress1);
-
-                            //}
-                            billingAddressId = matchingAddress1 == null ? _addressLogic.Add(billingAddressPoco).Id : _addressLogic.Update(matchingAddress1).Id;
+                            result = (JsonConvert.DeserializeObject<Lms_StoredProcedureResult>(customerId)).ReturnedValue;
                         }
-                        if (mailingAddressPoco != null && mailingAddressPoco.Id < 1)
-                        {
-                            var matchingAddress2 = addressData.Where(c => c.UnitNumber == mailingAddressPoco.UnitNumber && c.AddressLine == mailingAddressPoco.AddressLine).FirstOrDefault();
-
-                            _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
-                            mailingAddressId = matchingAddress2 == null ? _addressLogic.Add(mailingAddressPoco).Id : _addressLogic.Update(matchingAddress2).Id;
-                        }
-
-                        customerPoco.BillingAddressId = billingAddressId;
-                        customerPoco.MailingAddressId = mailingAddressId;
-
-                        _customerLogic.Add(customerPoco);
                     }
 
-                    result = true;
                 }
             }
             catch (Exception ex)
@@ -169,7 +124,6 @@ namespace LogisticsManagement_Web.Controllers
             CustomerViewModel customerViewModel = new CustomerViewModel();
             customerViewModel.Customers = _customerLogic.GetList();
 
-            string testJson = _customerLogic.GetCustomerData(customerViewModel.Customers.FirstOrDefault());
             _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
             _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
             _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));

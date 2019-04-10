@@ -11,6 +11,13 @@ $(document).ready(function () {
     MaskPhoneNumber('#txtBillingPrimaryPhoneNumber');
     MaskPhoneNumber('#txtMailingPrimaryPhoneNumber');
     FillEmployeeDropDown();
+
+    $(document).ajaxStart(function () {
+        $("#spinnerLoadingDataTable").css("display", "inline-block");
+    });
+    $(document).ajaxComplete(function () {
+        $("#spinnerLoadingDataTable").css("display", "none");
+    });
 });
 
 
@@ -164,10 +171,8 @@ $('#customer-list').on('click', '.btnEdit', function () {
 
 });
 
-$('#loadData').on('click', function () {
-    $('.loadingSpinner').css('style', 'display:block');
+$('#btnDownloadData').on('click', function () {
     $('#loadDataTable').load('Customer/PartialViewDataTable');
-    //$('.loadingSpinner').css('style', 'display:none');
 });
 
 $('#frmCustomerForm').submit(function (event) {
@@ -181,7 +186,7 @@ $('#frmCustomerForm').submit(function (event) {
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
-            alert("Registor");
+           // alert("Registor");
          
         },
         error: function (result) {
