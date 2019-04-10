@@ -101,6 +101,6 @@ function RemoveTariff(tariffData) {
 
 function GetEmployees()
 {
-    GetListObject('Employee/GetEmployees')
+    //GetListObject('Employee/GetEmployees')
 
 }

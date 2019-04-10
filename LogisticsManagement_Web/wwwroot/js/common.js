@@ -22,18 +22,23 @@ function GetListObject(actionUrl) {
 
 function GetSingleObjectById(actionUrl, id) {
 
+    var returnObject = null;
+
     $.ajax({
-        url: actionUrl,
+        'async': false,
+        url: actionUrl + '/' + id,
         type: 'GET',
         dataType: 'json',
-        data: id,
+        id: id,
         success: function (result) {
-            return result;
+            returnObject = result;
         },
         error: function (result) {
-            return result;
+            returnObject = result;
         }
     });
+
+    return returnObject;
 }
 
 function MaskPhoneNumber(element) {

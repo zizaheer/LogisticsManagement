@@ -35,11 +35,14 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_DeliveryOptionPoco Add(Lms_DeliveryOptionPoco poco)
         {
+            poco.CreateDate = DateTime.Now;
+
             return base.Add(poco);
         }
 
         public override Lms_DeliveryOptionPoco Update(Lms_DeliveryOptionPoco poco)
         {
+            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
             return base.Update(poco);
         }
 

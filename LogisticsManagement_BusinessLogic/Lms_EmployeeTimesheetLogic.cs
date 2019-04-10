@@ -35,11 +35,14 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_EmployeeTimesheetPoco Add(Lms_EmployeeTimesheetPoco poco)
         {
+            poco.CreateDate = DateTime.Now;
+
             return base.Add(poco);
         }
 
         public override Lms_EmployeeTimesheetPoco Update(Lms_EmployeeTimesheetPoco poco)
         {
+            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
             return base.Update(poco);
         }
 

@@ -35,11 +35,14 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_AccTransactionDetailPoco Add(Lms_AccTransactionDetailPoco poco)
         {
+            poco.TransactionDate = Convert.ToDateTime(poco.TransactionDate);
+
             return base.Add(poco);
         }
 
         public override Lms_AccTransactionDetailPoco Update(Lms_AccTransactionDetailPoco poco)
         {
+            poco.TransactionDate = Convert.ToDateTime(poco.TransactionDate);
             return base.Update(poco);
         }
 

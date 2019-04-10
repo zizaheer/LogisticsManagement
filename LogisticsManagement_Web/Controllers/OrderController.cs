@@ -22,6 +22,7 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_OrderLogic _orderLogic;
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
+        SessionData sessionData = new SessionData();
 
         public OrderController(IMemoryCache cache, LogisticsContext dbContext)
         {
@@ -32,6 +33,8 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
+            ValidateSession();
+
             ViewBag.Tariffs = GetTariffs();
             ViewBag.DeliveryOptions = GetDeliveryOptions();
             //ViewBag.Customers = GetCustomers().OrderBy(c=>c.CustomerName);
@@ -59,6 +62,14 @@ namespace LogisticsManagement_Web.Controllers
             Lms_CustomerLogic customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
             return customerLogic.GetList();
         }
-       
+
+        private void ValidateSession()
+        {
+            sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
+            if (sessionData == null)
+            {
+                Response.Redirect("Login/Index");
+            }
+        }
     }
 }

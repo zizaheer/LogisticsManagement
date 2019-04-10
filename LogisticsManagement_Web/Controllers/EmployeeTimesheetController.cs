@@ -27,8 +27,10 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var customerList = _employeeTimesheetLogic.GetList();
-            return View();
+            var employeeSignInList = _employeeTimesheetLogic.GetList().Where(c=>c.SignInDatetime >= DateTime.Today.Date);
+            return View(employeeSignInList);
         }
+
+
     }
 }

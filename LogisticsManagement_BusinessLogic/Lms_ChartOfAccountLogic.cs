@@ -76,6 +76,7 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_ChartOfAccountPoco Update(Lms_ChartOfAccountPoco poco)
         {
+            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
             var updatedPoco = base.Update(poco);
             _cache.Remove(App_CacheKeys.Accounts);
 

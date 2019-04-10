@@ -83,6 +83,8 @@ namespace LogisticsManagement_DataAccess
         DbSet<Lms_StorageOrder_AuditPoco> lmsStorageOrder_AuditPocos { get; set; }
         DbSet<Lms_StorageOrderDelivery_AuditPoco> lmsStorageOrderDelivery_AuditPocos { get; set; }
 
+        DbQuery<Lms_StoredProcedureResult> returnedValueString { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

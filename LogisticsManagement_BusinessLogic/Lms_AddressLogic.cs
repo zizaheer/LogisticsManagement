@@ -62,6 +62,8 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_AddressPoco Add(Lms_AddressPoco poco)
         {
+            poco.CreateDate = DateTime.Now;
+
             var addedPoco = base.Add(poco);
             _cache.Remove(App_CacheKeys.Addresses);
 
@@ -70,6 +72,8 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_AddressPoco Update(Lms_AddressPoco poco)
         {
+            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
+
             var updatedPoco = base.Update(poco);
             _cache.Remove(App_CacheKeys.Addresses);
 

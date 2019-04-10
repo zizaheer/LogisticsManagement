@@ -1,6 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LogisticsManagement_Poco;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -23,7 +28,7 @@ namespace LogisticsManagement_DataAccess
 
         public IList<T> GetList(params Expression<Func<T, object>>[] navigationProperties)
         {
-            IQueryable<T> dbQuery = _context.Set<T>();
+            IQueryable<T> dbQuery = _context.Set<T>().AsNoTracking();
 
             foreach (var navProp in navigationProperties)
             {
@@ -36,7 +41,7 @@ namespace LogisticsManagement_DataAccess
 
         public IList<T> GetList(Func<T, bool> where, params Expression<Func<T, object>>[] navigationProperties)
         {
-            IQueryable<T> dbQuery = _context.Set<T>();
+            IQueryable<T> dbQuery = _context.Set<T>().AsNoTracking();
 
             foreach (var navProp in navigationProperties)
             {
@@ -111,6 +116,11 @@ namespace LogisticsManagement_DataAccess
             _context.SaveChanges();
         }
 
-       
+        public string CallStoredProcedure(string query, params object[] parameters)
+        {
+            var type = _context.Query<Lms_StoredProcedureResult>().FromSql(query, parameters).ToList();
+
+            return JsonConvert.SerializeObject(type.ToArray());
+        }
     }
 }

@@ -62,6 +62,8 @@ namespace LogisticsManagement_BusinessLogic
 
         public override App_ProvincePoco Add(App_ProvincePoco poco)
         {
+            poco.CreateDate = DateTime.Now;
+
             var addedPoco = base.Add(poco);
             _cache.Remove(App_CacheKeys.Provinces);
 
@@ -70,6 +72,7 @@ namespace LogisticsManagement_BusinessLogic
 
         public override App_ProvincePoco Update(App_ProvincePoco poco)
         {
+            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
             var updatedPoco = base.Update(poco);
             _cache.Remove(App_CacheKeys.Provinces);
 

@@ -17,8 +17,13 @@ namespace LogisticsManagement_Web.Controllers
     public class EmployeeController : Controller
     {
         private Lms_EmployeeLogic _employeeLogic;
+        private App_CityLogic _cityLogic;
+        private App_ProvinceLogic _provinceLogic;
+        private App_CountryLogic _countryLogic;
+
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
+        SessionData sessionData = new SessionData();
 
         public EmployeeController(IMemoryCache cache, LogisticsContext dbContext)
         {
@@ -29,8 +34,26 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var employeeList = _employeeLogic.GetList();
-            return View();
+            ValidateSession();
+            ViewBag.EmployeeTypes = Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>();
+            return View(GetEmployeeData());
+           
+        }
+
+        private EmployeeViewModel GetEmployeeData()
+        {
+            EmployeeViewModel employeeViewModel = new EmployeeViewModel();
+            employeeViewModel.Employees = _employeeLogic.GetList();
+
+            _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
+            _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
+            _countryLogic = new App_CountryLogic(_cache, new EntityFrameworkGenericRepository<App_CountryPoco>(_dbContext));
+
+            employeeViewModel.Cities = _cityLogic.GetList();
+            employeeViewModel.Provinces = _provinceLogic.GetList();
+            employeeViewModel.Countries = _countryLogic.GetList();
+
+            return employeeViewModel;
         }
 
         public IActionResult AddOrUpdate([FromBody]dynamic data)
@@ -42,7 +65,7 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetEmployees()
         {
-            var employeeList = _employeeLogic.GetList();
+            var employeeList = _employeeLogic.GetList().OrderBy(c => c.FirstName);
             return Json(JsonConvert.SerializeObject(employeeList));
         }
 
@@ -50,6 +73,15 @@ namespace LogisticsManagement_Web.Controllers
         {
             var employeeList = _employeeLogic.GetList();
             return Json(JsonConvert.SerializeObject(employeeList));
+        }
+
+        private void ValidateSession()
+        {
+            sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
+            if (sessionData == null)
+            {
+                Response.Redirect("Login/Index");
+            }
         }
     }
 }

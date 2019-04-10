@@ -28,4 +28,14 @@ namespace LogisticsManagement_Poco
         Income,
         Expense
     }
+    public enum EmployeeType
+    {
+        Employee = 1,
+        EmployeeDriver,
+        Salesman,
+        Agent,
+        Broker,
+        OwnerOperator,
+        UnknownType,
+    }
 }

@@ -35,11 +35,13 @@ namespace LogisticsManagement_BusinessLogic
 
         public override App_DocumentCategoryPoco Add(App_DocumentCategoryPoco poco)
         {
+            poco.CreateDate = DateTime.Now;
             return base.Add(poco);
         }
 
         public override App_DocumentCategoryPoco Update(App_DocumentCategoryPoco poco)
         {
+            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
             return base.Update(poco);
         }
 

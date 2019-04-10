@@ -56,6 +56,9 @@ namespace LogisticsManagement_Web.Controllers
         {
             ValidateSession();
             var result = false;
+            int billingAddressId = 0;
+            int mailingAddressId = 0;
+
             try
             {
                 if (customerData != null)
@@ -65,12 +68,21 @@ namespace LogisticsManagement_Web.Controllers
                     Lms_AddressPoco mailingAddressPoco = JsonConvert.DeserializeObject<Lms_AddressPoco>(JsonConvert.SerializeObject(customerData[2]));
 
                     var addressData = GetCustomerData().Addressess;
-                    int billingAddressId = 0;
-                    int mailingAddressId = 0;
+                    
 
                     if (customerPoco.Id > 0)
                     {
-                        _customerLogic.Update(customerPoco);
+                        var customer = _customerLogic.GetSingleById(customerPoco.Id);
+                        customer.Id = customerPoco.Id;
+                        customer.CustomerName = customerPoco.CustomerName;
+                        customer.DiscountPercentage = customerPoco.DiscountPercentage;
+                        customer.InvoiceDueDays = customerPoco.InvoiceDueDays;
+                        customer.IsGstApplicable = customerPoco.IsGstApplicable;
+                        customer.BillingAddressId = customerPoco.BillingAddressId;
+                        customer.MailingAddressId = customerPoco.MailingAddressId;
+                        customer.IsActive = customerPoco.IsActive;
+
+                        _customerLogic.Update(customer);
                     }
                     else
                     {
@@ -95,16 +107,25 @@ namespace LogisticsManagement_Web.Controllers
                         if (billingAddressPoco !=null && billingAddressPoco.Id < 1)
                         {
                             var matchingAddress1 = addressData.Where(c => c.UnitNumber == billingAddressPoco.UnitNumber && c.AddressLine == billingAddressPoco.AddressLine).FirstOrDefault();
-
                             _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
-                             billingAddressId = matchingAddress1 == null ? _addressLogic.Add(billingAddressPoco).Id : _addressLogic.Update(billingAddressPoco).Id;
+
+                            //if (matchingAddress1 == null)
+                            //{
+                            //    var addAdd = _addressLogic.Add(billingAddressPoco);
+                            //}
+                            //else
+                            //{
+                            //    var addUpdated = _addressLogic.Update(matchingAddress1);
+
+                            //}
+                            billingAddressId = matchingAddress1 == null ? _addressLogic.Add(billingAddressPoco).Id : _addressLogic.Update(matchingAddress1).Id;
                         }
                         if (mailingAddressPoco != null && mailingAddressPoco.Id < 1)
                         {
                             var matchingAddress2 = addressData.Where(c => c.UnitNumber == mailingAddressPoco.UnitNumber && c.AddressLine == mailingAddressPoco.AddressLine).FirstOrDefault();
 
                             _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
-                            mailingAddressId = matchingAddress2 == null ? _addressLogic.Add(mailingAddressPoco).Id : _addressLogic.Update(mailingAddressPoco).Id;
+                            mailingAddressId = matchingAddress2 == null ? _addressLogic.Add(mailingAddressPoco).Id : _addressLogic.Update(matchingAddress2).Id;
                         }
 
                         customerPoco.BillingAddressId = billingAddressId;
@@ -148,6 +169,7 @@ namespace LogisticsManagement_Web.Controllers
             CustomerViewModel customerViewModel = new CustomerViewModel();
             customerViewModel.Customers = _customerLogic.GetList();
 
+            string testJson = _customerLogic.GetCustomerData(customerViewModel.Customers.FirstOrDefault());
             _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
             _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
             _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));

@@ -9,6 +9,7 @@
 <form id="frmCustomerForm">
     <div class="row">
         <div class="col-sm-12">
+            
             <div class="card">
                 <div class="card-header" style="background-color: #3b80a9;color: #fff;">
                     <strong><i class="fa fa-sliders"></i> Customer</strong>
@@ -35,7 +36,7 @@
                         <div class="form-group col-sm-4">
                             <select class="form-control" id="ddlEmployeeId">
                                 <option value=0 selected> -- Assign Employee -- </option>
-                               
+
                             </select>
                         </div>
                         <div class="form-group col-sm-2" style="padding-left: 0px;">
@@ -53,7 +54,7 @@
                         </div>
                         <div class="form-group col-sm-2">
                             <div class="form-check form-check-inline mr-1">
-                                <input class="form-check-input" id="isGstApplicable" type="checkbox" name="isGstApplicable" checked>
+                                <input class="form-check-input" id="isGstApplicable" type="checkbox" name="isGstApplicable" >
                                 <label class="form-check-label" for="isGstApplicable">GST Applicable?</label>
                             </div>
                         </div>
@@ -147,10 +148,10 @@
                                             <input class="form-control" id="txtBillingPostCode" type="text" name="txtBillingPostCode" placeholder="Postcode" />
                                         </div>
                                         <div class="form-group col-sm-5">
-                                            <input class="form-control" id="txtBillingPrimaryPhoneNumber" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="txtBillingPrimaryPhoneNumber" placeholder="Phone" />
+                                            <input class="form-control" id="txtBillingPrimaryPhoneNumber" type="tel" name="txtBillingPrimaryPhoneNumber" placeholder="Phone" />
                                         </div>
                                         <div class="form-group col-sm-4">
-                                            <input class="form-control" id="txtBillingFaxNumber" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="txtBillingFaxNumber" placeholder="Fax" />
+                                            <input class="form-control" id="txtBillingFaxNumber" type="tel" name="txtBillingFaxNumber" placeholder="Fax" />
                                         </div>
                                     </div>
                                     <div class="row">
@@ -234,9 +235,9 @@
                                             <input class="form-control" id="txtMailingPostCode" type="text" name="txtMailingPostCode" placeholder="Postcode" />
                                         </div>
                                         <div class="form-group col-sm-5">
-                                            <input class="form-control" id="txtMailingPrimaryPhoneNumber" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="txtMailingPrimaryPhoneNumber" placeholder="Phone" />
+                                            <input class="form-control" id="txtMailingPrimaryPhoneNumber" type="tel" name="txtMailingPrimaryPhoneNumber" placeholder="Phone" />
                                         </div> <div class="form-group col-sm-4">
-                                            <input class="form-control" id="txtMailingFaxNumber" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="txtMailingFaxNumber" placeholder="Fax" />
+                                            <input class="form-control" id="txtMailingFaxNumber" type="tel" name="txtMailingFaxNumber" placeholder="Fax" />
                                         </div>
                                     </div>
                                     <div class="row">
@@ -262,7 +263,30 @@
     </div>
 </form>
 
-<div id="loadDataTable">
-    <partial name="_PartialViewCustomerData" />
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header" style="background-color: #c3c3c3;">
+                <strong><i class="fa fa-sliders"></i> Customers</strong>
+                <div class="card-header-actions">
+                    <button id="loadData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
+                    <span style="display:none" id="loadingSpinner"><i class="fa fa-circle-o-notch"></i></span>
+                    <span>&nbsp;&nbsp;</span>
+                    <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
+                        <i class="icon-arrow-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <input type="hidden" id="hfMaxCustomerNumber" name="hfMaxCustomerNumber" value="" />
+            </div>
+            <div class="collapse show" id="collapseDatatable">
+                <div class="card-body">
+                    <div id="loadDataTable">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="~/js/customer.js"></script>

@@ -100,32 +100,32 @@
                         </a>
                         <ul class="nav-dropdown-items">
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Index">
+                                <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Index">
                                     <span style="padding-left:10px"></span><i class="nav-icon icon-anchor"></i> Delivery Order
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Dispatch">
+                                <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Miscellaneous">
                                     <span style="padding-left:10px"></span><i class="nav-icon icon-puzzle"></i> Misc. Order
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Pickup">
+                                <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Storage">
                                     <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Storage Order
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="PassOff">
+                                <a class="nav-link" asp-area="" asp-controller="Invoice" asp-action="Index">
                                     <span style="padding-left:10px"></span><i class="nav-icon icon-book-open"></i> Invoice
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Deliver">
+                                <a class="nav-link" asp-area="" asp-controller="Payroll" asp-action="Index">
                                     <span style="padding-left:10px"></span><i class="nav-icon fa fa-list"></i> Payroll
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="DeliveryOrder" asp-action="Deliver">
+                                <a class="nav-link" asp-area="" asp-controller="Payment" asp-action="Index">
                                     <span style="padding-left:10px"></span><i class="nav-icon fa fa-money"></i> Make Payment
                                 </a>
                             </li>
@@ -143,7 +143,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Employee">
+                                <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Index">
                                     <span style="padding-left:10px"></span><i class="nav-icon fa fa-vcard"></i> Employee
                                 </a>
                             </li>
@@ -238,6 +238,16 @@
                                     <button class="btn btn-secondary" type="button" data-dismiss="modal" id="btnClose">Close</button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div id="msgBox" style="display:none">
+                        <div style="padding:15px 15px 10px 15px; border-radius:5px; margin-bottom:10px; background-color:#e1f2da">
+                            <p>
+                                <img id="imgAlertType" src="~/images/icon-archive/tick.png" width="32" height="32" />
+                                <span style="padding-left: 15px">
+                                    <label id="msgContent">Text comes here</label>
+                                </span>
+                            </p>
                         </div>
                     </div>
                     @RenderBody()

@@ -41,12 +41,15 @@ namespace LogisticsManagement_BusinessLogic
 
         public override App_UserPoco Add(App_UserPoco poco)
         {
+            poco.CreateDate = DateTime.Now;
+
             poco.Password = GetBase64String(poco.Password);
             return base.Add(poco);
         }
 
         public override App_UserPoco Update(App_UserPoco poco)
         {
+            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
             poco.Password = GetBase64String(poco.Password);
             return base.Update(poco);
         }

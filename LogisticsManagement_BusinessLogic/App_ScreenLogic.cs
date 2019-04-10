@@ -36,11 +36,14 @@ namespace LogisticsManagement_BusinessLogic
 
         public override App_ScreenPoco Add(App_ScreenPoco poco)
         {
+            poco.CreateDate = DateTime.Now;
+
             return base.Add(poco);
         }
 
         public override App_ScreenPoco Update(App_ScreenPoco poco)
         {
+            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
             return base.Update(poco);
         }
 

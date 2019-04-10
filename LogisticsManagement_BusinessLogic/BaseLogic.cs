@@ -67,6 +67,11 @@ namespace LogisticsManagement_BusinessLogic
             _repository.Remove(pocos);
         }
 
+        public virtual string CallStoredProcedure(string query, params object[] parameters)
+        {
+            return _repository.CallStoredProcedure(query, parameters);
+        }
+
 
     }
 }

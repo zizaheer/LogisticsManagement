@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
+using System.Data.SqlClient;
 
 namespace LogisticsManagement_BusinessLogic
 {
@@ -62,6 +63,8 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_CustomerPoco Add(Lms_CustomerPoco poco)
         {
+            poco.CreateDate = DateTime.Now;
+
             var addedPoco = base.Add(poco);
             _cache.Remove(App_CacheKeys.Customers);
 
@@ -70,6 +73,7 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_CustomerPoco Update(Lms_CustomerPoco poco)
         {
+            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
             var updatedPoco = base.Update(poco);
             _cache.Remove(App_CacheKeys.Customers);
 
@@ -102,6 +106,13 @@ namespace LogisticsManagement_BusinessLogic
 
         #endregion
 
+        public  string GetCustomerData(Lms_CustomerPoco parameters)
+        {
+            string jsonOutPut = "";
+            var param1 = new SqlParameter("@Query", parameters.CustomerName);
+            var outPut = base.CallStoredProcedure("EXEC SearchCustomerByName @Query", param1 );
 
+            return outPut;
+        }
     }
 }
