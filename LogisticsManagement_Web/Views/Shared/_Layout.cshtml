@@ -216,38 +216,20 @@
                     <script src="~/js/common.js"></script>
                     <script src="~/js/site.min.js"></script>
 
-                    <div class="modal fade" id="alert-modal" tabindex="-1" role="dialog" aria-labelledby="alert-modalLabel" style="display: none;" aria-hidden="true">
-                        <div class="modal-dialog" role="document" id="modalDialogType">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title"><label id="lblModalTitle">Title</label></h4>
-                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>
-                                        <img id="imgAlertType" width="48" height="48" />
-                                        <span style="padding-left: 15px">
-                                            <label id="modalContent"></label>
-                                        </span>
-                                    </p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-primary" type="button" id="btnProceed">Proceed</button>
-                                    <button class="btn btn-secondary" type="button" data-dismiss="modal" id="btnClose">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div id="msgBox" style="display:none">
-                        <div style="padding:15px 15px 10px 15px; border-radius:5px; margin-bottom:10px; background-color:#e1f2da">
-                            <p>
-                                <img id="imgAlertType" src="~/images/icon-archive/tick.png" width="32" height="32" />
-                                <span style="padding-left: 15px">
-                                    <label id="msgContent">Text comes here</label>
-                                </span>
-                            </p>
+                        <div class="alert fade show w-50" role="alert" id="alertBox" style="background-color:#fee5e5">
+                            <img id="imgAlertType" src="~/images/icon-archive/tick.png" width="32" height="32" />
+                            <span style="padding-left: 15px">
+                                <strong><label id="lblMsgContent">Content</label></strong>
+                            </span>
+                            <span style="float:right ">
+                                <button class="btn btn-sm btn-primary" type="button" id="btnProceed">Proceed</button>
+                                @*<button type="button" class="btn btn-sm btn-secondary" data-dismiss="alert" aria-label="Close">Close</button>*@
+                                <button type="button" class="btn close" data-dismiss="alert" aria-label="Close" id="btnClose" style="margin:-10px -10px 0px 0px">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </span>
+                            
                         </div>
                     </div>
                     @RenderBody()

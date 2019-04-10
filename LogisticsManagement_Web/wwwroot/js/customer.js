@@ -180,13 +180,13 @@ $('#frmCustomerForm').submit(function (event) {
   
     $.ajax({
         'async': false,
-        url: 'Customer/AddOrUpdate',
+        url: 'Customer/Add',
         type: 'POST',
         data: JSON.stringify(data),
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
-           // alert("Registor");
+            SetResponseMessage('Success', 'Data saved successfully. ');
          
         },
         error: function (result) {

@@ -52,7 +52,41 @@ namespace LogisticsManagement_Web.Controllers
 
 
         [HttpPost]
-        public IActionResult AddOrUpdate([FromBody]dynamic customerData)
+        public IActionResult Add([FromBody]dynamic customerData)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (customerData != null)
+                {
+                    Lms_CustomerPoco customerPoco = JsonConvert.DeserializeObject<Lms_CustomerPoco>(JsonConvert.SerializeObject(customerData[0]));
+                    Lms_AddressPoco billingAddressPoco = JsonConvert.DeserializeObject<Lms_AddressPoco>(JsonConvert.SerializeObject(customerData[1]));
+                    Lms_AddressPoco mailingAddressPoco = JsonConvert.DeserializeObject<Lms_AddressPoco>(JsonConvert.SerializeObject(customerData[2]));
+
+                    var addressData = GetCustomerData().Addressess;
+
+                    if (customerPoco.Id <1)
+                    {
+                        var customerId = _customerLogic.CreateNewCustomer(customerPoco, billingAddressPoco, mailingAddressPoco, (int)sessionData.BranchId);
+                        if (!string.IsNullOrEmpty(customerId))
+                        {
+                            result = (JsonConvert.DeserializeObject<Lms_StoredProcedureResult>(customerId)).ReturnedValue;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult Update([FromBody]dynamic customerData)
         {
             ValidateSession();
             var result = "";
@@ -81,15 +115,6 @@ namespace LogisticsManagement_Web.Controllers
 
                         _customerLogic.Update(customer);
                     }
-                    else
-                    {
-                        var customerId = _customerLogic.CreateNewCustomer(customerPoco, billingAddressPoco, mailingAddressPoco, (int)sessionData.BranchId);
-                        if (!string.IsNullOrEmpty(customerId))
-                        {
-                            result = (JsonConvert.DeserializeObject<Lms_StoredProcedureResult>(customerId)).ReturnedValue;
-                        }
-                    }
-
                 }
             }
             catch (Exception ex)
