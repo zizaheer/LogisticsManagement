@@ -18,11 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_EmployeeLoanPaymentLogic _employeeLoanPaymentLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public EmployeeLoanPaymentController(LogisticsContext dbContext)
+        public EmployeeLoanPaymentController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _employeeLoanPaymentLogic = new Lms_EmployeeLoanPaymentLogic(new EntityFrameworkGenericRepository<Lms_EmployeeLoanPaymentPoco>(_dbContext));
+            _employeeLoanPaymentLogic = new Lms_EmployeeLoanPaymentLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeeLoanPaymentPoco>(_dbContext));
         }
 
         public IActionResult Index()

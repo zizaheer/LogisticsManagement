@@ -65,6 +65,7 @@ namespace LogisticsManagement_Web.Controllers
             return employeeViewModel;
         }
 
+        [HttpPost]
         public IActionResult Add([FromBody]dynamic employeeData)
         {
 
@@ -86,6 +87,10 @@ namespace LogisticsManagement_Web.Controllers
                             var jObject = JObject.Parse(employeeId);
                             var returnedObject = (string)jObject.SelectToken("ReturnedValue");
                             result = (string)JObject.Parse(returnedObject).SelectToken("EmployeeId");
+                            if (result.Length > 0)
+                            {
+                                result = Convert.ToInt32(result) < 1 ? "" : result;
+                            }
                         }
                     }
                 }
@@ -98,6 +103,7 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
+        [HttpPost]
         public IActionResult Update([FromBody]dynamic employeeData)
         {
             ValidateSession();
@@ -144,6 +150,24 @@ namespace LogisticsManagement_Web.Controllers
 
             }
 
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult Remove(string id)
+        {
+            bool result = false;
+            try
+            {
+                var poco = _employeeLogic.GetSingleById(Convert.ToInt32(id));
+                _employeeLogic.Remove(poco);
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+
+            }
             return Json(result);
         }
 

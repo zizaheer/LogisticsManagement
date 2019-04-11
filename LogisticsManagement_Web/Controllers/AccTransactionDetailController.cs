@@ -18,11 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_AccTransactionDetailLogic _accTransactionDetailLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public AccTransactionDetailController(LogisticsContext dbContext)
+        public AccTransactionDetailController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _accTransactionDetailLogic = new Lms_AccTransactionDetailLogic(new EntityFrameworkGenericRepository<Lms_AccTransactionDetailPoco>(_dbContext));
+            _accTransactionDetailLogic = new Lms_AccTransactionDetailLogic(_cache, new EntityFrameworkGenericRepository<Lms_AccTransactionDetailPoco>(_dbContext));
         }
 
         public IActionResult Index()

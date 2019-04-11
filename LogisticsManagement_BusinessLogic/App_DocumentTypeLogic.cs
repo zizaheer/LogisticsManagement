@@ -3,12 +3,14 @@ using LogisticsManagement_DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LogisticsManagement_BusinessLogic
 {
     public class App_DocumentTypeLogic : BaseLogic<App_DocumentTypePoco>
     {
-        public App_DocumentTypeLogic(IDataRepository<App_DocumentTypePoco> repository) : base(repository)
+        IMemoryCache _cache;
+        public App_DocumentTypeLogic(IMemoryCache cash, IDataRepository<App_DocumentTypePoco> repository) : base(repository)
         {
         }
 

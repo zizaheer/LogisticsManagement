@@ -18,11 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private App_LoginHistoryLogic _loginHistoryLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public LoginHistoryController(LogisticsContext dbContext)
+        public LoginHistoryController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _loginHistoryLogic = new App_LoginHistoryLogic(new EntityFrameworkGenericRepository<App_LoginHistoryPoco>(_dbContext));
+            _loginHistoryLogic = new App_LoginHistoryLogic(_cache, new EntityFrameworkGenericRepository<App_LoginHistoryPoco>(_dbContext));
         }
 
         public IActionResult Index()

@@ -28,26 +28,22 @@ $('#btnDownloadData').unbind().on('click', function (event) {
    
 });
 
-$('#frmEmployeeForm').submit(function (event) {
-    var dataArray = GetFormData(event);
+$('#frmEmployeeForm').unbind('submit').submit(function (event) {
+    var dataArray = GetFormData();
     AddEntry('Employee/Add', dataArray);
+    event.preventDefault();
+    $('#loadDataTable').load('Employee/PartialViewDataTable');
 });
 
 $('.btnDelete').unbind().on('click', function () {
-    SetResponseMessage('Warning', 'The data will be deleted. Are you sure you want ot continue?');
-    employeeData = $(this).data('employee');
+    employeeId = $(this).data('employeeid');
+    RemoveEntry('Employee/Remove', employeeId);
+    $('#loadDataTable').load('Employee/PartialViewDataTable');
+
 });
 
-$('#btnProceed').unbind().on('click', function () {
-    if (employeeData !== null) {
-        RemoveEntry('Employee/Remove', [employeeData]);
-        $('#loadDataTable').load('Employee/PartialViewDataTable');
-    }
-});
+function GetFormData() {
 
-
-function GetFormData(event) {
-    event.preventDefault();
     var employeeData = {
 
         id: $('#txtEmployeeId').val() === "" ? "0" : $('#txtEmployeeId').val(),

@@ -18,12 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_BillPaymentLogic _billPaymentLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public BillPaymentController(LogisticsContext dbContext)
+        public BillPaymentController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _billPaymentLogic = new Lms_BillPaymentLogic(new EntityFrameworkGenericRepository<Lms_BillPaymentPoco>(_dbContext));
+            _billPaymentLogic = new Lms_BillPaymentLogic(_cache, new EntityFrameworkGenericRepository<Lms_BillPaymentPoco>(_dbContext));
         }
 
         public IActionResult Index()

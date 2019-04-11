@@ -18,12 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_BankLogic _bankLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public BankController(LogisticsContext dbContext)
+        public BankController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _bankLogic = new Lms_BankLogic(new EntityFrameworkGenericRepository<Lms_BankPoco>(_dbContext));
+            _bankLogic = new Lms_BankLogic(_cache, new EntityFrameworkGenericRepository<Lms_BankPoco>(_dbContext));
         }
 
         public IActionResult Index()

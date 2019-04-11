@@ -18,12 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_CustomerEmployeeMappingLogic _customerEmployeeMappingLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public CustomerEmployeeMappingController(LogisticsContext dbContext)
+        public CustomerEmployeeMappingController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _customerEmployeeMappingLogic = new Lms_CustomerEmployeeMappingLogic(new EntityFrameworkGenericRepository<Lms_CustomerEmployeeMappingPoco>(_dbContext));
+            _customerEmployeeMappingLogic = new Lms_CustomerEmployeeMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerEmployeeMappingPoco>(_dbContext));
         }
 
         public IActionResult Index()

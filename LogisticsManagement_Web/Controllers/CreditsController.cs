@@ -17,9 +17,9 @@ namespace LogisticsManagement_Web.Controllers
     public class CreditsController : Controller
     {
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public CreditsController(LogisticsContext dbContext)
+        public CreditsController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
         }

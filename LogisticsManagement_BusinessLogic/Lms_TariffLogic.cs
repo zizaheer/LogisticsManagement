@@ -3,12 +3,14 @@ using LogisticsManagement_DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LogisticsManagement_BusinessLogic
 {
     public class Lms_TariffLogic : BaseLogic<Lms_TariffPoco>
     {
-        public Lms_TariffLogic(IDataRepository<Lms_TariffPoco> repository) : base(repository)
+        IMemoryCache _cache;
+        public Lms_TariffLogic(IMemoryCache cash, IDataRepository<Lms_TariffPoco> repository) : base(repository)
         {
         }
 

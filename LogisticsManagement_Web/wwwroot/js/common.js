@@ -50,7 +50,7 @@ function AddEntry(actionUrl, dataArray) {
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
-            if (result.length > 1) {
+            if (result.length > 0) {
                 SetResponseMessage('Success', 'Success! Data saved successfully. ');
             }
             else {
@@ -87,13 +87,12 @@ function UpdateEntry(actionUrl, dataArray) {
     });
 }
 
-
-
-function RemoveEntry(actionUrl, dataArray) {
+function RemoveEntry(actionUrl, id) {
     $.ajax({
-        url: actionUrl,
+        'async': false,
+        url: actionUrl + '/' + id,
         type: 'POST',
-        data: JSON.stringify(dataArray),
+        data: id,
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
@@ -105,7 +104,6 @@ function RemoveEntry(actionUrl, dataArray) {
     });
 }
 
-
 function MaskPhoneNumber(element) {
     $(element).mask('000-000-0000');
 }
@@ -113,7 +111,6 @@ function MaskPhoneNumber(element) {
 function MaskDate(element) {
     $(element).mask('00/00/0000');
 }
-
 
 function SetResponseMessage(responseType, messageContent) {
     $('#lblMsgContent').text(messageContent);

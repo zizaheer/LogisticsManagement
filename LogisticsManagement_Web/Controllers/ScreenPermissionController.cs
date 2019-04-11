@@ -19,11 +19,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private App_ScreenPermissionLogic _screenPermissionLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public ScreenPermissionController(LogisticsContext dbContext)
+        public ScreenPermissionController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _screenPermissionLogic = new App_ScreenPermissionLogic(new EntityFrameworkGenericRepository<App_ScreenPermissionPoco>(_dbContext));
+            _screenPermissionLogic = new App_ScreenPermissionLogic(_cache, new EntityFrameworkGenericRepository<App_ScreenPermissionPoco>(_dbContext));
         }
 
         public IActionResult Index()

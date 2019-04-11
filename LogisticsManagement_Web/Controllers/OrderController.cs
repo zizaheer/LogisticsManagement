@@ -17,7 +17,7 @@ namespace LogisticsManagement_Web.Controllers
     public class OrderController : Controller
     {
 
-        //private IMemoryCache _memoryCache;  // To do later 
+        //private IMemoryCache _cache;  // To do later 
         
         private Lms_OrderLogic _orderLogic;
         private readonly LogisticsContext _dbContext;
@@ -28,7 +28,7 @@ namespace LogisticsManagement_Web.Controllers
         {
             _cache = cache;
             _dbContext = dbContext;
-            _orderLogic = new Lms_OrderLogic(new EntityFrameworkGenericRepository<Lms_OrderPoco>(_dbContext));
+            _orderLogic = new Lms_OrderLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderPoco>(_dbContext));
         }
 
         public IActionResult Index()
@@ -47,13 +47,13 @@ namespace LogisticsManagement_Web.Controllers
 
         private List<Lms_TariffPoco> GetTariffs()
         {
-            Lms_TariffLogic tariffLogic = new Lms_TariffLogic(new EntityFrameworkGenericRepository<Lms_TariffPoco>(_dbContext));
+            Lms_TariffLogic tariffLogic = new Lms_TariffLogic(_cache, new EntityFrameworkGenericRepository<Lms_TariffPoco>(_dbContext));
             return tariffLogic.GetList();
         }
 
         private List<Lms_DeliveryOptionPoco> GetDeliveryOptions()
         {
-            Lms_DeliveryOptionLogic deliveryOptionLogic = new Lms_DeliveryOptionLogic(new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
+            Lms_DeliveryOptionLogic deliveryOptionLogic = new Lms_DeliveryOptionLogic(_cache, new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
             return deliveryOptionLogic.GetList();
         }
 

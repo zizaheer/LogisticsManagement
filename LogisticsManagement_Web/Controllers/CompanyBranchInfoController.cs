@@ -18,12 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_CompanyBranchInfoLogic _companyBranchInfoLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public CompanyBranchInfoController(LogisticsContext dbContext)
+        public CompanyBranchInfoController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _companyBranchInfoLogic = new Lms_CompanyBranchInfoLogic(new EntityFrameworkGenericRepository<Lms_CompanyBranchInfoPoco>(_dbContext));
+            _companyBranchInfoLogic = new Lms_CompanyBranchInfoLogic(_cache, new EntityFrameworkGenericRepository<Lms_CompanyBranchInfoPoco>(_dbContext));
         }
 
         public IActionResult Index()

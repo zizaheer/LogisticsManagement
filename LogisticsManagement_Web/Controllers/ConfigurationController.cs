@@ -18,12 +18,13 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_ConfigurationLogic _configurationLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public ConfigurationController(LogisticsContext dbContext)
+        public ConfigurationController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
-            _configurationLogic = new Lms_ConfigurationLogic(new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+            _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
         }
 
         public IActionResult Index()

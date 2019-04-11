@@ -16,12 +16,12 @@ namespace LogisticsManagement_Web.Controllers
 {
     public class HomeController : Controller
     {
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
         SessionData sessionData = new SessionData();
 
-        public HomeController(IMemoryCache memoryCache)
+        public HomeController(IMemoryCache cache)
         {
-            _memoryCache = memoryCache;
+            _cache = cache;
         }
 
         public IActionResult Index()

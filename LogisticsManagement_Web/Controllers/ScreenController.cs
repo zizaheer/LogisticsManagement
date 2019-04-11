@@ -19,11 +19,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private App_ScreenLogic _screenLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public ScreenController(LogisticsContext dbContext)
+        public ScreenController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _screenLogic = new App_ScreenLogic(new EntityFrameworkGenericRepository<App_ScreenPoco>(_dbContext));
+            _screenLogic = new App_ScreenLogic(_cache, new EntityFrameworkGenericRepository<App_ScreenPoco>(_dbContext));
         }
 
         public IActionResult Index()

@@ -19,11 +19,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_WeightScaleLogic _weightScaleLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public WeightScaleController(LogisticsContext dbContext)
+        public WeightScaleController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _weightScaleLogic = new Lms_WeightScaleLogic(new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
+            _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
         }
 
         public IActionResult Index()

@@ -19,11 +19,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_PaymentMethodLogic _paymentMethodLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public PaymentMethodController(LogisticsContext dbContext)
+        public PaymentMethodController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _paymentMethodLogic = new Lms_PaymentMethodLogic(new EntityFrameworkGenericRepository<Lms_PaymentMethodPoco>(_dbContext));
+            _paymentMethodLogic = new Lms_PaymentMethodLogic(_cache, new EntityFrameworkGenericRepository<Lms_PaymentMethodPoco>(_dbContext));
         }
 
         public IActionResult Index()

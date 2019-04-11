@@ -3,12 +3,14 @@ using LogisticsManagement_DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LogisticsManagement_BusinessLogic
 {
     public class Lms_CustomerEmployeeMappingLogic : BaseLogic<Lms_CustomerEmployeeMappingPoco>
     {
-        public Lms_CustomerEmployeeMappingLogic(IDataRepository<Lms_CustomerEmployeeMappingPoco> repository) : base(repository)
+        IMemoryCache _cache;
+        public Lms_CustomerEmployeeMappingLogic(IMemoryCache cash, IDataRepository<Lms_CustomerEmployeeMappingPoco> repository) : base(repository)
         {
         }
 

@@ -19,11 +19,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_TransactionLogic _transactionLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public TransactionController(LogisticsContext dbContext)
+        public TransactionController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _transactionLogic = new Lms_TransactionLogic(new EntityFrameworkGenericRepository<Lms_TransactionPoco>(_dbContext));
+            _transactionLogic = new Lms_TransactionLogic(_cache, new EntityFrameworkGenericRepository<Lms_TransactionPoco>(_dbContext));
         }
 
         public IActionResult Index()

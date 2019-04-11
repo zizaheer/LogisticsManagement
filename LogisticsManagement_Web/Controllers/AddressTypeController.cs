@@ -18,12 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_AddressTypeLogic _addressTypeLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public AddressTypeController(LogisticsContext dbContext)
+        public AddressTypeController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _addressTypeLogic = new Lms_AddressTypeLogic(new EntityFrameworkGenericRepository<Lms_AddressTypePoco>(_dbContext));
+            _addressTypeLogic = new Lms_AddressTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressTypePoco>(_dbContext));
         }
 
         public IActionResult Index()

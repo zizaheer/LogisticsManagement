@@ -18,11 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_DeliveryOptionLogic _deliveryOptionLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public DeliveryOptionController(LogisticsContext dbContext)
+        public DeliveryOptionController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _deliveryOptionLogic = new Lms_DeliveryOptionLogic(new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
+            _deliveryOptionLogic = new Lms_DeliveryOptionLogic(_cache, new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
         }
 
         public IActionResult Index()

@@ -19,11 +19,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_OrderStatusLogic _orderStatusLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public OrderStatusController(LogisticsContext dbContext)
+        public OrderStatusController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _orderStatusLogic = new Lms_OrderStatusLogic(new EntityFrameworkGenericRepository<Lms_OrderStatusPoco>(_dbContext));
+            _orderStatusLogic = new Lms_OrderStatusLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderStatusPoco>(_dbContext));
         }
 
         public IActionResult Index()

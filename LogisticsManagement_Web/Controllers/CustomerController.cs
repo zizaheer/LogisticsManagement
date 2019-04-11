@@ -80,6 +80,12 @@ namespace LogisticsManagement_Web.Controllers
                             var jObject = JObject.Parse(customerId);
                             var returnedObject = (string)jObject.SelectToken("ReturnedValue");
                             result = (string)JObject.Parse(returnedObject).SelectToken("CustomerId");
+
+                            if (result.Length > 1)
+                            {
+                                result = Convert.ToInt32(result) < 1 ? "" : result;
+                            }
+
                         }
                     }
                 }
@@ -133,15 +139,14 @@ namespace LogisticsManagement_Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Remove([FromBody]dynamic customerData)
+        public IActionResult Remove(string id)
         {
             bool result = false;
             try
             {
-                var serializedData = JsonConvert.SerializeObject(customerData);
-                Lms_CustomerPoco[] pocos = JsonConvert.DeserializeObject<Lms_CustomerPoco[]>(serializedData);
+                var poco = _customerLogic.GetSingleById(Convert.ToInt32(id));
+                _customerLogic.Remove(poco);
 
-                _customerLogic.Remove(pocos);
                 result = true;
             }
             catch (Exception ex)

@@ -18,11 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_EmployeeTypeLogic _employeeTypeLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public EmployeeTypeController(LogisticsContext dbContext)
+        public EmployeeTypeController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _employeeTypeLogic = new Lms_EmployeeTypeLogic(new EntityFrameworkGenericRepository<Lms_EmployeeTypePoco>(_dbContext));
+            _employeeTypeLogic = new Lms_EmployeeTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeeTypePoco>(_dbContext));
         }
 
         public IActionResult Index()

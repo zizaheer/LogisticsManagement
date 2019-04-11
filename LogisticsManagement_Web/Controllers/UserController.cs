@@ -19,7 +19,7 @@ namespace LogisticsManagement_Web.Controllers
         private App_UserLogic _userLogic;
         private readonly LogisticsContext _dbContext;
 
-        public UserController(LogisticsContext dbContext)
+        public UserController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
             _userLogic = new App_UserLogic(new EntityFrameworkGenericRepository<App_UserPoco>(_dbContext));

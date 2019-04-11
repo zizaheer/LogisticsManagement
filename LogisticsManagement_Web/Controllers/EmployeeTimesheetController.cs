@@ -18,11 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_EmployeeTimesheetLogic _employeeTimesheetLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public EmployeeTimesheetController(LogisticsContext dbContext)
+        public EmployeeTimesheetController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _employeeTimesheetLogic = new Lms_EmployeeTimesheetLogic(new EntityFrameworkGenericRepository<Lms_EmployeeTimesheetPoco>(_dbContext));
+            _employeeTimesheetLogic = new Lms_EmployeeTimesheetLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeeTimesheetPoco>(_dbContext));
         }
 
         public IActionResult Index()

@@ -18,11 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_InvoiceStorageOrderMappingLogic _invoiceStorageOrderMappingLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public InvoiceStorageOrderMappingController(LogisticsContext dbContext)
+        public InvoiceStorageOrderMappingController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _invoiceStorageOrderMappingLogic = new Lms_InvoiceStorageOrderMappingLogic(new EntityFrameworkGenericRepository<Lms_InvoiceStorageOrderMappingPoco>(_dbContext));
+            _invoiceStorageOrderMappingLogic = new Lms_InvoiceStorageOrderMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_InvoiceStorageOrderMappingPoco>(_dbContext));
         }
 
         public IActionResult Index()

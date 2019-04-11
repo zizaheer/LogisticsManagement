@@ -3,12 +3,14 @@ using LogisticsManagement_DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LogisticsManagement_BusinessLogic
 {
     public class Lms_OrderTypeLogic : BaseLogic<Lms_OrderTypePoco>
     {
-        public Lms_OrderTypeLogic(IDataRepository<Lms_OrderTypePoco> repository) : base(repository)
+        IMemoryCache _cache;
+        public Lms_OrderTypeLogic(IMemoryCache cash, IDataRepository<Lms_OrderTypePoco> repository) : base(repository)
         {
         }
 

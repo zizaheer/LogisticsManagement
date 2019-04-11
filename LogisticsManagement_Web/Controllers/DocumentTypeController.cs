@@ -18,11 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private App_DocumentTypeLogic _documentTypeLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public DocumentTypeController(LogisticsContext dbContext)
+        public DocumentTypeController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _documentTypeLogic = new App_DocumentTypeLogic(new EntityFrameworkGenericRepository<App_DocumentTypePoco>(_dbContext));
+            _documentTypeLogic = new App_DocumentTypeLogic(_cache, new EntityFrameworkGenericRepository<App_DocumentTypePoco>(_dbContext));
         }
 
         public IActionResult Index()

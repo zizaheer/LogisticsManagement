@@ -19,11 +19,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_AccountTypeLogic _accountTypeLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public AccountTypeController(LogisticsContext dbContext)
+        public AccountTypeController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _accountTypeLogic = new Lms_AccountTypeLogic(new EntityFrameworkGenericRepository<Lms_AccountTypePoco>(_dbContext));
+            _accountTypeLogic = new Lms_AccountTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_AccountTypePoco>(_dbContext));
         }
 
         public IActionResult Index()

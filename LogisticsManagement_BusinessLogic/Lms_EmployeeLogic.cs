@@ -21,30 +21,30 @@ namespace LogisticsManagement_BusinessLogic
 
         public override List<Lms_EmployeePoco> GetList()
         {
-            List<Lms_EmployeePoco> _customers;
-            if (!_cache.TryGetValue(App_CacheKeys.Customers, out _customers))
+            List<Lms_EmployeePoco> _employees;
+            if (!_cache.TryGetValue(App_CacheKeys.Employees, out _employees))
             {
-                _customers = base.GetList();
+                _employees = base.GetList();
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(3));
-                _cache.Set(App_CacheKeys.Customers, _customers, cacheEntryOptions);
+                _cache.Set(App_CacheKeys.Employees, _employees, cacheEntryOptions);
             }
 
-            return _customers;
+            return _employees;
         }
 
         public override List<Lms_EmployeePoco> GetListById(int id)
         {
-            List<Lms_EmployeePoco> _customers;
-            if (!_cache.TryGetValue(App_CacheKeys.Customers, out _customers))
+            List<Lms_EmployeePoco> _employees;
+            if (!_cache.TryGetValue(App_CacheKeys.Employees, out _employees))
             {
-                _customers = base.GetListById(id);
+                _employees = base.GetListById(id);
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(3));
-                _cache.Set(App_CacheKeys.Customers, _customers, cacheEntryOptions);
+                _cache.Set(App_CacheKeys.Employees, _employees, cacheEntryOptions);
             }
 
-            return _customers;
+            return _employees;
         }
 
         public override Lms_EmployeePoco GetSingleById(int id)
@@ -67,7 +67,7 @@ namespace LogisticsManagement_BusinessLogic
             poco.CreateDate = DateTime.Now;
 
             var addedPoco = base.Add(poco);
-            _cache.Remove(App_CacheKeys.Customers);
+            _cache.Remove(App_CacheKeys.Employees);
 
             return addedPoco;
         }
@@ -76,7 +76,7 @@ namespace LogisticsManagement_BusinessLogic
         {
             poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
             var updatedPoco = base.Update(poco);
-            _cache.Remove(App_CacheKeys.Customers);
+            _cache.Remove(App_CacheKeys.Employees);
 
             return updatedPoco;
         }
@@ -84,25 +84,25 @@ namespace LogisticsManagement_BusinessLogic
         public override void Remove(Lms_EmployeePoco poco)
         {
             base.Remove(poco);
-            _cache.Remove(App_CacheKeys.Customers);
+            _cache.Remove(App_CacheKeys.Employees);
         }
 
         public override void Add(Lms_EmployeePoco[] pocos)
         {
             base.Add(pocos);
-            _cache.Remove(App_CacheKeys.Customers);
+            _cache.Remove(App_CacheKeys.Employees);
         }
 
         public override void Update(Lms_EmployeePoco[] pocos)
         {
             base.Update(pocos);
-            _cache.Remove(App_CacheKeys.Customers);
+            _cache.Remove(App_CacheKeys.Employees);
         }
 
         public override void Remove(Lms_EmployeePoco[] pocos)
         {
             base.Remove(pocos);
-            _cache.Remove(App_CacheKeys.Customers);
+            _cache.Remove(App_CacheKeys.Employees);
         }
 
         #endregion

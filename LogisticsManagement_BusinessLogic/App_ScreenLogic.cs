@@ -3,12 +3,14 @@ using LogisticsManagement_DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LogisticsManagement_BusinessLogic
 {
     public class App_ScreenLogic : BaseLogic<App_ScreenPoco>
     {
-        public App_ScreenLogic(IDataRepository<App_ScreenPoco> repository) : base(repository)
+        IMemoryCache _cache;
+        public App_ScreenLogic(IMemoryCache cash, IDataRepository<App_ScreenPoco> repository) : base(repository)
         {
         }
 

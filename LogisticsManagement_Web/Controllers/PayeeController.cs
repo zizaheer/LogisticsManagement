@@ -19,11 +19,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_PayeeLogic _payeeLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public PayeeController(LogisticsContext dbContext)
+        public PayeeController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _payeeLogic = new Lms_PayeeLogic(new EntityFrameworkGenericRepository<Lms_PayeePoco>(_dbContext));
+            _payeeLogic = new Lms_PayeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_PayeePoco>(_dbContext));
         }
 
         public IActionResult Index()

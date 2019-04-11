@@ -18,11 +18,12 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_EmployeeVehicleMappingLogic _employeeVehicleMappingLogic;
         private readonly LogisticsContext _dbContext;
+        IMemoryCache _cache;
 
-        public EmployeeVehicleMappingController(LogisticsContext dbContext)
+        public EmployeeVehicleMappingController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _dbContext = dbContext;
-            _employeeVehicleMappingLogic = new Lms_EmployeeVehicleMappingLogic(new EntityFrameworkGenericRepository<Lms_EmployeeVehicleMappingPoco>(_dbContext));
+            _employeeVehicleMappingLogic = new Lms_EmployeeVehicleMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeeVehicleMappingPoco>(_dbContext));
         }
 
         public IActionResult Index()

@@ -46,7 +46,7 @@
 
                         <td>
                             <button id="btnEdit" data-customer='@Json.Serialize(item)' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
-                            <button id="btnDelete" data-customer='@Json.Serialize(item)' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                            <button id="btnDelete" data-customerid='@item.Id' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
                         </td>
                     </tr>
                 }

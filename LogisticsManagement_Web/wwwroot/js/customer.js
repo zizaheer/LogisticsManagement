@@ -163,9 +163,8 @@ $('#btnDownloadData').unbind().on('click', function () {
     $('#loadDataTable').load('Customer/PartialViewDataTable');
 });
 
-$('#frmCustomerForm').submit(function (event) {
-    var data = GetFormData(event);
-  
+$('#frmCustomerForm').unbind('submit').submit(function () {
+    var data = GetFormData();
     $.ajax({
         'async': false,
         url: 'Customer/Add',
@@ -180,7 +179,6 @@ $('#frmCustomerForm').submit(function (event) {
             else {
                 SetResponseMessage('Failed', 'Operation failed. An error occurred while saving data. Please check your input and try again.');
             }
-         
         },
         error: function (result) {
             
@@ -188,35 +186,14 @@ $('#frmCustomerForm').submit(function (event) {
     });
 });
 
-$('.btnDelete').on('click', function () {
-    SetResponseMessage('Warning', 'The data will be deleted. Are you sure you want ot continue?');
-    customerData = $(this).data('customer');
-});
-$('#btnProceed').on('click', function () {
-    if (customerData !== null) {
-        RemoveCustomer(customerData);
-    }
+$('.btnDelete').unbind().on('click', function () {
+    customerId = $(this).data('customerid');
+    RemoveEntry('Customer/Remove', customerId);
+    $('#loadDataTable').load('Customer/PartialViewDataTable');
 });
 
-function RemoveCustomer(customerData) {
-    $.ajax({
-        url: 'Customer/Remove',
-        type: 'POST',
-        data: JSON.stringify([customerData]),
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        success: function (result) {
-            SetResponseMessage('Success', 'Data has been removed.');
-            $('#loadDataTable').load('Customer/PartialViewDataTable');
-        },
-        error: function (result) {
-            SetResponseMessage('Failed', 'An error occured during deleting the data.');
-        }
-    });
-}
 
-function GetFormData(event) {
-    event.preventDefault();
+function GetFormData() {
     var customerData = {
         id: $('#txtCustomerId').val() === "" ? "0" : $('#txtCustomerId').val(),
         customerName: $('#txtCustomerName').val(),

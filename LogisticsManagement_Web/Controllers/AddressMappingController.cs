@@ -18,12 +18,13 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_AddressMappingLogic _addressMappingLogic;
         private readonly LogisticsContext _dbContext;
-        IMemoryCache _memoryCache;
+        IMemoryCache _cache;
 
-        public AddressMappingController(LogisticsContext dbContext)
+        public AddressMappingController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
-            _addressMappingLogic = new Lms_AddressMappingLogic(new EntityFrameworkGenericRepository<Lms_AddressMappingPoco>(_dbContext));
+            _addressMappingLogic = new Lms_AddressMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressMappingPoco>(_dbContext));
         }
 
         public IActionResult Index()
