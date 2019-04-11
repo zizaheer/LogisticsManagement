@@ -31,7 +31,7 @@
 
                     <div class="row">
                         <div class="form-group col-sm-6">
-                            <input class="form-control" id="txtCustomerName" placeholder="Customer Name" type="text" name="txtCustomerName" />
+                            <input class="form-control" id="txtCustomerName" placeholder="Customer Name" type="text" name="txtCustomerName" required />
                         </div>
                         <div class="form-group col-sm-4">
                             <select class="form-control" id="ddlEmployeeId">
@@ -46,11 +46,14 @@
                     </div>
 
                     <div class="row">
-                        <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtSpecialDiscount" placeholder="Special discount (%)" type="number" maxlength="2" name="txtSpecialDiscount" />
+                        <div class="form-group col-sm-1">
+                            <input class="form-control" id="txtFuelSurcharge" placeholder="Fuel (%)" type="number" max="100" name="txtFuelSurcharge" />
                         </div>
                         <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtInvoiceDueDays" placeholder="Invoice Due Days" type="number" maxlength="2" name="txtInvoiceDueDays" />
+                            <input class="form-control" id="txtSpecialDiscount" placeholder="Discount (%)" type="number" max="100" name="txtSpecialDiscount" />
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <input class="form-control" id="txtInvoiceDueDays" placeholder="Invoice Due Days" type="number" max="90" name="txtInvoiceDueDays" />
                         </div>
                         <div class="form-group col-sm-2">
                             <div class="form-check form-check-inline mr-1">

@@ -21,6 +21,7 @@ namespace LogisticsManagement_Poco
         public string StorageWBNoStartFrom { get; set; }
         public string InvoiceNumberStartFrom { get; set; }
         public int DefaultWeightScaleId { get; set; }
+        public decimal? DefaultFuelSurcharge { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
     }

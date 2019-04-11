@@ -1,106 +1,88 @@
-﻿var tariffData;
-
+﻿var employeeData;
 
 $(document).ready(function () {
-    ClearForm();
-});
 
-function GetFormData() {
-    var data = {
-        id: $('#txtTariffId').val(),
-        deliveryOptionId: $('#ddlDeliveryOptionId').val(),
-        cityId: $('#ddlCityId').val(),
-        vehicleTypeId: $('#ddlVehicleTypeId').val(),
-        unitTypeId: $('#ddlUnitTypeId').val(),
-        weightScaleId: $('#ddlWeightScaleId').val(),
-        firstUnitPrice: $('#txtFirstUnitPrice').val(),
-        perUnitPrice: $('#txtPerUnitPrice').val(),
-        createDate: $('#hfCreateDate').val(),
-        createdBy: $('#hfCreatedBy').val()
-    };
+    MaskPhoneNumber('#txtMobileNo');
+    MaskPhoneNumber('#txtPhoneNumber');
 
-    return data;
-}
-
-function ClearForm() {
-
-    $('#txtTariffId').attr('disabled', 'disabled');
-    $('#txtTariffId').val();
-    $('#ddlDeliveryOptionId').val();
-    $('#ddlCityId').val();
-    $('#ddlVehicleTypeId').val();
-    $('#ddlUnitTypeId').val();
-    $('#ddlWeightScaleId').val();
-    $('#txtFirstUnitPrice').val();
-    $('#txtPerUnitPrice').val();
-
-}
-
-$('#btnNew').on('click', function () {
-    ClearForm();
-});
-
-$('.btnEdit').on('click', function () {
-    var data = $(this).data('tariff');
-    $('#txtTariffId').val(data.id);
-    $('#ddlDeliveryOptionId').val(data.deliveryOptionId);
-    $('#ddlCityId').val(data.cityId);
-    $('#ddlVehicleTypeId').val(data.vehicleTypeId);
-    $('#ddlUnitTypeId').val(data.unitTypeId);
-    $('#ddlWeightScaleId').val(data.weightScaleId);
-    $('#txtFirstUnitPrice').val(data.firstUnitPrice);
-    $('#txtPerUnitPrice').val(data.perUnitPrice);
-});
-
-
-
-$('#frmTariffForm').submit(function (event) {
-    var data = GetFormData();
-    $.ajax({
-        url: 'Tariff/AddOrUpdate',
-        type: 'POST',
-        data: JSON.stringify([data]),
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        success: function (result) {
-            //SetAlertType('Success', 'Data has been removed.');
-        },
-        error: function (result) {
-            //SetAlertType('Failed', 'An error occured during deleting the data.');
-        }
+    $(document).ajaxStart(function () {
+        $("#spinnerLoadingDataTable").css("display", "inline-block");
+    });
+    $(document).ajaxComplete(function () {
+        $("#spinnerLoadingDataTable").css("display", "none");
     });
 });
 
-$('.btnDelete').on('click', function () {
-    SetAlertType('Warning', 'The data will be deleted. Are you sure you want ot continue?');
-    tariffData = $(this).data('tariff');
+$('#employee-list').on('click', '.btnEdit', function () {
+    var data = $(this).data('employee');
+
+    $('#txtCustomerId').val(data.id);
+    $('#txtCustomerName').val(data.customerName);
+    $('#txtSpecialDiscount').val(data.discountPercentage);
+    $('#txtInvoiceDueDays').val(data.invoiceDueDays);
 });
-$('#btnProceed').on('click', function () {
-    if (tariffData !== null) {
-        RemoveTariff(tariffData);
+
+$('#btnDownloadData').unbind().on('click', function (event) {
+    event.preventDefault();
+    $('#loadDataTable').load('Employee/PartialViewDataTable');
+   
+});
+
+$('#frmEmployeeForm').submit(function (event) {
+    var dataArray = GetFormData(event);
+    AddEntry('Employee/Add', dataArray);
+});
+
+$('.btnDelete').unbind().on('click', function () {
+    SetResponseMessage('Warning', 'The data will be deleted. Are you sure you want ot continue?');
+    employeeData = $(this).data('employee');
+});
+
+$('#btnProceed').unbind().on('click', function () {
+    if (employeeData !== null) {
+        RemoveEntry('Employee/Remove', [employeeData]);
+        $('#loadDataTable').load('Employee/PartialViewDataTable');
     }
 });
 
-function RemoveTariff(tariffData) {
-    $.ajax({
-        url: 'Tariff/Remove',
-        type: 'POST',
-        data: JSON.stringify([tariffData]),
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        success: function (result) {
-            SetAlertType('Success', 'Data has been removed.');
 
-        },
-        error: function (result) {
-            SetAlertType('Failed', 'An error occured during deleting the data.');
-        }
-    });
+function GetFormData(event) {
+    event.preventDefault();
+    var employeeData = {
+
+        id: $('#txtEmployeeId').val() === "" ? "0" : $('#txtEmployeeId').val(),
+        firstName: $('#txtFirstName').val(),
+        lastName: $('#txtLastName').val(),
+        driverLicenseNo: $('#txtDrivingLicenseNo').val(),
+        socialInsuranceNo: $('#txtSocialInsuranceNo').val(),
+        unitNumber: $('#txtUnitNumber').val(),
+        addressLine: $('#txtAddressLine').val(),
+        cityId: $('#ddlCityId').val(),
+        provinceId: $('#ddlProvinceId').val(),
+        countryId: $('#ddlCountryId').val(),
+        postCode: $('#txtPostCode').val(),
+        phoneNumber: $('#txtPhoneNumber').val(),
+        mobileNumber: $('#txtMobileNo').val(),
+        faxNumber: $('#txtFaxNo').val(),
+        emailAddress: $('#txtEmailAddress').val(),
+
+        employeeTypeId: $('#ddlEmployeeTypeId').val(),
+        isHourlyPaid: $('#chkIsHourlyPaid').is(':checked') ? 1 : 0,
+        hourlyRate: $('#txtHourlyRate').val(),
+        isSalaried: $('#chkIsSalaryEmployee').is(':checked') ? 1 : 0,
+        salaryAmount: $('#txtSalaryAmount').val(),
+        salaryTerm: $('#ddlSalaryTermId').val(),
+        isCommissionProvided: $('#chkIsCommissionProvided').is(':checked') ? 1 : 0,
+        commissionPercentage: $('#txtCommissionAmount').val(),
+        isFuelChargeProvided: $('#chkIsFuelProvided').is(':checked') ? 1 : 0,
+        fuelPercentage: $('#txtFuelSurchargePercentage').val(),
+        radioInsuranceAmount: $('#txtRadioInsuranceAmount').val(),
+        insuranceAmount: $('#txtInsuranceAmount').val(),
+        
+        isActive: $('#chkIsActive').is(':checked') ? 1 : 0
+
+    };
+
+    return [employeeData];
 }
 
-
-function GetEmployees()
-{
-    //GetListObject('Employee/GetEmployees')
-
-}

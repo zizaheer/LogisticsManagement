@@ -18,6 +18,7 @@ namespace LogisticsManagement_Poco
         public string CustomerName { get; set; }
         
         public bool IsGstApplicable { get; set; }
+        public decimal? FuelSurChargePercentage { get; set; }
         public decimal? DiscountPercentage { get; set; }
         public byte? InvoiceDueDays { get; set; }
 

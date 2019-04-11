@@ -30,27 +30,30 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Login(string userName, string userPassword)
         {
-            if (_userLogic.IsCredentialsValid(userName, userPassword, out App_UserPoco outUserData))
+            if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
             {
-                SessionData sessionData = new SessionData();
-                sessionData.UserId = outUserData.Id;
-                sessionData.GroupId = outUserData.GroupId;
-                sessionData.BranchId = outUserData.BranchId;
-                sessionData.UserName = outUserData.UserName;
-                sessionData.FirstName = outUserData.FirstName;
-                sessionData.MiddleName = outUserData.MiddleName;
-                sessionData.LastName = outUserData.LastName;
-                sessionData.EmailAddress = outUserData.EmailAddress;
-                sessionData.Address = outUserData.Address;
-                sessionData.CityId = outUserData.CityId;
-                sessionData.ProvinceId = outUserData.ProvinceId;
-                sessionData.CountryId = outUserData.CountryId;
-                sessionData.PostCode = outUserData.PostCode;
-                sessionData.PhoneNumber = outUserData.PhoneNumber;
-                sessionData.ProfilePicture = outUserData.ProfilePicture;
+                if (_userLogic.IsCredentialsValid(userName, userPassword, out App_UserPoco outUserData))
+                {
+                    SessionData sessionData = new SessionData();
+                    sessionData.UserId = outUserData.Id;
+                    sessionData.GroupId = outUserData.GroupId;
+                    sessionData.BranchId = outUserData.BranchId;
+                    sessionData.UserName = outUserData.UserName;
+                    sessionData.FirstName = outUserData.FirstName;
+                    sessionData.MiddleName = outUserData.MiddleName;
+                    sessionData.LastName = outUserData.LastName;
+                    sessionData.EmailAddress = outUserData.EmailAddress;
+                    sessionData.Address = outUserData.Address;
+                    sessionData.CityId = outUserData.CityId;
+                    sessionData.ProvinceId = outUserData.ProvinceId;
+                    sessionData.CountryId = outUserData.CountryId;
+                    sessionData.PostCode = outUserData.PostCode;
+                    sessionData.PhoneNumber = outUserData.PhoneNumber;
+                    sessionData.ProfilePicture = outUserData.ProfilePicture;
 
-                HttpContext.Session.SetString("SessionData", JsonConvert.SerializeObject(sessionData));
-                return RedirectToAction("Index", "Home");
+                    HttpContext.Session.SetString("SessionData", JsonConvert.SerializeObject(sessionData));
+                    return RedirectToAction("Index", "Home");
+                }
             }
 
             return RedirectToAction("Index");
@@ -60,6 +63,11 @@ namespace LogisticsManagement_Web.Controllers
         {
             HttpContext.Session.Remove("SessionData");
             return RedirectToAction("Index");
+        }
+
+        public IActionResult InvalidLocation()
+        {
+            return View();
         }
 
     }

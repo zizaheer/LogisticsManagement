@@ -119,8 +119,7 @@ namespace LogisticsManagement_DataAccess
         public string CallStoredProcedure(string query, params object[] parameters)
         {
             var type = _context.Query<Lms_StoredProcedureResult>().FromSql(query, parameters).ToList();
-
-            return JsonConvert.SerializeObject(type.ToArray());
+            return JsonConvert.SerializeObject(type[0]);
         }
     }
 }

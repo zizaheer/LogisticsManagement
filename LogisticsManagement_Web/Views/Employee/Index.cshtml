@@ -5,15 +5,6 @@
     ViewData["Title"] = "Employee";
 }
 
-
-<script>
-    $(document).ready(function () {
-        $('#employee-list').DataTable({
-            "order": [[0, "desc"]],
-        });
-    });
-</script>
-
 <form id="frmEmployeeForm">
     <div class="row">
         <div class="col-sm-12">
@@ -27,13 +18,10 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="card" id="cardEmployeeInfo">
-                                <div class="card-header">
-                                    <i class="fa fa-send"></i> Employee information
-                                </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtEmployeeId" placeholder="ID" type="number" />
+                                            <input class="form-control" id="txtEmployeeId" placeholder="ID" type="number" max="999999" />
                                         </div>
                                         <div class="form-group col-sm-1" style="padding-left: 0px;">
                                             <button id="btnFindEmployee" class="btn btn-secondary"><i class="fa fa-search"></i></button>
@@ -41,25 +29,27 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-sm-6">
-                                            <input class="form-control" id="txtFirstName" placeholder="First name" name="txtFirstName" type="text" />
+                                            <input class="form-control" id="txtFirstName" placeholder="First name" name="txtFirstName" type="text" maxlength="20" required />
                                         </div>
                                         <div class="form-group col-sm-6">
-                                            <input class="form-control" id="txtLastName" placeholder="Last name" name="txtLastName" type="text" />
+                                            <input class="form-control" id="txtLastName" placeholder="Last name" name="txtLastName" maxlength="20" type="text" />
                                         </div>
                                     </div>
                                     <div class="row">
 
                                         <div class="form-group col-sm-4">
-                                            <input class="form-control" id="txtDrivingLicenseNo" name="txtDrivingLicenseNo" placeholder="Drivers license" type="text" />
+                                            <input class="form-control" id="txtDrivingLicenseNo" name="txtDrivingLicenseNo" placeholder="Drivers license" maxlength="50" type="text" />
                                         </div>
                                         <div class="form-group col-sm-4">
-                                            <input class="form-control" id="txtSocialInsuranceNo" placeholder="Social insurance" name="txtSocialInsuranceNo" type="text" />
+                                            <input class="form-control" id="txtSocialInsuranceNo" placeholder="Social insurance" name="txtSocialInsuranceNo" type="text" maxlength="20" />
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <select id="ddlEmployeeTypeId" class="form-control" name="ddlEmployeeTypeId">
                                                 @foreach (var item in ViewBag.EmployeeTypes)
                                                 {
-                                                    <option value="@item"> @item </option>
+                                                    var itemId = 0;
+                                                    itemId = (int)item;
+                                                    <option value="@itemId"> @item </option>
                                                 }
 
                                             </select>
@@ -94,25 +84,25 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtHourlyRate" placeholder="Rate" name="txtHourlyRate" type="text" />
+                                            <input class="form-control" id="txtHourlyRate" placeholder="Rate" name="txtHourlyRate" type="number" max="999" />
                                         </div>
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtSalaryAmount" placeholder="Amount" name="txtSalaryAmount" type="text" />
+                                            <input class="form-control" id="txtSalaryAmount" placeholder="Amount" name="txtSalaryAmount" type="number" max="99999999" />
                                         </div>
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtCommissionAmount" placeholder="Comm. amount" name="txtCommissionAmount" type="text" />
+                                            <input class="form-control" id="txtCommissionAmount" placeholder="Comm. amount" name="txtCommissionAmount" type="number" max="100" />
                                         </div>
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtFuelSurchargePercentage" placeholder="Fuel surcharge" name="txtFuelSurchargePercentage" type="text" />
+                                            <input class="form-control" id="txtFuelSurchargePercentage" placeholder="Fuel surcharge" name="txtFuelSurchargePercentage" type="number" max="100" />
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtRadioInsuranceAmount" placeholder="Radio insurance" name="txtRadioInsuranceAmount" type="text" />
+                                            <input class="form-control" id="txtRadioInsuranceAmount" placeholder="Radio insurance" name="txtRadioInsuranceAmount" type="number" max="9999" />
                                         </div>
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtInsuranceAmount" placeholder="Insurance" name="txtInsuranceAmount" type="text" />
+                                            <input class="form-control" id="txtInsuranceAmount" placeholder="Insurance" name="txtInsuranceAmount" type="number" max="9999" />
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <select id="ddlSalaryTermId" class="form-control">
@@ -140,16 +130,13 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="card" id="cardAddress">
-                                <div class="card-header">
-                                    <i class="fa fa-send"></i> Contact information
-                                </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtUnitNumber" placeholder="Unit " name="txtUnitNumber" type="text" />
+                                            <input class="form-control" id="txtUnitNumber" placeholder="Unit " name="txtUnitNumber" type="text" maxlength="20" />
                                         </div>
                                         <div class="form-group col-sm-9">
-                                            <input class="form-control" id="txtAddressLine" placeholder="Address line" name="txtAddressLine" type="text" />
+                                            <input class="form-control" id="txtAddressLine" placeholder="Address line" name="txtAddressLine" type="text" maxlength="150" />
                                         </div>
                                     </div>
                                     <div class="row">
@@ -199,21 +186,21 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtPostCode" placeholder="Postcode" name="txtPostCode" type="text" />
+                                            <input class="form-control" id="txtPostCode" placeholder="Postcode" name="txtPostCode" type="text" maxlength="20" />
                                         </div>
                                         <div class="form-group col-sm-9">
-                                            <input class="form-control" id="txtEmailAddress" placeholder="Email" name="txtEmailAddress" type="text" />
+                                            <input class="form-control" id="txtEmailAddress" placeholder="Email" name="txtEmailAddress" type="text" maxlength="150" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-sm-4">
-                                            <input class="form-control" id="txtMobileNo" name="txtMobileNo" placeholder="Mobile" type="text" />
+                                            <input class="form-control" id="txtMobileNo" name="txtMobileNo" placeholder="Mobile" type="text" maxlength="20" />
                                         </div>
                                         <div class="form-group col-sm-4">
-                                            <input class="form-control" id="txtFaxNo" name="txtFaxNo" placeholder="Fax" type="text" />
+                                            <input class="form-control" id="txtFaxNo" name="txtFaxNo" placeholder="Fax" type="text" maxlength="20" />
                                         </div>
                                         <div class="form-group col-sm-4">
-                                            <input class="form-control" id="txtPhoneNumber" name="txtPhoneNumber" placeholder="Phone" type="text" />
+                                            <input class="form-control" id="txtPhoneNumber" name="txtPhoneNumber" placeholder="Phone" type="text" maxlength="20" />
                                         </div>
                                     </div>
                                 </div>
@@ -232,73 +219,34 @@
         </div>
     </div>
 </form>
-
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header" style="background-color: #c3c3c3;">
                 <strong><i class="fa fa-sliders"></i> Employees</strong>
                 <div class="card-header-actions">
+                    <span id="spinnerLoadingDataTable" style="display:none">
+                        <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                        <span style="margin-right:20px">Loading...</span>
+                    </span>
+                    <button id="btnDownloadData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
+                    <span style="display:none" id="loadingSpinner"><i class="fa fa-circle-o-notch"></i></span>
+                    <span>&nbsp;&nbsp;</span>
                     <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
                         <i class="icon-arrow-up"></i>
                     </a>
                 </div>
             </div>
+            <div>
+                <input type="hidden" id="hfMaxEmployeeNumber" name="hfMaxEmployeeNumber" value="" />
+            </div>
             <div class="collapse show" id="collapseDatatable">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <table id="employee-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" width=100%>
-                                <thead>
-                                    <tr>
-                                        <th>Number</th>
-                                        <th>FirstName</th>
-                                        <th>LastName</th>
-                                        <th>License#</th>
-                                        <th>Phone</th>
-                                        <th>Email</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.Employees.OrderByDescending(c => c.Id))
-                                    {
-                                        <tr>
-                                            <td>
-                                                @item.EmployeeNumber
-                                            </td>
-                                            <td>
-                                                @item.FirstName
-                                            </td>
-                                            <td>
-                                                @item.LastName
-                                            </td>
-                                            <td>
-                                                @item.DriverLicenseNo
-                                            </td>
-                                            <td>
-                                                @item.PhoneNumber
-                                            </td>
-                                            <td>
-                                                @item.EmailAddress
-                                            </td>
-
-                                            <td>
-                                                <button id="btnEdit" data-tariff='@Json.Serialize(item)' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
-                                                <button id="btnDelete" data-tariff='@Json.Serialize(item)' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                                            </td>
-                                        </tr>
-                                    }
-
-
-                                </tbody>
-                            </table>
-                        </div>
+                    <div id="loadDataTable">
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-@*<script src="~/js/employee.js"></script>*@
+<script src="~/js/employee.js"></script>

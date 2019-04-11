@@ -3,13 +3,16 @@ using LogisticsManagement_DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LogisticsManagement_BusinessLogic
 {
     public class Lms_ConfigurationLogic : BaseLogic<Lms_ConfigurationPoco>
     {
-        public Lms_ConfigurationLogic(IDataRepository<Lms_ConfigurationPoco> repository) : base(repository)
+        IMemoryCache _cache;
+        public Lms_ConfigurationLogic(IMemoryCache cache, IDataRepository<Lms_ConfigurationPoco> repository) : base(repository)
         {
+            _cache = cache;
         }
 
         #region Get Methods

@@ -35,9 +35,18 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
+
             ViewBag.EmployeeTypes = Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>();
+
             return View(GetEmployeeData());
-           
+
+        }
+
+        [HttpGet]
+        public IActionResult PartialViewDataTable()
+        {
+            ValidateSession();
+            return PartialView("_PartialViewEmployeeData", GetEmployeeData());
         }
 
         private EmployeeViewModel GetEmployeeData()
@@ -56,10 +65,86 @@ namespace LogisticsManagement_Web.Controllers
             return employeeViewModel;
         }
 
-        public IActionResult AddOrUpdate([FromBody]dynamic data)
+        public IActionResult Add([FromBody]dynamic employeeData)
         {
 
-            return View();
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (employeeData != null)
+                {
+                    Lms_EmployeePoco employeePoco = JsonConvert.DeserializeObject<Lms_EmployeePoco>(JsonConvert.SerializeObject(employeeData[0]));
+
+                    if (employeePoco.Id < 1 && employeePoco.FirstName.Trim() != string.Empty)
+                    {
+                        employeePoco.CreatedBy = sessionData.UserId;
+                        var employeeId = _employeeLogic.CreateNewEmployee(employeePoco, (int)sessionData.BranchId);
+                        if (!string.IsNullOrEmpty(employeeId))
+                        {
+                            var jObject = JObject.Parse(employeeId);
+                            var returnedObject = (string)jObject.SelectToken("ReturnedValue");
+                            result = (string)JObject.Parse(returnedObject).SelectToken("EmployeeId");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        public IActionResult Update([FromBody]dynamic employeeData)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (employeeData != null)
+                {
+                    Lms_EmployeePoco employeePoco = JsonConvert.DeserializeObject<Lms_EmployeePoco>(JsonConvert.SerializeObject(employeeData[0]));
+
+                    if (employeePoco.Id > 0 && employeePoco.FirstName.Trim() != string.Empty)
+                    {
+                        var employee = _employeeLogic.GetSingleById(employeePoco.Id);
+                        // it is required to pull existing data first, 
+                        // cause there are some data which do not come from UI
+
+                        employee.FirstName = employeePoco.FirstName;
+                        employee.LastName = employeePoco.LastName;
+                        employee.DriverLicenseNo = employeePoco.DriverLicenseNo;
+                        employee.SocialInsuranceNo = employeePoco.SocialInsuranceNo;
+                        employee.EmployeeTypeId = employeePoco.EmployeeTypeId;
+                        employee.IsHourlyPaid = employeePoco.IsHourlyPaid;
+                        employee.HourlyRate = employeePoco.HourlyRate;
+
+                        employee.IsSalaried = employeePoco.IsSalaried;
+                        employee.SalaryAmount = employeePoco.SalaryAmount;
+                        employee.IsCommissionProvided = employeePoco.IsCommissionProvided;
+                        employee.CommissionPercentage = employeePoco.CommissionPercentage;
+                        employee.IsFuelChargeProvided = employeePoco.IsFuelChargeProvided;
+                        employee.FuelPercentage = employeePoco.FuelPercentage;
+                        employee.RadioInsuranceAmount = employeePoco.RadioInsuranceAmount;
+                        employee.InsuranceAmount = employeePoco.InsuranceAmount;
+                        employee.SalaryTerm = employeePoco.SalaryTerm;
+                        employee.IsActive = employeePoco.IsActive;
+
+
+                        _employeeLogic.Update(employee);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
         }
 
 
@@ -77,10 +162,17 @@ namespace LogisticsManagement_Web.Controllers
 
         private void ValidateSession()
         {
-            sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
-            if (sessionData == null)
+            if (HttpContext.Session.GetString("SessionData") != null)
             {
-                Response.Redirect("Login/Index");
+                sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
+                if (sessionData == null)
+                {
+                    Response.Redirect("Login/Index");
+                }
+            }
+            else
+            {
+                Response.Redirect("Login/InvalidLocation");
             }
         }
     }

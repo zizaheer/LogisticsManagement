@@ -23,6 +23,7 @@ namespace LogisticsManagement_Web.Controllers
         private App_CityLogic _cityLogic;
         private App_ProvinceLogic _provinceLogic;
         private App_CountryLogic _countryLogic;
+        private Lms_ConfigurationLogic _configurationLogic; 
         private readonly LogisticsContext _dbContext;
 
         IMemoryCache _cache;
@@ -39,6 +40,9 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
+            _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+            ViewBag.DefaultFuelSurcharge = _configurationLogic.GetSingleById(1).DefaultFuelSurcharge;
+
             return View(GetCustomerData());
         }
 
@@ -67,12 +71,15 @@ namespace LogisticsManagement_Web.Controllers
 
                     var addressData = GetCustomerData().Addressess;
 
-                    if (customerPoco.Id <1)
+                    if (customerPoco.Id < 1 && (billingAddressPoco.AddressLine != string.Empty || mailingAddressPoco.AddressLine != string.Empty))
                     {
+                        customerPoco.CreatedBy = sessionData.UserId;
                         var customerId = _customerLogic.CreateNewCustomer(customerPoco, billingAddressPoco, mailingAddressPoco, (int)sessionData.BranchId);
                         if (!string.IsNullOrEmpty(customerId))
                         {
-                            result = (JsonConvert.DeserializeObject<Lms_StoredProcedureResult>(customerId)).ReturnedValue;
+                            var jObject = JObject.Parse(customerId);
+                            var returnedObject = (string)jObject.SelectToken("ReturnedValue");
+                            result = (string)JObject.Parse(returnedObject).SelectToken("CustomerId");
                         }
                     }
                 }
@@ -172,10 +179,17 @@ namespace LogisticsManagement_Web.Controllers
 
         private void ValidateSession()
         {
-            sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
-            if (sessionData == null)
+            if (HttpContext.Session.GetString("SessionData") != null)
             {
-                Response.Redirect("Login/Index");
+                sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
+                if (sessionData == null)
+                {
+                    Response.Redirect("Login/Index");
+                }
+            }
+            else
+            {
+                Response.Redirect("Login/InvalidLocation");
             }
         }
     }

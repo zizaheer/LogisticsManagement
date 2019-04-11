@@ -117,24 +117,13 @@ $('#customer-list').on('click', '.btnEdit', function () {
     $('#txtCustomerName').val(data.customerName);
     $('#txtSpecialDiscount').val(data.discountPercentage);
     $('#txtInvoiceDueDays').val(data.invoiceDueDays);
-    //if (data.isGstApplicable) {
-    //    $('#isGstApplicable').prop('checked');
-    //}
-    //else {
-    //    $('#isGstApplicable').removeProp('checked');
-    //}
 
-
-
-    //$('#ddlEmployeeId').val();
-    console.log(data);
     if (data.billingAddressId !== null && data.billingAddressId !== undefined) {
         $('#hfBillingAddressId').val(data.billingAddressId);
 
         var billingAddressRaw = GetSingleObjectById('Address/GetAddressById', data.billingAddressId);
         if (billingAddressRaw !== null) {
             var billingAddress = JSON.parse(billingAddressRaw);
-            console.log(billingAddress);
             $('#txtBillingAddressUnit').val(billingAddress[0]['UnitNumber']);
             $('#txtBillingAddressLine').val(billingAddress[0]['AddressLine']);
             $('#ddlBillingCityId').val(billingAddress[0]['CityId']);
@@ -155,7 +144,6 @@ $('#customer-list').on('click', '.btnEdit', function () {
         var mailingAddressRaw = GetSingleObjectById('Address/GetAddressById', data.mailingAddressId);
         if (mailingAddressRaw !== null) {
             var mailingAddress = JSON.parse(mailingAddressRaw);
-            console.log(mailingAddress);
             $('#txtMailingAddressUnit').val(mailingAddress[0]['UnitNumber']);
             $('#txtMailingAddressLine').val(mailingAddress[0]['AddressLine']);
             $('#ddlMailingCityId').val(mailingAddress[0]['CityId']);
@@ -171,7 +159,7 @@ $('#customer-list').on('click', '.btnEdit', function () {
 
 });
 
-$('#btnDownloadData').on('click', function () {
+$('#btnDownloadData').unbind().on('click', function () {
     $('#loadDataTable').load('Customer/PartialViewDataTable');
 });
 
@@ -186,17 +174,22 @@ $('#frmCustomerForm').submit(function (event) {
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
-            SetResponseMessage('Success', 'Data saved successfully. ');
+            if (result.length > 1) {
+                SetResponseMessage('Success', 'Data saved successfully. ');
+            }
+            else {
+                SetResponseMessage('Failed', 'Operation failed. An error occurred while saving data. Please check your input and try again.');
+            }
          
         },
         error: function (result) {
-            //SetAlertType('Failed', 'An error occured during deleting the data.');
+            
         }
     });
 });
 
 $('.btnDelete').on('click', function () {
-    SetAlertType('Warning', 'The data will be deleted. Are you sure you want ot continue?');
+    SetResponseMessage('Warning', 'The data will be deleted. Are you sure you want ot continue?');
     customerData = $(this).data('customer');
 });
 $('#btnProceed').on('click', function () {
@@ -213,11 +206,11 @@ function RemoveCustomer(customerData) {
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
-            SetAlertType('Success', 'Data has been removed.');
-
+            SetResponseMessage('Success', 'Data has been removed.');
+            $('#loadDataTable').load('Customer/PartialViewDataTable');
         },
         error: function (result) {
-            SetAlertType('Failed', 'An error occured during deleting the data.');
+            SetResponseMessage('Failed', 'An error occured during deleting the data.');
         }
     });
 }
