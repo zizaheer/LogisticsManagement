@@ -13,24 +13,63 @@ $(document).ready(function () {
     });
 });
 
+$('#btnNew').on('click', function () {
+    $('#txtEmployeeId').removeAttr('readonly');
+});
+
 $('#employee-list').on('click', '.btnEdit', function () {
+    $('#txtEmployeeId').attr('readonly', true);
     var data = $(this).data('employee');
 
-    $('#txtCustomerId').val(data.id);
-    $('#txtCustomerName').val(data.customerName);
-    $('#txtSpecialDiscount').val(data.discountPercentage);
-    $('#txtInvoiceDueDays').val(data.invoiceDueDays);
+    $('#txtEmployeeId').val(data.id);
+    $('#txtFirstName').val(data.firstName);
+    $('#txtLastName').val(data.lastName);
+    $('#txtDrivingLicenseNo').val(data.driverLicenseNo);
+    $('#txtSocialInsuranceNo').val(data.socialInsuranceNo);
+    $('#txtUnitNumber').val(data.unitNumber);
+    $('#txtAddressLine').val(data.addressLine);
+    $('#ddlCityId').val(data.cityId);
+    $('#ddlProvinceId').val(data.provinceId);
+    $('#ddlCountryId').val(data.countryId);
+    $('#txtPostCode').val(data.postCode);
+    $('#txtPhoneNumber').val(data.phoneNumber);
+    $('#txtMobileNo').val(data.mobileNumber);
+    $('#txtFaxNo').val(data.faxNumber);
+    $('#txtEmailAddress').val(data.emailAddress);
+
+    $('#ddlEmployeeTypeId').val(data.employeeTypeId);
+    $('#chkIsHourlyPaid').val(data.employeeTypeId);
+    $('#txtHourlyRate').val(data.id);
+    $('#chkIsSalaryEmployee').val(data.isSalaried);
+    $('#txtSalaryAmount').val(data.salaryAmount);
+    $('#ddlSalaryTermId').val(data.salaryTerm);
+    $('#chkIsCommissionProvided').val(data.isCommissionProvided);
+    $('#txtCommissionAmount').val(data.commissionPercentage);
+    $('#chkIsFuelProvided').val(data.isFuelChargeProvided);
+    $('#txtFuelSurchargePercentage').val(data.fuelPercentage);
+    $('#txtRadioInsuranceAmount').val(data.radioInsuranceAmount);
+    $('#txtInsuranceAmount').val(data.insuranceAmount);
+
+    $('#chkIsActive').val(data.isActive);
+
+
 });
 
 $('#btnDownloadData').unbind().on('click', function (event) {
     event.preventDefault();
     $('#loadDataTable').load('Employee/PartialViewDataTable');
-   
+
 });
 
 $('#frmEmployeeForm').unbind('submit').submit(function (event) {
     var dataArray = GetFormData();
-    AddEntry('Employee/Add', dataArray);
+    console.log(dataArray[0].id);
+    if (dataArray[0].id > 0) {
+        UpdateEntry('Employee/Update', dataArray);
+    }
+    else {
+        AddEntry('Employee/Add', dataArray);
+    }
     event.preventDefault();
     $('#loadDataTable').load('Employee/PartialViewDataTable');
 });
@@ -74,7 +113,7 @@ function GetFormData() {
         fuelPercentage: $('#txtFuelSurchargePercentage').val(),
         radioInsuranceAmount: $('#txtRadioInsuranceAmount').val(),
         insuranceAmount: $('#txtInsuranceAmount').val(),
-        
+
         isActive: $('#chkIsActive').is(':checked') ? 1 : 0
 
     };

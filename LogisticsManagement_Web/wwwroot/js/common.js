@@ -74,7 +74,7 @@ function UpdateEntry(actionUrl, dataArray) {
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
             if (result.length > 1) {
-                SetResponseMessage('Success', 'Success! Data saved successfully. ');
+                SetResponseMessage('Success', 'Success! Data updated successfully. ');
             }
             else {
                 SetResponseMessage('Failed', 'Failed! An error occurred while saving data. Please check your input and try again.');
@@ -114,11 +114,13 @@ function MaskDate(element) {
 
 function SetResponseMessage(responseType, messageContent) {
     $('#lblMsgContent').text(messageContent);
-    $('#alertBox').css('style');
     $('#imgAlertType').removeAttr('src');
     $('#btnProceed').hide();
     $('#btnClose').show();
-    $('#msgBox').show();
+    
+    $('#msgBox').slideDown('slow', function () {
+    
+    });
 
     if (responseType === 'Info') {
         $('#alertBox').css('background-color', '#daf2ff');

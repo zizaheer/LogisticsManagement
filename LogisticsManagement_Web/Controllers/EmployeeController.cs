@@ -141,7 +141,8 @@ namespace LogisticsManagement_Web.Controllers
                         employee.IsActive = employeePoco.IsActive;
 
 
-                        _employeeLogic.Update(employee);
+                        var poco = _employeeLogic.Update(employee);
+                        result = poco.Id.ToString();
                     }
                 }
             }
