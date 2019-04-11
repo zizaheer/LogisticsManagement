@@ -1,0 +1,65 @@
+﻿@using LogisticsManagement_Web.Models;
+@model DeliveryOrderViewModel  
+
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.dataTable.isDataTable('#order-list')) {
+            $('#order-list').DataTable().destroy();
+        }
+        $('#order-list').DataTable({
+            "order": [[0, "desc"]]
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-sm-12">
+        <table id="order-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" width=100%>
+            <thead>
+                <tr>
+                    <th>W/B #</th>
+                    <th>Biller</th>
+                    <th>Shipper</th>
+                    <th>Consignee</th>
+                    <th>Ordered by</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Orders.OrderByDescending(c => c.WayBillNumber))
+                {
+                <tr>
+                    <td>
+                        @item.WayBillNumber
+                    </td>
+                    <td>
+                        @item.BillToCustomerId
+                    </td>
+                    <td>
+                        @item.ShipperCustomerId
+                    </td>
+                    <td>
+                        @item.ConsigneeCustomerId
+                    </td>
+                    <td>
+                        @item.OrderedBy
+                    </td>
+                    <td>
+                        @item.ContactPhoneNumber
+                    </td>
+                    
+                    <td>
+                        <button id="btnEdit" data-orderid='@item.Id' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
+                        <button id="btnDelete" data-orderid='@item.Id' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                    </td>
+                </tr>
+                }
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/employee.js"></script>

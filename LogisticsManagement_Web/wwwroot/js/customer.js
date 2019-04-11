@@ -110,11 +110,36 @@ $('input[type=radio][name=addressType]').change(function () {
 
 });
 
+$('#btnNew').on('click', function () {
+    $('#txtCustomerId').removeAttr('readonly');
+});
+
+$('#btnDownloadData').unbind().on('click', function () {
+    $('#loadDataTable').load('Customer/PartialViewDataTable');
+});
+
+$('#frmCustomerForm').unbind('submit').submit(function () {
+
+    var dataArray = GetFormData();
+    console.log(dataArray[0].id);
+    if (dataArray[0].id > 0) {
+        UpdateEntry('Customer/Update', dataArray);
+    }
+    else {
+        AddEntry('Customer/Add', dataArray);
+    }
+    event.preventDefault();
+    $('#loadDataTable').load('Customer/PartialViewDataTable');
+
+});
+
 $('#customer-list').on('click', '.btnEdit', function () {
+    $('#txtEmployeeId').attr('readonly', true);
     var data = $(this).data('customer');
-    
+
     $('#txtCustomerId').val(data.id);
     $('#txtCustomerName').val(data.customerName);
+    $('#txtFuelSurcharge').val(data.fuelSurChargePercentage);
     $('#txtSpecialDiscount').val(data.discountPercentage);
     $('#txtInvoiceDueDays').val(data.invoiceDueDays);
 
@@ -135,7 +160,7 @@ $('#customer-list').on('click', '.btnEdit', function () {
             $('#txtBillingPrimaryPhoneNumber').val(billingAddress[0]['PrimaryPhoneNumber']);
             $('#txtBillingEmailAddress').val(billingAddress[0]['EmailAddress1']);
         }
-        
+
     }
 
     if (data.mailingAddressId !== null && data.mailingAddressId !== undefined) {
@@ -159,33 +184,6 @@ $('#customer-list').on('click', '.btnEdit', function () {
 
 });
 
-$('#btnDownloadData').unbind().on('click', function () {
-    $('#loadDataTable').load('Customer/PartialViewDataTable');
-});
-
-$('#frmCustomerForm').unbind('submit').submit(function () {
-    var data = GetFormData();
-    $.ajax({
-        'async': false,
-        url: 'Customer/Add',
-        type: 'POST',
-        data: JSON.stringify(data),
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        success: function (result) {
-            if (result.length > 1) {
-                SetResponseMessage('Success', 'Data saved successfully. ');
-            }
-            else {
-                SetResponseMessage('Failed', 'Operation failed. An error occurred while saving data. Please check your input and try again.');
-            }
-        },
-        error: function (result) {
-            
-        }
-    });
-});
-
 $('.btnDelete').unbind().on('click', function () {
     customerId = $(this).data('customerid');
     RemoveEntry('Customer/Remove', customerId);
@@ -193,10 +191,13 @@ $('.btnDelete').unbind().on('click', function () {
 });
 
 
+
+
 function GetFormData() {
     var customerData = {
         id: $('#txtCustomerId').val() === "" ? "0" : $('#txtCustomerId').val(),
         customerName: $('#txtCustomerName').val(),
+        fuelSurChargePercentage: $('#txtFuelSurcharge').val(),
         discountPercentage: $('#txtSpecialDiscount').val(),
         invoiceDueDays: $('#txtInvoiceDueDays').val(),
         isGstApplicable: $('#isGstApplicable').is(':checked') ? 1 : 0,

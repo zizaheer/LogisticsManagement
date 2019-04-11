@@ -35,15 +35,12 @@ namespace LogisticsManagement_Poco
         public decimal? OverriddenOrderCost { get; set; }
         public bool IsTaxAppliedOnOrderCost { get; set; }
         public decimal? TaxAmountOnOrderCost { get; set; }
-        public int AdditionalServiceId { get; set; }
-        public decimal? AdditionalServiceFee { get; set; }
-        public decimal? DriverPercentageOnAddService { get; set; }
-        public bool? IsTaxAppliedOnAddionalService { get; set; }
-        public decimal? TaxAmountOnAdditionalService { get; set; }
+
         public decimal? FuelSurchargePercentage { get; set; }
         public decimal? FuelSurchargeDiscountPercent { get; set; }
         public bool? IsTaxAppliedOnFuelSurcharge { get; set; }
         public decimal? TaxAmountOnFuelSurcharge { get; set; }
+        public decimal? AdditionalServiceTotalCost { get; set; }
         public string OrderedBy { get; set; }
         public string DepartmentName { get; set; }
         public string ContactName { get; set; }

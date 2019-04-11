@@ -2,13 +2,19 @@
 @model CustomerViewModel
 
 
+
 <script>
     $(document).ready(function () {
+
+        if ($.fn.dataTable.isDataTable('#customer-list')) {
+            $('#customer-list').DataTable().destroy();
+        }
         $('#customer-list').DataTable({
-            "order": [[0, "desc"]],
+            "order": [[0, "desc"]]
         });
     });
 </script>
+
 
 <div class="row">
     <div class="col-sm-12">
