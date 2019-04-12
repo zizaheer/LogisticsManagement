@@ -18,7 +18,7 @@ namespace LogisticsManagement_Web.Controllers
     {
 
         //private IMemoryCache _cache;  // To do later 
-        
+
         private Lms_OrderLogic _orderLogic;
         private Lms_CustomerLogic _customerLogic;
         private Lms_AddressLogic _addressLogic;
@@ -28,6 +28,7 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_UnitTypeLogic _unitTypeLogic;
         private Lms_WeightScaleLogic _weightScaleLogic;
         private Lms_OrderAdditionalServiceLogic _orderAdditionalServiceLogic;
+        private Lms_AdditionalServiceLogic _additionalServiceLogic;
         private Lms_ConfigurationLogic _configurationLogic;
 
         private readonly LogisticsContext _dbContext;
@@ -68,13 +69,30 @@ namespace LogisticsManagement_Web.Controllers
             _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
             deliveryOrderViewModel.Configuration = _configurationLogic.GetList().FirstOrDefault();
 
+            _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+            deliveryOrderViewModel.Customers = _customerLogic.GetList();
+
+            _deliveryOptionLogic = new Lms_DeliveryOptionLogic(_cache, new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
+            deliveryOrderViewModel.DeliveryOptions = _deliveryOptionLogic.GetList();
+
+            _unitTypeLogic = new Lms_UnitTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_UnitTypePoco>(_dbContext));
+            deliveryOrderViewModel.UnitTypes = _unitTypeLogic.GetList();
+
+            _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
+            deliveryOrderViewModel.WeightScales = _weightScaleLogic.GetList();
+
+            //_orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+            //deliveryOrderViewModel.OrderAdditionalServices = _orderAdditionalServiceLogic.GetList();
+
+            _additionalServiceLogic = new Lms_AdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_AdditionalServicePoco>(_dbContext));
+            deliveryOrderViewModel.AdditionalServices = _additionalServiceLogic.GetList();
 
 
             return deliveryOrderViewModel;
         }
 
         [HttpPost]
-        public IActionResult Add([FromBody]dynamic employeeData)
+        public IActionResult Add([FromBody]dynamic orderData)
         {
 
             ValidateSession();
@@ -82,19 +100,20 @@ namespace LogisticsManagement_Web.Controllers
 
             try
             {
-                if (employeeData != null)
+                if (orderData != null)
                 {
-                    Lms_EmployeePoco employeePoco = JsonConvert.DeserializeObject<Lms_EmployeePoco>(JsonConvert.SerializeObject(employeeData[0]));
+                    Lms_OrderPoco orderPoco = JsonConvert.DeserializeObject<Lms_OrderPoco>(JsonConvert.SerializeObject(orderData[0]));
+                    List<Lms_OrderAdditionalServicePoco> orderAdditionalServices = JsonConvert.DeserializeObject<List<Lms_OrderAdditionalServicePoco>>(JsonConvert.SerializeObject(orderData[0]));
 
-                    if (employeePoco.Id < 1 && employeePoco.FirstName.Trim() != string.Empty)
+                    if (orderPoco.Id < 1 && orderPoco.BillToCustomerId > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId >0)
                     {
-                        employeePoco.CreatedBy = sessionData.UserId;
-                        var employeeId = _employeeLogic.CreateNewEmployee(employeePoco, (int)sessionData.BranchId);
-                        if (!string.IsNullOrEmpty(employeeId))
+                        orderPoco.CreatedBy = sessionData.UserId;
+                        var orderInfo = _orderLogic.CreateNewOrder(orderPoco, orderAdditionalServices);
+                        if (!string.IsNullOrEmpty(orderInfo))
                         {
-                            var jObject = JObject.Parse(employeeId);
+                            var jObject = JObject.Parse(orderInfo);
                             var returnedObject = (string)jObject.SelectToken("ReturnedValue");
-                            result = (string)JObject.Parse(returnedObject).SelectToken("EmployeeId");
+                            result = (string)JObject.Parse(returnedObject).SelectToken("OrderId");
                             if (result.Length > 0)
                             {
                                 result = Convert.ToInt32(result) < 1 ? "" : result;
@@ -112,18 +131,19 @@ namespace LogisticsManagement_Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update([FromBody]dynamic employeeData)
+        public IActionResult Update([FromBody]dynamic orderData)
         {
             ValidateSession();
             var result = "";
 
             try
             {
-                if (employeeData != null)
+                if (orderData != null)
                 {
-                    Lms_EmployeePoco employeePoco = JsonConvert.DeserializeObject<Lms_EmployeePoco>(JsonConvert.SerializeObject(employeeData[0]));
+                    Lms_OrderPoco orderPoco = JsonConvert.DeserializeObject<Lms_OrderPoco>(JsonConvert.SerializeObject(orderData[0]));
+                    List<Lms_OrderAdditionalServicePoco> orderAdditionalServices = JsonConvert.DeserializeObject<List<Lms_OrderAdditionalServicePoco>>(JsonConvert.SerializeObject(orderData[0]));
 
-                    if (employeePoco.Id > 0 && employeePoco.FirstName.Trim() != string.Empty)
+                    if (orderPoco.Id > 0 && employeePoco.FirstName.Trim() != string.Empty)
                     {
                         var employee = _employeeLogic.GetSingleById(employeePoco.Id);
                         // it is required to pull existing data first, 
@@ -168,8 +188,8 @@ namespace LogisticsManagement_Web.Controllers
             bool result = false;
             try
             {
-                var poco = _employeeLogic.GetSingleById(Convert.ToInt32(id));
-                _employeeLogic.Remove(poco);
+                var poco = _orderLogic.GetSingleById(Convert.ToInt32(id));
+                _orderLogic.Remove(poco);
 
                 result = true;
             }
@@ -181,16 +201,11 @@ namespace LogisticsManagement_Web.Controllers
         }
 
 
-        public JsonResult GetEmployees()
+        public JsonResult GetOrderById(string id)
         {
-            var employeeList = _employeeLogic.GetList().OrderBy(c => c.FirstName);
-            return Json(JsonConvert.SerializeObject(employeeList));
-        }
-
-        public JsonResult GetEmployeeById(string id)
-        {
-            var employeeList = _employeeLogic.GetList();
-            return Json(JsonConvert.SerializeObject(employeeList));
+            var orderPoco = _orderLogic.GetList().Where(c=>c.Id == Convert.ToInt32(id));
+            var orderAdditionalServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == Convert.ToInt32(id));
+            return Json(JsonConvert.SerializeObject(orderPoco, orderAdditionalServices));
         }
 
         private void ValidateSession()

@@ -92,7 +92,7 @@ namespace LogisticsManagement_BusinessLogic
 
         #endregion
 
-        public string CreateNewOrder(Lms_OrderPoco orderPoco, int branchId)
+        public string CreateNewOrder(Lms_OrderPoco orderPoco, List<Lms_OrderAdditionalServicePoco> orderAdditionalServices)
         {
 
             SqlParameter[] sqlParameters = {
