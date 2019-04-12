@@ -27,7 +27,7 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_DeliveryOptionLogic _deliveryOptionLogic;
         private Lms_UnitTypeLogic _unitTypeLogic;
         private Lms_WeightScaleLogic _weightScaleLogic;
-        private Lms_orde
+        private Lms_OrderAdditionalServiceLogic _orderAdditionalServiceLogic;
         private Lms_ConfigurationLogic _configurationLogic;
 
         private readonly LogisticsContext _dbContext;
@@ -44,31 +44,33 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
-            ViewBag.EmployeeTypes = Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>();
 
-            return View(GetEmployeeData());
+            return View(GetOrderData());
         }
 
         [HttpGet]
         public IActionResult PartialViewDataTable()
         {
             ValidateSession();
-            return PartialView("_PartialViewOrderData", GetEmployeeData());
+            return PartialView("_PartialViewOrderData", GetOrderData());
         }
 
-        private DeliveryOrderViewModel GetEmployeeData()
+        private DeliveryOrderViewModel GetOrderData()
         {
             DeliveryOrderViewModel deliveryOrderViewModel = new DeliveryOrderViewModel();
             deliveryOrderViewModel.Orders = _orderLogic.GetList();
 
             _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
             _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
+            deliveryOrderViewModel.Cities = _cityLogic.GetList();
+            deliveryOrderViewModel.Provinces = _provinceLogic.GetList();
 
-            employeeViewModel.Cities = _cityLogic.GetList();
-            employeeViewModel.Provinces = _provinceLogic.GetList();
-            employeeViewModel.Countries = _countryLogic.GetList();
+            _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+            deliveryOrderViewModel.Configuration = _configurationLogic.GetList().FirstOrDefault();
 
-            return employeeViewModel;
+
+
+            return deliveryOrderViewModel;
         }
 
         [HttpPost]
