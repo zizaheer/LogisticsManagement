@@ -31,6 +31,35 @@ $('#btnNew').on('click', function () {
     $('#txtWayBillNo').removeAttr('readonly');
 });
 
+
+$('input[type=radio][name=rdoPaidBy]').change(function () {
+    console.log(this.value);
+
+    if (this.value === 1)
+    {
+        //    
+    }
+    if (this.value === 2)
+    {
+        //
+    }
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $('#order-list').on('click', '.btnEdit', function () {
     $('#txtWayBillNo').attr('readonly', true);
     var orderId = $(this).data('orderid');
@@ -76,7 +105,7 @@ $('#btnDownloadData').unbind().on('click', function (event) {
 
 });
 
-$('#frmEmployeeForm').unbind('submit').submit(function (event) {
+$('#frmOrderForm').unbind('submit').submit(function (event) {
     var dataArray = GetFormData();
     console.log(dataArray[0].id);
     if (dataArray[0].id > 0) {

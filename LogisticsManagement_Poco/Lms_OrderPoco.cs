@@ -30,17 +30,15 @@ namespace LogisticsManagement_Poco
         public int? WeightScaleId { get; set; }
         public decimal? WeightTotal { get; set; }
         public int UnitQuantity { get; set; }
-        public decimal OrderCost { get; set; }
-        public decimal? DiscountPercentOnOrderCost { get; set; }
-        public decimal? OverriddenOrderCost { get; set; }
-        public bool IsTaxAppliedOnOrderCost { get; set; }
-        public decimal? TaxAmountOnOrderCost { get; set; }
 
-        public decimal? FuelSurchargePercentage { get; set; }
-        public decimal? FuelSurchargeDiscountPercent { get; set; }
-        public bool? IsTaxAppliedOnFuelSurcharge { get; set; }
-        public decimal? TaxAmountOnFuelSurcharge { get; set; }
-        public decimal? AdditionalServiceTotalCost { get; set; }
+        public decimal OrderBasicCost { get; set; }
+        public decimal BasicCostOverriden { get; set; }
+        public decimal FuelSurchargePercentage { get; set; }
+        public decimal DiscountPercentOnOrderCost { get; set; }
+        public decimal ApplicableGstPercent { get; set; }
+        public decimal TotalOrderCost { get; set; }
+        public decimal TotalAdditionalServiceCost { get; set; }
+
         public string OrderedBy { get; set; }
         public string DepartmentName { get; set; }
         public string ContactName { get; set; }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
@@ -105,7 +106,7 @@ namespace LogisticsManagement_Web.Controllers
                     Lms_OrderPoco orderPoco = JsonConvert.DeserializeObject<Lms_OrderPoco>(JsonConvert.SerializeObject(orderData[0]));
                     List<Lms_OrderAdditionalServicePoco> orderAdditionalServices = JsonConvert.DeserializeObject<List<Lms_OrderAdditionalServicePoco>>(JsonConvert.SerializeObject(orderData[0]));
 
-                    if (orderPoco.Id < 1 && orderPoco.BillToCustomerId > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId >0)
+                    if (orderPoco.Id < 1 && orderPoco.BillToCustomerId > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId > 0)
                     {
                         orderPoco.CreatedBy = sessionData.UserId;
                         var orderInfo = _orderLogic.CreateNewOrder(orderPoco, orderAdditionalServices);
@@ -143,33 +144,63 @@ namespace LogisticsManagement_Web.Controllers
                     Lms_OrderPoco orderPoco = JsonConvert.DeserializeObject<Lms_OrderPoco>(JsonConvert.SerializeObject(orderData[0]));
                     List<Lms_OrderAdditionalServicePoco> orderAdditionalServices = JsonConvert.DeserializeObject<List<Lms_OrderAdditionalServicePoco>>(JsonConvert.SerializeObject(orderData[0]));
 
-                    if (orderPoco.Id > 0 && employeePoco.FirstName.Trim() != string.Empty)
+                    if (orderPoco.Id > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId > 0)
                     {
-                        var employee = _employeeLogic.GetSingleById(employeePoco.Id);
+                        var order = _orderLogic.GetSingleById(orderPoco.Id);
                         // it is required to pull existing data first, 
                         // cause there are some data which do not come from UI
 
-                        employee.FirstName = employeePoco.FirstName;
-                        employee.LastName = employeePoco.LastName;
-                        employee.DriverLicenseNo = employeePoco.DriverLicenseNo;
-                        employee.SocialInsuranceNo = employeePoco.SocialInsuranceNo;
-                        employee.EmployeeTypeId = employeePoco.EmployeeTypeId;
-                        employee.IsHourlyPaid = employeePoco.IsHourlyPaid;
-                        employee.HourlyRate = employeePoco.HourlyRate;
+                        order.ReferenceNumber = orderPoco.ReferenceNumber;
+                        order.CargoCtlNumber = orderPoco.CargoCtlNumber;
+                        order.AwbCtnNumber = orderPoco.CargoCtlNumber;
+                        order.ShipperCustomerId = orderPoco.ShipperCustomerId;
+                        order.ConsigneeCustomerId = orderPoco.ConsigneeCustomerId;
+                        order.BillToCustomerId = orderPoco.BillToCustomerId;
+                        order.ScheduledPickupDate = orderPoco.ScheduledPickupDate;
 
-                        employee.IsSalaried = employeePoco.IsSalaried;
-                        employee.SalaryAmount = employeePoco.SalaryAmount;
-                        employee.IsCommissionProvided = employeePoco.IsCommissionProvided;
-                        employee.CommissionPercentage = employeePoco.CommissionPercentage;
-                        employee.IsFuelChargeProvided = employeePoco.IsFuelChargeProvided;
-                        employee.FuelPercentage = employeePoco.FuelPercentage;
-                        employee.RadioInsuranceAmount = employeePoco.RadioInsuranceAmount;
-                        employee.InsuranceAmount = employeePoco.InsuranceAmount;
-                        employee.SalaryTerm = employeePoco.SalaryTerm;
-                        employee.IsActive = employeePoco.IsActive;
+                        order.CityId = orderPoco.CityId;
+                        order.DeliveryOptionId = orderPoco.DeliveryOptionId;
+                        order.VehicleTypeId = orderPoco.VehicleTypeId;
+                        order.WeightScaleId = orderPoco.WeightScaleId;
+                        order.WeightTotal = orderPoco.WeightTotal;
+                        order.UnitQuantity = orderPoco.UnitQuantity;
+                        order.OrderBasicCost = orderPoco.OrderBasicCost;
+                        order.BasicCostOverriden = orderPoco.BasicCostOverriden;
+                        order.FuelSurchargePercentage = orderPoco.FuelSurchargePercentage;
+                        order.DiscountPercentOnOrderCost = orderPoco.DiscountPercentOnOrderCost;
+                        order.ApplicableGstPercent = orderPoco.ApplicableGstPercent;
+                        order.TotalOrderCost = orderPoco.TotalOrderCost;
+                        order.TotalAdditionalServiceCost = orderPoco.TotalAdditionalServiceCost;
+                        order.OrderedBy = orderPoco.OrderedBy;
+                        order.ContactName = orderPoco.ContactName;
+                        order.ContactPhoneNumber = orderPoco.ContactPhoneNumber;
+                        order.Remarks = orderPoco.Remarks;
 
 
-                        var poco = _employeeLogic.Update(employee);
+                        _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+
+                        var orderServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == orderPoco.Id).ToList();
+                        if (orderServices.Count > 0)
+                        {
+                            foreach (var item in orderServices)
+                            {
+                                _orderAdditionalServiceLogic.Remove(item);
+                            }
+                        }
+
+                        if (orderAdditionalServices.Count > 0)
+                        {
+                            foreach (var item in orderAdditionalServices)
+                            {
+                                if (item.AdditionalServiceId > 0)
+                                {
+                                    _orderAdditionalServiceLogic.Add(item);
+                                }
+                            }
+                        }
+
+                        var poco = _orderLogic.Update(order);
+
                         result = poco.Id.ToString();
                     }
                 }
@@ -188,10 +219,28 @@ namespace LogisticsManagement_Web.Controllers
             bool result = false;
             try
             {
-                var poco = _orderLogic.GetSingleById(Convert.ToInt32(id));
-                _orderLogic.Remove(poco);
+                using (var scope = new TransactionScope())
+                {
 
-                result = true;
+                    var poco = _orderLogic.GetSingleById(Convert.ToInt32(id));
+
+                    _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+
+                    var orderServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == poco.Id).ToList();
+                    if (orderServices.Count > 0)
+                    {
+                        foreach (var item in orderServices)
+                        {
+                            _orderAdditionalServiceLogic.Remove(item);
+                        }
+                    }
+                    _orderLogic.Remove(poco);
+
+                    scope.Complete();
+
+                    result = true;
+                }
+
             }
             catch (Exception ex)
             {
@@ -203,9 +252,9 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetOrderById(string id)
         {
-            var orderPoco = _orderLogic.GetList().Where(c=>c.Id == Convert.ToInt32(id));
-            var orderAdditionalServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == Convert.ToInt32(id));
-            return Json(JsonConvert.SerializeObject(orderPoco, orderAdditionalServices));
+            var orderPoco = _orderLogic.GetList().Where(c => c.Id == Convert.ToInt32(id));
+            var orderAdditionalServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == Convert.ToInt32(id)).ToList();
+            return Json(JsonConvert.SerializeObject(new { order = orderPoco, additionalServices = new[] {orderAdditionalServices}}));
         }
 
         private void ValidateSession()

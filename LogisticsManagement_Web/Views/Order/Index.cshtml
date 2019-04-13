@@ -1,5 +1,5 @@
-﻿@*@using LogisticsManagement_Web.Models;
-    @model CustomerViewModel*@
+﻿@using LogisticsManagement_Web.Models;
+@model DeliveryOrderViewModel
 
 @{
     ViewData["Title"] = "Order";
@@ -61,7 +61,10 @@
                                         <div class="col-sm-4">
                                             <select class="form-control" id="ddlBillerId">
                                                 <option value="0"> Bill to </option>
-
+                                                @foreach (var item in Model.Customers)
+                                                {
+                                                    <option value="@item.Id">@item.CustomerName</option>
+                                                }
 
                                             </select>
                                         </div>
@@ -114,9 +117,9 @@
 
                                 <div class="col-sm-3">
                                     <select class="form-control" id="ddlDeliveryOptionId" name="ddlDeliveryOptionId" style="background-color:#deffef; font-weight:500">
-                                        @foreach (var deliveryOption in ViewBag.DeliveryOptions)
+                                        @foreach (var deliveryOption in Model.DeliveryOptions)
                                         {
-                                            <option value="@deliveryOption.Id">@deliveryOption.OptionName  - (@deliveryOption.ShortCode) </option>
+                                            <option value="@deliveryOption.Id">@deliveryOption.OptionName - (@deliveryOption.ShortCode) </option>
                                         }
                                     </select>
                                 </div>
@@ -135,7 +138,10 @@
                                                 <div class="col-sm-8">
                                                     <select class="form-control" id="ddlShpperId" name="ddlShpperId">
                                                         <option value="0"> Shipper </option>
-
+                                                        @foreach (var item in Model.Customers)
+                                                        {
+                                                            <option value="@item.Id">@item.CustomerName</option>
+                                                        }
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -171,13 +177,19 @@
                                                 <div class="col-sm-6">
                                                     <select class="form-control" id="ddlShipperCityId" name="ddlShipperCityId">
                                                         <option value="0"> City  </option>
-
+                                                        @foreach (var item in Model.Cities)
+                                                        {
+                                                            <option value="@item.Id">@item.CityName</option>
+                                                        }
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <select class="form-control" id="ddlShipperProvinceId" name="ddlShipperProvinceId">
                                                         <option value="0"> Province </option>
-
+                                                        @foreach (var item in Model.Provinces)
+                                                        {
+                                                            <option value="@item.Id">@item.ShortCode</option>
+                                                        }
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
@@ -199,7 +211,10 @@
                                                 <div class="col-sm-8">
                                                     <select class="form-control" id="ddlShpperId" name="ddlShpperId">
                                                         <option value="0"> Consignee </option>
-
+                                                        @foreach (var item in Model.Customers)
+                                                        {
+                                                            <option value="@item.Id">@item.CustomerName</option>
+                                                        }
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -235,13 +250,19 @@
                                                 <div class="col-sm-6">
                                                     <select class="form-control" id="ddlConsigneeCityId" name="ddlConsigneeCityId">
                                                         <option value="0">City </option>
-
+                                                        @foreach (var item in Model.Cities)
+                                                        {
+                                                            <option value="@item.Id">@item.CityName</option>
+                                                        }
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <select class="form-control" id="ddlConsigneeProvinceId" name="ddlConsigneeProvinceId">
                                                         <option value="0">Province</option>
-
+                                                        @foreach (var item in Model.Provinces)
+                                                        {
+                                                            <option value="@item.Id">@item.ShortCode</option>
+                                                        }
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
@@ -258,14 +279,14 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="card">
-                                        <div class="card-header" style="padding:3px 3px 5px 9px;  background-color:#b5ccdc; color:#000">
+                                        <div class="card-header" style="padding:3px 3px 5px 9px;  background-color:#faebd7; color:#000">
                                             <strong> <i class="fa fa-list"></i> Additional services </strong>
                                         </div>
                                         <div class="card-body" style="padding:0px">
                                             <div class="row" style="max-height:189px;margin:0px; overflow-y:scroll">
                                                 <div class="col-sm-12">
                                                     <table id="service-list" class="table table-striped table-bordered" cellspacing="0" style="width:100%">
-                                                        <thead>
+                                                        <thead style="background-color:#ffa7a7">
                                                             <tr>
                                                                 <th>Code</th>
                                                                 <th>Name</th>
@@ -273,77 +294,40 @@
                                                                 <th>Driver %</th>
                                                                 <th>Fee</th>
                                                                 <th>GST?</th>
-                                                                <th>Select to add</th>
+                                                                <th>Add?</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            @foreach (var item in Model.AdditionalServices)
+                                                            {
                                                             <tr>
-                                                                <td>Donna Snider</td>
-                                                                <td>Customer Support</td>
-                                                                <td>New York</td>
-                                                                <td>27</td>
-                                                                <td><input type="text" /></td>
-                                                                <td><input type="checkbox" /></td>
+                                                                <td>@item.ServiceCode</td>
+                                                                <td>@item.ServiceName</td>
+                                                                <td>
+                                                                    <input type="checkbox" id="chkPayToDriver" name="chkPayToDriver" checked="@item.PayToDriver" disabled />
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" id="txtDriverPercentage" name="txtDriverPercentage" />
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" id="txtServiceFee" name="txtServiceFee" />
+                                                                </td>
+                                                                <td>
+                                                                    <input type="checkbox" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" checked="@item.IsTaxApplicable" />
+                                                                </td>
+                                                                
                                                                 <td>
                                                                     <div class="form-group">
                                                                         <div class="form-check form-check-inline">
                                                                             <input class="form-check-input" id="chkAddService" type="checkbox" data-serviceid="1">
-                                                                            <label class="form-check-label" for="chkAddService"> Add</label>
+                                                                            <label class="form-check-label" for="chkAddService"> Yes</label>
                                                                         </div>
                                                                     </div>
                                                                 </td>
                                                             </tr>
-                                                            <tr>
-                                                                <td>Donna Snider</td>
-                                                                <td>Customer Support</td>
-                                                                <td>New York</td>
-                                                                <td>27</td>
-                                                                <td><input type="text" /></td>
-                                                                <td><input type="checkbox" /></td>
-                                                                <td>
-                                                                    <div class="form-group">
-                                                                        <div class="form-check form-check-inline">
-                                                                            <input class="form-check-input" id="chkAddService" type="checkbox" data-serviceid="1">
-                                                                            <label class="form-check-label" for="chkAddService"> Add</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Donna Snider</td>
-                                                                <td>Customer Support</td>
-                                                                <td>New York</td>
-                                                                <td>27</td>
-                                                                <td><input type="text" /></td>
-                                                                <td><input type="checkbox" /></td>
-                                                                <td>
-                                                                    <div class="form-group">
-                                                                        <div class="form-check form-check-inline">
-                                                                            <input class="form-check-input" id="chkAddService" type="checkbox" data-serviceid="1">
-                                                                            <label class="form-check-label" for="chkAddService"> Add</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Donna Snider</td>
-                                                                <td>Customer Support</td>
-                                                                <td>New York</td>
-                                                                <td>27</td>
-                                                                <td><input type="text" /></td>
-                                                                <td><input type="checkbox" /></td>
-                                                                <td>
-                                                                    <div class="form-group">
-                                                                        <div class="form-check form-check-inline">
-                                                                            <input class="form-check-input" id="chkAddService" type="checkbox" data-serviceid="1">
-                                                                            <label class="form-check-label" for="chkAddService"> Add</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
+                                                            }
 
                                                         </tbody>
-
                                                     </table>
                                                 </div>
                                             </div>
@@ -366,7 +350,7 @@
                                                 </div>
                                                 <div class="col-sm-8">
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" id="rdoTruck" type="radio" value="1" name="rdoVehicleType">
+                                                        <input class="form-check-input" id="rdoTruck" type="radio" value="1" name="rdoVehicleType" checked>
                                                         <label class="form-check-label" for="rdoTruck">Truck</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
@@ -386,7 +370,11 @@
                                                 <div class="col-sm-3">
                                                     <select class="form-control" id="ddlUnitTypeId" name="ddlUnitTypeId">
                                                         <option value="0" selected> </option>
-
+                                                        @foreach (var item in Model.UnitTypes)
+                                                        {
+                                                            var selected = item.IsDefault;
+                                                            <option value="@item.Id" selected="@item.IsDefault">@item.ShortCode</option>
+                                                        }
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-2">
@@ -397,7 +385,11 @@
                                                 <div class="col-sm-2">
                                                     <select class="form-control" id="ddlWeightScaleId" name="ddlWeightScaleId">
                                                         <option value="0" selected> </option>
-
+                                                        @foreach (var item in Model.WeightScales)
+                                                        {
+                                                            var selected = item.IsDefault;
+                                                            <option value="@item.Id" selected="@selected">@item.ShortCode</option>
+                                                        }
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-2">
@@ -480,8 +472,11 @@
                                                     <div class=" form-group">
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input" id="chkIsGstApplicable" type="checkbox">
-                                                            <label class="form-check-label" for="chkIsGstApplicable">Apply GST </label>
-                                                            <label class="form-check-label" id="lblGstAmount"> (13%) </label>
+                                                            <label class="form-check-label" for="chkIsGstApplicable">Add @Model.Configuration.TaxToCall </label>
+                                                            @{ 
+                                                                var taxAmount = " (" + Model.Configuration.TaxAmount.ToString() + "%)";
+                                                            }
+                                                            <label class="form-check-label" id="lblGstAmount"> @taxAmount </label>
                                                         </div>
 
                                                     </div>
@@ -540,7 +535,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                           
+
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="card" style="margin-bottom:0px; background-color:antiquewhite">
@@ -588,7 +583,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
 
                                         </div>
 

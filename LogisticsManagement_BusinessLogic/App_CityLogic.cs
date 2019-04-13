@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
+using System.Linq;
 
 namespace LogisticsManagement_BusinessLogic
 {
@@ -22,7 +23,7 @@ namespace LogisticsManagement_BusinessLogic
             List<App_CityPoco> _cities;
             if (!_cache.TryGetValue(App_CacheKeys.Cities, out _cities))
             {
-                _cities = base.GetList();
+                _cities = base.GetList().OrderBy(c => c.CityName).ToList();
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(3));
                 _cache.Set(App_CacheKeys.Cities, _cities, cacheEntryOptions);
@@ -36,7 +37,7 @@ namespace LogisticsManagement_BusinessLogic
             List<App_CityPoco> _cities;
             if (!_cache.TryGetValue(App_CacheKeys.Cities, out _cities))
             {
-                _cities = base.GetListById(id);
+                _cities = base.GetListById(id).OrderBy(c => c.CityName).ToList();
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(3));
                 _cache.Set(App_CacheKeys.Cities, _cities, cacheEntryOptions);

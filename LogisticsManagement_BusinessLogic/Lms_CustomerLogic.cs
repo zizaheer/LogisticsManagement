@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Data.SqlClient;
 using System.Data;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace LogisticsManagement_BusinessLogic
 {
@@ -25,7 +26,7 @@ namespace LogisticsManagement_BusinessLogic
             List<Lms_CustomerPoco> _customers;
             if(!_cache.TryGetValue(App_CacheKeys.Customers, out _customers))
             {
-                _customers = base.GetList();
+                _customers = base.GetList().OrderBy(c => c.CustomerName).ToList();
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(3));
                 _cache.Set(App_CacheKeys.Customers, _customers, cacheEntryOptions);
@@ -39,7 +40,7 @@ namespace LogisticsManagement_BusinessLogic
             List<Lms_CustomerPoco> _customers;
             if (!_cache.TryGetValue(App_CacheKeys.Customers, out _customers))
             {
-                _customers = base.GetListById(id);
+                _customers = base.GetListById(id).OrderBy(c => c.CustomerName).ToList();
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromDays(3));
                 _cache.Set(App_CacheKeys.Customers, _customers, cacheEntryOptions);
