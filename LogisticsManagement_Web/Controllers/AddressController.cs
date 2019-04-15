@@ -79,7 +79,7 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetAddressById(string id)
         {
-            var address = _addressLogic.GetList().Where(c => c.Id == Convert.ToInt32(id));
+            var address = _addressLogic.GetList().Where(c => c.Id == Convert.ToInt32(id)).FirstOrDefault();
             return Json(JsonConvert.SerializeObject(address));
         }
 

@@ -176,11 +176,17 @@ namespace LogisticsManagement_Web.Controllers
             return customerViewModel;
         }
 
-
         public JsonResult GetCustomers()
         {
             return Json(JsonConvert.SerializeObject(_customerLogic.GetList()));
         }
+
+        public JsonResult GetCustomerById(string id)
+        {
+            var customer = _customerLogic.GetList().Where(c => c.Id == Convert.ToInt32(id)).FirstOrDefault();
+            return Json(JsonConvert.SerializeObject(customer));
+        }
+
 
         private void ValidateSession()
         {

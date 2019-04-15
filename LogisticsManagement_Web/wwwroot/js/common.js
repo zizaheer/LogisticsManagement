@@ -20,6 +20,27 @@ function GetListObject(actionUrl) {
     return returnObject;
 }
 
+function GetListObjectByParam(actionUrl, paramData) {
+
+    var returnObject = null;
+
+    $.ajax({
+        'async': false,
+        url: actionUrl,
+        type: 'GET',
+        data: { jsonStringParam: JSON.stringify(paramData) },
+        dataType: 'json',
+        success: function (result) {
+            returnObject = result;
+        },
+        error: function (result) {
+            returnObject = result;
+        }
+    });
+
+    return returnObject;
+}
+
 function GetSingleObjectById(actionUrl, id) {
 
     var returnObject = null;

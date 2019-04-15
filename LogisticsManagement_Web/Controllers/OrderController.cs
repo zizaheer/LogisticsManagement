@@ -31,7 +31,7 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_OrderAdditionalServiceLogic _orderAdditionalServiceLogic;
         private Lms_AdditionalServiceLogic _additionalServiceLogic;
         private Lms_ConfigurationLogic _configurationLogic;
-
+        private Lms_TariffLogic _tariffLogic;
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
@@ -250,11 +250,80 @@ namespace LogisticsManagement_Web.Controllers
         }
 
 
+
+        public JsonResult GetTariffCostByParam(string jsonStringParam)
+        {
+            decimal shipperCost = 0;
+            decimal consigneeCost = 0;
+            decimal returnedValue = 0;
+
+            var jsonData = JObject.Parse(jsonStringParam);
+            var shipperCityId = (int)jsonData.SelectToken("shipperCityId");
+            var consigneeCityId = (int)jsonData.SelectToken("consigneeCityId");
+            var deliveryOptionId = (int)jsonData.SelectToken("deliveryOptionId");
+            var vehicleTypeId = (int)jsonData.SelectToken("vehicleTypeId");
+            var unitTypeId = (int)jsonData.SelectToken("unitTypeId");
+            var unitQuantity = (int)jsonData.SelectToken("unitQuantity");
+            var weightScaleId = (int)jsonData.SelectToken("weightScaleId");
+            var weightQuantity = (decimal)jsonData.SelectToken("weightQuantity");
+
+            _tariffLogic = new Lms_TariffLogic(_cache, new EntityFrameworkGenericRepository<Lms_TariffPoco>(_dbContext));
+            var tariffList = _tariffLogic.GetList();
+
+            var shipperTariffInfo = tariffList.Where(c =>
+                                                          c.CityId == shipperCityId && c.DeliveryOptionId == deliveryOptionId
+                                                          && c.VehicleTypeId == vehicleTypeId && c.UnitTypeId == unitTypeId
+                                                          && c.WeightScaleId == weightScaleId && c.UptoWeight >= weightQuantity
+                                                          ).ToList().FirstOrDefault();
+            if (shipperTariffInfo != null)
+            {
+                if (unitQuantity > 0)
+                {
+                    shipperCost = (decimal)shipperTariffInfo.FirstUnitPrice;
+                    if (unitQuantity > 1)
+                    {
+                        shipperCost = shipperCost + (unitQuantity - 1) * (decimal)shipperTariffInfo.PerUnitPrice;
+                    }
+                }
+            }
+
+            var consigneeTariffInfo = tariffList.Where(c =>
+                                                          c.CityId == consigneeCityId && c.DeliveryOptionId == deliveryOptionId
+                                                          && c.VehicleTypeId == vehicleTypeId && c.UnitTypeId == unitTypeId
+                                                          && c.WeightScaleId == weightScaleId && c.UptoWeight >= weightQuantity
+                                                          ).ToList().FirstOrDefault();
+
+            if (consigneeTariffInfo != null)
+            {
+                if (unitQuantity > 0)
+                {
+                    consigneeCost = (decimal)consigneeTariffInfo.FirstUnitPrice;
+                    if (unitQuantity > 1)
+                    {
+                        consigneeCost = consigneeCost + (unitQuantity - 1) * (decimal)consigneeTariffInfo.PerUnitPrice;
+                    }
+                }
+            }
+
+            if (consigneeCost >= shipperCost)
+            {
+                returnedValue = consigneeCost;
+            }
+            else
+            {
+                returnedValue = shipperCost;
+            }
+
+            return Json(JsonConvert.SerializeObject(returnedValue));
+        }
+
+
+
         public JsonResult GetOrderById(string id)
         {
             var orderPoco = _orderLogic.GetList().Where(c => c.Id == Convert.ToInt32(id));
             var orderAdditionalServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == Convert.ToInt32(id)).ToList();
-            return Json(JsonConvert.SerializeObject(new { order = orderPoco, additionalServices = new[] {orderAdditionalServices}}));
+            return Json(JsonConvert.SerializeObject(new { order = orderPoco, additionalServices = new[] { orderAdditionalServices } }));
         }
 
         private void ValidateSession()

@@ -16,7 +16,7 @@
         <div class="col-sm-12">
 
             <div class="card">
-                <div class="card-header" style="background-color: #3b80a9;color: #fff;">
+                <div class="card-header" style="background-color: #365396;color: #fff;">
                     <strong><i class="fa fa-sliders"></i> Order</strong>
                 </div>
 
@@ -30,7 +30,7 @@
 
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <div class="card" style="border-color: #077eef; background-color:#82e8f3">
+                                            <div class="card" style="border-color: #077eef; background-color:#d6f8ff">
                                                 <div class="card-body" style="padding:5px">
                                                     <div class="row">
                                                         <div class="col-sm-3">
@@ -71,7 +71,7 @@
                                         <div class="col-sm-2">
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input class="form-control" id="txtBillerCustomerNo" type="number" name="txtBillerCustomerNo" placeholder="Customer no.">
+                                                    <input class="form-control" id="txtBillerCustomerNo" type="number" name="txtBillerCustomerNo" placeholder="Customer no." title="Biller customer id">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">
                                                             <i class="fa fa-search"></i>
@@ -89,7 +89,7 @@
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <input class="form-control" id="txtWayBillNo" type="number" name="txtWayBillNo" placeholder="W/B">
+                                            <input class="form-control" id="txtWayBillNo" type="number" name="txtWayBillNo" placeholder="W/B"  title="Waybill number">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">
                                                     <i class="fa fa-search"></i>
@@ -101,17 +101,17 @@
 
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <input class="form-control" id="txtCustomerRefNo" name="txtCustomerRefNo" type="text" placeholder="Cust. ref#">
+                                        <input class="form-control" id="txtCustomerRefNo" name="txtCustomerRefNo" type="text" placeholder="Cust. ref#" title="Customer ref #">
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <input class="form-control" id="txtCargoCtlNo" type="text" name="txtCargoCtlNo" placeholder="Cargo ctl#">
+                                        <input class="form-control" id="txtCargoCtlNo" type="text" name="txtCargoCtlNo" placeholder="Cargo ctl#" title="Cargo ctl#">
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <input class="form-control" id="txtAwbCtnNo" type="text" name="txtAwbCtnNo" placeholder="AWB/CTN#">
+                                        <input class="form-control" id="txtAwbCtnNo" type="text" name="txtAwbCtnNo" placeholder="AWB/CTN#" title="AWB/CTN#">
                                     </div>
                                 </div>
 
@@ -136,7 +136,7 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" id="ddlShpperId" name="ddlShpperId">
+                                                    <select class="form-control" id="ddlShipperId" name="ddlShipperId">
                                                         <option value="0"> Shipper </option>
                                                         @foreach (var item in Model.Customers)
                                                         {
@@ -147,7 +147,7 @@
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <div class="input-group">
-                                                            <input class="form-control" id="txtShipperCustomerNo" type="text" name="txtShipperCustomerNo" placeholder="Customer no.">
+                                                            <input class="form-control" id="txtShipperCustomerNo" type="text" name="txtShipperCustomerNo" placeholder="Customer no."  title="Shipper customer id">
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text">
                                                                     <i class="fa fa-search"></i>
@@ -163,13 +163,13 @@
 
                                                 <div class="col-sm-9">
                                                     <div class="form-group">
-                                                        <input class="form-control" id="txtShipperAddressline" type="text" name="txtShipperAddressline" placeholder="Address line" />
+                                                        <input class="form-control" id="txtShipperAddressline" type="text" name="txtShipperAddressline" placeholder="Address line" title="Address line" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-sm-3">
                                                     <div class="form-group">
-                                                        <input class="form-control" id="txtShipperUnitNo" type="text" name="txtShipperUnitNo" placeholder="Unit" />
+                                                        <input class="form-control" id="txtShipperUnitNo" type="text" name="txtShipperUnitNo" placeholder="Unit" title="Unit number" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -193,7 +193,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <input class="form-control" id="txtShipperPostcode" type="text" name="txtShipperPostcode" placeholder="Postcode" />
+                                                    <input class="form-control" id="txtShipperPostcode" type="text" name="txtShipperPostcode" placeholder="Postcode" title="Postcode" />
                                                 </div>
 
                                             </div>
@@ -209,7 +209,7 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" id="ddlShpperId" name="ddlShpperId">
+                                                    <select class="form-control" id="ddlConsigneeId" name="ddlConsigneeId">
                                                         <option value="0"> Consignee </option>
                                                         @foreach (var item in Model.Customers)
                                                         {
@@ -220,7 +220,7 @@
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <div class="input-group">
-                                                            <input class="form-control" id="txtConsigneeCustomerNo" type="text" name="txtConsigneeCustomerNo" placeholder="Customer no.">
+                                                            <input class="form-control" id="txtConsigneeCustomerNo" type="text" name="txtConsigneeCustomerNo" placeholder="Customer no." title="Consignee customer id">
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text">
                                                                     <i class="fa fa-search"></i>
@@ -236,13 +236,13 @@
 
                                                 <div class="col-sm-9">
                                                     <div class="form-group">
-                                                        <input class="form-control" id="txtConsigneeAddressline" type="text" name="txtConsigneeAddressline" placeholder="Address line" />
+                                                        <input class="form-control" id="txtConsigneeAddressline" type="text" name="txtConsigneeAddressline" placeholder="Address line" title="Address line" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-sm-3">
                                                     <div class="form-group">
-                                                        <input class="form-control" id="txtConsigneeUnitNo" type="text" name="txtConsigneeUnitNo" placeholder="Unit" />
+                                                        <input class="form-control" id="txtConsigneeUnitNo" type="text" name="txtConsigneeUnitNo" placeholder="Unit" title="Unit number" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -266,7 +266,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <input class="form-control" id="txtConsigneePostcode" type="text" name="txtConsigneePostcode" placeholder="Postcode" />
+                                                    <input class="form-control" id="txtConsigneePostcode" type="text" name="txtConsigneePostcode" placeholder="Postcode" title="Postcode" />
                                                 </div>
 
                                             </div>
@@ -307,10 +307,10 @@
                                                                     <input type="checkbox" id="chkPayToDriver" name="chkPayToDriver" checked="@item.PayToDriver" disabled />
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" class="form-control" id="txtDriverPercentage" name="txtDriverPercentage" />
+                                                                    <input type="text" class="form-control" id="txtDriverPercentage" name="txtDriverPercentage" title="Driver portion of the fee" />
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" class="form-control" id="txtServiceFee" name="txtServiceFee" />
+                                                                    <input type="text" class="form-control" id="txtServiceFee" name="txtServiceFee" title="Applicable service fee amount" />
                                                                 </td>
                                                                 <td>
                                                                     <input type="checkbox" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" checked="@item.IsTaxApplicable" />
@@ -319,7 +319,7 @@
                                                                 <td>
                                                                     <div class="form-group">
                                                                         <div class="form-check form-check-inline">
-                                                                            <input class="form-check-input" id="chkAddService" type="checkbox" data-serviceid="1">
+                                                                            <input class="form-check-input" id="chkAddService" type="checkbox" data-serviceid="@item.Id" title="Tick to add a service to the order">
                                                                             <label class="form-check-label" for="chkAddService"> Yes</label>
                                                                         </div>
                                                                     </div>
@@ -342,7 +342,7 @@
                         <div class="col-sm-4">
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <div class="card">
+                                    <div class="card" style="background-color:#e5f5fd">
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-sm-3">
@@ -379,7 +379,7 @@
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtUnitQuantity" type="number" name="txtUnitQuantity" placeholder="Qty">
+                                                        <input class="form-control" id="txtUnitQuantity" type="number" name="txtUnitQuantity" placeholder="Qty" title="Unit quantity">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
@@ -394,7 +394,7 @@
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtWeightTotal" type="number" name="txtWeightTotal" placeholder="Qty">
+                                                        <input class="form-control" id="txtWeightTotal" type="number" name="txtWeightTotal" placeholder="Qty" >
                                                     </div>
                                                 </div>
                                             </div>
@@ -406,7 +406,7 @@
                                                 <div class="col-sm-5">
                                                     <div class="form-group">
                                                         <div class="input-group">
-                                                            <input class="form-control" id="txtSchedulePickupDate" type="date" title="Schedule pickup date" name="txtSchedulePickupDate">
+                                                            <input class="form-control" id="txtSchedulePickupDate" type="date" title="Schedule pickup date" name="txtSchedulePickupDate" >
 
                                                         </div>
                                                     </div>
@@ -427,12 +427,12 @@
                                                 </div>
                                                 <div class="col-sm-5">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtFuelSurchargeAmount" type="number" name="txtFuelSurchargeAmount" placeholder="Fuel surcharge">
+                                                        <input class="form-control" id="txtFuelSurchargeAmount" type="number" name="txtFuelSurchargeAmount" value="@Model.Configuration.DefaultFuelSurcharge" placeholder="Fuel surcharge" title="Fuel surcharge amount (%)">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtDiscountAmount" type="number" name="txtDiscountAmount" placeholder="Discount (%)">
+                                                        <input class="form-control" id="txtDiscountAmount" type="number" name="txtDiscountAmount" placeholder="Discount (%)" title="Discount amount (%)">
                                                     </div>
                                                 </div>
                                             </div>
@@ -444,12 +444,12 @@
                                                 </div>
                                                 <div class="col-sm-5">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtContactPerson" type="text" name="txtContactPerson" placeholder="Person name">
+                                                        <input class="form-control" id="txtContactPerson" type="text" name="txtContactPerson" placeholder="Person name" title="Contact person name">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtContactPhone" type="text" name="txtContactPhone" placeholder="Phone ">
+                                                        <input class="form-control" id="txtContactPhone" type="text" name="txtContactPhone" placeholder="Phone" title="Contact person phone">
                                                     </div>
                                                 </div>
                                             </div>
@@ -472,11 +472,9 @@
                                                     <div class=" form-group">
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input" id="chkIsGstApplicable" type="checkbox">
-                                                            <label class="form-check-label" for="chkIsGstApplicable">Add @Model.Configuration.TaxToCall </label>
-                                                            @{ 
-                                                                var taxAmount = " (" + Model.Configuration.TaxAmount.ToString() + "%)";
-                                                            }
-                                                            <label class="form-check-label" id="lblGstAmount"> @taxAmount </label>
+                                                            <label class="form-check-label" for="chkIsGstApplicable"> @Model.Configuration.TaxToCall - </label>
+                                                           
+                                                            <label class="form-check-label" id="lblGstAmount"> @Model.Configuration.TaxAmount </label>%
                                                         </div>
 
                                                     </div>
@@ -499,17 +497,17 @@
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtOrderCost" type="number" name="txtOrderCost" title="Order cost" readonly>
+                                                        <input class="form-control" id="txtOrderCost" type="number" name="txtOrderCost" title="Order cost" placeholder="Basic cost" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtOrderSurcharge" type="number" name="txtOrderSurcharge" title="Order surcharge" readonly>
+                                                        <input class="form-control" id="txtOrderSurcharge" type="number" name="txtOrderSurcharge" title="Order surcharge" placeholder="Surcharge" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtOrderGST" type="number" name="txtOrderGST" title="Order GST amount" readonly>
+                                                        <input class="form-control" id="txtOrderGST" type="number" name="txtOrderGST" title="Order GST amount" placeholder="GST " readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -521,17 +519,17 @@
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtOverrideOrderCost" type="number" name="txtOverrideOrderCost" title="Override Order cost">
+                                                        <input class="form-control" id="txtOverrideOrderCost" type="number" name="txtOverrideOrderCost" placeholder="Basic cost" title="Override Order cost">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtOverrideOrderSurcharge" type="number" name="txtOverrideOrderSurcharge" title="Final surcharge" readonly>
+                                                        <input class="form-control" id="txtOverrideOrderSurcharge" type="number" name="txtOverrideOrderSurcharge" placeholder="Surcharge" title="Final surcharge" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <div class=" form-group">
-                                                        <input class="form-control" id="txtOverrideOrderGST" type="number" name="txtOverrideOrderGST" title="Final GST amount" readonly>
+                                                        <input class="form-control" id="txtOverrideOrderGST" type="number" name="txtOverrideOrderGST" title="Final GST amount" placeholder="GST" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -543,39 +541,39 @@
                                                             <div class="row">
                                                                 <div class="col-sm-3">
                                                                     <div class=" form-group">
-                                                                        Basic cost<input class="form-control" id="txtGrandBasicCost" type="number" name="txtGrandBasicCost" readonly>
+                                                                        Basic cost<input class="form-control" id="txtGrandBasicCost" type="number" name="txtGrandBasicCost" title="Basic total" readonly>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-3">
                                                                     <div class=" form-group">
-                                                                        Discount<input class="form-control" id="txtGrandDiscountAmount" type="number" name="txtGrandDiscountAmount" readonly>
+                                                                        Discount<input class="form-control" id="txtGrandDiscountAmount" type="number" name="txtGrandDiscountAmount" title="Discount amount" readonly>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-3">
                                                                     <div class=" form-group">
-                                                                        GST<input class="form-control" id="txtGrandGstAmount" type="number" name="txtGrandGstAmount" readonly>
+                                                                        GST<input class="form-control" id="txtGrandGstAmount" type="number" name="txtGrandGstAmount" title="GST amount" readonly>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-3">
                                                                     <div class=" form-group">
-                                                                        Fuel surcharge<input class="form-control" id="txtGrandFuelSurchargeAmount" type="number" name="txtGrandFuelSurchargeAmount" readonly>
+                                                                        Fuel surcharge<input class="form-control" id="txtGrandFuelSurchargeAmount" type="number" name="txtGrandFuelSurchargeAmount" title="Fuel surcharge amount" readonly>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col-sm-3">
                                                                     <div class=" form-group">
-                                                                        Total cost<input class="form-control" id="txtGrandTotalOrderCost" type="number" name="txtGrandTotalOrderCost" readonly>
+                                                                        Total cost<input class="form-control" id="txtGrandTotalOrderCost" type="number" name="txtGrandTotalOrderCost" title="Total order cost" readonly>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-3">
                                                                     <div class=" form-group">
-                                                                        Add. Service<input class="form-control" id="txtGrandAddServiceAmount" type="number" name="txtGrandAddServiceAmount" readonly>
+                                                                        Add. Service<input class="form-control" id="txtGrandAddServiceAmount" type="number" name="txtGrandAddServiceAmount" title="Total additional service cost" readonly>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-6">
                                                                     <div class=" form-group">
-                                                                        Grancd Total<input class="form-control" id="txtGrandTotalAmount" type="number" name="txtGrandTotalAmount" readonly>
+                                                                        Grand Total<input class="form-control" id="txtGrandTotalAmount" type="number" name="txtGrandTotalAmount" title="Grand total amount" readonly>
                                                                     </div>
                                                                 </div>
                                                             </div>
