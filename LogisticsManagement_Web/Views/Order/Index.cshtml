@@ -319,7 +319,7 @@
                                                                 <td>
                                                                     <div class="form-group">
                                                                         <div class="form-check form-check-inline">
-                                                                            <input class="form-check-input" id="chkAddService" type="checkbox" data-serviceid="@item.Id" title="Tick to add a service to the order">
+                                                                            <input class="form-check-input" id="chkAddService" type="checkbox" data-serviceid="@Json.Serialize(item)" title="Tick to add a service to the order">
                                                                             <label class="form-check-label" for="chkAddService"> Yes</label>
                                                                         </div>
                                                                     </div>

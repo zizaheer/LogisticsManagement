@@ -259,6 +259,7 @@ function CalculateOrderBaseCost() {
     fuelSurchargePercentage = $('#txtFuelSurchargeAmount').val() != "" ? parseFloat($('#txtFuelSurchargeAmount').val()) : 0.0;
     discountPercentage = $('#txtDiscountAmount').val() != "" ? parseFloat($('#txtDiscountAmount').val()) : 0.0;
     taxPercentage = $('#lblGstAmount').text() != "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
+    var overrideCost = $('#txtOverrideOrderCost').val() != "" ? parseFloat($('#txtOverrideOrderCost').val()) : 0.0;
 
     var orderCost = 0.0;
 
@@ -271,7 +272,7 @@ function CalculateOrderBaseCost() {
         orderCost = tariffCost + fuelSurchargeAmount;
 
         if (discountPercentage > 0) {
-            discountAmount = discountPercentage * orderBasicCost / 100;
+            discountAmount = discountPercentage * orderCost / 100;
         }
 
         orderCost = orderCost - discountAmount;
@@ -286,8 +287,24 @@ function CalculateOrderBaseCost() {
         $('#txtOrderSurcharge').val(fuelSurchargeAmount.toFixed(2));
         $('#txtOrderGST').val(taxAmount.toFixed(2));
 
-        $('#txtOrderCost').val(parseFloat(tariffCost.toFixed(2)));
-        $('#txtOrderCost').val(parseFloat(tariffCost.toFixed(2)));
+        var overrideCost = $('#txtOverrideOrderCost').val();
+        if (overrideCost > 0) {
+            $('#txtGrandBasicCost').val($('#txtOrderCost').val());
+            $('#txtGrandDiscountAmount').val(discountAmount.toFixed(2));
+            $('#txtGrandGstAmount').val($('#txtOrderGST').val());
+            $('#txtGrandFuelSurchargeAmount').val($('#txtOrderSurcharge').val());
+
+        }
+        else {
+            $('#txtGrandBasicCost').val($('#txtOrderCost').val());
+            $('#txtGrandDiscountAmount').val(discountAmount.toFixed(2));
+            $('#txtGrandGstAmount').val($('#txtOrderGST').val());
+            $('#txtGrandFuelSurchargeAmount').val($('#txtOrderSurcharge').val());
+
+        }
+
+        $('#txtGrandTotalOrderCost').val(orderCost.toFixed(2));
+        $('#txtGrandTotalAmount').val(parseFloat(tariffCost.toFixed(2)));
 
     }
 
