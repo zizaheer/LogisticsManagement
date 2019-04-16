@@ -11,6 +11,8 @@
             height: 29px;
         }
     </style>*@
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
+
 <form id="frmOrderForm">
     <div class="row">
         <div class="col-sm-12">
@@ -79,36 +81,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
 
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-sm-4">
-                                    <select class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="ddlBillerId">
-                                        <option value="0"> Bill to </option>
-                                        @foreach (var item in Model.Customers)
-                                        {
-                                            <option value="@item.Id">@item.CustomerName</option>
-                                        }
-
-                                    </select>
-                                </div>
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtBillerCustomerNo" type="number" min="0" name="txtBillerCustomerNo" placeholder="Customer no." title="Biller customer id">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">
-                                                    <i class="fa fa-search"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtCustomerRefNo" name="txtCustomerRefNo" type="text" placeholder="Cust. ref#" title="Customer ref #">
@@ -124,6 +103,32 @@
                                         <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtAwbCtnNo" type="text" name="txtAwbCtnNo" placeholder="AWB/CTN#" title="AWB/CTN#">
                                     </div>
                                 </div>
+
+                                <div class="col-sm-4">
+                                    <strong>
+                                        <select class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;background-color:#d6f8ff; font-weight:bold" id="ddlBillerId">
+                                            <option value="0"> Bill to </option>
+                                            @foreach (var item in Model.Customers)
+                                            {
+                                                <option value="@item.Id" style="font-weight:bold"> @item.CustomerName</option>
+                                            }
+
+                                        </select>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtBillerCustomerNo" type="number" min="0" name="txtBillerCustomerNo" placeholder="Customer no." title="Biller customer id">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-search"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
 
 
                             </div>
@@ -196,7 +201,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtShipperPostcode" type="text" name="txtShipperPostcode" placeholder="Postcode" title="Postcode" readonly/>
+                                                    <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtShipperPostcode" type="text" name="txtShipperPostcode" placeholder="Postcode" title="Postcode" readonly />
                                                 </div>
 
                                             </div>
@@ -239,13 +244,13 @@
 
                                                 <div class="col-sm-9">
                                                     <div class="form-group">
-                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtConsigneeAddressline" type="text" name="txtConsigneeAddressline" placeholder="Address line" title="Address line" readonly/>
+                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtConsigneeAddressline" type="text" name="txtConsigneeAddressline" placeholder="Address line" title="Address line" readonly />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-sm-3">
                                                     <div class="form-group">
-                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtConsigneeUnitNo" type="text" name="txtConsigneeUnitNo" placeholder="Unit" title="Unit number" readonly/>
+                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtConsigneeUnitNo" type="text" name="txtConsigneeUnitNo" placeholder="Unit" title="Unit number" readonly />
                                                     </div>
                                                 </div>
                                             </div>
@@ -269,7 +274,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtConsigneePostcode" type="text" name="txtConsigneePostcode" placeholder="Postcode" title="Postcode" readonly/>
+                                                    <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtConsigneePostcode" type="text" name="txtConsigneePostcode" placeholder="Postcode" title="Postcode" readonly />
                                                 </div>
 
                                             </div>
@@ -412,7 +417,7 @@
                                                 <div class="col-sm-5">
                                                     <div class="form-group">
                                                         <div class="input-group">
-                                                            <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtSchedulePickupDate" type="date"  title="Schedule pickup date" name="txtSchedulePickupDate">
+                                                            <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtSchedulePickupDate" type="date" title="Schedule pickup date" name="txtSchedulePickupDate">
 
                                                         </div>
                                                     </div>
@@ -552,6 +557,11 @@
                                                                 </div>
                                                                 <div class="col-sm-3">
                                                                     <div class=" form-group">
+                                                                        Fuel surcharge<input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtGrandFuelSurchargeAmount" type="number" min="0" name="txtGrandFuelSurchargeAmount" title="Fuel surcharge amount" readonly>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <div class=" form-group">
                                                                         Discount<input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtGrandDiscountAmount" type="number" min="0" name="txtGrandDiscountAmount" title="Discount amount" readonly>
                                                                     </div>
                                                                 </div>
@@ -560,11 +570,7 @@
                                                                         GST<input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtGrandGstAmount" type="number" min="0" name="txtGrandGstAmount" title="GST amount" readonly>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-3">
-                                                                    <div class=" form-group">
-                                                                        Fuel surcharge<input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtGrandFuelSurchargeAmount" type="number" min="0" name="txtGrandFuelSurchargeAmount" title="Fuel surcharge amount" readonly>
-                                                                    </div>
-                                                                </div>
+
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col-sm-3">
@@ -603,10 +609,14 @@
 
 
                     <hr />
-                    <input type="hidden" id="txtOrderId" class="txtOrderId" name="txtOrderId" />
+                    <input type="hidden" id="hfOrderId" class="hfOrderId" name="txtOrderId" />
                     <button type="reset" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
                     <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
-                    <span style="float:right; display:none" class="btn btn-sm btn-success"><input type="checkbox" id="btnReturn" /> Return order</span>
+                    @* <span style="float:right; display:none" class="btn btn-sm btn-success"><input type="checkbox" id="btnReturn" /> Return order</span>*@
+                    @*<input type="checkbox" checked data-toggle="toggle" data-onstyle="primary">*@
+                    <span style="float:right">
+                        <input type="checkbox" style="float:right" data-toggle="toggle" data-on="<i class='fa fa-mail-forward'></i> Single" data-off="<i class='fa fa-mail-reply'></i> Return" data-onstyle="info" data-offstyle="secondary">
+                    </span>
                 </div>
             </div>
         </div>
@@ -640,6 +650,7 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
 <script src="~/js/order.js"></script>
 
 

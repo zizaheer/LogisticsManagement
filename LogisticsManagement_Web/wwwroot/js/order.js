@@ -549,115 +549,40 @@ $('.btnDelete').unbind().on('click', function () {
 function GetFormData() {
 
     var orderData = {
-        id: $('#txtOrderId').val() === "" ? "0" : $('#txtOrderId').val(),
-        id: $('#txtOrderId').val() === "" ? "0" : $('#txtOrderId').val(),
-        id: $('#txtOrderId').val() === "" ? "0" : $('#txtOrderId').val(),
-        id: $('#txtOrderId').val() === "" ? "0" : $('#txtOrderId').val(),
-        id: $('#txtOrderId').val() === "" ? "0" : $('#txtOrderId').val(),
-        id: $('#txtOrderId').val() === "" ? "0" : $('#txtOrderId').val(),
-        id: $('#txtOrderId').val() === "" ? "0" : $('#txtOrderId').val(),
-        id: $('#txtOrderId').val() === "" ? "0" : $('#txtOrderId').val(),
-        id: $('#txtOrderId').val() === "" ? "0" : $('#txtOrderId').val(),
-        id: $('#txtOrderId').val() === "" ? "0" : $('#txtOrderId').val(),
+        id: $('#hfOrderId').val() === "" ? "0" : $('#hfOrderId').val(),
+        orderTypeId: $('#OrderTypeId').val() === "" ? "0" : $('#OrderTypeId').val(),
 
-        OrderId	int	Unchecked
-OrderTypeId	int	Unchecked
-WayBillNumber	nvarchar(30)	Checked
-ReferenceNumber	nvarchar(50)	Checked
-CargoCtlNumber	nvarchar(50)	Checked
-AwbCtnNumber	nvarchar(50)	Checked
-ShipperCustomerId	int	Checked
-ConsigneeCustomerId	int	Checked
-BillToCustomerId	int	Unchecked
-ScheduledPickupDate	datetime	Checked
-ExpectedDeliveryDate	datetime	Checked
-CityId	int	Checked
-DeliveryOptionId	int	Checked
-VehicleTypeId	int	Checked
-UnitTypeId	int	Unchecked
-WeightScaleId	int	Checked
-WeightTotal	decimal(18, 2)	Checked
-UnitQuantity	int	Unchecked
-OrderBasicCost	decimal(18, 2)	Unchecked
-BasicCostOverriden	decimal(18, 2)	Checked
-FuelSurchargePercentage	decimal(3, 2)	Checked
-DiscountPercentOnOrderCost	decimal(3, 2)	Checked
-ApplicableGstPercent	decimal(3, 2)	Checked
-TotalOrderCost	decimal(18, 2)	Checked
-TotalAdditionalServiceCost	decimal(18, 2)	Checked
-OrderedBy	nvarchar(50)	Checked
-DepartmentName	nvarchar(50)	Checked
-ContactName	nvarchar(50)	Checked
-ContactPhoneNumber	nvarchar(20)	Checked
-Remarks	nvarchar(250)	Checked
-CreateDate	datetime	Unchecked
-CreatedBy	int	Unchecked
-		Unchecked
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        id: $('#txtEmployeeId').val() === "" ? "0" : $('#txtEmployeeId').val(),
-        firstName: $('#txtFirstName').val(),
-        lastName: $('#txtLastName').val(),
-        driverLicenseNo: $('#txtDrivingLicenseNo').val(),
-        socialInsuranceNo: $('#txtSocialInsuranceNo').val(),
-        unitNumber: $('#txtUnitNumber').val(),
-        addressLine: $('#txtAddressLine').val(),
-        cityId: $('#ddlCityId').val(),
-        provinceId: $('#ddlProvinceId').val(),
-        countryId: $('#ddlCountryId').val(),
-        postCode: $('#txtPostCode').val(),
-        phoneNumber: $('#txtPhoneNumber').val(),
-        mobileNumber: $('#txtMobileNo').val(),
-        faxNumber: $('#txtFaxNo').val(),
-        emailAddress: $('#txtEmailAddress').val(),
-
-        employeeTypeId: $('#ddlEmployeeTypeId').val(),
-        isHourlyPaid: $('#chkIsHourlyPaid').is(':checked') ? 1 : 0,
-        hourlyRate: $('#txtHourlyRate').val(),
-        isSalaried: $('#chkIsSalaryEmployee').is(':checked') ? 1 : 0,
-        salaryAmount: $('#txtSalaryAmount').val(),
-        salaryTerm: $('#ddlSalaryTermId').val(),
-        isCommissionProvided: $('#chkIsCommissionProvided').is(':checked') ? 1 : 0,
-        commissionPercentage: $('#txtCommissionAmount').val(),
-        isFuelChargeProvided: $('#chkIsFuelProvided').is(':checked') ? 1 : 0,
-        fuelPercentage: $('#txtFuelSurchargePercentage').val(),
-        radioInsuranceAmount: $('#txtRadioInsuranceAmount').val(),
-        insuranceAmount: $('#txtInsuranceAmount').val(),
-
-        isActive: $('#chkIsActive').is(':checked') ? 1 : 0
+        wayBillNumber: $('#txtWayBillNo').val() === "" ? "0" : $('#txtWayBillNo').val(),
+        referenceNumber: $('#txtCustomerRefNo').val(),
+        cargoCtlNumber: $('#txtCargoCtlNo').val(),
+        awbCtnNumber: $('#txtAwbCtnNo').val(),
+        shipperCustomerId: $('#ddlShipperId').val(),
+        consigneeCustomerId: $('#ddlConsigneeId').val(),
+        billToCustomerId: $('#ddlBillerId').val(),
+        scheduledPickupDate: $('#txtSchedulePickupDate').val(),
+        expectedDeliveryDate: $('#txtSchedulePickupDate').val(),
+        cityId: $('#ddlConsigneeCityId').val(),
+        deliveryOptionId: $('#ddlDeliveryOptionId').val() === "" ? "0" : $('#ddlDeliveryOptionId').val(),
+        vehicleTypeId: $("input[name='rdoVehicleType']:checked").val(),
+        unitTypeId: $('#ddlUnitTypeId').val(),
+        weightScaleId: $('#ddlWeightScaleId').val(),
+        weightTotal: $('#txtWeightTotal').val(),
+        unitQuantity: $('#txtUnitQuantity').val(),
+        orderBasicCost: $('#txtBaseOrderCost').val(),
+        basicCostOverriden: $('#txtOverriddenOrderCost').val(),
+        fuelSurchargePercentage: overriddenFuelSurchargeAmount,
+        discountPercentOnOrderCost: overriddenDiscountAmount,
+        applicableGstPercent: overriddenTaxAmount,
+        totalOrderCost: $('#txtGrandTotalOrderCost').val(),
+        totalAdditionalServiceCost: $('#txtGrandAddServiceAmount').val(),
+        orderedBy: $('#txtContactPerson').val(),
+        departmentName: null,
+        contactName: $('#txtContactPerson').val(),
+        contactPhoneNumber: $('#txtContactPhone').val(),
+        remarks: $('#txtRemarks').val()
 
     };
 
-    return [employeeData];
+    return [orderData, selectedAdditionalServiceArray];
 }
 
