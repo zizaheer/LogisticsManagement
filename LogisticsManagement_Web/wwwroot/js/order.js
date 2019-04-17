@@ -64,9 +64,8 @@ var selectedAdditionalServiceArray = [];
 var totalAdditionalServiceCost = 0.0;
 
 var singleOrderData = null;
-var singleOrderAdditionalServiceData = null;
-
 var returnOrderData = null;
+var singleOrderAdditionalServiceData = null;
 var returnOrderAdditionalServiceData = null;
 
 
@@ -348,20 +347,24 @@ $('#txtWayBillNo').keypress(function (event) {
 
         singleOrderData = parseData.orderPocos.filter(function (item) {
             return item.OrderTypeId === 1;
-        });
-        var services = parseData.orderAdditionalServices;
+        })[0];
 
-        //console.log(services);
-        //console.log(orders);
+        returnOrderData = parseData.orderPocos.filter(function (item) {
+            return item.OrderTypeId === 2;
+        })[0];
 
-        if (services.length > 0) {
-            //console.log(services.AdditionalServiceFee);
-        }
-
-        if (orders.length > 0)
+        singleOrderAdditionalServiceData = parseData.orderAdditionalServices.filter(function (item)
         {
-            //console.log(orders[0].WayBillNumber);
-        }
+            return item.OrderId === singleOrderData.Id;
+
+        });
+
+        returnOrderAdditionalServiceData = parseData.orderAdditionalServices.filter(function (item) {
+            return item.OrderId === returnOrderData.Id;
+
+        });
+
+        console.log(singleOrderAdditionalServiceData, returnOrderAdditionalServiceData);
 
         event.preventDefault();
 
@@ -496,6 +499,18 @@ function CalculateOrderBaseCost() {
     $('#txtGrandTotalAmount').val(grandTotal.toFixed(2));
 
 }
+
+function FillOrderDetails()
+{
+
+}
+
+function FillOrderAdditionalServices()
+{
+
+
+}
+
 
 //#endregion 
 
