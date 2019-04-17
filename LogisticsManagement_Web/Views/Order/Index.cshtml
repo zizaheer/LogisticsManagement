@@ -390,7 +390,7 @@
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <div class=" form-group">
-                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtUnitQuantity" type="number" name="txtUnitQuantity" min="0" placeholder="Qty" title="Unit quantity">
+                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtUnitQuantity" type="number" name="txtUnitQuantity" min="1" placeholder="Qty" title="Unit quantity">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
@@ -438,12 +438,12 @@
                                                 </div>
                                                 <div class="col-sm-5">
                                                     <div class=" form-group">
-                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtFuelSurchargeAmount" type="number" min="0" name="txtFuelSurchargeAmount" value="@Model.Configuration.DefaultFuelSurcharge" placeholder="Fuel surcharge" title="Fuel surcharge amount (%)">
+                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtFuelSurchargePercent" type="number" min="0" name="txtFuelSurchargePercent" value="@Model.Configuration.DefaultFuelSurcharge" placeholder="Fuel surcharge" title="Fuel surcharge amount (%)">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <div class=" form-group">
-                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtDiscountAmount" type="number" min="0" name="txtDiscountAmount" placeholder="Discount (%)" title="Discount amount (%)">
+                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtDiscountPercent" type="number" min="0" name="txtDiscountPercent" placeholder="Discount (%)" title="Discount amount (%)">
                                                     </div>
                                                 </div>
                                             </div>
@@ -508,7 +508,7 @@
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <div class=" form-group">
-                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtBaseOrderCost" type="number" min="0" name="txtBaseOrderCost" title="Order cost" placeholder="Basic cost" readonly>
+                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtBaseOrderCost" type="number" min="0" name="txtBaseOrderCost" title="Order cost" placeholder="Basic cost" required readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3">
@@ -530,7 +530,7 @@
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <div class=" form-group">
-                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtOverriddenOrderCost" type="number" min="0" name="txtOverriddenOrderCost" placeholder="Basic cost" title="Override Order cost">
+                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtOverriddenOrderCost" type="number" min="1" name="txtOverriddenOrderCost" placeholder="Basic cost" title="Override Order cost">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3">
@@ -552,7 +552,7 @@
                                                             <div class="row">
                                                                 <div class="col-sm-3">
                                                                     <div class=" form-group">
-                                                                        Basic cost<input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtGrandBasicCost" type="number" min="0" name="txtGrandBasicCost" title="Basic total" readonly>
+                                                                        Basic cost<input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtGrandBasicCost" type="number" min="1" name="txtGrandBasicCost" title="Basic total" required readonly>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-3">
@@ -609,13 +609,13 @@
 
 
                     <hr />
-                    <input type="hidden" id="hfOrderId" class="hfOrderId" name="txtOrderId" />
+                    <input type="hidden" id="hfOrderId" class="hfOrderId" name="hfOrderId" />
                     <button type="reset" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
                     <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
                     @* <span style="float:right; display:none" class="btn btn-sm btn-success"><input type="checkbox" id="btnReturn" /> Return order</span>*@
                     @*<input type="checkbox" checked data-toggle="toggle" data-onstyle="primary">*@
                     <span style="float:right">
-                        <input type="checkbox" style="float:right" data-toggle="toggle" data-on="<i class='fa fa-mail-forward'></i> Single" data-off="<i class='fa fa-mail-reply'></i> Return" data-onstyle="info" data-offstyle="secondary">
+                        <input type="checkbox" id="chkIsReturnOrder" name="chkIsReturnOrder" style="float:right" data-toggle="toggle" data-on="<i class='fa fa-mail-reply'></i> Return" data-off="<i class='fa fa-mail-reply'></i> Return" data-onstyle="info" data-offstyle="secondary">
                     </span>
                 </div>
             </div>

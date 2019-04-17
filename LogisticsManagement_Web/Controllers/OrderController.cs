@@ -95,7 +95,6 @@ namespace LogisticsManagement_Web.Controllers
         [HttpPost]
         public IActionResult Add([FromBody]dynamic orderData)
         {
-
             ValidateSession();
             var result = "";
 
@@ -104,7 +103,7 @@ namespace LogisticsManagement_Web.Controllers
                 if (orderData != null)
                 {
                     Lms_OrderPoco orderPoco = JsonConvert.DeserializeObject<Lms_OrderPoco>(JsonConvert.SerializeObject(orderData[0]));
-                    List<Lms_OrderAdditionalServicePoco> orderAdditionalServices = JsonConvert.DeserializeObject<List<Lms_OrderAdditionalServicePoco>>(JsonConvert.SerializeObject(orderData[0]));
+                    List<Lms_OrderAdditionalServicePoco> orderAdditionalServices = JsonConvert.DeserializeObject<List<Lms_OrderAdditionalServicePoco>>(JsonConvert.SerializeObject(orderData[1]));
 
                     if (orderPoco.Id < 1 && orderPoco.BillToCustomerId > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId > 0)
                     {
@@ -114,10 +113,10 @@ namespace LogisticsManagement_Web.Controllers
                         {
                             var jObject = JObject.Parse(orderInfo);
                             var returnedObject = (string)jObject.SelectToken("ReturnedValue");
-                            result = (string)JObject.Parse(returnedObject).SelectToken("OrderId");
-                            if (result.Length > 0)
+
+                            if (returnedObject.Length > 0)
                             {
-                                result = Convert.ToInt32(result) < 1 ? "" : result;
+                                result = returnedObject;
                             }
                         }
                     }
@@ -319,11 +318,22 @@ namespace LogisticsManagement_Web.Controllers
 
 
 
-        public JsonResult GetOrderById(string id)
+        public JsonResult GetOrderByWayBillId(string id)
         {
-            var orderPoco = _orderLogic.GetList().Where(c => c.Id == Convert.ToInt32(id));
-            var orderAdditionalServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == Convert.ToInt32(id)).ToList();
-            return Json(JsonConvert.SerializeObject(new { order = orderPoco, additionalServices = new[] { orderAdditionalServices } }));
+            try
+            {
+                var orderPocos = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
+
+                _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+                var orderAdditionalServices = _orderAdditionalServiceLogic.GetList().Where(c => orderPocos.Select(d=> d.Id).ToList().Contains(c.OrderId)).ToList();
+
+                return Json(JsonConvert.SerializeObject(new { orderPocos, orderAdditionalServices }));
+
+            }
+            catch (Exception ex)
+            {
+                return Json("");
+            }
         }
 
         private void ValidateSession()

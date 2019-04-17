@@ -55,7 +55,6 @@ namespace LogisticsManagement_BusinessLogic
             return base.GetMaxId();
         }
 
-
         #endregion
 
         #region Add/Update/Remove Methods

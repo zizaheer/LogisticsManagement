@@ -32,12 +32,12 @@ namespace LogisticsManagement_Poco
         public int UnitQuantity { get; set; }
 
         public decimal OrderBasicCost { get; set; }
-        public decimal BasicCostOverriden { get; set; }
-        public decimal FuelSurchargePercentage { get; set; }
-        public decimal DiscountPercentOnOrderCost { get; set; }
-        public decimal ApplicableGstPercent { get; set; }
+        public decimal? BasicCostOverriden { get; set; }
+        public decimal? FuelSurchargePercentage { get; set; }
+        public decimal? DiscountPercentOnOrderCost { get; set; }
+        public decimal? ApplicableGstPercent { get; set; }
         public decimal TotalOrderCost { get; set; }
-        public decimal TotalAdditionalServiceCost { get; set; }
+        public decimal? TotalAdditionalServiceCost { get; set; }
 
         public string OrderedBy { get; set; }
         public string DepartmentName { get; set; }

@@ -63,6 +63,8 @@ function GetSingleObjectById(actionUrl, id) {
 }
 
 function AddEntry(actionUrl, dataArray) {
+    var returnObject = null;
+
     $.ajax({
         'async': false,
         url: actionUrl,
@@ -72,6 +74,7 @@ function AddEntry(actionUrl, dataArray) {
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
             if (result.length > 0) {
+                returnObject = result;
                 SetResponseMessage('Success', 'Success! Data saved successfully. ');
             }
             else {
@@ -83,6 +86,8 @@ function AddEntry(actionUrl, dataArray) {
 
         }
     });
+
+    return returnObject;
 }
 
 function UpdateEntry(actionUrl, dataArray) {

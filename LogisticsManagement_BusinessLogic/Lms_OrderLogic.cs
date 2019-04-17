@@ -96,11 +96,11 @@ namespace LogisticsManagement_BusinessLogic
         {
 
             DataTable additionalServiceList = new DataTable();
-            additionalServiceList.Columns.Add("ServiceId", typeof(int));
-            additionalServiceList.Columns.Add("ServiceFee", typeof(decimal));
-            additionalServiceList.Columns.Add("DriverPercentage", typeof(decimal));
-            additionalServiceList.Columns.Add("IsTaxApplicable", typeof(bool));
-            additionalServiceList.Columns.Add("TaxAmount", typeof(decimal));
+            additionalServiceList.Columns.Add("AdditionalServiceId", typeof(int));
+            additionalServiceList.Columns.Add("AdditionalServiceFee", typeof(decimal));
+            additionalServiceList.Columns.Add("DriverPercentageOnAddService", typeof(decimal));
+            additionalServiceList.Columns.Add("IsTaxAppliedOnAddionalService", typeof(bool));
+            additionalServiceList.Columns.Add("TaxAmountOnAdditionalService", typeof(decimal));
 
             if (orderAdditionalServices.Count > 0)
             {
@@ -117,39 +117,38 @@ namespace LogisticsManagement_BusinessLogic
                 }
             }
 
-
             SqlParameter[] sqlParameters = {
 
-                new SqlParameter("@OrderTypeId", SqlDbType.VarChar, 50) { Value = orderPoco.OrderTypeId },
+                new SqlParameter("@OrderTypeId", SqlDbType.Int) { Value = orderPoco.OrderTypeId },
                 new SqlParameter("@ReferenceNumber", SqlDbType.VarChar, 50) { Value = (object)orderPoco.ReferenceNumber ?? DBNull.Value },
-                new SqlParameter("@CargoCtlNumber", SqlDbType.Int) { Value = (object)orderPoco.CargoCtlNumber ?? DBNull.Value },
+                new SqlParameter("@CargoCtlNumber", SqlDbType.VarChar, 50) { Value = (object)orderPoco.CargoCtlNumber ?? DBNull.Value },
                 new SqlParameter("@AwbCtnNumber", SqlDbType.VarChar, 50) { Value =(object) orderPoco.AwbCtnNumber ?? DBNull.Value },
-                new SqlParameter("@ShipperCustomerId", SqlDbType.VarChar, 50) { Value = (object)orderPoco.ShipperCustomerId ?? DBNull.Value },
-                new SqlParameter("@ConsigneeCustomerId", SqlDbType.VarChar, 50) { Value = (object)orderPoco.ConsigneeCustomerId ?? DBNull.Value },
-                new SqlParameter("@BillToCustomerId", SqlDbType.VarChar, 50) { Value = (object)orderPoco.BillToCustomerId ?? DBNull.Value },
-                new SqlParameter("@ScheduledPickupDate", SqlDbType.VarChar, 50) { Value =(object) orderPoco.ScheduledPickupDate ?? DBNull.Value },
-                new SqlParameter("@ExpectedDeliveryDate", SqlDbType.VarChar, 150) { Value =(object) orderPoco.ExpectedDeliveryDate ?? DBNull.Value },
+                new SqlParameter("@ShipperCustomerId", SqlDbType.Int) { Value = (object)orderPoco.ShipperCustomerId ?? DBNull.Value },
+                new SqlParameter("@ConsigneeCustomerId", SqlDbType.Int) { Value = (object)orderPoco.ConsigneeCustomerId ?? DBNull.Value },
+                new SqlParameter("@BillToCustomerId", SqlDbType.Int) { Value = (object)orderPoco.BillToCustomerId ?? DBNull.Value },
+                new SqlParameter("@ScheduledPickupDate", SqlDbType.DateTime) { Value =(object) orderPoco.ScheduledPickupDate ?? DBNull.Value },
+                new SqlParameter("@ExpectedDeliveryDate", SqlDbType.DateTime) { Value =(object) orderPoco.ExpectedDeliveryDate ?? DBNull.Value },
                 new SqlParameter("@CityId", SqlDbType.Int) { Value = (object)orderPoco.CityId ?? DBNull.Value },
                 new SqlParameter("@DeliveryOptionId", SqlDbType.Int) { Value = (object)orderPoco.DeliveryOptionId ?? DBNull.Value },
                 new SqlParameter("@VehicleTypeId", SqlDbType.Int) { Value = (object)orderPoco.VehicleTypeId ?? DBNull.Value },
-                new SqlParameter("@UnitTypeId", SqlDbType.VarChar, 50) { Value = (object)orderPoco.UnitTypeId ?? DBNull.Value },
-                new SqlParameter("@WeightScaleId", SqlDbType.VarChar, 50) { Value = (object)orderPoco.WeightScaleId?? DBNull.Value  },
-                new SqlParameter("@WeightTotal", SqlDbType.VarChar, 50) { Value = (object)orderPoco.WeightTotal?? DBNull.Value  },
-                new SqlParameter("@UnitQuantity", SqlDbType.VarChar, 50) { Value = (object)orderPoco.UnitQuantity ?? DBNull.Value },
-                new SqlParameter("@OrderBasicCost", SqlDbType.VarChar, 150) { Value = (object)orderPoco.OrderBasicCost ?? DBNull.Value },
-                new SqlParameter("@BasicCostOverriden", SqlDbType.Int) { Value = (object)orderPoco.BasicCostOverriden?? DBNull.Value  },
+                new SqlParameter("@UnitTypeId", SqlDbType.Int) { Value = (object)orderPoco.UnitTypeId ?? DBNull.Value },
+                new SqlParameter("@WeightScaleId", SqlDbType.Int) { Value = (object)orderPoco.WeightScaleId?? DBNull.Value  },
+                new SqlParameter("@WeightTotal", SqlDbType.Decimal) { Value = (object)orderPoco.WeightTotal?? DBNull.Value  },
+                new SqlParameter("@UnitQuantity", SqlDbType.Int) { Value = (object)orderPoco.UnitQuantity ?? DBNull.Value },
+                new SqlParameter("@OrderBasicCost", SqlDbType.Decimal) { Value = (object)orderPoco.OrderBasicCost ?? DBNull.Value },
+                new SqlParameter("@BasicCostOverriden", SqlDbType.Decimal) { Value = (object)orderPoco.BasicCostOverriden?? DBNull.Value  },
                 new SqlParameter("@FuelSurchargePercentage", SqlDbType.Bit) { Value = (object)orderPoco.FuelSurchargePercentage?? DBNull.Value  },
                 new SqlParameter("@DiscountPercentOnOrderCost", SqlDbType.Decimal) { Value = (object)orderPoco.DiscountPercentOnOrderCost ?? DBNull.Value },
-                new SqlParameter("@ApplicableGstPercent", SqlDbType.Bit, 50) { Value = (object)orderPoco.ApplicableGstPercent ?? DBNull.Value },
+                new SqlParameter("@ApplicableGstPercent", SqlDbType.Decimal) { Value = (object)orderPoco.ApplicableGstPercent ?? DBNull.Value },
                 new SqlParameter("@TotalOrderCost", SqlDbType.Decimal) { Value = (object)orderPoco.TotalOrderCost ?? DBNull.Value },
                 new SqlParameter("@TotalAdditionalServiceCost", SqlDbType.Decimal) { Value = (object)orderPoco.TotalAdditionalServiceCost ?? DBNull.Value },
-                new SqlParameter("@OrderedBy", SqlDbType.Decimal) { Value = (object)orderPoco.OrderedBy ?? DBNull.Value },
-                new SqlParameter("@DepartmentName", SqlDbType.Int) { Value = (object)orderPoco.DepartmentName ?? DBNull.Value },
-                new SqlParameter("@ContactName", SqlDbType.Bit) { Value =(object) orderPoco.ContactName ?? DBNull.Value },
-                new SqlParameter("@ContactPhoneNumber", SqlDbType.Decimal) { Value = (object)orderPoco.ContactPhoneNumber ?? DBNull.Value },
-                new SqlParameter("@Remarks", SqlDbType.Bit) { Value = (object)orderPoco.Remarks ?? DBNull.Value },
-                new SqlParameter("@CreatedBy", SqlDbType.Decimal) { Value = (object)orderPoco.CreatedBy ?? DBNull.Value },
-                new SqlParameter("@OrderAdditionalServiceList", SqlDbType.Structured) { TypeName = "dbo.", Value = additionalServiceList }
+                new SqlParameter("@OrderedBy", SqlDbType.VarChar, 50) { Value = (object)orderPoco.OrderedBy ?? DBNull.Value },
+                new SqlParameter("@DepartmentName", SqlDbType.VarChar, 50) { Value = (object)orderPoco.DepartmentName ?? DBNull.Value },
+                new SqlParameter("@ContactName", SqlDbType.VarChar, 50) { Value =(object) orderPoco.ContactName ?? DBNull.Value },
+                new SqlParameter("@ContactPhoneNumber", SqlDbType.VarChar, 50) { Value = (object)orderPoco.ContactPhoneNumber ?? DBNull.Value },
+                new SqlParameter("@Remarks", SqlDbType.VarChar, 150) { Value = (object)orderPoco.Remarks ?? DBNull.Value },
+                new SqlParameter("@CreatedBy", SqlDbType.Int) { Value = (object)orderPoco.CreatedBy ?? DBNull.Value },
+                new SqlParameter("@OrderAdditionalServiceList", SqlDbType.Structured) { TypeName = "dbo.OrderAdditionalServices", Value = additionalServiceList }
 
             };
 

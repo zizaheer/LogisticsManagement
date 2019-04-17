@@ -55,6 +55,7 @@ namespace LogisticsManagement_DataAccess
         DbSet<Lms_OrderDocumentPoco> lmsOrderDocumentPocos { get; set; }
         DbSet<Lms_OrderStatusPoco> lmsOrderStatusPocos { get; set; }
         DbSet<Lms_OrderTypePoco> lmsOrderTypePocos { get; set; }
+        DbSet<Lms_OrderAdditionalServicePoco> _orderAdditionalServicePocos { get; set; }
         DbSet<Lms_PayeePoco> lmsPayeePocos { get; set; }
         DbSet<Lms_PaymentMethodPoco> lmsPaymentMethodPocos { get; set; }
         DbSet<Lms_StorageOrderPoco> lmsStorageOrderPoco { get; set; }
