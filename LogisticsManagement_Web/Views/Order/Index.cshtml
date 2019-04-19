@@ -20,6 +20,9 @@
             <div class="card">
                 <div class="card-header" style="background-color: #365396;color: #fff;">
                     <strong><i class="fa fa-sliders"></i> Order</strong>
+                    <span style="float:right; padding:2px 4px 2px 4px" class="btn btn-sm btn-secondary">
+                        <input type="checkbox" id="chkShowReturnOrder" title="Tick to show return order" /> Show return order
+                    </span>
                 </div>
 
                 <div class="card-body">
@@ -315,13 +318,13 @@
                                                                         <input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" checked="@item.PayToDriver" disabled />
                                                                     </td>
                                                                     <td>
-                                                                        <input type="number" class="form-control txtDriverPercentage" style="padding: 4px 4px 4px 8px; height: 29px;" min="0" id="txtDriverPercentage" name="txtDriverPercentage" title="Driver portion of the fee" />
+                                                                        <input type="number" class="form-control txtDriverPercentage" style="padding: 4px 4px 4px 8px; height: 29px;" min="0" id="txtDriverPercentage" name="txtDriverPercentage" placeholder="Driver's percent" title="Driver portion of the fee" />
                                                                     </td>
                                                                     <td>
-                                                                        <input type="number" class="form-control txtServiceFee" style="padding: 4px 4px 4px 8px; height: 29px;" min="0" id="txtServiceFee" name="txtServiceFee" title="Applicable service fee amount" />
+                                                                        <input type="number" class="form-control txtServiceFee" style="padding: 4px 4px 4px 8px; height: 29px;" min="0" id="txtServiceFee" name="txtServiceFee" placeholder="Service fee" title="Applicable service fee amount" />
                                                                     </td>
                                                                     <td>
-                                                                        <input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" checked="@item.IsTaxApplicable" />
+                                                                        <input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" checked="@item.IsTaxApplicable" /> Apply
                                                                     </td>
 
                                                                     <td>
@@ -609,14 +612,19 @@
 
 
                     <hr />
-                    <input type="hidden" id="hfOrderId" class="hfOrderId" name="hfOrderId" />
-                    <button type="reset" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
-                    <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
-                    @* <span style="float:right; display:none" class="btn btn-sm btn-success"><input type="checkbox" id="btnReturn" /> Return order</span>*@
-                    @*<input type="checkbox" checked data-toggle="toggle" data-onstyle="primary">*@
-                    <span style="float:right">
-                        <input type="checkbox" id="chkIsReturnOrder" name="chkIsReturnOrder" style="float:right" data-toggle="toggle" data-on="<i class='fa fa-mail-reply'></i> Return" data-off="<i class='fa fa-mail-reply'></i> Return" data-onstyle="info" data-offstyle="secondary">
-                    </span>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="hidden" id="hfOrderId" class="hfOrderId" name="hfOrderId" />
+                            <button type="reset" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> Clear</button>
+                            <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save order</button>
+                        </div>
+                        <div class="col-sm-2">
+                            <span style="float:right">
+                                <input type="checkbox" id="chkIsReturnOrder" name="chkIsReturnOrder" data-original-title="Turn it on if you want to place a return order" data-toggle="toggle" data-on="<i class='fa fa-mail-reply'></i> Return" data-off="<i class='fa fa-mail-forward'></i> Single " data-onstyle="danger" data-offstyle="secondary">
+                            </span>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>

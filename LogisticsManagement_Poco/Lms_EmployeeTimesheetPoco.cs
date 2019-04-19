@@ -15,9 +15,9 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public int EmployeeId { get; set; }
         public DateTime DateWorked { get; set; }
-        public DateTime SignInDatetime { get; set; }
-        public DateTime SignOutDatetime { get; set; }
-        public decimal BreakTime { get; set; }
+        public DateTime? SignInDatetime { get; set; }
+        public DateTime? SignOutDatetime { get; set; }
+        public decimal? BreakTime { get; set; }
         public string Remarks { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }

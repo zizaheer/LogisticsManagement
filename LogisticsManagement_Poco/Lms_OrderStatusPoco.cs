@@ -13,6 +13,7 @@ namespace LogisticsManagement_Poco
         [Column("OrderStatusId")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [ForeignKey("Lms_OrderPoco")]
         public int OrderId { get; set; }
         public string TrackingNumber { get; set; }
         public bool? IsDispatched { get; set; }
@@ -33,5 +34,7 @@ namespace LogisticsManagement_Poco
         public DateTime StatusLastUpdatedOn { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
+
+        public Lms_OrderPoco Lms_OrderPoco { get; set; }
     }
 }

@@ -15,6 +15,7 @@ namespace LogisticsManagement_Poco
         public static string Employees { get { return "_Employees"; } }
         public static string Orders { get { return "_Orders"; } }
         public static string OrderAdditionalServices { get { return "_OrderAdditionalServices"; } }
+        public static string OrderStatuses { get { return "_OrderStatuses"; } }
 
         public static string AccountBalances { get { return "_AccountBalances"; } }
         public static string AdditionalServices { get { return "_AdditionalServices"; } }

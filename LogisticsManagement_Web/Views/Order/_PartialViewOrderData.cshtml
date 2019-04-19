@@ -34,6 +34,7 @@
                     <td>
                         @item.WayBillNumber
                     </td>
+                   
                     <td>
                         @item.BillToCustomerId
                     </td>
@@ -49,10 +50,10 @@
                     <td>
                         @item.ContactPhoneNumber
                     </td>
-                    
+
                     <td>
-                        <button id="btnEdit" data-orderid='@item.Id' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
-                        <button id="btnDelete" data-orderid='@item.Id' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                        <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
+                        <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
                     </td>
                 </tr>
                 }
@@ -62,4 +63,4 @@
         </table>
     </div>
 </div>
-<script src="~/js/employee.js"></script>
+<script src="~/js/order.js"></script>

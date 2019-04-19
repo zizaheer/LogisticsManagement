@@ -21,6 +21,7 @@ namespace LogisticsManagement_Web.Controllers
         //private IMemoryCache _cache;  // To do later 
 
         private Lms_OrderLogic _orderLogic;
+        private Lms_OrderStatusLogic _orderStatusLogic;
         private Lms_CustomerLogic _customerLogic;
         private Lms_AddressLogic _addressLogic;
         private App_CityLogic _cityLogic;
@@ -32,6 +33,9 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_AdditionalServiceLogic _additionalServiceLogic;
         private Lms_ConfigurationLogic _configurationLogic;
         private Lms_TariffLogic _tariffLogic;
+        private Lms_EmployeeLogic _employeeLogic;
+        private Lms_EmployeeTimesheetLogic _employeeTimesheetLogic;
+
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
@@ -46,7 +50,6 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
-
             return View(GetOrderData());
         }
 
@@ -55,41 +58,6 @@ namespace LogisticsManagement_Web.Controllers
         {
             ValidateSession();
             return PartialView("_PartialViewOrderData", GetOrderData());
-        }
-
-        private DeliveryOrderViewModel GetOrderData()
-        {
-            DeliveryOrderViewModel deliveryOrderViewModel = new DeliveryOrderViewModel();
-            deliveryOrderViewModel.Orders = _orderLogic.GetList();
-
-            _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
-            _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
-            deliveryOrderViewModel.Cities = _cityLogic.GetList();
-            deliveryOrderViewModel.Provinces = _provinceLogic.GetList();
-
-            _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
-            deliveryOrderViewModel.Configuration = _configurationLogic.GetList().FirstOrDefault();
-
-            _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
-            deliveryOrderViewModel.Customers = _customerLogic.GetList();
-
-            _deliveryOptionLogic = new Lms_DeliveryOptionLogic(_cache, new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
-            deliveryOrderViewModel.DeliveryOptions = _deliveryOptionLogic.GetList();
-
-            _unitTypeLogic = new Lms_UnitTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_UnitTypePoco>(_dbContext));
-            deliveryOrderViewModel.UnitTypes = _unitTypeLogic.GetList();
-
-            _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
-            deliveryOrderViewModel.WeightScales = _weightScaleLogic.GetList();
-
-            //_orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
-            //deliveryOrderViewModel.OrderAdditionalServices = _orderAdditionalServiceLogic.GetList();
-
-            _additionalServiceLogic = new Lms_AdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_AdditionalServicePoco>(_dbContext));
-            deliveryOrderViewModel.AdditionalServices = _additionalServiceLogic.GetList();
-
-
-            return deliveryOrderViewModel;
         }
 
         [HttpPost]
@@ -141,44 +109,47 @@ namespace LogisticsManagement_Web.Controllers
                 if (orderData != null)
                 {
                     Lms_OrderPoco orderPoco = JsonConvert.DeserializeObject<Lms_OrderPoco>(JsonConvert.SerializeObject(orderData[0]));
-                    List<Lms_OrderAdditionalServicePoco> orderAdditionalServices = JsonConvert.DeserializeObject<List<Lms_OrderAdditionalServicePoco>>(JsonConvert.SerializeObject(orderData[0]));
+                    List<Lms_OrderAdditionalServicePoco> orderAdditionalServices = JsonConvert.DeserializeObject<List<Lms_OrderAdditionalServicePoco>>(JsonConvert.SerializeObject(orderData[1]));
 
-                    if (orderPoco.Id > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId > 0)
+                    var existingOrder = new Lms_OrderPoco();
+
+                    if (orderPoco != null && orderPoco.OrderTypeId > 0)
                     {
-                        var order = _orderLogic.GetSingleById(orderPoco.Id);
-                        // it is required to pull existing data first, 
-                        // cause there are some data which do not come from UI
+                        existingOrder = _orderLogic.GetList().Where(c => c.OrderTypeId == orderPoco.OrderTypeId && c.WayBillNumber == orderPoco.WayBillNumber).FirstOrDefault();
+                    }
 
-                        order.ReferenceNumber = orderPoco.ReferenceNumber;
-                        order.CargoCtlNumber = orderPoco.CargoCtlNumber;
-                        order.AwbCtnNumber = orderPoco.CargoCtlNumber;
-                        order.ShipperCustomerId = orderPoco.ShipperCustomerId;
-                        order.ConsigneeCustomerId = orderPoco.ConsigneeCustomerId;
-                        order.BillToCustomerId = orderPoco.BillToCustomerId;
-                        order.ScheduledPickupDate = orderPoco.ScheduledPickupDate;
+                    if (existingOrder != null && existingOrder.Id > 0)
+                    {
+                        existingOrder.ReferenceNumber = orderPoco.ReferenceNumber;
+                        existingOrder.CargoCtlNumber = orderPoco.CargoCtlNumber;
+                        existingOrder.AwbCtnNumber = orderPoco.CargoCtlNumber;
+                        existingOrder.ShipperCustomerId = orderPoco.ShipperCustomerId;
+                        existingOrder.ConsigneeCustomerId = orderPoco.ConsigneeCustomerId;
+                        existingOrder.BillToCustomerId = orderPoco.BillToCustomerId;
+                        existingOrder.ScheduledPickupDate = orderPoco.ScheduledPickupDate;
 
-                        order.CityId = orderPoco.CityId;
-                        order.DeliveryOptionId = orderPoco.DeliveryOptionId;
-                        order.VehicleTypeId = orderPoco.VehicleTypeId;
-                        order.WeightScaleId = orderPoco.WeightScaleId;
-                        order.WeightTotal = orderPoco.WeightTotal;
-                        order.UnitQuantity = orderPoco.UnitQuantity;
-                        order.OrderBasicCost = orderPoco.OrderBasicCost;
-                        order.BasicCostOverriden = orderPoco.BasicCostOverriden;
-                        order.FuelSurchargePercentage = orderPoco.FuelSurchargePercentage;
-                        order.DiscountPercentOnOrderCost = orderPoco.DiscountPercentOnOrderCost;
-                        order.ApplicableGstPercent = orderPoco.ApplicableGstPercent;
-                        order.TotalOrderCost = orderPoco.TotalOrderCost;
-                        order.TotalAdditionalServiceCost = orderPoco.TotalAdditionalServiceCost;
-                        order.OrderedBy = orderPoco.OrderedBy;
-                        order.ContactName = orderPoco.ContactName;
-                        order.ContactPhoneNumber = orderPoco.ContactPhoneNumber;
-                        order.Remarks = orderPoco.Remarks;
+                        existingOrder.CityId = orderPoco.CityId;
+                        existingOrder.DeliveryOptionId = orderPoco.DeliveryOptionId;
+                        existingOrder.VehicleTypeId = orderPoco.VehicleTypeId;
+                        existingOrder.WeightScaleId = orderPoco.WeightScaleId;
+                        existingOrder.WeightTotal = orderPoco.WeightTotal;
+                        existingOrder.UnitQuantity = orderPoco.UnitQuantity;
+                        existingOrder.OrderBasicCost = orderPoco.OrderBasicCost;
+                        existingOrder.BasicCostOverriden = orderPoco.BasicCostOverriden;
+                        existingOrder.FuelSurchargePercentage = orderPoco.FuelSurchargePercentage;
+                        existingOrder.DiscountPercentOnOrderCost = orderPoco.DiscountPercentOnOrderCost;
+                        existingOrder.ApplicableGstPercent = orderPoco.ApplicableGstPercent;
+                        existingOrder.TotalOrderCost = orderPoco.TotalOrderCost;
+                        existingOrder.TotalAdditionalServiceCost = orderPoco.TotalAdditionalServiceCost;
+                        existingOrder.OrderedBy = orderPoco.OrderedBy;
+                        existingOrder.ContactName = orderPoco.ContactName;
+                        existingOrder.ContactPhoneNumber = orderPoco.ContactPhoneNumber;
+                        existingOrder.Remarks = orderPoco.Remarks;
 
 
                         _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
 
-                        var orderServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == orderPoco.Id).ToList();
+                        var orderServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == existingOrder.Id).ToList();
                         if (orderServices.Count > 0)
                         {
                             foreach (var item in orderServices)
@@ -198,9 +169,26 @@ namespace LogisticsManagement_Web.Controllers
                             }
                         }
 
-                        var poco = _orderLogic.Update(order);
+                        var poco = _orderLogic.Update(existingOrder);
 
                         result = poco.Id.ToString();
+
+                    }
+                    else if (orderPoco.OrderTypeId == 2)
+                    {
+                        orderPoco.CreatedBy = sessionData.UserId;
+                        var orderInfo = _orderLogic.CreateNewOrder(orderPoco, orderAdditionalServices);
+                        if (!string.IsNullOrEmpty(orderInfo))
+                        {
+                            var jObject = JObject.Parse(orderInfo);
+                            var returnedObject = (string)jObject.SelectToken("ReturnedValue");
+
+                            if (returnedObject.Length > 0)
+                            {
+                                result = returnedObject;
+                            }
+                        }
+
                     }
                 }
             }
@@ -221,19 +209,34 @@ namespace LogisticsManagement_Web.Controllers
                 using (var scope = new TransactionScope())
                 {
 
-                    var poco = _orderLogic.GetSingleById(Convert.ToInt32(id));
+                    var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
 
                     _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+                    _orderStatusLogic = new Lms_OrderStatusLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderStatusPoco>(_dbContext));
 
-                    var orderServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == poco.Id).ToList();
-                    if (orderServices.Count > 0)
+                    foreach (var order in orders)
                     {
-                        foreach (var item in orderServices)
+                        var orderServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == order.Id).ToList();
+                        if (orderServices.Count > 0)
                         {
-                            _orderAdditionalServiceLogic.Remove(item);
+                            foreach (var item in orderServices)
+                            {
+                                _orderAdditionalServiceLogic.Remove(item);
+                            }
                         }
+
+                        var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == order.Id).ToList();
+
+                        if (orderStatus.Count > 0)
+                        {
+                            foreach (var item in orderStatus)
+                            {
+                                _orderStatusLogic.Remove(item);
+                            }
+                        }
+
+                        _orderLogic.Remove(order);
                     }
-                    _orderLogic.Remove(poco);
 
                     scope.Complete();
 
@@ -247,8 +250,6 @@ namespace LogisticsManagement_Web.Controllers
             }
             return Json(result);
         }
-
-
 
         public JsonResult GetTariffCostByParam(string jsonStringParam)
         {
@@ -316,8 +317,6 @@ namespace LogisticsManagement_Web.Controllers
             return Json(JsonConvert.SerializeObject(returnedValue));
         }
 
-
-
         public JsonResult GetOrderByWayBillId(string id)
         {
             try
@@ -325,7 +324,7 @@ namespace LogisticsManagement_Web.Controllers
                 var orderPocos = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
 
                 _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
-                var orderAdditionalServices = _orderAdditionalServiceLogic.GetList().Where(c => orderPocos.Select(d=> d.Id).ToList().Contains(c.OrderId)).ToList();
+                var orderAdditionalServices = _orderAdditionalServiceLogic.GetList().Where(c => orderPocos.Select(d => d.Id).ToList().Contains(c.OrderId)).ToList();
 
                 return Json(JsonConvert.SerializeObject(new { orderPocos, orderAdditionalServices }));
 
@@ -334,6 +333,41 @@ namespace LogisticsManagement_Web.Controllers
             {
                 return Json("");
             }
+        }
+
+        private DeliveryOrderViewModel GetOrderData()
+        {
+            DeliveryOrderViewModel deliveryOrderViewModel = new DeliveryOrderViewModel();
+            deliveryOrderViewModel.Orders = _orderLogic.GetList().Where(c => c.OrderTypeId == 1).ToList();
+
+            _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
+            _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
+            deliveryOrderViewModel.Cities = _cityLogic.GetList();
+            deliveryOrderViewModel.Provinces = _provinceLogic.GetList();
+
+            _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+            deliveryOrderViewModel.Configuration = _configurationLogic.GetList().FirstOrDefault();
+
+            _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+            deliveryOrderViewModel.Customers = _customerLogic.GetList();
+
+            _deliveryOptionLogic = new Lms_DeliveryOptionLogic(_cache, new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
+            deliveryOrderViewModel.DeliveryOptions = _deliveryOptionLogic.GetList();
+
+            _unitTypeLogic = new Lms_UnitTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_UnitTypePoco>(_dbContext));
+            deliveryOrderViewModel.UnitTypes = _unitTypeLogic.GetList();
+
+            _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
+            deliveryOrderViewModel.WeightScales = _weightScaleLogic.GetList();
+
+            //_orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+            //deliveryOrderViewModel.OrderAdditionalServices = _orderAdditionalServiceLogic.GetList();
+
+            _additionalServiceLogic = new Lms_AdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_AdditionalServicePoco>(_dbContext));
+            deliveryOrderViewModel.AdditionalServices = _additionalServiceLogic.GetList();
+
+
+            return deliveryOrderViewModel;
         }
 
         private void ValidateSession()

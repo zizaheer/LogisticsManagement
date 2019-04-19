@@ -58,20 +58,20 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_OrderPoco Add(Lms_OrderPoco poco)
         {
-            _cache.Remove(App_CacheKeys.Employees);
+            _cache.Remove(App_CacheKeys.Orders);
             return base.Add(poco);
         }
 
         public override Lms_OrderPoco Update(Lms_OrderPoco poco)
         {
             poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
-            _cache.Remove(App_CacheKeys.Employees);
+            _cache.Remove(App_CacheKeys.Orders);
             return base.Update(poco);
         }
 
         public override void Remove(Lms_OrderPoco poco)
         {
-            _cache.Remove(App_CacheKeys.Employees);
+            _cache.Remove(App_CacheKeys.Orders);
             base.Remove(poco);
         }
 
@@ -120,6 +120,7 @@ namespace LogisticsManagement_BusinessLogic
             SqlParameter[] sqlParameters = {
 
                 new SqlParameter("@OrderTypeId", SqlDbType.Int) { Value = orderPoco.OrderTypeId },
+                new SqlParameter("@WayBillNumber", SqlDbType.VarChar, 20) { Value = orderPoco.WayBillNumber },
                 new SqlParameter("@ReferenceNumber", SqlDbType.VarChar, 50) { Value = (object)orderPoco.ReferenceNumber ?? DBNull.Value },
                 new SqlParameter("@CargoCtlNumber", SqlDbType.VarChar, 50) { Value = (object)orderPoco.CargoCtlNumber ?? DBNull.Value },
                 new SqlParameter("@AwbCtnNumber", SqlDbType.VarChar, 50) { Value =(object) orderPoco.AwbCtnNumber ?? DBNull.Value },
@@ -154,7 +155,7 @@ namespace LogisticsManagement_BusinessLogic
 
             StringBuilder query = new StringBuilder();
             query.Append("EXEC CreateNewOrder ");
-            query.Append("@OrderTypeId, @ReferenceNumber, @CargoCtlNumber, @AwbCtnNumber, @ShipperCustomerId, @ConsigneeCustomerId, ");
+            query.Append("@OrderTypeId, @WayBillNumber, @ReferenceNumber, @CargoCtlNumber, @AwbCtnNumber, @ShipperCustomerId, @ConsigneeCustomerId, ");
             query.Append("@BillToCustomerId, @ScheduledPickupDate, @ExpectedDeliveryDate, @CityId, @DeliveryOptionId, ");
 
             query.Append("@VehicleTypeId, @UnitTypeId, @WeightScaleId, @WeightTotal, @UnitQuantity, @OrderBasicCost, ");
@@ -165,8 +166,9 @@ namespace LogisticsManagement_BusinessLogic
 
             var outPut = base.CallStoredProcedure(query.ToString(), sqlParameters);
 
-            _cache.Remove(App_CacheKeys.Employees);
-            _cache.Remove(App_CacheKeys.Accounts);
+            _cache.Remove(App_CacheKeys.Orders);
+            _cache.Remove(App_CacheKeys.AdditionalServices);
+            _cache.Remove(App_CacheKeys.OrderStatuses);
 
             return outPut;
         }

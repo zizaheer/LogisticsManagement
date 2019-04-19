@@ -47,6 +47,6 @@ namespace LogisticsManagement_Poco
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
 
-        public List<Lms_OrderStatusPoco> orderStatusPocos { get; set; }
+        public List<Lms_OrderStatusPoco> Lms_OrderStatusPocos { get; set; }
     }
 }
