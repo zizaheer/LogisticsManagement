@@ -90,16 +90,38 @@ $('input[name=chkIsReturnOrder]').change(function () {
         bootbox.alert("Return order can only be created for an existing order. Please enter way bill number.");
         return;
     }
+
+    //GetAndFillOrderDetailsByWayBillNumber(wayBillNumber);
+    var shipperId = $('#ddlShipperId').val();
+    var consigneeId = $('#ddlConsigneeId').val();
+
+    if (paidByValue === '1') {
+        paidByValue = '2';
+        $('#rdoConsignee').prop('checked', true);
+    }
+    else if (paidByValue === '2') {
+        paidByValue = '1';
+        $('#rdoShipper').prop('checked', true);
+    }
+
+
+    $('#ddlShipperId').val(consigneeId);
+    $('#ddlConsigneeId').val(shipperId);
+    $('#ddlBillerId').val(shipperId);
+
+    $('#ddlShipperId').change();
+    $('#ddlConsigneeId').change();
+
+    $('#txtBaseOrderCost').val('');
+    $('#txtOverriddenOrderCost').val('');
+    $('#txtOverriddenOrderSurcharge').val('');
+    $('#txtOverriddenOrderGST').val('');
+
+    $('#txtUnitQuantity').val('');
+    $('#txtUnitQuantity').change();
+
+    
 });
-
-
-
-
-
-
-
-
-
 
 $('#txtBillerCustomerNo').keypress(function (event) {
 
@@ -366,7 +388,80 @@ $('#txtWayBillNo').keypress(function (event) {
     }
 });
 
+
+$('#order-list').on('click', '.btnEdit', function (event) {
+    event.preventDefault();
+
+    var wbNumber = $(this).data('waybillnumber');
+
+    GetAndFillOrderDetailsByWayBillNumber(wbNumber);
+    $('#txtWayBillNo').attr('readonly', true);
+
+});
+
+$('.btnDelete').unbind().on('click', function () {
+    var waybillNumber = $(this).data('waybillnumber');
+    RemoveEntry('Order/Remove', waybillNumber);
+    $('#loadDataTable').load('Order/PartialViewDataTable');
+
+});
+
+$('#btnDownloadData').unbind().on('click', function (event) {
+    event.preventDefault();
+    $('#loadDataTable').load('Order/PartialViewDataTable');
+
+});
+
+
+$('#frmOrderForm').on('keyup keypress', function (e) {
+    var keyCode = e.keyCode || e.which;
+    if (keyCode === 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+
+$('#frmOrderForm').unbind('submit').submit(function (event) {
+    var dataArray = GetFormData();
+    var result;
+    var parseData;
+
+    if (dataArray[0].unitQuantity < 1 || dataArray[0].shipperCustomerId < 1 || dataArray[0].consigneeCustomerId < 1) {
+        alert('Shipper, consignee and unit quantity is required!');
+        event.preventDefault();
+        return;
+    }
+
+
+
+    if ($('input[name=chkIsReturnOrder]:checked').val() === 'on') {
+        if (dataArray[0].wayBillNumber === "" || dataArray[0].wayBillNumber < 1) {
+            bootbox.alert("Return order can only be created for an existing order. Please enter way bill number.");
+            $('#txtWayBillNo').focus();
+            event.preventDefault();
+            return;
+        }
+    }
+
+
+    if (dataArray[0].wayBillNumber > 0) {
+        UpdateEntry('Order/Update', dataArray);
+    }
+    else {
+        result = AddEntry('Order/Add', dataArray);
+        if (result !== null) {
+            parseData = JSON.parse(result);
+            $('#txtWayBillNo').val(parseData.WayBillNumber);
+            $('#hfOrderId').val(parseData.OrderId);
+        }
+    }
+    event.preventDefault();
+    $('#loadDataTable').load('Order/PartialViewDataTable');
+});
+
+
 //#endregion
+
 
 //#region Private methods
 
@@ -621,92 +716,11 @@ function FillOrderAdditionalServices(orderAdditionalServiceData) {
 }
 
 
-
-
-//#endregion 
-
-
-
-
-
-$('#order-list').on('click', '.btnEdit', function (event) {
-    event.preventDefault();
-
-    var wbNumber = $(this).data('waybillnumber');
-
-    GetAndFillOrderDetailsByWayBillNumber(wbNumber);
-    $('#txtWayBillNo').attr('readonly', true);
-
-});
-
-$('#btnDownloadData').unbind().on('click', function (event) {
-    event.preventDefault();
-    $('#loadDataTable').load('Order/PartialViewDataTable');
-
-});
-
-
-$('#frmOrderForm').on('keyup keypress', function (e) {
-    var keyCode = e.keyCode || e.which;
-    if (keyCode === 13) {
-        e.preventDefault();
-        return false;
-    }
-});
-
-$('#frmOrderForm').unbind('submit').submit(function (event) {
-    var dataArray = GetFormData();
-    var result;
-    var parseData;
-
-    if (dataArray[0].unitQuantity < 1 || dataArray[0].shipperCustomerId < 1 || dataArray[0].consigneeCustomerId < 1) {
-        alert('Shipper, consignee and unit quantity is required!');
-        event.preventDefault();
-        return;
-    }
-
-    
-
-    if ($('input[name=chkIsReturnOrder]:checked').val() === 'on'){
-        if (dataArray[0].wayBillNumber === "" || dataArray[0].wayBillNumber < 1) {
-            bootbox.alert("Return order can only be created for an existing order. Please enter way bill number.");
-            $('#txtWayBillNo').focus();
-            event.preventDefault();
-            return;
-        }
-    }
-
-    
-
-
-
-    if (dataArray[0].wayBillNumber > 0) {
-        UpdateEntry('Order/Update', dataArray);
-    }
-    else {
-        result = AddEntry('Order/Add', dataArray);
-        if (result !== null) {
-            parseData = JSON.parse(result);
-            $('#txtWayBillNo').val(parseData.WayBillNumber);
-            $('#hfOrderId').val(parseData.OrderId);
-        }
-    }
-    event.preventDefault();
-    $('#loadDataTable').load('Order/PartialViewDataTable');
-});
-
-$('.btnDelete').unbind().on('click', function () {
-    var waybillNumber = $(this).data('waybillnumber');
-    RemoveEntry('Order/Remove', waybillNumber);
-    $('#loadDataTable').load('Order/PartialViewDataTable');
-
-});
-
 function GetFormData() {
 
     var date = $('#txtSchedulePickupDate').val();
     var time = $('#txtSchedulePickupTime').val();
-    var scheduleDatetime = date + 'T' + time; 
+    var scheduleDatetime = date + 'T' + time;
 
     var orderData = {
         id: $('#hfOrderId').val() === "" ? "0" : $('#hfOrderId').val(),
@@ -746,11 +760,10 @@ function GetFormData() {
     return [orderData, selectedAdditionalServiceArray];
 }
 
-//$('#chkIsReturnOrder').on('change', function (event) {
-//    if ($('#txtWayBillNo').val() === "") {
-//        $('#chkIsReturnOrder').prop('checked', false);
-//        alert("Need an existing order to create a return order.");
-//        event.preventDefault();
-//        return;
-//    }
-//});
+
+//#endregion 
+
+
+
+
+

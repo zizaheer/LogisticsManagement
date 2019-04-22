@@ -56,19 +56,19 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_OrderAdditionalServicePoco Add(Lms_OrderAdditionalServicePoco poco)
         {
-            _cache.Remove(App_CacheKeys.AdditionalServices);
+            _cache.Remove(App_CacheKeys.OrderAdditionalServices);
             return base.Add(poco);
         }
 
         public override Lms_OrderAdditionalServicePoco Update(Lms_OrderAdditionalServicePoco poco)
         {
-            _cache.Remove(App_CacheKeys.AdditionalServices);
+            _cache.Remove(App_CacheKeys.OrderAdditionalServices);
             return base.Update(poco);
         }
 
         public override void Remove(Lms_OrderAdditionalServicePoco poco)
         {
-            _cache.Remove(App_CacheKeys.AdditionalServices);
+            _cache.Remove(App_CacheKeys.OrderAdditionalServices);
             base.Remove(poco);
         }
 

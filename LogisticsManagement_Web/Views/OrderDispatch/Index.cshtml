@@ -32,55 +32,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row" style="max-height:230px; overflow-y:scroll;">
-                        <div class="col-sm-12">
-                            <table id="orderdispatch-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" width=100%>
-                                <thead>
-                                    <tr>
-                                        <th>Select</th>
-                                        <th>W/B #</th>
-                                        <th>Biller</th>
-                                        <th>Shipper</th>
-                                        <th>Consignee</th>
-                                        <th>Ordered by</th>
-                                        <th>Phone</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.Orders.OrderByDescending(c => c.WayBillNumber))
-                                    {
-                                        <tr>
-                                            <td>
-                                                <label class="btn btn-sm btn-success">
-                                                    <input type="checkbox" id="chkOrderSelected" name="chkOrderSelected" class="chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                @item.WayBillNumber
-                                            </td>
-
-                                            <td>
-                                                @item.BillToCustomerId
-                                            </td>
-                                            <td>
-                                                @item.ShipperCustomerId
-                                            </td>
-                                            <td>
-                                                @item.ConsigneeCustomerId
-                                            </td>
-                                            <td>
-                                                @item.OrderedBy
-                                            </td>
-                                            <td>
-                                                @item.ContactPhoneNumber
-                                            </td>
-
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                    <div id="loadPendingDispatchDataTable">
+                        <partial name="_PartialPendingDispatchData" />
                     </div>
 
                 </div>
@@ -138,32 +91,35 @@
     </div>
 </form>
 
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header" style="background-color: #c3c3c3;">
-                    <strong><i class="fa fa-sliders"></i> Orders</strong>
-                    <div class="card-header-actions">
-                        <span id="spinnerLoadingDataTable" style="display:none">
-                            <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
-                            <span style="margin-right:20px">Loading...</span>
-                        </span>
-                        <button id="btnDownloadDataDispatchData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
-                        <span style="display:none" id="loadingSpinner"><i class="fa fa-circle-o-notch"></i></span>
-                        <span>&nbsp;&nbsp;</span>
-                        <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
-                            <i class="icon-arrow-up"></i>
-                        </a>
-                    </div>
+<br /><br />
+<hr />
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header" style="background-color: #c3c3c3;">
+                <strong><i class="fa fa-sliders"></i> Dispatched orders</strong>
+                <div class="card-header-actions">
+                    <span id="spinnerLoadingDataTable" style="display:none">
+                        <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                        <span style="margin-right:20px">Loading...</span>
+                    </span>
+                    <button id="btnDownloadDataDispatchData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
+                    <span style="display:none" id="loadingSpinner"><i class="fa fa-circle-o-notch"></i></span>
+                    <span>&nbsp;&nbsp;</span>
+                    <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
+                        <i class="icon-arrow-up"></i>
+                    </a>
                 </div>
-                <div class="collapse show" id="collapseDatatable">
-                    <div class="card-body">
-                        <div id="loadDataTable">
-                        </div>
+            </div>
+            <div class="collapse show" id="collapseDatatable">
+                <div class="card-body">
+                    <div id="loadDispatchedDataTable">
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="~/js/order-dispatch.js"></script>
+<script src="~/js/order-dispatch.js"></script>

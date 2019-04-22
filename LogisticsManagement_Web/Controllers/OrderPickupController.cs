@@ -15,7 +15,7 @@ using Newtonsoft.Json.Linq;
 
 namespace LogisticsManagement_Web.Controllers
 {
-    public class OrderDispatchController : Controller
+    public class OrderPickupController : Controller
     {
         //private IMemoryCache _cache;  // To do later 
 
@@ -39,7 +39,7 @@ namespace LogisticsManagement_Web.Controllers
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
 
-        public OrderDispatchController(IMemoryCache cache, LogisticsContext dbContext)
+        public OrderPickupController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _cache = cache;
             _dbContext = dbContext;
@@ -50,14 +50,14 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
-            return View(GetPendingDispatchData());
+            return View(GetPendingPickupData());
         }
 
         [HttpGet]
         public IActionResult PartialViewDataTable()
         {
             ValidateSession();
-            return PartialView("_PartialViewOrderDispatchData", GetDispatchedOrders().Where(c => c.IsOrderDispatched == true && c.IsOrderPickedup == null));
+            return PartialView("_PartialViewOrderDispatchData", GetPickedupOrders().Where(c => c.IsOrderDispatched == true && c.IsOrderPickedup == null));
         }
 
         [HttpGet]
@@ -65,7 +65,7 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult PartialPendingDispatchDataTable()
         {
             ValidateSession();
-            return PartialView("_PartialPendingDispatchData", GetPendingDispatchData());
+            return PartialView("_PartialPendingDispatchData", GetPendingPickupData());
         }
 
 
@@ -80,8 +80,8 @@ namespace LogisticsManagement_Web.Controllers
                 if (orderData != null)
                 {
                     var wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(orderData[0]));
-                    var employeeNumber = Convert.ToInt32(orderData[1]);
-                    var dispatchDate = Convert.ToDateTime(orderData[2]);
+                    var waitTime = Convert.ToDecimal(orderData[1]);
+                    var pickupDate = Convert.ToDateTime(orderData[2]);
 
                     var orders = _orderLogic.GetList();
                     var orderStatuses = _orderStatusLogic.GetList();
@@ -99,9 +99,9 @@ namespace LogisticsManagement_Web.Controllers
                                 orderStatus = orderStatuses.Where(c => c.OrderId == order.Id).FirstOrDefault();
                                 if (orderStatus != null)
                                 {
-                                    orderStatus.IsDispatched = true;
-                                    orderStatus.DispatchedToEmployeeId = employeeNumber;
-                                    orderStatus.DispatchedDatetime = dispatchDate == null ? DateTime.Now : dispatchDate;
+                                    orderStatus.IsPickedup = true;
+                                    orderStatus.PickupWaitTimeHour = waitTime;
+                                    orderStatus.PickupDatetime = pickupDate == null ? DateTime.Now : pickupDate;
 
                                     _orderStatusLogic.Update(orderStatus);
                                 }
@@ -143,9 +143,9 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     foreach (var item in dispatchedList)
                     {
-                        item.IsDispatched = null;
-                        item.DispatchedDatetime = null;
-                        item.DispatchedToEmployeeId = null;
+                        item.IsPickedup = null;
+                        item.PickupDatetime = null;
+                        item.PickupWaitTimeHour = null;
 
                         _orderStatusLogic.Update(item);
                     }
@@ -163,7 +163,7 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-        private List<DispatchedOrderViewModel> GetDispatchedOrders()
+        private List<DispatchedOrderViewModel> GetPickedupOrders()
         {
             List<DispatchedOrderViewModel> dispatchedOrderViewModels = new List<DispatchedOrderViewModel>();
 
@@ -231,21 +231,18 @@ namespace LogisticsManagement_Web.Controllers
                 dispatchedOrderViewModel.PassOffDatetime = item.PassOffDatetime;
                 dispatchedOrderViewModel.DeliverDatetime = item.DeliveredDatetime;
 
-
-
                 dispatchedOrderViewModels.Add(dispatchedOrderViewModel);
-
             }
 
             return dispatchedOrderViewModels;
 
         }
 
-        private DispatchBoardViewModel GetPendingDispatchData()
+        private DispatchBoardViewModel GetPendingPickupData()
         {
             DispatchBoardViewModel dispatchBoardViewModel = new DispatchBoardViewModel();
 
-            dispatchBoardViewModel.DispatchedOrderViewModels = GetDispatchedOrders().Where(c => c.IsOrderDispatched == null).ToList();
+            dispatchBoardViewModel.DispatchedOrderViewModels = GetPickedupOrders().Where(c => c.IsOrderDispatched == null).ToList();
             _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
             dispatchBoardViewModel.Employees = _employeeLogic.GetList();
 

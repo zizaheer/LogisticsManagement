@@ -189,6 +189,7 @@ function ConvertDatetimeToUSDatetime(date) {
 
     var hour = dt.getHours();
     var minute = dt.getMinutes();
+    hour = hour < 10 ? '0' + hour : hour;
     minute = minute < 10 ? '0' + minute : minute;
 
 
@@ -231,6 +232,7 @@ function GetTimeInHHmmFormat(date) {
 
     var hour = dt.getHours();
     var minute = dt.getMinutes();
+    hour = hour < 10 ? '0' + hour : hour;
     minute = minute < 10 ? '0' + minute : minute;
 
     var timeAmPm = hour + ':' + minute; 
