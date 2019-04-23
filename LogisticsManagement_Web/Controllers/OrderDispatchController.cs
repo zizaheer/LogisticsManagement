@@ -95,15 +95,14 @@ namespace LogisticsManagement_Web.Controllers
                             orders = orders.Where(c => c.WayBillNumber == wbNumber).ToList();
                             foreach (var order in orders)
                             {
-                                var orderStatus = new Lms_OrderStatusPoco();
-                                orderStatus = orderStatuses.Where(c => c.OrderId == order.Id).FirstOrDefault();
-                                if (orderStatus != null)
+                                orderStatuses = orderStatuses.Where(c => c.OrderId == order.Id).ToList();
+                                foreach (var status in orderStatuses)
                                 {
-                                    orderStatus.IsDispatched = true;
-                                    orderStatus.DispatchedToEmployeeId = employeeNumber;
-                                    orderStatus.DispatchedDatetime = dispatchDate == null ? DateTime.Now : dispatchDate;
+                                    status.IsDispatched = true;
+                                    status.DispatchedToEmployeeId = employeeNumber;
+                                    status.DispatchedDatetime = dispatchDate == null ? DateTime.Now : dispatchDate;
 
-                                    _orderStatusLogic.Update(orderStatus);
+                                    _orderStatusLogic.Update(status);
                                 }
                             }
 

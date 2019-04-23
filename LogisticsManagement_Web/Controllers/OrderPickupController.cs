@@ -71,34 +71,26 @@ namespace LogisticsManagement_Web.Controllers
             {
                 if (orderData != null)
                 {
-                    var wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(orderData[0]));
-                    var waitTime = Convert.ToDecimal(orderData[1]);
+                    var wayBillNumber = Convert.ToString(orderData[0]);
+                    var waitTime = string.IsNullOrEmpty(Convert.ToString(orderData[1])) == true ? null : Convert.ToDecimal(orderData[1]);
                     var pickupDate = Convert.ToDateTime(orderData[2]);
 
-                    var orders = _orderLogic.GetList();
+                    var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == wayBillNumber).ToList();
                     var orderStatuses = _orderStatusLogic.GetList();
+
+                    orderStatuses = (from orderStatus in orderStatuses
+                                     join order in orders on orderStatus.OrderId equals order.Id
+                                     select orderStatus).ToList();
 
                     using (var scope = new TransactionScope())
                     {
-                        foreach (var item in wayBillNumberList)
+                        foreach (var orderStatus in orderStatuses)
                         {
-                            var wbNumber = item.SelectToken("wbillNumber").ToString();
+                            orderStatus.IsPickedup = true;
+                            orderStatus.PickupWaitTimeHour = waitTime;
+                            orderStatus.PickupDatetime = pickupDate == null ? DateTime.Now : pickupDate;
 
-                            orders = orders.Where(c => c.WayBillNumber == wbNumber).ToList();
-                            foreach (var order in orders)
-                            {
-                                var orderStatus = new Lms_OrderStatusPoco();
-                                orderStatus = orderStatuses.Where(c => c.OrderId == order.Id).FirstOrDefault();
-                                if (orderStatus != null)
-                                {
-                                    orderStatus.IsPickedup = true;
-                                    orderStatus.PickupWaitTimeHour = waitTime;
-                                    orderStatus.PickupDatetime = pickupDate == null ? DateTime.Now : pickupDate;
-
-                                    _orderStatusLogic.Update(orderStatus);
-                                }
-                            }
-
+                            _orderStatusLogic.Update(orderStatus);
                         }
 
                         scope.Complete();

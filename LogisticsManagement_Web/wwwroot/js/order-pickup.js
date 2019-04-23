@@ -17,14 +17,20 @@ $(document).ready(function () {
 
 
 
-$('#txtWayBillNumber').keypress(function (event) {
+$('#txtWayBillNumber').unbind('keypress').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
 
         var wayBillNumber = $('#txtWayBillNumber').val();
         var orderStatus = GetSingleObjectById('OrderPickup/GetOrderByWayBillId', wayBillNumber);
-        if (orderStatus !== null) {
+        if (orderStatus !== "") {
             orderStatus = JSON.parse(orderStatus);
+        }
+        else
+        {
+            bootbox.alert('The order number was not found. Please check and try again.');
+            event.preventDefault();
+            return;
         }
 
         if (orderStatus.IsOrderDispatched === null) {
