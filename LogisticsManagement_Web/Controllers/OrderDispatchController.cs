@@ -219,6 +219,13 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     var employee = employeeList.Where(c => c.Id == dispatchedOrderViewModel.EmployeeId).FirstOrDefault();
                     dispatchedOrderViewModel.EmployeeName = employee.FirstName + "  " + employee.LastName;
+                    if (!string.IsNullOrEmpty(employee.MobileNumber))
+                    {
+                        dispatchedOrderViewModel.EmployeePhone = employee.MobileNumber;
+                    }
+                    else if (!string.IsNullOrEmpty(employee.PhoneNumber)) {
+                        dispatchedOrderViewModel.EmployeePhone = employee.PhoneNumber;
+                    }
                 }
 
                 dispatchedOrderViewModel.IsOrderDispatched = item.IsDispatched;

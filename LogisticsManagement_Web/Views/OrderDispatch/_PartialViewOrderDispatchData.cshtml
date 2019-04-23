@@ -20,6 +20,7 @@
                 <tr>
                     <th>W/B #</th>
                     <th>Dispatched to</th>
+                    <th>Phone#</th>
                     <th>Shipper</th>
                     <th>Address</th>
                     <th>Consignee</th>
@@ -37,6 +38,9 @@
                     </td>
                     <td>
                         @item.EmployeeName (@item.EmployeeId)
+                    </td>
+                    <td>
+                        @item.EmployeePhone
                     </td>
                     <td>
                         @item.ShipperName (@item.ShipperId)

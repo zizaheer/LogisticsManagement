@@ -4,7 +4,7 @@ $(document).ready(function () {
     MaskPhoneNumber('#txtBillingPrimaryPhoneNumber');
     MaskPhoneNumber('#txtMailingPrimaryPhoneNumber');
     //FillEmployeeDropDown();
-    $('#txtDispatchDateTime').val(ConvertDatetimeToUSDatetime(new Date));
+    $('#txtPickupDateTime').val(ConvertDatetimeToUSDatetime(new Date));
 
 
     $(document).ajaxStart(function () {
@@ -15,45 +15,38 @@ $(document).ready(function () {
     });
 });
 
-var wayBillNumberArray = [];
-var employeeNumber;
 
 
-$('#btnDownloadOrderData').unbind().on('click', function (event) {
-    event.preventDefault();
-    $('#loadDataTable').load('Order/PartialViewDataTable');
-
-});
-
-
-
-$('#orderdispatch-list').on('click', '.chkOrderSelected', function (event) {
-    //event.preventDefault();
-
-    var wbNumber =
-    {
-        wbillNumber: $(this).data('waybillnumber')
-    };
-
-
-    var index = wayBillNumberArray.findIndex(c => c.wbillNumber === wbNumber.wbillNumber);
-    if (index >= 0) {
-        wayBillNumberArray.splice(index, 1);
-    }
-
-    wayBillNumberArray.push(wbNumber);
-});
-
-$('#txtEmployeeNumber').keypress(function (event) {
+$('#txtWayBillNumber').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
 
-        $('#ddlEmployeeId').val($('#txtEmployeeNumber').val());
-    }
+        var wayBillNumber = $('#txtWayBillNumber').val();
+        var orderStatus = GetSingleObjectById('OrderPickup/GetOrderByWayBillId', wayBillNumber);
+        if (orderStatus !== null) {
+            orderStatus = JSON.parse(orderStatus);
+        }
 
+        if (orderStatus.IsOrderDispatched === null) {
+            bootbox.alert('The order has not yet dispatched. Please dispatch then enter pickup information.');
+            event.preventDefault();
+            return;
+        }
+
+        if (orderStatus.IsOrderPickedup !== null) {
+            bootbox.alert('The order has already been picked up or delivered. Find the order in below picked-up order list or in delivered list.');
+            event.preventDefault();
+            return;
+        }
+
+        $('#txtDispatchedDateTime').val(orderStatus.DispatchDatetime);
+        $('#txtEmployeeName').val(orderStatus.EmployeeName + ' (' + orderStatus.EmployeeId + ')');
+    }
 });
 
-$('#frmOrderDispatchForm').on('keyup keypress', function (e) {
+
+
+$('#frmOrderPickupForm').on('keyup keypress', function (e) {
     var keyCode = e.keyCode || e.which;
     if (keyCode === 13) {
         e.preventDefault();
@@ -61,62 +54,46 @@ $('#frmOrderDispatchForm').on('keyup keypress', function (e) {
     }
 });
 
-$('#frmOrderDispatchForm').unbind('submit').submit(function (event) {
-    employeeNumber = $('#ddlEmployeeId').val();
-    dispatchDate = $('#txtDispatchDateTime').val();
-    if (employeeNumber < 1) {
-        alert('Please select employee.');
+$('#frmOrderPickupForm').unbind('submit').submit(function (event) {
+    var waitTime = $('#txtWaitTime').val();
+    var pickupDate = $('#txtPickupDateTime').val();
+    var dispatchedDate = $('#txtDispatchedDateTime').val();
+    var wayBillNumber = $('#txtWayBillNumber').val();
+
+    if (pickupDate <= dispatchedDate) {
+        bootbox.alert('Pickup date must be greater than dispatch date.');
         event.preventDefault();
         return;
     }
 
-    var dataArray = [wayBillNumberArray, employeeNumber, dispatchDate];
+    var dataArray = [wayBillNumber, waitTime, pickupDate];
 
-    UpdateEntry('OrderDispatch/Update', dataArray);
+    UpdateEntry('OrderPickup/Update', dataArray);
 
     event.preventDefault();
-    $('#loadDispatchedDataTable').load('OrderDispatch/PartialViewDataTable');
-    $('#loadPendingDispatchDataTable').load('OrderDispatch/PartialPendingDispatchDataTable');
-    wayBillNumberArray = [];
+    $('#loadPickedupDataTable').load('OrderPickup/PartialViewDataTable');
 });
 
-$('#dispatched-list').on('click', '.btnEdit', function (event) {
+$('#pickedup-list').on('click', '.btnEdit', function (event) {
     event.preventDefault();
 
     var wbNumber = $(this).data('waybillnumber');
 
-    GetAndFillOrderDetailsByWayBillNumber(wbNumber);
+    //GetAndFillOrderDetailsByWayBillNumber(wbNumber);
     $('#txtWayBillNo').attr('readonly', true);
 
 });
 
 $('.btnDelete').unbind().on('click', function () {
     var waybillNumber = $(this).data('waybillnumber');
-    RemoveEntry('OrderDispatch/Remove', waybillNumber);
-    $('#loadDispatchedDataTable').load('OrderDispatch/PartialViewDataTable');
-    $('#loadPendingDispatchDataTable').load('OrderDispatch/PartialPendingDispatchDataTable');
+    RemoveEntry('OrderPickup/Remove', waybillNumber);
+    $('#loadPickedupDataTable').load('OrderPickup/PartialViewDataTable');
 });
 
-$('#btnDownloadDataDispatchData').unbind().on('click', function (event) {
+$('#btnDownloadDataPickedupData').unbind().on('click', function (event) {
     event.preventDefault();
-    $('#loadDispatchedDataTable').load('OrderDispatch/PartialViewDataTable');
+    $('#loadPickedupDataTable').load('OrderPickup/PartialViewDataTable');
 
 });
 
 
-$('#btnDownloadOrderData').unbind().on('click', function (event) {
-    event.preventDefault();
-    $('#loadPendingDispatchDataTable').load('OrderDispatch/PartialPendingDispatchDataTable');
-
-});
-
-
-
-function FillEmployeeDropDown() {
-    var employees = JSON.parse(GetListObject('Employee/GetEmployees'));
-    var employeeDropDown = $('#ddlEmployeeId');
-
-    for (var i = 0; i < employees.length; i++) {
-        employeeDropDown.append('<option value=' + employees[i].Id + '>' + employees[i].FirstName + ' ' + (employees[i].LastName === null ? '' : employees[i].LastName) + '  (' + employees[i].EmployeeNumber + ') ' + '</option>');
-    }
-}

@@ -65,7 +65,7 @@ $('#frmOrderDispatchForm').unbind('submit').submit(function (event) {
     employeeNumber = $('#ddlEmployeeId').val();
     dispatchDate = $('#txtDispatchDateTime').val();
     if (employeeNumber < 1) {
-        alert('Please select employee.');
+        bootbox.alert('Please select employee.');
         event.preventDefault();
         return;
     }

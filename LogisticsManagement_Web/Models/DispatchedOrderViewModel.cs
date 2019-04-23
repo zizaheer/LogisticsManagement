@@ -20,6 +20,9 @@ namespace LogisticsManagement_Web.Models
         public string ConsigneeAddress { get; set; }
         public int? EmployeeId { get; set; }
         public string EmployeeName { get; set; }
+        public string EmployeePhone { get; set; }
+        public string TruckNo { get; set; }
+        public string LicensePlateNo { get; set; }
         public bool? IsOrderDispatched { get; set; }
         public bool? IsOrderPickedup { get; set; }
         public bool? IsOrderPassedOn { get; set; }

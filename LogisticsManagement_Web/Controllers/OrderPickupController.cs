@@ -50,22 +50,14 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
-            return View(GetPendingPickupData());
+            return View();
         }
 
         [HttpGet]
         public IActionResult PartialViewDataTable()
         {
             ValidateSession();
-            return PartialView("_PartialViewOrderDispatchData", GetPickedupOrders().Where(c => c.IsOrderDispatched == true && c.IsOrderPickedup == null));
-        }
-
-        [HttpGet]
-
-        public IActionResult PartialPendingDispatchDataTable()
-        {
-            ValidateSession();
-            return PartialView("_PartialPendingDispatchData", GetPendingPickupData());
+            return PartialView("_PartialViewOrderPickedupData", GetPickedupOrders().Where(c => c.IsOrderPickedup == true && c.IsOrderPassedOn == null && c.IsOrderDelivered == null));
         }
 
 
@@ -238,19 +230,43 @@ namespace LogisticsManagement_Web.Controllers
 
         }
 
-        private DispatchBoardViewModel GetPendingPickupData()
+        public JsonResult GetOrderByWayBillId(string id)
         {
-            DispatchBoardViewModel dispatchBoardViewModel = new DispatchBoardViewModel();
+            try
+            {
+                var orderPocos = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
 
-            dispatchBoardViewModel.DispatchedOrderViewModels = GetPickedupOrders().Where(c => c.IsOrderDispatched == null).ToList();
-            _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
-            dispatchBoardViewModel.Employees = _employeeLogic.GetList();
+                _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+                var orderStatuses = _orderStatusLogic.GetList(); //.Where(c => orderPocos.Select(d => d.Id).ToList().Contains(c.OrderId)).ToList();
 
-            _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
-            dispatchBoardViewModel.Configuration = _configurationLogic.GetList().FirstOrDefault();
+                var orderDetails = (from orderStatus in orderStatuses
+                                    join order in orderPocos on orderStatus.OrderId equals order.Id
+                                    where order.OrderTypeId == 1
+                                    select orderStatus).FirstOrDefault();
 
-            return dispatchBoardViewModel;
+                _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
+                var employee = _employeeLogic.GetList().Where(c => c.Id == orderDetails.DispatchedToEmployeeId).FirstOrDefault();
+
+                DispatchedOrderViewModel dispatchedOrderViewModel = new DispatchedOrderViewModel();
+                dispatchedOrderViewModel.EmployeeId = employee.Id;
+                dispatchedOrderViewModel.EmployeeName = employee.FirstName + "  " + employee.LastName;
+                dispatchedOrderViewModel.DispatchDatetime = orderDetails.DispatchedDatetime;
+                dispatchedOrderViewModel.IsOrderDispatched = orderDetails.IsDispatched;
+                dispatchedOrderViewModel.IsOrderPickedup = orderDetails.IsPickedup;
+                dispatchedOrderViewModel.IsOrderPassedOn = orderDetails.IsPassedOff;
+                dispatchedOrderViewModel.IsOrderDelivered = orderDetails.IsDelivered;
+
+                return Json(JsonConvert.SerializeObject(dispatchedOrderViewModel));
+
+            }
+            catch (Exception ex)
+            {
+                return Json("");
+            }
         }
+
+
+
 
         private void ValidateSession()
         {

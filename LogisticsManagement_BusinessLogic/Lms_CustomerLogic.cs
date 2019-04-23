@@ -120,6 +120,7 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@CustomerName", SqlDbType.VarChar, 50) { Value = customerPoco.CustomerName },
                 new SqlParameter("@BranchId", SqlDbType.Int) { Value = branchId },
                 new SqlParameter("@IsGstApplicable", SqlDbType.Bit) { Value = customerPoco.IsGstApplicable },
+                new SqlParameter("@FuelSurChargePercentage", SqlDbType.Decimal) { Value = (object)customerPoco.FuelSurChargePercentage ?? DBNull.Value },
                 new SqlParameter("@DiscountPercentage", SqlDbType.Decimal) { Value = (object)customerPoco.DiscountPercentage ?? DBNull.Value },
                 new SqlParameter("@InvoiceDueDays", SqlDbType.Int) { Value = (object)customerPoco.InvoiceDueDays  ?? DBNull.Value},
                 new SqlParameter("@MailingAddressId", SqlDbType.Int) { Value = (object)customerPoco.MailingAddressId  ?? DBNull.Value},
@@ -152,7 +153,7 @@ namespace LogisticsManagement_BusinessLogic
 
             StringBuilder query = new StringBuilder();
             query.Append("EXEC CreateNewCustomer ");
-            query.Append("@CustomerName, @BranchId, @IsGstApplicable, @DiscountPercentage, @InvoiceDueDays, @MailingAddressId, ");
+            query.Append("@CustomerName, @BranchId, @IsGstApplicable, @FuelSurChargePercentage, @DiscountPercentage, @InvoiceDueDays, @MailingAddressId, ");
             query.Append("@BillingAddressId, @IsMailingBillingAddressSame, @CreatedBy, ");
 
             query.Append("@BillingUnitNo, @BillingAddressLine, @BillingCityId, @BillingProvinceId, @BillingCountryId, @BillingPostCode, ");

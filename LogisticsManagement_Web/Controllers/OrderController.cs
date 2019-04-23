@@ -324,7 +324,12 @@ namespace LogisticsManagement_Web.Controllers
                 var orderPocos = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
 
                 _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
-                var orderAdditionalServices = _orderAdditionalServiceLogic.GetList().Where(c => orderPocos.Select(d => d.Id).ToList().Contains(c.OrderId)).ToList();
+                var orderAdditionalServices = _orderAdditionalServiceLogic.GetList(); //.Where(c => orderPocos.Select(d => d.Id).ToList().Contains(c.OrderId)).ToList();
+
+                orderAdditionalServices = (from addServ in orderAdditionalServices
+                                           join order in orderPocos on addServ.OrderId equals order.Id
+                                           select addServ).ToList();
+
 
                 return Json(JsonConvert.SerializeObject(new { orderPocos, orderAdditionalServices }));
 
