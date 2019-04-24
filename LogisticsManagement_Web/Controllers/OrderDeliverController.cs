@@ -68,6 +68,9 @@ namespace LogisticsManagement_Web.Controllers
                     var receivedByName = Convert.ToString(orderData[4]);
                     var receivedBySign = Convert.ToString(orderData[5]);
 
+                    var base64Signature = receivedBySign.Split(",")[1];
+                    var imageByte = string.IsNullOrEmpty(base64Signature) == true ? null : Convert.FromBase64String(base64Signature);
+
                     var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == wayBillNumber).ToList();
                     var orderStatuses = _orderStatusLogic.GetList();
 
@@ -83,7 +86,7 @@ namespace LogisticsManagement_Web.Controllers
                             orderStatus.DeliveredDatetime = deliveryDate;
                             orderStatus.DeliveryWaitTimeHour = waitTime;
                             orderStatus.ReceivedByName = receivedByName;
-                            orderStatus.ReceivedBySignature = receivedBySign;
+                            orderStatus.ReceivedBySignature = imageByte;
                             orderStatus.ProofOfDeliveryNote = proofNote;
 
                             orderStatus.StatusLastUpdatedOn = DateTime.Now;

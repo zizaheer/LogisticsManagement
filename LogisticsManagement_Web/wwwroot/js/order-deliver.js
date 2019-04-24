@@ -37,13 +37,13 @@ $('#txtWayBillNumber').unbind('keypress').keypress(function (event) {
         }
 
         if (orderStatus.IsOrderDispatched === null) {
-            bootbox.alert('The order has not yet dispatched. Please dispatch then enter pickup information.');
+            bootbox.alert('The order has not yet dispatched.');
             event.preventDefault();
             return;
         }
 
         if (orderStatus.IsOrderPickedup === null) {
-            bootbox.alert('The order has not yet picked up. Please pickup and then do the pass off.');
+            bootbox.alert('The order has not yet been picked up.');
             event.preventDefault();
             return;
         }
@@ -116,7 +116,7 @@ $('#deliver-list').on('click', '.btnEdit', function (event) {
     $('#txtReceivedByName').val(orderStatus.ReceivedByName);
     $('#txtDeliveryNote').val(orderStatus.ProofOfDeliveryNote);
     $('#imgSignature').val(orderStatus.ReceivedBySignature);
-
+    DrawSignatureImage(btoa(orderStatus.ReceivedBySignature));
 });
 
 $('.btnDelete').unbind().on('click', function () {
@@ -131,4 +131,14 @@ $('#btnDownloadDataDeliveredData').unbind().on('click', function (event) {
 
 });
 
+function DrawSignatureImage(base64String)
+{
+    var canvas = document.getElementById('signatureCanvas');
+    var canvasContext = canvas.getContext('2d');
+    var image = new Image();
+    image.onload = function () {
+        canvasContext.drawImage(image, 0, 0);
+    };
+    image.src = "'data:image/png;base64," + base64String + "'";
 
+}
