@@ -15,7 +15,7 @@ using Newtonsoft.Json.Linq;
 
 namespace LogisticsManagement_Web.Controllers
 {
-    public class OrderPickupController : Controller
+    public class OrderDeliverController : Controller
     {
         //private IMemoryCache _cache;  // To do later 
 
@@ -25,12 +25,11 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_AddressLogic _addressLogic;
         private Lms_EmployeeLogic _employeeLogic;
 
-
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
 
-        public OrderPickupController(IMemoryCache cache, LogisticsContext dbContext)
+        public OrderDeliverController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _cache = cache;
             _dbContext = dbContext;
@@ -41,14 +40,14 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
-            return View();
+            return View(GetEmployees());
         }
 
         [HttpGet]
         public IActionResult PartialViewDataTable()
         {
             ValidateSession();
-            return PartialView("_PartialViewOrderPickedupData", GetPickedupOrders().Where(c => c.IsOrderPickedup == true && c.IsOrderPassedOn == null && c.IsOrderDelivered == null));
+            return PartialView("_PartialViewOrderDeliveredData", GetDeliveredOrders().Where(c => c.IsOrderDelivered == true));
         }
 
 
@@ -64,7 +63,10 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     var wayBillNumber = Convert.ToString(orderData[0]);
                     var waitTime = string.IsNullOrEmpty(Convert.ToString(orderData[1])) == true ? null : Convert.ToDecimal(orderData[1]);
-                    var pickupDate = Convert.ToDateTime(orderData[2]);
+                    var deliveryDate = Convert.ToDateTime(orderData[2]);
+                    var proofNote = Convert.ToString(orderData[3]);
+                    var receivedByName = Convert.ToString(orderData[4]);
+                    var receivedBySign = Convert.ToString(orderData[5]);
 
                     var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == wayBillNumber).ToList();
                     var orderStatuses = _orderStatusLogic.GetList();
@@ -77,9 +79,13 @@ namespace LogisticsManagement_Web.Controllers
                     {
                         foreach (var orderStatus in orderStatuses)
                         {
-                            orderStatus.IsPickedup = true;
-                            orderStatus.PickupWaitTimeHour = waitTime;
-                            orderStatus.PickupDatetime = pickupDate == null ? DateTime.Now : pickupDate;
+                            orderStatus.IsDelivered = true;
+                            orderStatus.DeliveredDatetime = deliveryDate;
+                            orderStatus.DeliveryWaitTimeHour = waitTime;
+                            orderStatus.ReceivedByName = receivedByName;
+                            orderStatus.ReceivedBySignature = receivedBySign;
+                            orderStatus.ProofOfDeliveryNote = proofNote;
+
                             orderStatus.StatusLastUpdatedOn = DateTime.Now;
 
                             _orderStatusLogic.Update(orderStatus);
@@ -121,9 +127,14 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     foreach (var item in dispatchedList)
                     {
-                        item.IsPickedup = null;
-                        item.PickupDatetime = null;
-                        item.PickupWaitTimeHour = null;
+                        item.IsDelivered = null;
+                        item.DeliveredDatetime = null;
+                        item.DeliveryWaitTimeHour = null;
+                        item.ReceivedByName = null;
+                        item.ReceivedBySignature = null;
+                        item.ProofOfDeliveryNote = null;
+
+                        item.StatusLastUpdatedOn = DateTime.Now;
 
                         _orderStatusLogic.Update(item);
                     }
@@ -141,7 +152,7 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-        private List<DispatchedOrderViewModel> GetPickedupOrders()
+        private List<DispatchedOrderViewModel> GetDeliveredOrders()
         {
             List<DispatchedOrderViewModel> dispatchedOrderViewModels = new List<DispatchedOrderViewModel>();
 
@@ -191,33 +202,45 @@ namespace LogisticsManagement_Web.Controllers
                 var consigAddress = addressList.Where(c => c.Id == consigMailingId).FirstOrDefault();
                 dispatchedOrderViewModel.ConsigneeAddress = consigAddress.UnitNumber + " " + consigAddress.AddressLine + "  " + consigAddress.PrimaryPhoneNumber;
 
-
-                dispatchedOrderViewModel.IsOrderDispatched = item.IsDispatched;
-                dispatchedOrderViewModel.DispatchDatetime = item.DispatchedDatetime;
                 dispatchedOrderViewModel.DispatchedEmployeeId = item.DispatchedToEmployeeId;
+
                 if (item.DispatchedToEmployeeId != null)
                 {
                     var employee = employeeList.Where(c => c.Id == dispatchedOrderViewModel.DispatchedEmployeeId).FirstOrDefault();
                     dispatchedOrderViewModel.DispatchedEmployeeName = employee.FirstName + "  " + employee.LastName;
-                    if (!string.IsNullOrEmpty(employee.MobileNumber))
-                    {
-                        dispatchedOrderViewModel.DispatchedEmployeePhone = employee.MobileNumber;
-                    }
-                    else if (!string.IsNullOrEmpty(employee.PhoneNumber))
-                    {
-                        dispatchedOrderViewModel.DispatchedEmployeePhone = employee.PhoneNumber;
-                    }
                 }
 
-                
+                dispatchedOrderViewModel.IsOrderDispatched = item.IsDispatched;
+                dispatchedOrderViewModel.DispatchDatetime = item.DispatchedDatetime;
+
                 dispatchedOrderViewModel.IsOrderPickedup = item.IsPickedup;
                 dispatchedOrderViewModel.PickupDatetime = item.PickupDatetime;
 
                 dispatchedOrderViewModel.IsOrderPassedOn = item.IsPassedOff;
                 dispatchedOrderViewModel.PassOnDatetime = item.PassOffDatetime;
+                dispatchedOrderViewModel.PassOnEmployeeId = item.PassedOffToEmployeeId;
+                if (item.PassedOffToEmployeeId != null)
+                {
+                    var employee = employeeList.Where(c => c.Id == dispatchedOrderViewModel.PassOnEmployeeId).FirstOrDefault();
+                    dispatchedOrderViewModel.PassOnEmployeeName = employee.FirstName + "  " + employee.LastName;
+                    if (!string.IsNullOrEmpty(employee.MobileNumber))
+                    {
+                        dispatchedOrderViewModel.PassOnEmployeePhone = employee.MobileNumber;
+                    }
+                    else if (!string.IsNullOrEmpty(employee.PhoneNumber))
+                    {
+                        dispatchedOrderViewModel.PassOnEmployeePhone = employee.PhoneNumber;
+                    }
+                }
+                dispatchedOrderViewModel.PassOnWaitTime = item.PassOffWaitTimeHour;
+
 
                 dispatchedOrderViewModel.IsOrderDelivered = item.IsDelivered;
                 dispatchedOrderViewModel.DeliverDatetime = item.DeliveredDatetime;
+                dispatchedOrderViewModel.DeliveryWaitTimeInHour = item.DeliveryWaitTimeHour;
+                dispatchedOrderViewModel.ReceivedByName = item.ReceivedByName;
+                dispatchedOrderViewModel.ReceivedBySignature = item.ReceivedBySignature;
+                dispatchedOrderViewModel.ProofOfDeliveryNote = item.ProofOfDeliveryNote;
 
 
                 dispatchedOrderViewModels.Add(dispatchedOrderViewModel);
@@ -227,6 +250,16 @@ namespace LogisticsManagement_Web.Controllers
 
         }
 
+        private DispatchBoardViewModel GetEmployees()
+        {
+            DispatchBoardViewModel dispatchBoardViewModel = new DispatchBoardViewModel();
+
+            _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
+            dispatchBoardViewModel.Employees = _employeeLogic.GetList();
+
+            return dispatchBoardViewModel;
+        }
+
         public JsonResult GetOrderByWayBillId(string id)
         {
             ValidateSession();
@@ -234,7 +267,7 @@ namespace LogisticsManagement_Web.Controllers
             try
             {
                 var orderPocos = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
-                var orderStatuses = _orderStatusLogic.GetList(); 
+                var orderStatuses = _orderStatusLogic.GetList();
 
                 var orderDetails = (from orderStatus in orderStatuses
                                     join order in orderPocos on orderStatus.OrderId equals order.Id
@@ -249,9 +282,22 @@ namespace LogisticsManagement_Web.Controllers
                 dispatchedOrderViewModel.DispatchedEmployeeName = employee.FirstName + "  " + employee.LastName;
                 dispatchedOrderViewModel.DispatchDatetime = orderDetails.DispatchedDatetime;
                 dispatchedOrderViewModel.IsOrderDispatched = orderDetails.IsDispatched;
+
                 dispatchedOrderViewModel.IsOrderPickedup = orderDetails.IsPickedup;
+                dispatchedOrderViewModel.PickupDatetime = orderDetails.PickupDatetime;
+
                 dispatchedOrderViewModel.IsOrderPassedOn = orderDetails.IsPassedOff;
+                dispatchedOrderViewModel.PassOnDatetime = orderDetails.PassOffDatetime;
+                dispatchedOrderViewModel.PassOnEmployeeId = orderDetails.PassedOffToEmployeeId;
+                dispatchedOrderViewModel.PassOnWaitTime = orderDetails.PassOffWaitTimeHour;
+
                 dispatchedOrderViewModel.IsOrderDelivered = orderDetails.IsDelivered;
+                dispatchedOrderViewModel.DeliverDatetime = orderDetails.DeliveredDatetime;
+                dispatchedOrderViewModel.DeliveryWaitTimeInHour = orderDetails.DeliveryWaitTimeHour;
+                dispatchedOrderViewModel.ReceivedByName = orderDetails.ReceivedByName;
+                dispatchedOrderViewModel.ReceivedBySignature = orderDetails.ReceivedBySignature;
+                dispatchedOrderViewModel.ProofOfDeliveryNote = orderDetails.ProofOfDeliveryNote;
+
 
                 return Json(JsonConvert.SerializeObject(dispatchedOrderViewModel));
 

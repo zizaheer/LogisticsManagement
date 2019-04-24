@@ -28,6 +28,7 @@ namespace LogisticsManagement_Poco
         public decimal? PassOffWaitTimeHour { get; set; }
         public bool? IsDelivered { get; set; }
         public DateTime? DeliveredDatetime { get; set; }
+        public decimal? DeliveryWaitTimeHour { get; set; }
         public string ProofOfDeliveryNote { get; set; }
         public string ReceivedByName { get; set; }
         public byte[] ReceivedBySignature { get; set; }

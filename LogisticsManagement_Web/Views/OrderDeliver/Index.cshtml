@@ -1,0 +1,155 @@
+﻿@using LogisticsManagement_Web.Models;
+@model DispatchBoardViewModel
+
+<form id="frmOrderDeliverForm">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header" style="background-color: #365396;color: #fff;">
+                    <strong><i class="fa fa-sliders"></i> Deliver Order/s</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtWayBillNumber" type="number" name="txtWayBillNumber" min="0" placeholder="W/B" title="Waybill number">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2 form-group">
+                            <label for="txtDispatchedDateTime">Dispatch date and time</label>
+                            <input type="datetime-local" id="txtDispatchedDateTime" class="form-control txtDispatchedDateTime" readonly />
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label for="txtPickupDateTime">Pickup date and time</label>
+                            <input type="datetime-local" id="txtPickupDateTime" class="form-control txtPickupDateTime" readonly />
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label for="txtEmployeeName">Dispatched to</label>
+                            <input type="text" id="txtEmployeeName" class="form-control txtEmployeeName" readonly />
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-sm-2 form-group">
+                            <label for="txtDeliveryDateTime">Delivery Date</label>
+                            <input type="datetime-local" id="txtDeliveryDateTime" class="form-control txtDeliveryDateTime" />
+
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label for="txtWaitTime">Wait time (hour)</label>
+                            <input type="number" id="txtWaitTime" class="form-control txtWaitTime" placeholder="Wait time" min="0" title="Wait time (in hours)" />
+
+                        </div>
+
+                        <div class="col-sm-2 form-group">
+                            <label for="txtReceivedByName">Received By </label>
+                            <input type="text" id="txtReceivedByName" class="form-control txtReceivedByName" placeholder="Received by (Name)" title="Received by (Name)" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-2 form-group">
+                            <label for="txtDeliveryNote">Notes</label>
+                            <textarea id="txtDeliveryNote" class="form-control txtDeliveryNote" placeholder="Delivery note" title="Delivery note"></textarea>
+
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label for="txtReceivedBySign">Signature </label>
+                            @*<input type="text" id="txtReceivedBySign" class="form-control txtReceivedBySign" placeholder="Received by (Sign)" title="Received by (Sign)" />*@
+                            <canvas id="signatureCanvas" class="card"></canvas>
+                            <span style="float:left">
+                                <button type="button" class="btn btn-sm btn-secondary" id="btnOk"><i class="fa fa-check"></i> Ok </button>
+                                <button type="button" class="btn btn-sm btn-secondary" id="btnCancel"><i class="fa fa-times"></i> Cancel</button>
+                                <input type="hidden" id="imgSignature" />
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="hidden" id="hfOrderId" class="hfOrderId" name="hfOrderId" />
+                            <button type="reset" class="btn btn-primary" id="btnClear"><i class="fa fa-plus-circle"></i> Clear</button>
+                            <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+<script>
+    $(function () {
+        var canvas = document.querySelector('#signatureCanvas');
+        var pad = new SignaturePad(canvas);
+
+        $('#btnOk').click(function () {
+            var data = pad.toDataURL();
+            $('#imgSignature').val(data);
+            console.log($('#imgSignature').val());
+            pad.off();
+        });
+
+        $('#btnCancel').click(function () {
+            pad.clear();
+            pad.on();
+            $('#imgSignature').val('');
+            console.log($('#imgSignature').val());
+        });
+
+        
+        //$('#savetarget').attr('src', data);
+        //$('#SignatureDataUrl').val(data);
+        //pad.off();
+
+    });
+</script>
+
+
+<hr />
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header" style="background-color: #c3c3c3;">
+                <strong><i class="fa fa-sliders"></i> Already passed off orders</strong>
+                <div class="card-header-actions">
+                    <span id="spinnerLoadingDataTable" style="display:none">
+                        <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                        <span style="margin-right:20px">Loading...</span>
+                    </span>
+                    <button id="btnDownloadDataDeliveredData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
+                    <span style="display:none" id="loadingSpinner"><i class="fa fa-circle-o-notch"></i></span>
+                    <span>&nbsp;&nbsp;</span>
+                    <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
+                        <i class="icon-arrow-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="collapse show" id="collapseDatatable">
+                <div class="card-body">
+                    <div id="loadDeliveredDataTable">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/order-deliver.js"></script>

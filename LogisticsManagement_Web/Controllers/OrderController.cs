@@ -23,7 +23,6 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_OrderLogic _orderLogic;
         private Lms_OrderStatusLogic _orderStatusLogic;
         private Lms_CustomerLogic _customerLogic;
-        private Lms_AddressLogic _addressLogic;
         private App_CityLogic _cityLogic;
         private App_ProvinceLogic _provinceLogic;
         private Lms_DeliveryOptionLogic _deliveryOptionLogic;
@@ -33,8 +32,6 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_AdditionalServiceLogic _additionalServiceLogic;
         private Lms_ConfigurationLogic _configurationLogic;
         private Lms_TariffLogic _tariffLogic;
-        private Lms_EmployeeLogic _employeeLogic;
-        private Lms_EmployeeTimesheetLogic _employeeTimesheetLogic;
 
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
@@ -203,6 +200,7 @@ namespace LogisticsManagement_Web.Controllers
         [HttpPost]
         public IActionResult Remove(string id)
         {
+            ValidateSession();
             bool result = false;
             try
             {
@@ -253,6 +251,8 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetTariffCostByParam(string jsonStringParam)
         {
+            ValidateSession();
+
             decimal shipperCost = 0;
             decimal consigneeCost = 0;
             decimal returnedValue = 0;
@@ -319,6 +319,8 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetOrderByWayBillId(string id)
         {
+            ValidateSession();
+
             try
             {
                 var orderPocos = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();

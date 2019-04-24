@@ -23,17 +23,8 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_OrderStatusLogic _orderStatusLogic;
         private Lms_CustomerLogic _customerLogic;
         private Lms_AddressLogic _addressLogic;
-        private App_CityLogic _cityLogic;
-        private App_ProvinceLogic _provinceLogic;
-        private Lms_DeliveryOptionLogic _deliveryOptionLogic;
-        private Lms_UnitTypeLogic _unitTypeLogic;
-        private Lms_WeightScaleLogic _weightScaleLogic;
-        private Lms_OrderAdditionalServiceLogic _orderAdditionalServiceLogic;
-        private Lms_AdditionalServiceLogic _additionalServiceLogic;
         private Lms_ConfigurationLogic _configurationLogic;
-        private Lms_TariffLogic _tariffLogic;
         private Lms_EmployeeLogic _employeeLogic;
-        private Lms_EmployeeTimesheetLogic _employeeTimesheetLogic;
 
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
@@ -61,13 +52,11 @@ namespace LogisticsManagement_Web.Controllers
         }
 
         [HttpGet]
-
         public IActionResult PartialPendingDispatchDataTable()
         {
             ValidateSession();
             return PartialView("_PartialPendingDispatchData", GetPendingDispatchData());
         }
-
 
         [HttpPost]
         public IActionResult Update([FromBody]dynamic orderData)
@@ -95,15 +84,14 @@ namespace LogisticsManagement_Web.Controllers
                             orders = orders.Where(c => c.WayBillNumber == wbNumber).ToList();
                             foreach (var order in orders)
                             {
-                                orderStatuses = orderStatuses.Where(c => c.OrderId == order.Id).ToList();
-                                foreach (var status in orderStatuses)
-                                {
-                                    status.IsDispatched = true;
-                                    status.DispatchedToEmployeeId = employeeNumber;
-                                    status.DispatchedDatetime = dispatchDate == null ? DateTime.Now : dispatchDate;
+                                var status = orderStatuses.Where(c => c.OrderId == order.Id).FirstOrDefault();
 
-                                    _orderStatusLogic.Update(status);
-                                }
+                                status.IsDispatched = true;
+                                status.DispatchedToEmployeeId = employeeNumber;
+                                status.DispatchedDatetime = dispatchDate == null ? DateTime.Now : dispatchDate;
+                                status.StatusLastUpdatedOn = DateTime.Now;
+
+                                _orderStatusLogic.Update(status);
                             }
 
                         }
@@ -122,8 +110,6 @@ namespace LogisticsManagement_Web.Controllers
 
             return Json(result);
         }
-
-
 
         [HttpPost]
         public IActionResult Remove(string id)
@@ -161,6 +147,7 @@ namespace LogisticsManagement_Web.Controllers
 
             return Json(result);
         }
+
 
         private List<DispatchedOrderViewModel> GetDispatchedOrders()
         {
@@ -212,31 +199,32 @@ namespace LogisticsManagement_Web.Controllers
                 var consigAddress = addressList.Where(c => c.Id == consigMailingId).FirstOrDefault();
                 dispatchedOrderViewModel.ConsigneeAddress = consigAddress.UnitNumber + " " + consigAddress.AddressLine + "  " + consigAddress.PrimaryPhoneNumber;
 
-                dispatchedOrderViewModel.EmployeeId = item.DispatchedToEmployeeId;
-
+                dispatchedOrderViewModel.IsOrderDispatched = item.IsDispatched;
+                dispatchedOrderViewModel.DispatchDatetime = item.DispatchedDatetime;
+                dispatchedOrderViewModel.DispatchedEmployeeId = item.DispatchedToEmployeeId;
                 if (item.DispatchedToEmployeeId != null)
                 {
-                    var employee = employeeList.Where(c => c.Id == dispatchedOrderViewModel.EmployeeId).FirstOrDefault();
-                    dispatchedOrderViewModel.EmployeeName = employee.FirstName + "  " + employee.LastName;
+                    var employee = employeeList.Where(c => c.Id == dispatchedOrderViewModel.DispatchedEmployeeId).FirstOrDefault();
+                    dispatchedOrderViewModel.DispatchedEmployeeName = employee.FirstName + "  " + employee.LastName;
                     if (!string.IsNullOrEmpty(employee.MobileNumber))
                     {
-                        dispatchedOrderViewModel.EmployeePhone = employee.MobileNumber;
+                        dispatchedOrderViewModel.DispatchedEmployeePhone = employee.MobileNumber;
                     }
-                    else if (!string.IsNullOrEmpty(employee.PhoneNumber)) {
-                        dispatchedOrderViewModel.EmployeePhone = employee.PhoneNumber;
+                    else if (!string.IsNullOrEmpty(employee.PhoneNumber))
+                    {
+                        dispatchedOrderViewModel.DispatchedEmployeePhone = employee.PhoneNumber;
                     }
                 }
 
-                dispatchedOrderViewModel.IsOrderDispatched = item.IsDispatched;
+               
                 dispatchedOrderViewModel.IsOrderPickedup = item.IsPickedup;
-                dispatchedOrderViewModel.IsOrderPassedOn = item.IsPassedOff;
-                dispatchedOrderViewModel.IsOrderDelivered = item.IsDelivered;
-
-                dispatchedOrderViewModel.DispatchDatetime = item.DispatchedDatetime;
                 dispatchedOrderViewModel.PickupDatetime = item.PickupDatetime;
-                dispatchedOrderViewModel.PassOffDatetime = item.PassOffDatetime;
-                dispatchedOrderViewModel.DeliverDatetime = item.DeliveredDatetime;
 
+                dispatchedOrderViewModel.PassOnDatetime = item.PassOffDatetime;
+                dispatchedOrderViewModel.IsOrderPassedOn = item.IsPassedOff;
+
+                dispatchedOrderViewModel.IsOrderDelivered = item.IsDelivered;
+                dispatchedOrderViewModel.DeliverDatetime = item.DeliveredDatetime;
 
 
                 dispatchedOrderViewModels.Add(dispatchedOrderViewModel);

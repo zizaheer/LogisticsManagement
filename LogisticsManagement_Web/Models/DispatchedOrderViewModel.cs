@@ -18,20 +18,33 @@ namespace LogisticsManagement_Web.Models
         public int ConsigneeId { get; set; }
         public string ConsigneeName { get; set; }
         public string ConsigneeAddress { get; set; }
-        public int? EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
-        public string EmployeePhone { get; set; }
+       
         public string TruckNo { get; set; }
         public string LicensePlateNo { get; set; }
-        public bool? IsOrderDispatched { get; set; }
-        public bool? IsOrderPickedup { get; set; }
-        public bool? IsOrderPassedOn { get; set; }
-        public bool? IsOrderDelivered { get; set; }
 
+        public bool? IsOrderDispatched { get; set; }
         public DateTime? DispatchDatetime { get; set; }
+        public int? DispatchedEmployeeId { get; set; }
+        public string DispatchedEmployeeName { get; set; }
+        public string DispatchedEmployeePhone { get; set; }
+
+        public bool? IsOrderPickedup { get; set; }
         public DateTime? PickupDatetime { get; set; }
-        public DateTime? PassOffDatetime { get; set; }
+        public decimal? PickupWaitTime { get; set; }
+
+        public bool? IsOrderPassedOn { get; set; }
+        public DateTime? PassOnDatetime { get; set; }
+        public decimal? PassOnWaitTime { get; set; }
+        public int? PassOnEmployeeId { get; set; }
+        public string PassOnEmployeeName { get; set; }
+        public string PassOnEmployeePhone { get; set; }
+                          
+        public bool? IsOrderDelivered { get; set; }
         public DateTime? DeliverDatetime { get; set; }
+        public decimal? DeliveryWaitTimeInHour { get; set; }
+        public string ProofOfDeliveryNote { get; set; }
+        public string ReceivedByName { get; set; }
+        public byte[] ReceivedBySignature { get; set; }
 
     }
 }

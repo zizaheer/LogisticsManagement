@@ -46,7 +46,7 @@ $('#txtWayBillNumber').unbind('keypress').keypress(function (event) {
         }
 
         $('#txtDispatchedDateTime').val(orderStatus.DispatchDatetime);
-        $('#txtEmployeeName').val(orderStatus.EmployeeName + ' (' + orderStatus.EmployeeId + ')');
+        $('#txtEmployeeName').val(orderStatus.DispatchedEmployeeName + ' (' + orderStatus.DispatchedEmployeeId + ')');
     }
 });
 
