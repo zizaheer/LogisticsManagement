@@ -13,13 +13,31 @@ $(document).ready(function () {
     $(document).ajaxComplete(function () {
         $("#spinnerLoadingDataTable").css("display", "none");
     });
-});
 
+
+    $(function () {
+        var canvas = document.querySelector('#signatureCanvas');
+        var pad = new SignaturePad(canvas);
+
+        $('#btnOk').click(function () {
+            var data = pad.toDataURL();
+            $('#imgSignature').val(data);
+            pad.off();
+        });
+
+        $('#btnCancel').click(function () {
+            pad.clear();
+            pad.on();
+            $('#imgSignature').val('');
+        });
+    });
+
+
+});
 
 $('#btnClear').on('click', function () {
     $('#txtWayBillNumber').removeAttr('readonly');
 });
-
 
 $('#txtWayBillNumber').unbind('keypress').keypress(function (event) {
     if (event.keyCode === 13) {
@@ -55,14 +73,19 @@ $('#txtWayBillNumber').unbind('keypress').keypress(function (event) {
         }
 
         $('#txtDispatchedDateTime').val(orderStatus.DispatchDatetime);
+        $('#txtEmployeeName').val(orderStatus.DispatchedEmployeeName + ' (' + orderStatus.DispatchedEmployeeId + ')');
         $('#txtPickupDateTime').val(orderStatus.PickupDatetime);
-        $('#txtEmployeeName').val(orderStatus.DispatchedEmployeeName);
 
-        
+        $('#txtWaitTime').val(orderStatus.DeliveryWaitTimeInHour);
+        if (orderStatus.DeliverDatetime !== null)
+        {
+            $('#txtDeliveryDateTime').val(orderStatus.DeliverDatetime);
+        }
+        $('#txtReceivedByName').val(orderStatus.ReceivedByName);
+        $('#txtDeliveryNote').val(orderStatus.ProofOfDeliveryNote);
+        DrawSignatureImage(orderStatus.ReceivedBySignature);
     }
 });
-
-
 
 $('#frmOrderDeliverForm').on('keyup keypress', function (e) {
     var keyCode = e.keyCode || e.which;
@@ -115,8 +138,8 @@ $('#deliver-list').on('click', '.btnEdit', function (event) {
     $('#txtDeliveryDateTime').val(orderStatus.DeliverDatetime);
     $('#txtReceivedByName').val(orderStatus.ReceivedByName);
     $('#txtDeliveryNote').val(orderStatus.ProofOfDeliveryNote);
-    $('#imgSignature').val(orderStatus.ReceivedBySignature);
-    DrawSignatureImage(btoa(orderStatus.ReceivedBySignature));
+    //$('#imgSignature').val(orderStatus.ReceivedBySignature);
+    DrawSignatureImage(orderStatus.ReceivedBySignature);
 });
 
 $('.btnDelete').unbind().on('click', function () {
@@ -131,14 +154,13 @@ $('#btnDownloadDataDeliveredData').unbind().on('click', function (event) {
 
 });
 
-function DrawSignatureImage(base64String)
-{
+function DrawSignatureImage(base64String) {
     var canvas = document.getElementById('signatureCanvas');
     var canvasContext = canvas.getContext('2d');
     var image = new Image();
     image.onload = function () {
         canvasContext.drawImage(image, 0, 0);
     };
-    image.src = "'data:image/png;base64," + base64String + "'";
+    image.src = "data:image/png;base64," + base64String;
 
 }

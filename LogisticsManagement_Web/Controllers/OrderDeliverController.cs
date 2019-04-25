@@ -68,8 +68,12 @@ namespace LogisticsManagement_Web.Controllers
                     var receivedByName = Convert.ToString(orderData[4]);
                     var receivedBySign = Convert.ToString(orderData[5]);
 
-                    var base64Signature = receivedBySign.Split(",")[1];
-                    var imageByte = string.IsNullOrEmpty(base64Signature) == true ? null : Convert.FromBase64String(base64Signature);
+                    byte[] imageByte = null;
+                    if (receivedBySign != null && receivedBySign != "")
+                    {
+                        var base64Signature = receivedBySign.Split(",")[1];
+                        imageByte = string.IsNullOrEmpty(base64Signature) == true ? null : Convert.FromBase64String(base64Signature);
+                    }
 
                     var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == wayBillNumber).ToList();
                     var orderStatuses = _orderStatusLogic.GetList();
@@ -242,7 +246,12 @@ namespace LogisticsManagement_Web.Controllers
                 dispatchedOrderViewModel.DeliverDatetime = item.DeliveredDatetime;
                 dispatchedOrderViewModel.DeliveryWaitTimeInHour = item.DeliveryWaitTimeHour;
                 dispatchedOrderViewModel.ReceivedByName = item.ReceivedByName;
-                dispatchedOrderViewModel.ReceivedBySignature = item.ReceivedBySignature;
+
+                if (item.ReceivedBySignature != null)
+                {
+                    dispatchedOrderViewModel.ReceivedBySignature = Convert.ToBase64String(item.ReceivedBySignature);
+                }
+
                 dispatchedOrderViewModel.ProofOfDeliveryNote = item.ProofOfDeliveryNote;
 
 
@@ -298,7 +307,11 @@ namespace LogisticsManagement_Web.Controllers
                 dispatchedOrderViewModel.DeliverDatetime = orderDetails.DeliveredDatetime;
                 dispatchedOrderViewModel.DeliveryWaitTimeInHour = orderDetails.DeliveryWaitTimeHour;
                 dispatchedOrderViewModel.ReceivedByName = orderDetails.ReceivedByName;
-                dispatchedOrderViewModel.ReceivedBySignature = orderDetails.ReceivedBySignature;
+                if (orderDetails.ReceivedBySignature != null)
+                {
+                    dispatchedOrderViewModel.ReceivedBySignature = Convert.ToBase64String(orderDetails.ReceivedBySignature);
+                }
+
                 dispatchedOrderViewModel.ProofOfDeliveryNote = orderDetails.ProofOfDeliveryNote;
 
 

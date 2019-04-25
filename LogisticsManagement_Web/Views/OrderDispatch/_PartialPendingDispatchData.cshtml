@@ -20,10 +20,10 @@
                 <tr>
                     <th>Select</th>
                     <th>W/B #</th>
-                    <th>Shipper</th>
-                    <th>Address</th>
-                    <th>Consignee</th>
-                    <th>Address</th>
+                    <th>Shipper name</th>
+                    <th>Shipper address</th>
+                    <th>Consignee name</th>
+                    <th>Consignee address</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +36,7 @@
                             </label>
                         </td>
                         <td>
-                            @item.WayBillNumber
+                            <a asp-controller="Order" asp-action="">@item.WayBillNumber</a>
                         </td>
 
                         <td>

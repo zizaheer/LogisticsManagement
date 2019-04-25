@@ -23,7 +23,7 @@ namespace LogisticsManagement_Web.Controllers
         private App_CityLogic _cityLogic;
         private App_ProvinceLogic _provinceLogic;
         private App_CountryLogic _countryLogic;
-        private Lms_ConfigurationLogic _configurationLogic; 
+        private Lms_ConfigurationLogic _configurationLogic;
         private readonly LogisticsContext _dbContext;
 
         IMemoryCache _cache;
@@ -183,8 +183,16 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetCustomerById(string id)
         {
-            var customer = _customerLogic.GetList().Where(c => c.Id == Convert.ToInt32(id)).FirstOrDefault();
-            return Json(JsonConvert.SerializeObject(customer));
+            if (!string.IsNullOrEmpty(id))
+            {
+                var customer = _customerLogic.GetSingleById(Convert.ToInt32(id));
+                return Json(JsonConvert.SerializeObject(customer));
+            }
+            else
+            {
+                return Json(string.Empty);
+            }
+
         }
 
 

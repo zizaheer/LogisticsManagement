@@ -93,42 +93,13 @@
 </form>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
-<script>
-    $(function () {
-        var canvas = document.querySelector('#signatureCanvas');
-        var pad = new SignaturePad(canvas);
-
-        $('#btnOk').click(function () {
-            var data = pad.toDataURL();
-            $('#imgSignature').val(data);
-            console.log($('#imgSignature').val());
-            pad.off();
-        });
-
-        $('#btnCancel').click(function () {
-            pad.clear();
-            pad.on();
-            $('#imgSignature').val('');
-            console.log($('#imgSignature').val());
-        });
-
-        
-        //$('#savetarget').attr('src', data);
-        //$('#SignatureDataUrl').val(data);
-        //pad.off();
-
-    });
-</script>
-
-
 <hr />
 
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header" style="background-color: #c3c3c3;">
-                <strong><i class="fa fa-sliders"></i> Already passed off orders</strong>
+                <strong><i class="fa fa-sliders"></i> Already delivered orders</strong>
                 <div class="card-header-actions">
                     <span id="spinnerLoadingDataTable" style="display:none">
                         <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
@@ -152,4 +123,5 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 <script src="~/js/order-deliver.js"></script>

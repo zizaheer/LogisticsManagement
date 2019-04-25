@@ -44,7 +44,8 @@ namespace LogisticsManagement_Web.Models
         public decimal? DeliveryWaitTimeInHour { get; set; }
         public string ProofOfDeliveryNote { get; set; }
         public string ReceivedByName { get; set; }
-        public byte[] ReceivedBySignature { get; set; }
+        //public byte[] ReceivedBySignature { get; set; }
+        public string ReceivedBySignature { get; set; }
 
     }
 }

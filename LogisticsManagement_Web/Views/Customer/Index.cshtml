@@ -21,25 +21,31 @@
 
                 <div class="card-body">
                     <div class="row">
-                        <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtCustomerId" placeholder="" type="number" name="txtCustomerId" readonly />
-                        </div>
-                        <div class="form-group col-sm-1" style="padding-left: 0px;">
-                            <button id="btnFindCustomer" name="btnFindCustomer" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+                        <div class="form-group col-sm-3">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input class="form-control" id="txtCustomerId" type="number" name="txtCustomerId" min="0" placeholder="Customer no." max="999999" title="Customer no.">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-5">
                             <input class="form-control" id="txtCustomerName" placeholder="Customer Name" type="text" name="txtCustomerName" required />
                         </div>
                         <div class="form-group col-sm-4">
-                            <select class="form-control" id="ddlEmployeeId">
+                            <select class="form-control" id="ddlEmployeeId" style="display:none">
                                 <option value=0 selected> -- Assign Employee -- </option>
 
                             </select>
                         </div>
-                        <div class="form-group col-sm-2" style="padding-left: 0px;">
+                        <div class="form-group col-sm-2" style="padding-left: 0px;display:none">
                             <a asp-controller="Employee" asp-action="Index" class="btn btn-outline-secondary">New employee</a>
                         </div>
 
@@ -86,7 +92,7 @@
                         <div class="col-sm-6">
                             <div class="card" id="cardBillingAddress">
                                 <div class="card-header">
-                                    <i class="fa fa-send"></i>Billing Address
+                                    <i class="fa fa-send"></i>Billing Address <span style="float:right"> <input type="checkbox" name="chkIsSameAsMailing" id="chkIsSameAsMailing" /> Same as mailing</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -104,7 +110,7 @@
                                     <div class="row">
                                         <div class="form-group col-sm-5">
                                             <select class="form-control" id="ddlBillingCityId" name="ddlBillingCityId">
-                                                <option value="0">-- Select --</option>
+                                                <option value="0">City </option>
                                                 @foreach (var city in Model.Cities)
                                                 {
                                                     var selected = false;
@@ -118,7 +124,7 @@
                                         </div>
                                         <div class="form-group col-sm-3">
                                             <select class="form-control" id="ddlBillingProvinceId" name="ddlBillingProvinceId">
-                                                <option value="0">-- Select --</option>
+                                                <option value="0">Province</option>
                                                 @foreach (var province in Model.Provinces)
                                                 {
                                                     var selected = false;
@@ -132,7 +138,7 @@
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <select class="form-control" id="ddlBillingCountryId" name="ddlBillingCountryId">
-                                                <option value="0">-- Select --</option>
+                                                <option value="0">Country</option>
                                                 @foreach (var country in Model.Countries)
                                                 {
                                                     var selected = false;
@@ -191,7 +197,7 @@
                                     <div class="row">
                                         <div class="form-group col-sm-5">
                                             <select class="form-control" id="ddlMailingCityId" name="ddlMailingCityId">
-                                                <option value="0">-- Select --</option>
+                                                <option value="0">City</option>
                                                 @foreach (var city in Model.Cities)
                                                 {
                                                     var selected = false;
@@ -205,7 +211,7 @@
                                         </div>
                                         <div class="form-group col-sm-3">
                                             <select class="form-control" id="ddlMailingProvinceId" name="ddlMailingProvinceId">
-                                                <option value="0">-- Select --</option>
+                                                <option value="0">Province</option>
                                                 @foreach (var province in Model.Provinces)
                                                 {
                                                     var selected = false;
@@ -219,7 +225,7 @@
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <select class="form-control" id="ddlMailingCountryId" name="ddlMailingCountryId">
-                                                <option value="0">-- Select --</option>
+                                                <option value="0">Country</option>
                                                 @foreach (var country in Model.Countries)
                                                 {
                                                     var selected = false;
@@ -258,8 +264,12 @@
                     </div>
 
                     <hr />
-                    <button type="reset" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
+                    <button type="button" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
                     <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
+
+                    <span style="margin-left:20px">
+                        <button type="reset" class="btn btn-secondary" id="btnClear"><i class="fa fa-refresh"></i> Clear</button>
+                    </span>
                 </div>
             </div>
         </div>

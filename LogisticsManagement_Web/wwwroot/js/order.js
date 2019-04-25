@@ -249,7 +249,7 @@ $('#ddlConsigneeId').on('change', function () {
     var selectedValue = $('#ddlConsigneeId').val();
 
     var consigneeInfo = JSON.parse(GetCustomerInfo(selectedValue));
-    if (consigneeInfo !== null || consigneeInfo != undefined) {
+    if (consigneeInfo !== null || consigneeInfo !== undefined) {
 
         var mailingAddId = consigneeInfo.MailingAddressId;
         var billingAddId = consigneeInfo.BillingAddressId;
@@ -552,9 +552,9 @@ function GetTariffInfo() {
         deliveryOptionId: deliveryOptionId === null ? 0 : deliveryOptionId,
         vehicleTypeId: vehicleTypeId === null ? 0 : vehicleTypeId,
         unitTypeId: unitTypeId === null ? 0 : unitTypeId,
-        unitQuantity: (unitQuantity === null || unitQuantity === "" || unitQuantity === undefined) ? 0 : unitQuantity,
+        unitQuantity: unitQuantity === null || unitQuantity === "" || unitQuantity === undefined ? 0 : unitQuantity,
         weightScaleId: weightScaleId === null ? 0 : weightScaleId,
-        weightQuantity: (weightQuantity === null || weightQuantity === "" || weightQuantity === undefined) ? 0 : weightQuantity
+        weightQuantity: weightQuantity === null || weightQuantity === "" || weightQuantity === undefined ? 0 : weightQuantity
     };
 
     var tariffCost = GetListObjectByParam('Order/GetTariffCostByParam', dataForTariff);

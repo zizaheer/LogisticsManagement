@@ -140,6 +140,17 @@ namespace LogisticsManagement_Web.Controllers
                         employee.SalaryTerm = employeePoco.SalaryTerm;
                         employee.IsActive = employeePoco.IsActive;
 
+                        employee.UnitNumber = employeePoco.UnitNumber;
+                        employee.AddressLine = employeePoco.AddressLine;
+                        employee.CityId = employeePoco.CityId;
+                        employee.ProvinceId = employeePoco.ProvinceId;
+                        employee.CountryId = employeePoco.CountryId;
+                        employee.PostCode = employeePoco.PostCode;
+                        employee.EmailAddress = employeePoco.EmailAddress;
+                        employee.MobileNumber = employeePoco.MobileNumber;
+                        employee.FaxNumber = employeePoco.FaxNumber;
+                        employee.PhoneNumber = employeePoco.PhoneNumber;
+
 
                         var poco = _employeeLogic.Update(employee);
                         result = poco.Id.ToString();
@@ -181,8 +192,15 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetEmployeeById(string id)
         {
-            var employeeList = _employeeLogic.GetList();
-            return Json(JsonConvert.SerializeObject(employeeList));
+            if (!string.IsNullOrEmpty(id))
+            {
+                var employee = _employeeLogic.GetSingleById(Convert.ToInt32(id));
+                return Json(JsonConvert.SerializeObject(employee));
+            }
+            else
+            {
+                return Json(string.Empty);
+            }
         }
 
         private void ValidateSession()
