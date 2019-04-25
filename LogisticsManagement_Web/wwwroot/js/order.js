@@ -387,16 +387,19 @@ $('#service-list .btnRemoveService').click(function (event) {
     CalculateOrderBaseCost();
 });
 
-
 $('#txtWayBillNo').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
 
-        var wayBillNumber = $('#txtWayBillNo').val();
-        GetAndFillOrderDetailsByWayBillNumber(wayBillNumber);
-
+        $('#txtWayBillNo').change();
     }
 });
+$('#txtWayBillNo').on('change', function (event) {
+    var wayBillNumber = $('#txtWayBillNo').val();
+    GetAndFillOrderDetailsByWayBillNumber(wayBillNumber);
+});
+
+
 
 
 $('#order-list').on('click', '.btnEdit', function (event) {
@@ -442,8 +445,6 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
         return;
     }
 
-
-
     if ($('input[name=chkIsReturnOrder]:checked').val() === 'on') {
         if (dataArray[0].wayBillNumber === "" || dataArray[0].wayBillNumber < 1) {
             bootbox.alert("Return order can only be created for an existing order. Please enter way bill number.");
@@ -452,7 +453,6 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
             return;
         }
     }
-
 
     if (dataArray[0].wayBillNumber > 0) {
         UpdateEntry('Order/Update', dataArray);
@@ -488,8 +488,6 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber) {
     var orderInfo = GetSingleObjectById('Order/GetOrderByWayBillId', wayBillNumber);
     var parseData = JSON.parse(orderInfo);
 
-    console.log('parse data ' + orderInfo);
-
     singleOrderData = parseData.orderPocos.filter(function (item) {
         return item.OrderTypeId === 1;
     })[0];
@@ -504,15 +502,11 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber) {
         return item.OrderTypeId === 2;
     })[0];
 
-    //console.log('return data ' + returnOrderData);
-
     if (returnOrderData !== null) {
         returnOrderAdditionalServiceData = parseData.orderAdditionalServices.filter(function (item) {
             return item.OrderId === returnOrderData.Id;
         });
     }
-
-    //console.log(returnOrderAdditionalServiceData);
 
     var isChecked = $('#chkShowReturnOrder').is(':checked');
     if (isChecked) {
@@ -658,7 +652,13 @@ function CalculateOrderBaseCost() {
 function FillOrderDetails(orderRelatedData) {
     if (orderRelatedData !== null) {
         $('#hfOrderId').val(orderRelatedData.Id);
-        //$('input[name=chkIsReturnOrder]:checked').val() === true ? 2 : 1;
+
+        var toggle = $('input[name=chkIsReturnOrder]').data('bs.toggle');
+        if (orderRelatedData.OrderTypeId === 1) {
+            toggle.off(true);
+        } else if (orderRelatedData.OrderTypeId === 2) {
+            toggle.on(true);
+        }
 
         $('#txtWayBillNo').val(orderRelatedData.WayBillNumber);
         $('#txtCustomerRefNo').val(orderRelatedData.ReferenceNumber);
@@ -670,17 +670,24 @@ function FillOrderDetails(orderRelatedData) {
         $('#ddlConsigneeId').change();
         $('#ddlBillerId').val(orderRelatedData.BillToCustomerId);
         $('#txtBillerCustomerNo').val(orderRelatedData.BillToCustomerId);
-        //$('#txtShipperCustomerNo').val(orderRelatedData.ShipperCustomerId);
-        //$('#txtConsigneeCustomerNo').val(orderRelatedData.ConsigneeCustomerId);
+        $('#txtShipperCustomerNo').val(orderRelatedData.ShipperCustomerId);
+        $('#txtConsigneeCustomerNo').val(orderRelatedData.ConsigneeCustomerId);
         $('#txtSchedulePickupDate').val(ConvertDateToUSFormat(orderRelatedData.ScheduledPickupDate));
         $('#txtSchedulePickupTime').val(GetTimeInHHmmFormat(orderRelatedData.ScheduledPickupDate));
-        //console.log(GetTimeInHHmmFormat(orderRelatedData.ScheduledPickupDate));
 
         //$('#txtEstimatedDeliverypDate').val(orderRelatedData.OrderId);
-        //$('#ddlConsigneeCityId').val(orderRelatedData.OrderId);
         $('#ddlDeliveryOptionId').val(orderRelatedData.DeliveryOptionId);
-        $("input[name='rdoVehicleType']:checked").val();
 
+        if (orderRelatedData.VehicleTypeId === 1) {
+            $('#rdoTruck').prop('checked', true);
+        }
+        else if (orderRelatedData.VehicleTypeId === 2) {
+            $('#rdoVan').prop('checked', true);
+        }
+        else if (orderRelatedData.VehicleTypeId === 3) {
+            $('#rdoCar').prop('checked', true);
+        }
+        
         $('#ddlUnitTypeId').val(orderRelatedData.UnitTypeId);
         $('#ddlWeightScaleId').val(orderRelatedData.WeightScaleId);
         $('#txtWeightTotal').val(orderRelatedData.WeightTotal);

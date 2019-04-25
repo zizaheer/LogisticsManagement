@@ -1,4 +1,11 @@
-﻿
+﻿/**
+ * All common JavaScript functions are declared here
+ * Please use them as required and 
+ * try not to duplicate the same type of operations in different .js files; 
+ * in stead create a common function here. Do necessary refactoring on the way.
+ * Written by: Kazi on 25 Apr 2019
+ * 
+ */
 
 function GetListObject(actionUrl) {
 
@@ -122,10 +129,15 @@ function RemoveEntry(actionUrl, id) {
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
-            bootbox.alert('Success! Data has been removed successfully.');
+            if (result.length > 1) {
+                bootbox.alert('Success! Data has been removed successfully.');
+            }
+            else {
+                bootbox.alert('Failed! An error occurred while deleting data. Please check your input and try again.');
+            }
         },
         error: function (result) {
-            bootbox.alert('Failed! An error occured during deleting the data.');
+            
         }
     });
 }
@@ -137,42 +149,6 @@ function MaskPhoneNumber(element) {
 function MaskDate(element) {
     $(element).mask('00/00/0000');
 }
-
-//function SetResponseMessage(responseType, messageContent) {
-//    $('#lblMsgContent').text(messageContent);
-//    $('#imgAlertType').removeAttr('src');
-//    $('#btnProceed').hide();
-//    $('#btnClose').show();
-    
-//    $('#msgBox').slideDown('slow', function () {
-    
-//    });
-
-//    if (responseType === 'Info') {
-//        $('#alertBox').css('background-color', '#daf2ff');
-//        $('#imgAlertType').attr('src', '/images/icon-archive/info.png');
-//    }
-//    else if (responseType === 'Warning') {
-//        $('#alertBox').css('background-color', '#f5f6d4');
-//        $('#imgAlertType').attr('src', '/images/icon-archive/warning.png');
-//        $('#btnProceed').show();
-//        $('#btnClose').hide();
-//    }
-//    else if (responseType === 'Success') {
-//        $('#alertBox').css('background-color', '#e1f2da');
-//        $('#imgAlertType').attr('src', '/images/icon-archive/tick.png');
-//    }
-//    else if (responseType === 'Failed') {
-//        $('#alertBox').css('background-color', '#fee5e5');
-//        $('#imgAlertType').attr('src', '/images/icon-archive/fail.png');
-//    }
-//    else if (responseType === 'Validation') {
-//        $('#alertBox').css('background-color', '#fee5e5');
-//        $('#imgAlertType').attr('src', '/images/icon-archive/stop.png');
-//    }
-
-//}
-
 
 
 /**

@@ -201,7 +201,7 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Remove(string id)
         {
             ValidateSession();
-            bool result = false;
+            var result = "";
             try
             {
                 using (var scope = new TransactionScope())
@@ -238,7 +238,7 @@ namespace LogisticsManagement_Web.Controllers
 
                     scope.Complete();
 
-                    result = true;
+                    result = "Success";
                 }
 
             }

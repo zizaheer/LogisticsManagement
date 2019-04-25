@@ -10,7 +10,6 @@ $(document).ready(function () {
 
     MaskPhoneNumber('#txtBillingPrimaryPhoneNumber');
     MaskPhoneNumber('#txtMailingPrimaryPhoneNumber');
-    //FillEmployeeDropDown();
 
     $(document).ajaxStart(function () {
         $("#spinnerLoadingDataTable").css("display", "inline-block");
@@ -174,6 +173,13 @@ $('#frmCustomerForm').on('keyup keypress', function (e) {
 $('#frmCustomerForm').unbind('submit').submit(function () {
 
     var dataArray = GetFormData();
+
+    if ($('#hfBillingAddressId').val() === '' && $('#hfMailingAddressId').val() === '') {
+        bootbox.alert('Please select address from suggestions and try again.');
+        event.preventDefault();
+        return;
+    }
+
     console.log(dataArray[0].id);
     if (dataArray[0].id > 0) {
         UpdateEntry('Customer/Update', dataArray);
@@ -222,11 +228,10 @@ function GetFormData() {
         discountPercentage: $('#txtSpecialDiscount').val(),
         invoiceDueDays: $('#txtInvoiceDueDays').val(),
         isGstApplicable: $('#isGstApplicable').is(':checked') ? 1 : 0,
-        isActive: 1, //$('#chkIsActive').is(':checked') ? 1 : 0,
+        isActive: $('#chkIsActive').is(':checked') === true ? 1 : 0,
         mailingAddressId: $('#hfMailingAddressId').val(),
         billingAddressId: $('#hfBillingAddressId').val()
-        //employeeNumber: $('#ddlEmployeeId').val()
-        //createDate: $('#hfCreateDate').val()
+
     };
 
     var billingAddressData = {
@@ -259,15 +264,6 @@ function GetFormData() {
 
 
     return [customerData, billingAddressData, mailingAddressData];
-}
-
-function FillEmployeeDropDown() {
-    var employees = JSON.parse(GetListObject('Employee/GetEmployees'));
-    var employeeDropDown = $('#ddlEmployeeId');
-
-    for (var i = 0; i < employees.length; i++) {
-        employeeDropDown.append('<option value=' + employees[i].Id + '>' + employees[i].FirstName + ' ' + (employees[i].LastName === null ? '' : employees[i].LastName) + '  (' + employees[i].EmployeeNumber + ') ' + '</option>');
-    }
 }
 
 function FillCustomerInfo(customerInfo) {

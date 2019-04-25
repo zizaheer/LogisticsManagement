@@ -3,7 +3,7 @@ $(document).ready(function () {
 
     MaskPhoneNumber('#txtBillingPrimaryPhoneNumber');
     MaskPhoneNumber('#txtMailingPrimaryPhoneNumber');
-    //FillEmployeeDropDown();
+
     $('#txtPickupDateTime').val(ConvertDatetimeToUSDatetime(new Date));
 
 

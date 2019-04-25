@@ -38,4 +38,14 @@ namespace LogisticsManagement_Poco
         OwnerOperator,
         UnknownType,
     }
+
+    public enum UserGroup
+    {
+        Administrator = 1,
+        Manager,
+        Supervisor,
+        Restricted,
+        ThirdParty
+    }
+
 }

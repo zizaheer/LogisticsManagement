@@ -11,6 +11,7 @@ $(document).ready(function () {
 
 $('#btnNew').on('click', function () {
     $('#txtTariffId').prop('readonly', true);
+    $('#txtTariffId').val('');
 });
 
 $('#btnClear').on('click', function () {
@@ -94,16 +95,14 @@ $('.btnDelete').unbind().on('click', function () {
 
 function GetFormData() {
     var data = {
-        id: $('#txtTariffId').val(),
+        id: $('#txtTariffId').val() === '' ? 0 : $('#txtTariffId').val(),
         deliveryOptionId: $('#ddlDeliveryOptionId').val(),
         cityId: $('#ddlCityId').val(),
         vehicleTypeId: $('#ddlVehicleTypeId').val(),
         unitTypeId: $('#ddlUnitTypeId').val(),
         weightScaleId: $('#ddlWeightScaleId').val(),
         firstUnitPrice: $('#txtFirstUnitPrice').val(),
-        perUnitPrice: $('#txtPerUnitPrice').val(),
-        createDate: $('#hfCreateDate').val(),
-        createdBy: $('#hfCreatedBy').val()
+        perUnitPrice: $('#txtPerUnitPrice').val()
     };
 
     return data;

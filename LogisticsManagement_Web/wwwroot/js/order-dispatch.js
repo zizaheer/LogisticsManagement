@@ -3,7 +3,6 @@ $(document).ready(function () {
 
     MaskPhoneNumber('#txtBillingPrimaryPhoneNumber');
     MaskPhoneNumber('#txtMailingPrimaryPhoneNumber');
-    //FillEmployeeDropDown();
     $('#txtDispatchDateTime').val(ConvertDatetimeToUSDatetime(new Date));
 
 
@@ -110,13 +109,3 @@ $('#btnDownloadOrderData').unbind().on('click', function (event) {
 
 });
 
-
-
-function FillEmployeeDropDown() {
-    var employees = JSON.parse(GetListObject('Employee/GetEmployees'));
-    var employeeDropDown = $('#ddlEmployeeId');
-
-    for (var i = 0; i < employees.length; i++) {
-        employeeDropDown.append('<option value=' + employees[i].Id + '>' + employees[i].FirstName + ' ' + (employees[i].LastName === null ? '' : employees[i].LastName) + '  (' + employees[i].EmployeeNumber + ') ' + '</option>');
-    }
-}

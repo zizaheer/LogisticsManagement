@@ -120,7 +120,7 @@ namespace LogisticsManagement_Web.Controllers
         {
             ValidateSession();
 
-            bool result = false;
+            var result = "";
             try
             {
                 var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
@@ -148,7 +148,7 @@ namespace LogisticsManagement_Web.Controllers
 
                     scope.Complete();
 
-                    result = true;
+                    result = "Success";
                 }
             }
             catch (Exception ex)

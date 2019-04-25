@@ -318,10 +318,10 @@
                                                                         <input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" checked="@item.PayToDriver" disabled />
                                                                     </td>
                                                                     <td>
-                                                                        <input type="number" class="form-control txtDriverPercentage" style="padding: 4px 4px 4px 8px; height: 29px;" min="0" id="txtDriverPercentage" name="txtDriverPercentage" placeholder="Driver's percent" title="Driver portion of the fee" />
+                                                                        <input type="number" class="form-control txtDriverPercentage" style="padding: 4px 4px 4px 8px; height: 29px;" min="0" id="txtDriverPercentage" step=".01" name="txtDriverPercentage" placeholder="Driver's percent" title="Driver portion of the fee" />
                                                                     </td>
                                                                     <td>
-                                                                        <input type="number" class="form-control txtServiceFee" style="padding: 4px 4px 4px 8px; height: 29px;" min="0" id="txtServiceFee" name="txtServiceFee" placeholder="Service fee" title="Applicable service fee amount" />
+                                                                        <input type="number" class="form-control txtServiceFee" style="padding: 4px 4px 4px 8px; height: 29px;" min="0" id="txtServiceFee" step=".01"  name="txtServiceFee" placeholder="Service fee" title="Applicable service fee amount" />
                                                                     </td>
                                                                     <td>
                                                                         <input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" checked="@item.IsTaxApplicable" /> Apply
@@ -408,7 +408,7 @@
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <div class=" form-group">
-                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" placeholder="Qty">
+                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01"  placeholder="Qty">
                                                     </div>
                                                 </div>
                                             </div>
@@ -441,12 +441,12 @@
                                                 </div>
                                                 <div class="col-sm-5">
                                                     <div class=" form-group">
-                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtFuelSurchargePercent" type="number" min="0" name="txtFuelSurchargePercent" value="@Model.Configuration.DefaultFuelSurcharge" placeholder="Fuel surcharge" title="Fuel surcharge amount (%)">
+                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtFuelSurchargePercent" type="number" min="0"  step=".01" name="txtFuelSurchargePercent" value="@Model.Configuration.DefaultFuelSurcharge" placeholder="Fuel surcharge" title="Fuel surcharge amount (%)">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <div class=" form-group">
-                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtDiscountPercent" type="number" min="0" name="txtDiscountPercent" placeholder="Discount (%)" title="Discount amount (%)">
+                                                        <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtDiscountPercent" type="number" min="0"  step=".01" name="txtDiscountPercent" placeholder="Discount (%)" title="Discount amount (%)">
                                                     </div>
                                                 </div>
                                             </div>

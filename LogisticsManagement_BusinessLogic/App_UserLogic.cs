@@ -50,7 +50,11 @@ namespace LogisticsManagement_BusinessLogic
 
         public override App_UserPoco Update(App_UserPoco poco)
         {
-            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
+            return base.Update(poco);
+        }
+
+        public App_UserPoco UpdatePassword(App_UserPoco poco)
+        {
             poco.Password = GetBase64String(poco.Password);
             return base.Update(poco);
         }

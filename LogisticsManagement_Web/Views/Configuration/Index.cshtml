@@ -50,11 +50,11 @@
                         </div>
                         <div class="form-group col-sm-2">
                             <label for="txtTaxAmount"> Tax amount</label>
-                            <input type="number" class="form-control" id="txtTaxAmount" value="@Model.TaxAmount" min="0" max="100" placeholder="Tax amount (%)" />
+                            <input type="number" class="form-control" id="txtTaxAmount" value="@Model.TaxAmount" min="0" max="100" step=".01" placeholder="Tax amount (%)" />
                         </div>
                         <div class="form-group col-sm-2">
                             <label for="txtDefaultFuelSurCharge"> Fuel surcharge</label>
-                            <input type="number" class="form-control" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" value="@Model.DefaultFuelSurcharge" min="0" max="100" placeholder="Default fuel surcharge" title="Default fuel surcharge" />
+                            <input type="number" class="form-control" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" value="@Model.DefaultFuelSurcharge" min="0" max="100" step=".01"  placeholder="Default fuel surcharge" title="Default fuel surcharge" />
                         </div>
                     </div>
 

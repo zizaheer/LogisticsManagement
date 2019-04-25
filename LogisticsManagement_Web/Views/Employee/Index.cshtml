@@ -90,25 +90,25 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtHourlyRate" placeholder="Rate" name="txtHourlyRate" type="number" min="1" max="999" disabled />
+                                            <input class="form-control" id="txtHourlyRate" placeholder="Rate" name="txtHourlyRate" step=".01"  type="number" min="1" max="999" disabled />
                                         </div>
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtSalaryAmount" placeholder="Amount" name="txtSalaryAmount" type="number" min="1" max="99999999" disabled />
+                                            <input class="form-control" id="txtSalaryAmount" placeholder="Amount" name="txtSalaryAmount" type="number" min="1" max="99999999" step=".01"  disabled />
                                         </div>
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtCommissionAmount" placeholder="Comm. amount" name="txtCommissionAmount" type="number" min="0" max="100" disabled />
+                                            <input class="form-control" id="txtCommissionAmount" placeholder="Comm. amount" name="txtCommissionAmount" type="number" min="0" step=".01" max="100" disabled />
                                         </div>
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtFuelSurchargePercentage" placeholder="Fuel surcharge" name="txtFuelSurchargePercentage" type="number" min="0" max="100" disabled />
+                                            <input class="form-control" id="txtFuelSurchargePercentage" placeholder="Fuel surcharge" name="txtFuelSurchargePercentage" type="number" step=".01"  min="0" max="100" disabled />
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtRadioInsuranceAmount" placeholder="Radio insurance" name="txtRadioInsuranceAmount" type="number" max="9999" />
+                                            <input class="form-control" id="txtRadioInsuranceAmount" placeholder="Radio insurance" name="txtRadioInsuranceAmount" type="number" step=".01"  max="9999" />
                                         </div>
                                         <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtInsuranceAmount" placeholder="Insurance" name="txtInsuranceAmount" type="number" max="9999" />
+                                            <input class="form-control" id="txtInsuranceAmount" placeholder="Insurance" name="txtInsuranceAmount" type="number" step=".01"  max="9999" />
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <select id="ddlSalaryTermId" class="form-control">
@@ -247,9 +247,7 @@
                     </a>
                 </div>
             </div>
-            <div>
-                <input type="hidden" id="hfMaxEmployeeNumber" name="hfMaxEmployeeNumber" value="" />
-            </div>
+            
             <div class="collapse show" id="collapseDatatable">
                 <div class="card-body">
                     <div id="loadDataTable">

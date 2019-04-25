@@ -50,7 +50,6 @@ namespace LogisticsManagement_Web.Controllers
             return PartialView("_PartialViewOrderPassedOffData", GetPassedOffOrders().Where(c => c.IsOrderPassedOn == true && c.IsOrderDelivered == null));
         }
 
-
         [HttpPost]
         public IActionResult Update([FromBody]dynamic orderData)
         {
@@ -101,14 +100,12 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-
-
         [HttpPost]
         public IActionResult Remove(string id)
         {
             ValidateSession();
 
-            bool result = false;
+            var result = "";
             try
             {
                 var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
@@ -133,7 +130,7 @@ namespace LogisticsManagement_Web.Controllers
 
                     scope.Complete();
 
-                    result = true;
+                    result = "Success";
                 }
             }
             catch (Exception ex)

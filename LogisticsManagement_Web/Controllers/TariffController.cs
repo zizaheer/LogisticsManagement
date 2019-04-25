@@ -39,7 +39,7 @@ namespace LogisticsManagement_Web.Controllers
             return View(GetTariffData());
         }
 
-        
+
         [HttpGet]
         public IActionResult PartialViewDataTable()
         {
@@ -90,7 +90,17 @@ namespace LogisticsManagement_Web.Controllers
                 Lms_TariffPoco poco = JsonConvert.DeserializeObject<Lms_TariffPoco>(serializedData);
                 if (poco.Id > 0)
                 {
-                    _tariffLogic.Update(poco);
+                    var existingTariff = _tariffLogic.GetSingleById(poco.Id);
+                    existingTariff.CityId = poco.CityId;
+                    existingTariff.DeliveryOptionId = poco.DeliveryOptionId;
+                    existingTariff.VehicleTypeId = poco.VehicleTypeId;
+                    existingTariff.UnitTypeId = poco.UnitTypeId;
+                    existingTariff.WeightScaleId = poco.WeightScaleId;
+                    existingTariff.UptoWeight = poco.UptoWeight;
+                    existingTariff.FirstUnitPrice = poco.FirstUnitPrice;
+                    existingTariff.PerUnitPrice = poco.PerUnitPrice;
+
+                    _tariffLogic.Update(existingTariff);
                 }
 
                 result = "Success";
@@ -104,21 +114,30 @@ namespace LogisticsManagement_Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Remove([FromBody]dynamic tariffData)
+        public IActionResult Remove(string id)
         {
-            bool result = false;
+            ValidateSession();
+
+            var result = "";
             try
             {
-                var serializedData = JsonConvert.SerializeObject(tariffData);
-                Lms_TariffPoco[] pocos = JsonConvert.DeserializeObject<Lms_TariffPoco[]>(serializedData);
+                if (id != "")
+                {
+                    var existingTariff = _tariffLogic.GetSingleById(Convert.ToInt32(id));
+                    if (existingTariff != null)
+                    {
+                        _tariffLogic.Remove(existingTariff);
+                    }
 
-                _tariffLogic.Remove(pocos);
-                result = true;
+                }
+
+                result = "Success";
             }
             catch (Exception ex)
             {
 
             }
+
             return Json(result);
         }
 
@@ -148,12 +167,13 @@ namespace LogisticsManagement_Web.Controllers
             if (!string.IsNullOrEmpty(id))
             {
                 var tariff = _tariffLogic.GetSingleById(Convert.ToInt32(id));
-                return Json(JsonConvert.SerializeObject(tariff));
+                if (tariff != null)
+                {
+                    return Json(JsonConvert.SerializeObject(tariff));
+                }
             }
-            else
-            {
-                return Json(string.Empty);
-            }
+
+            return Json(string.Empty);
         }
 
         private void ValidateSession()

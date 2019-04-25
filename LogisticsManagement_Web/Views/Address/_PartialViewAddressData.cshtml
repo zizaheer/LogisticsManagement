@@ -1,61 +1,69 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model EmployeeViewModel
+@model IEnumerable<AddressViewModelForDataTable>
 
 
 <script>
     $(document).ready(function () {
 
-        if ($.fn.dataTable.isDataTable('#employee-list')) {
-            $('#employee-list').DataTable().destroy();
+        if ($.fn.dataTable.isDataTable('#address-list')) {
+            $('#address-list').DataTable().destroy();
         }
-        $('#employee-list').DataTable({
-            "order": [[0, "desc"]]
+        $('#address-list').DataTable({
+            "order": [[2, "asc"]]
         });
     });
 </script>
 
 <div class="row">
     <div class="col-sm-12">
-        <table id="employee-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%">
+        <table id="address-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%">
             <thead>
                 <tr>
-                    <th>Number</th>
-                    <th>FirstName</th>
-                    <th>LastName</th>
-                    <th>License#</th>
-                    <th>Phone</th>
+                    <th>Unit #</th>
+                    <th>Address line</th>
+                    <th>City</th>
+                    <th>Province</th>
+                    <th>Country</th>
+                    <th>Postcode</th>
                     <th>Email</th>
+                    <th>Phone</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Employees.OrderByDescending(c => c.Id))
+                @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>
-                            @item.EmployeeNumber
-                        </td>
-                        <td>
-                            @item.FirstName
-                        </td>
-                        <td>
-                            @item.LastName
-                        </td>
-                        <td>
-                            @item.DriverLicenseNo
-                        </td>
-                        <td>
-                            @item.PhoneNumber
-                        </td>
-                        <td>
-                            @item.EmailAddress
-                        </td>
+                <tr>
+                    <td>
+                        @item.UnitNumber
+                    </td>
+                    <td>
+                        @item.AddressLine
+                    </td>
+                    <td>
+                        @item.CityName
+                    </td>
+                    <td>
+                        @item.ProvinceShortCode
+                    </td>
+                    <td>
+                        @item.CountryName
+                    </td>
+                    <td>
+                        @item.PostCode
+                    </td>
+                    <td>
+                        @item.EmailAddress1
+                    </td>
+                    <td>
+                        @item.PrimaryPhoneNumber
+                    </td>
 
-                        <td>
-                            <button id="btnEdit" data-employeeid='@item.Id' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
-                            <button id="btnDelete" data-employeeid='@item.Id' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                        </td>
-                    </tr>
+                    <td>
+                        <button id="btnEdit" data-addressid='@item.AddressId' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
+                        <button id="btnDelete" data-addressid='@item.AddressId' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                    </td>
+                </tr>
                 }
 
 
@@ -63,4 +71,4 @@
         </table>
     </div>
 </div>
-<script src="~/js/employee.js"></script>
+<script src="~/js/address.js"></script>

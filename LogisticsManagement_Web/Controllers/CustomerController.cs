@@ -141,13 +141,13 @@ namespace LogisticsManagement_Web.Controllers
         [HttpPost]
         public IActionResult Remove(string id)
         {
-            bool result = false;
+            var result = "";
             try
             {
                 var poco = _customerLogic.GetSingleById(Convert.ToInt32(id));
                 _customerLogic.Remove(poco);
 
-                result = true;
+                result = "Success";
             }
             catch (Exception ex)
             {

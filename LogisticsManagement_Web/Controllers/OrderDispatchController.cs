@@ -114,7 +114,7 @@ namespace LogisticsManagement_Web.Controllers
         [HttpPost]
         public IActionResult Remove(string id)
         {
-            bool result = false;
+            var result = "";
             try
             {
                 var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
@@ -137,7 +137,7 @@ namespace LogisticsManagement_Web.Controllers
 
                     scope.Complete();
 
-                    result = true;
+                    result = "Success";
                 }
             }
             catch (Exception ex)

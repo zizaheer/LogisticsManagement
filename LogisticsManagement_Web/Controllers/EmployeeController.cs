@@ -168,26 +168,19 @@ namespace LogisticsManagement_Web.Controllers
         [HttpPost]
         public IActionResult Remove(string id)
         {
-            bool result = false;
+            var result = "";
             try
             {
                 var poco = _employeeLogic.GetSingleById(Convert.ToInt32(id));
                 _employeeLogic.Remove(poco);
 
-                result = true;
+                result = "Success";
             }
             catch (Exception ex)
             {
 
             }
             return Json(result);
-        }
-
-
-        public JsonResult GetEmployees()
-        {
-            var employeeList = _employeeLogic.GetList().OrderBy(c => c.FirstName);
-            return Json(JsonConvert.SerializeObject(employeeList));
         }
 
         public JsonResult GetEmployeeById(string id)
