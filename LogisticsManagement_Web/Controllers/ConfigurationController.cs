@@ -50,11 +50,10 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     Lms_ConfigurationPoco configData = JsonConvert.DeserializeObject<Lms_ConfigurationPoco>(JsonConvert.SerializeObject(configurationData));
 
-                    var existingConfigData = _configurationLogic.GetSingleById(1);
+                    var existingConfigData = _configurationLogic.GetSingleById(configData.Id);
 
-                    if (configData.Id > 0)
+                    if (existingConfigData.Id > 0)
                     {
-                        existingConfigData.Id = configData.Id;
                         existingConfigData.TaxAmount = configData.TaxAmount;
                         existingConfigData.TaxToCall = configData.TaxToCall;
                         existingConfigData.IsSignInRequiredForDispatch = configData.IsSignInRequiredForDispatch;
@@ -64,9 +63,9 @@ namespace LogisticsManagement_Web.Controllers
                         existingConfigData.StorageWBNoStartFrom = configData.StorageWBNoStartFrom;
                         existingConfigData.InvoiceNumberStartFrom = configData.InvoiceNumberStartFrom;
                         existingConfigData.DefaultFuelSurcharge = configData.DefaultFuelSurcharge;
-                        existingConfigData.DefaultWeightScaleId = null;
+                       // existingConfigData.DefaultWeightScaleId = null;
 
-                        _configurationLogic.Update(configData);
+                        _configurationLogic.Update(existingConfigData);
 
                         result = "Success";
                     }

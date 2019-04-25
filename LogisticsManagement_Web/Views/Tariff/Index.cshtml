@@ -17,10 +17,17 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="form-group col-sm-1">
-                            <input class="form-control" id="txtTariffId" placeholder="ID" type="number" value="" />
-                        </div>
-                        <div class="form-group col-sm-1" style="padding-left: 0px;">
-                            <button id="btnFindTariff" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input class="form-control" id="txtTariffId" type="number" name="txtTariffId" min="0" placeholder="Tariff no." max="9999" title="Tariff no.">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -105,22 +112,23 @@
 
                     <div class="row">
                         <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtFirstUnitPrice" placeholder="First Unit Price" type="number" value="0.00" />
+                            <input class="form-control" id="txtFirstUnitPrice" placeholder="First Unit Price" type="number" min="0" />
                         </div>
                         <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtPerUnitPrice" placeholder="Per Unit Price" type="number" value="0.00" />
+                            <input class="form-control" id="txtPerUnitPrice" placeholder="Per Unit Price" type="number" min="0" />
                         </div>
-                        <div class="form-group col-sm-2">
-                            <input class="form-control" id="hfCreateDate" type="hidden" value='@DateTime.Now' />
-                            <input class="form-control" id="hfCreatedBy" type="hidden" value='1' />
-                        </div>
+                       
                     </div>
 
 
                     <hr />
-                    <button type="reset" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
+
+                    <button type="button" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
                     <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
 
+                    <span style="margin-left:20px">
+                        <button type="reset" class="btn btn-secondary" id="btnClear"><i class="fa fa-refresh"></i> Clear</button>
+                    </span>
                 </div>
             </div>
         </div>
@@ -128,7 +136,35 @@
 </form>
 
 
-<partial name="_PartialViewTariffData" />
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header" style="background-color: #c3c3c3;">
+                <strong><i class="fa fa-sliders"></i> Existing tariffs</strong>
+                <div class="card-header-actions">
+                    <span id="spinnerLoadingDataTable" style="display:none">
+                        <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                        <span style="margin-right:20px">Loading...</span>
+                    </span>
+                    <button id="btnDownloadTariffData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
+                    <span style="display:none" id="loadingSpinner"><i class="fa fa-circle-o-notch"></i></span>
+                    <span>&nbsp;&nbsp;</span>
+                    <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
+                        <i class="icon-arrow-up"></i>
+                    </a>
+                </div>
+            </div>
+           
+            <div class="collapse show" id="collapseDatatable">
+                <div class="card-body">
+                    <div id="loadTariffDataTable">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <script src="~/js/tariff.js"></script>

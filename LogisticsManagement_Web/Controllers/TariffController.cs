@@ -25,6 +25,7 @@ namespace LogisticsManagement_Web.Controllers
 
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
+        SessionData sessionData = new SessionData();
 
         public TariffController(IMemoryCache cache, LogisticsContext dbContext)
         {
@@ -38,22 +39,7 @@ namespace LogisticsManagement_Web.Controllers
             return View(GetTariffData());
         }
 
-        [HttpGet]
-        public IActionResult Get()
-        {
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return RedirectToAction("Index");
-        }
-
-
+        
         [HttpGet]
         public IActionResult PartialViewDataTable()
         {
@@ -61,29 +47,53 @@ namespace LogisticsManagement_Web.Controllers
         }
 
 
+
         [HttpPost]
-        public IActionResult AddOrUpdate([FromBody]dynamic tariffData)
+        public IActionResult Add([FromBody]dynamic tariffData)
         {
-            var result = false;
+
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (tariffData != null)
+                {
+                    Lms_TariffPoco poco = JsonConvert.DeserializeObject<Lms_TariffPoco>(JsonConvert.SerializeObject(tariffData));
+
+                    if (poco.Id < 1)
+                    {
+                        poco.CreatedBy = sessionData.UserId;
+                        _tariffLogic.Add(poco);
+
+                        result = "Success";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult Update([FromBody]dynamic tariffData)
+        {
+            ValidateSession();
+
+            var result = "";
             try
             {
                 var serializedData = JsonConvert.SerializeObject(tariffData);
-                Lms_TariffPoco[] pocos = JsonConvert.DeserializeObject<Lms_TariffPoco[]>(serializedData);
-
-                pocos.FirstOrDefault().CreateDate = DateTime.Now;
-                pocos.FirstOrDefault().CreatedBy = 1;
-                if (pocos.FirstOrDefault().Id > 0)
+                Lms_TariffPoco poco = JsonConvert.DeserializeObject<Lms_TariffPoco>(serializedData);
+                if (poco.Id > 0)
                 {
-                    _tariffLogic.Update(pocos);
-                }
-                else
-                {
-                    _tariffLogic.Add(pocos);
+                    _tariffLogic.Update(poco);
                 }
 
-                var ffff = _tariffLogic.GetList();
-
-                result = true;
+                result = "Success";
             }
             catch (Exception ex)
             {
@@ -133,6 +143,33 @@ namespace LogisticsManagement_Web.Controllers
             return tariffViewModel;
         }
 
-        
+        public JsonResult GetTariffById(string id)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                var tariff = _tariffLogic.GetSingleById(Convert.ToInt32(id));
+                return Json(JsonConvert.SerializeObject(tariff));
+            }
+            else
+            {
+                return Json(string.Empty);
+            }
+        }
+
+        private void ValidateSession()
+        {
+            if (HttpContext.Session.GetString("SessionData") != null)
+            {
+                sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
+                if (sessionData == null)
+                {
+                    Response.Redirect("Login/Index");
+                }
+            }
+            else
+            {
+                Response.Redirect("Login/InvalidLocation");
+            }
+        }
     }
 }

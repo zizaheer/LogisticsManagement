@@ -1,8 +1,95 @@
-﻿var tariffData;
-
-
+﻿
 $(document).ready(function () {
-    ClearForm();
+
+    $(document).ajaxStart(function () {
+        $("#spinnerLoadingDataTable").css("display", "inline-block");
+    });
+    $(document).ajaxComplete(function () {
+        $("#spinnerLoadingDataTable").css("display", "none");
+    });
+});
+
+$('#btnNew').on('click', function () {
+    $('#txtTariffId').prop('readonly', true);
+});
+
+$('#btnClear').on('click', function () {
+    $('#txtTariffId').prop('readonly', false);
+});
+
+
+$('#txtTariffId').unbind('keypress').keypress(function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+
+        var tariffId = $('#txtTariffId').val();
+        var tariffInfo = GetSingleObjectById('Tariff/GetTariffById', tariffId);
+        if (tariffInfo !== "" && tariffInfo !== null) {
+            tariffInfo = JSON.parse(tariffInfo);
+        }
+        else {
+            bootbox.alert('The tariff was not found. Please check or select from the bottom list of tariffs.');
+            event.preventDefault();
+            return;
+        }
+
+        if (tariffInfo !== null) {
+            FillTariffInfo(tariffInfo);
+        }
+    }
+});
+
+
+$('#tariff-list').on('click', '.btnEdit', function () {
+    $('#txtTariffId').prop('readonly', true);
+
+    var tariffId = $(this).data('tariffid');
+    var tariffInfo = GetSingleObjectById('Tariff/GetTariffById', tariffId);
+    console.log(tariffInfo);
+    if (tariffInfo !== "") {
+        tariffInfo = JSON.parse(tariffInfo);
+    }
+    else {
+        bootbox.alert('The tariff was not found. Please check or select from the bottom list of tariffs.');
+        event.preventDefault();
+        return;
+    }
+
+    FillTariffInfo(tariffInfo);
+});
+
+$('#btnDownloadTariffData').unbind().on('click', function (event) {
+    event.preventDefault();
+    $('#loadTariffDataTable').load('Tariff/PartialViewDataTable');
+
+});
+
+$('#frmTariffForm').on('keyup keypress', function (e) {
+    var keyCode = e.keyCode || e.which;
+    if (keyCode === 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+
+$('#frmTariffForm').unbind('submit').submit(function (event) {
+    var data = GetFormData();
+    
+    if (data.id > 0) {
+        UpdateEntry('Tariff/Update', data);
+    }
+    else {
+        AddEntry('Tariff/Add', data);
+    }
+    event.preventDefault();
+    $('#loadTariffDataTable').load('Tariff/PartialViewDataTable');
+});
+
+$('.btnDelete').unbind().on('click', function () {
+    tariffId = $(this).data('tariffid');
+    RemoveEntry('Tariff/Remove', tariffId);
+    $('#loadTariffDataTable').load('Tariff/PartialViewDataTable');
+
 });
 
 function GetFormData() {
@@ -22,80 +109,16 @@ function GetFormData() {
     return data;
 }
 
-function ClearForm() {
+function FillTariffInfo(tariffInfo) {
 
-    $('#txtTariffId').attr('disabled', 'disabled');
-    $('#txtTariffId').val();
-    $('#ddlDeliveryOptionId').val();
-    $('#ddlCityId').val();
-    $('#ddlVehicleTypeId').val();
-    $('#ddlUnitTypeId').val();
-    $('#ddlWeightScaleId').val();
-    $('#txtFirstUnitPrice').val();
-    $('#txtPerUnitPrice').val();
+    $('#txtTariffId').val(tariffInfo.Id);
+    $('#ddlDeliveryOptionId').val(tariffInfo.DeliveryOptionId);
+    $('#ddlCityId').val(tariffInfo.CityId);
+    $('#ddlVehicleTypeId').val(tariffInfo.VehicleTypeId);
+    $('#ddlUnitTypeId').val(tariffInfo.UnitTypeId);
+    $('#ddlWeightScaleId').val(tariffInfo.WeightScaleId);
+    $('#txtFirstUnitPrice').val(tariffInfo.FirstUnitPrice);
+    $('#txtPerUnitPrice').val(tariffInfo.PerUnitPrice);
 
 }
 
-$('#btnNew').on('click', function () {
-    ClearForm();
-});
-
-$('.btnEdit').on('click', function () {
-    var data = $(this).data('tariff');
-    $('#txtTariffId').val(data.id);
-    $('#ddlDeliveryOptionId').val(data.deliveryOptionId);
-    $('#ddlCityId').val(data.cityId);
-    $('#ddlVehicleTypeId').val(data.vehicleTypeId);
-    $('#ddlUnitTypeId').val(data.unitTypeId);
-    $('#ddlWeightScaleId').val(data.weightScaleId);
-    $('#txtFirstUnitPrice').val(data.firstUnitPrice);
-    $('#txtPerUnitPrice').val(data.perUnitPrice);
-});
-
-
-
-$('#frmTariffForm').submit(function (event) {
-    var data = GetFormData();
-    $.ajax({
-        url: 'Tariff/AddOrUpdate',
-        type: 'POST',
-        data: JSON.stringify([data]),
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        success: function (result) {
-            //SetAlertType('Success', 'Data has been removed.');
-            console.log('Success');
-            window.location.href = 'Tariff/Index';
-        },
-        error: function (result) {
-            //SetAlertType('Failed', 'An error occured during deleting the data.');
-        }
-    });
-});
-
-$('.btnDelete').on('click', function () {
-    SetAlertType('Warning', 'The data will be deleted. Are you sure you want ot continue?');
-    tariffData = $(this).data('tariff');
-});
-$('#btnProceed').on('click', function () {
-    if (tariffData !== null) {
-        RemoveTariff(tariffData);
-    }
-});
-
-function RemoveTariff(tariffData) {
-    $.ajax({
-        url: 'Tariff/Remove',
-        type: 'POST',
-        data: JSON.stringify([tariffData]),
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        success: function (result) {
-            SetAlertType('Success', 'Data has been removed.');
-
-        },
-        error: function (result) {
-            SetAlertType('Failed', 'An error occured during deleting the data.');
-        }
-    });
-}

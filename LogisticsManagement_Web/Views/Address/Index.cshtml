@@ -1,0 +1,262 @@
+﻿@using LogisticsManagement_Web.Models;
+@model EmployeeViewModel
+
+@{
+    ViewData["Title"] = "Employee";
+}
+
+<form id="frmEmployeeForm">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header" style="background-color: #3b80a9;color: #fff;">
+                    <strong><i class="fa fa-sliders"></i> Add an employee</strong>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="card" id="cardEmployeeInfo">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="form-group col-sm-4">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input class="form-control" id="txtEmployeeId" type="number" name="txtEmployeeId" min="0" placeholder="Employee no." max="999999" title="Employee no.">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">
+                                                            <i class="fa fa-search"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-6">
+                                            <input class="form-control" id="txtFirstName" placeholder="First name" name="txtFirstName" type="text" maxlength="20" required />
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <input class="form-control" id="txtLastName" placeholder="Last name" name="txtLastName" maxlength="20" type="text" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="form-group col-sm-4">
+                                            <input class="form-control" id="txtDrivingLicenseNo" name="txtDrivingLicenseNo" placeholder="Drivers license" maxlength="50" type="text" />
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <input class="form-control" id="txtSocialInsuranceNo" placeholder="Social insurance" name="txtSocialInsuranceNo" type="text" maxlength="20" />
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <select id="ddlEmployeeTypeId" class="form-control" name="ddlEmployeeTypeId">
+                                                @foreach (var item in ViewBag.EmployeeTypes)
+                                                {
+                                                    var itemId = 0;
+                                                    itemId = (int)item;
+                                                    <option value="@itemId"> @item </option>
+                                                }
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="form-group col-sm-3">
+                                            <div class="form-check form-check-inline mr-1">
+                                                <input class="form-check-input" id="chkIsHourlyPaid" type="checkbox" name="chkIsHourlyPaid">
+                                                <label class="form-check-label" for="chkIsHourlyPaid">Hourly?</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-3">
+                                            <div class="form-check form-check-inline mr-1">
+                                                <input class="form-check-input" id="chkIsSalaryEmployee" type="checkbox" name="chkIsSalaryEmployee">
+                                                <label class="form-check-label" for="chkIsSalaryEmployee">Salaried?</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-3">
+                                            <div class="form-check form-check-inline mr-1">
+                                                <input class="form-check-input" id="chkIsCommissionProvided" type="checkbox" name="chkIsCommissionProvided">
+                                                <label class="form-check-label" for="chkIsCommissionProvided">Commission?</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-3">
+                                            <div class="form-check form-check-inline mr-1">
+                                                <input class="form-check-input" id="chkIsFuelProvided" type="checkbox" name="chkIsFuelProvided">
+                                                <label class="form-check-label" for="chkIsFuelProvided">Fuel?</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-3">
+                                            <input class="form-control" id="txtHourlyRate" placeholder="Rate" name="txtHourlyRate" type="number" min="1" max="999" disabled />
+                                        </div>
+                                        <div class="form-group col-sm-3">
+                                            <input class="form-control" id="txtSalaryAmount" placeholder="Amount" name="txtSalaryAmount" type="number" min="1" max="99999999" disabled />
+                                        </div>
+                                        <div class="form-group col-sm-3">
+                                            <input class="form-control" id="txtCommissionAmount" placeholder="Comm. amount" name="txtCommissionAmount" type="number" min="0" max="100" disabled />
+                                        </div>
+                                        <div class="form-group col-sm-3">
+                                            <input class="form-control" id="txtFuelSurchargePercentage" placeholder="Fuel surcharge" name="txtFuelSurchargePercentage" type="number" min="0" max="100" disabled />
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-sm-3">
+                                            <input class="form-control" id="txtRadioInsuranceAmount" placeholder="Radio insurance" name="txtRadioInsuranceAmount" type="number" max="9999" />
+                                        </div>
+                                        <div class="form-group col-sm-3">
+                                            <input class="form-control" id="txtInsuranceAmount" placeholder="Insurance" name="txtInsuranceAmount" type="number" max="9999" />
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <select id="ddlSalaryTermId" class="form-control">
+                                                <option value="0"> - Salary Term - </option>
+                                                <option value="1"> Weekly </option>
+                                                <option value="2"> Bi-Weekly </option>
+                                                <option value="3"> Quarterly </option>
+                                                <option value="4"> Monthly </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-2">
+                                            <div class="form-check form-check-inline mr-1">
+                                                <input class="form-check-input" id="chkIsActive" type="checkbox" name="chkIsActive">
+                                                <label class="form-check-label" for="chkIsActive">Active?</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card" id="cardAddress">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="form-group col-sm-3">
+                                            <input class="form-control" id="txtUnitNumber" placeholder="Unit " name="txtUnitNumber" type="text" maxlength="20" />
+                                        </div>
+                                        <div class="form-group col-sm-9">
+                                            <input class="form-control" id="txtAddressLine" placeholder="Address line" name="txtAddressLine" type="text" maxlength="150" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-5">
+                                            <select class="form-control" id="ddlCityId" name="ddlCityId">
+                                                <option value="0">-- Select --</option>
+                                                @foreach (var city in Model.Cities)
+                                                {
+                                                    var selected = false;
+                                                    if (city.Id == 335)
+                                                    {
+                                                        selected = true;
+                                                    }
+                                                    <option value="@city.Id" selected="@selected">@city.CityName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-2">
+                                            <select class="form-control" id="ddlProvinceId" name="ddlProvinceId">
+                                                <option value="0">-- Select --</option>
+                                                @foreach (var province in Model.Provinces)
+                                                {
+                                                    var selected = false;
+                                                    if (province.Id == 7)
+                                                    {
+                                                        selected = true;
+                                                    }
+                                                    <option value="@province.Id" selected="@selected">@province.ShortCode</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-5">
+                                            <select class="form-control" id="ddlCountryId" name="ddlCountryId">
+                                                <option value="0">-- Select --</option>
+                                                @foreach (var country in Model.Countries)
+                                                {
+                                                    var selected = false;
+                                                    if (country.Id == 41)
+                                                    {
+                                                        selected = true;
+                                                    }
+                                                    <option value="@country.Id" selected="@selected">@country.CountryName</option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-3">
+                                            <input class="form-control" id="txtPostCode" placeholder="Postcode" name="txtPostCode" type="text" maxlength="20" />
+                                        </div>
+                                        <div class="form-group col-sm-9">
+                                            <input class="form-control" id="txtEmailAddress" placeholder="Email" name="txtEmailAddress" type="text" maxlength="150" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-4">
+                                            <input class="form-control" id="txtMobileNo" name="txtMobileNo" placeholder="Mobile" type="text" maxlength="20" />
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <input class="form-control" id="txtFaxNo" name="txtFaxNo" placeholder="Fax" type="text" maxlength="20" />
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <input class="form-control" id="txtPhoneNumber" name="txtPhoneNumber" placeholder="Phone" type="text" maxlength="20" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <hr />
+                    <button type="button" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
+                    <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
+
+                    <span style="margin-left:20px">
+                        <button type="reset" class="btn btn-secondary" id="btnClear"><i class="fa fa-refresh"></i> Clear</button>
+                    </span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header" style="background-color: #c3c3c3;">
+                <strong><i class="fa fa-sliders"></i> Existing employees</strong>
+                <div class="card-header-actions">
+                    <span id="spinnerLoadingDataTable" style="display:none">
+                        <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                        <span style="margin-right:20px">Loading...</span>
+                    </span>
+                    <button id="btnDownloadData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
+                    <span style="display:none" id="loadingSpinner"><i class="fa fa-circle-o-notch"></i></span>
+                    <span>&nbsp;&nbsp;</span>
+                    <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
+                        <i class="icon-arrow-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <input type="hidden" id="hfMaxEmployeeNumber" name="hfMaxEmployeeNumber" value="" />
+            </div>
+            <div class="collapse show" id="collapseDatatable">
+                <div class="card-body">
+                    <div id="loadDataTable">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/employee.js"></script>
