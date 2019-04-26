@@ -76,13 +76,13 @@ $('#frmUserForm').on('keyup keypress', function (e) {
 });
 
 $('#frmUserForm').unbind('submit').submit(function (event) {
-    var dataArray = GetFormData();
-    console.log(dataArray[0].id);
-    if (dataArray[0].id > 0) {
-        UpdateEntry('User/Update', dataArray);
+    var data = GetFormData();
+
+    if (data.id > 0) {
+        UpdateEntry('User/Update', data);
     }
     else {
-        AddEntry('User/Add', dataArray);
+        AddEntry('User/Add', data);
     }
     event.preventDefault();
     $('#loadUserDataTable').load('User/PartialViewDataTable');
@@ -99,22 +99,22 @@ function GetFormData() {
 
     var userData = {
 
-        id: $('#txtEmployeeId').val() === "" ? "0" : $('#txtEmployeeId').val(),
+        id: $('#txtUserId').val() === "" ? "0" : $('#txtUserId').val(),
+        userName: $('#txtUserName').val(),
+        password: $('#txtPassword').val(),
+        //confirmPassword: $('#txtConfirmPassword').val(),
         firstName: $('#txtFirstName').val(),
         lastName: $('#txtLastName').val(),
-        driverLicenseNo: $('#txtDrivingLicenseNo').val(),
-        socialInsuranceNo: $('#txtSocialInsuranceNo').val(),
-        unitNumber: $('#txtUnitNumber').val(),
+        userGroupId: $('#ddlUserGroupId').val(),
         addressLine: $('#txtAddressLine').val(),
         cityId: $('#ddlCityId').val(),
         provinceId: $('#ddlProvinceId').val(),
         countryId: $('#ddlCountryId').val(),
         postCode: $('#txtPostCode').val(),
         phoneNumber: $('#txtPhoneNumber').val(),
-        mobileNumber: $('#txtMobileNo').val(),
-        faxNumber: $('#txtFaxNo').val(),
         emailAddress: $('#txtEmailAddress').val(),
-        isActive: $('#chkIsActive').is(':checked') ? 1 : 0
+        profilePicture: $('#fileProfilePic').val(),
+        isActive: $('#chkIsActive').is(':checked') ===true ? 1 : 0
 
     };
 
@@ -123,24 +123,25 @@ function GetFormData() {
 
 function FillUserInfo(userInfo) {
 
-    $('#txtEmployeeId').val(employeeInfo.Id);
-    $('#txtFirstName').val(employeeInfo.FirstName);
-    $('#txtLastName').val(employeeInfo.LastName);
-    $('#txtDrivingLicenseNo').val(employeeInfo.DriverLicenseNo);
-    $('#txtSocialInsuranceNo').val(employeeInfo.SocialInsuranceNo);
-    $('#txtUnitNumber').val(employeeInfo.UnitNumber);
-    $('#txtAddressLine').val(employeeInfo.AddressLine);
-    $('#ddlCityId').val(employeeInfo.CityId);
-    $('#ddlProvinceId').val(employeeInfo.ProvinceId);
-    $('#ddlCountryId').val(employeeInfo.CountryId);
-    $('#txtPostCode').val(employeeInfo.PostCode);
-    $('#txtPhoneNumber').val(employeeInfo.PhoneNumber);
-    $('#txtMobileNo').val(employeeInfo.MobileNumber);
-    $('#txtFaxNo').val(employeeInfo.FaxNumber);
-    $('#txtEmailAddress').val(employeeInfo.EmailAddress);
-
-    $('#ddlEmployeeTypeId').val(employeeInfo.EmployeeTypeId);
-
-  
+    $('#txtUserId').val(userInfo.Id);
+    $('#txtUserName').val(userInfo.UserName);
+    $('#txtPassword').val('**********');
+    $('#txtConfirmPassword').val('**********');
+    $('#txtFirstName').val(userInfo.FirstName);
+    $('#txtLastName').val(userInfo.LastName);
+    $('#ddlUserGroupId').val(userInfo.GroupId);
+    $('#txtAddressLine').val(userInfo.Address);
+    $('#ddlCityId').val(userInfo.CityId);
+    $('#ddlProvinceId').val(userInfo.ProvinceId);
+    $('#ddlCountryId').val(userInfo.CountryId);
+    $('#txtPostCode').val(userInfo.PostCode);
+    $('#txtPhoneNumber').val(userInfo.PhoneNumber);
+    $('#txtEmailAddress').val(userInfo.EmailAddress);
+    $('#fileProfilePic').val(userInfo.ProfilePicture);
+    if (userInfo.IsActive) {
+        $('#chkIsActive').prop('checked', true);
+    } else {
+        $('#chkIsActive').prop('checked', false);
+    }
 
 }
