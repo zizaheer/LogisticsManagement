@@ -13,12 +13,22 @@ $(document).ready(function () {
     });
 });
 
+var imageFileInfo = null;
+
 $('#btnNew').on('click', function () {
     $('#txtUserId').prop('readonly', true);
+    $('#txtConfirmPassword').prop('disabled', false);
+    $('#txtPassword').prop('disabled', false);
+
+    ResetDefaultProfilePicture();
 });
 
 $('#btnClear').on('click', function () {
     $('#txtUserId').prop('readonly', false);
+    $('#txtConfirmPassword').prop('disabled', false);
+    $('#txtPassword').prop('disabled', false);
+
+    ResetDefaultProfilePicture();
 });
 
 
@@ -76,13 +86,27 @@ $('#frmUserForm').on('keyup keypress', function (e) {
 });
 
 $('#frmUserForm').unbind('submit').submit(function (event) {
-    var data = GetFormData();
 
-    if (data.id > 0) {
-        UpdateEntry('User/Update', data);
+    if ($('#ddlUserGroupId').val() === '0') {
+        bootbox.alert("Failed! Please select user group information.");
+        event.preventDefault();
+        return;
+    }
+
+    var dataArray = GetFormData();
+    console.log(dataArray);
+    if (dataArray[0].id > 0) {
+        UpdateEntry('User/Update', dataArray);
     }
     else {
-        AddEntry('User/Add', data);
+
+        if ($('#txtPassword').val() !== $('#txtConfirmPassword').val()) {
+            bootbox.alert("Failed! Password and confirmed password did not match.");
+            event.preventDefault();
+            return;
+        }
+
+        AddEntry('User/Add', dataArray);
     }
     event.preventDefault();
     $('#loadUserDataTable').load('User/PartialViewDataTable');
@@ -105,7 +129,7 @@ function GetFormData() {
         //confirmPassword: $('#txtConfirmPassword').val(),
         firstName: $('#txtFirstName').val(),
         lastName: $('#txtLastName').val(),
-        userGroupId: $('#ddlUserGroupId').val(),
+        groupId: $('#ddlUserGroupId').val(),
         addressLine: $('#txtAddressLine').val(),
         cityId: $('#ddlCityId').val(),
         provinceId: $('#ddlProvinceId').val(),
@@ -113,15 +137,20 @@ function GetFormData() {
         postCode: $('#txtPostCode').val(),
         phoneNumber: $('#txtPhoneNumber').val(),
         emailAddress: $('#txtEmailAddress').val(),
-        profilePicture: $('#fileProfilePic').val(),
+        //profilePicture: imageFileInfo,
         isActive: $('#chkIsActive').is(':checked') ===true ? 1 : 0
 
     };
 
-    return userData;
+    var profilePicture = $('#imgProfilePic').prop('src');
+
+    return [userData, profilePicture];
 }
 
 function FillUserInfo(userInfo) {
+
+    $('#txtPassword').prop('disabled', true);
+    $('#txtConfirmPassword').prop('disabled', true);
 
     $('#txtUserId').val(userInfo.Id);
     $('#txtUserName').val(userInfo.UserName);
@@ -137,7 +166,15 @@ function FillUserInfo(userInfo) {
     $('#txtPostCode').val(userInfo.PostCode);
     $('#txtPhoneNumber').val(userInfo.PhoneNumber);
     $('#txtEmailAddress').val(userInfo.EmailAddress);
-    $('#fileProfilePic').val(userInfo.ProfilePicture);
+
+    if (userInfo.ProfilePicture !== null) {
+        $('#imgProfilePic').prop('src', 'data:image/png;base64,' + userInfo.ProfilePicture);
+    }
+    else {
+        ResetDefaultProfilePicture();
+    }
+
+    
     if (userInfo.IsActive) {
         $('#chkIsActive').prop('checked', true);
     } else {
@@ -145,3 +182,30 @@ function FillUserInfo(userInfo) {
     }
 
 }
+
+function GetImageFile(imgPath)
+{
+    var fileInfo = null;
+
+    if (imgPath.files && imgPath.files[0]) {
+
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            fileInfo = e.target.result;
+            $('#imgProfilePic').attr('src', fileInfo);
+        };
+
+       reader.readAsDataURL(imgPath.files[0]);
+    }
+    return fileInfo;
+}
+
+function ResetDefaultProfilePicture()
+{
+    $('#imgProfilePic').prop('src', '../images/others/no-image.png');
+}
+
+$('#fileProfilePic').on('change', function () {
+    GetImageFile(this);
+});
+

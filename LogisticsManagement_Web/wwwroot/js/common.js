@@ -106,7 +106,7 @@ function UpdateEntry(actionUrl, dataArray) {
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
-            if (result.length > 1) {
+            if (result.length > 0) {
                 bootbox.alert('Success! Data updated successfully. ');
             }
             else {

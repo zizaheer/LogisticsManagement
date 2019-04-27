@@ -92,13 +92,24 @@ namespace LogisticsManagement_Web.Controllers
             {
                 if (userData != null)
                 {
-                    App_UserPoco userPoco = JsonConvert.DeserializeObject<App_UserPoco>(JsonConvert.SerializeObject(userData));
+                    App_UserPoco userPoco = JsonConvert.DeserializeObject<App_UserPoco>(JsonConvert.SerializeObject(userData[0]));
+                    var profileImageInfo = Convert.ToString(userData[1]);
 
                     if (userPoco.Id < 1 && userPoco.UserName.Trim() != string.Empty && userPoco.Password != string.Empty)
                     {
+                        if (profileImageInfo != null && profileImageInfo != "" && profileImageInfo.Contains(","))
+                        {
+                            var base64String = profileImageInfo.Split(",")[1];
+                            if (!string.IsNullOrEmpty(base64String))
+                            {
+                                userPoco.ProfilePicture = Convert.FromBase64String(base64String);
+                            }
+
+                        }
+
                         userPoco.CreatedBy = sessionData.UserId;
-                        var userId = _userLogic.Add(userPoco);
-                        
+                        result = _userLogic.Add(userPoco).Id.ToString();
+
                     }
                 }
             }
@@ -120,7 +131,8 @@ namespace LogisticsManagement_Web.Controllers
             {
                 if (userData != null)
                 {
-                    App_UserPoco userPoco = JsonConvert.DeserializeObject<App_UserPoco>(JsonConvert.SerializeObject(userData));
+                    App_UserPoco userPoco = JsonConvert.DeserializeObject<App_UserPoco>(JsonConvert.SerializeObject(userData[0]));
+                    var profileImageInfo = Convert.ToString(userData[1]);
 
                     if (userPoco.Id > 0 && userPoco.UserName.Trim() != string.Empty)
                     {
@@ -136,7 +148,17 @@ namespace LogisticsManagement_Web.Controllers
                         user.ProvinceId = userPoco.ProvinceId;
                         user.CountryId = userPoco.CountryId;
                         user.PhoneNumber = userPoco.PhoneNumber;
-                        user.ProfilePicture = userPoco.ProfilePicture;
+
+                        if (profileImageInfo != null && profileImageInfo != "")
+                        {
+                            var base64String = profileImageInfo.Split(",")[1];
+                            if (!string.IsNullOrEmpty(base64String))
+                            {
+                                user.ProfilePicture = Convert.FromBase64String(base64String);
+                            }
+
+                        }
+
                         user.IsInitialPasswordChanged = userPoco.IsInitialPasswordChanged;
                         user.IsActive = userPoco.IsActive;
 

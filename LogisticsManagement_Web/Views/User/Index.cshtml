@@ -17,7 +17,7 @@
                                 <div class="form-group col-sm-3">
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <input class="form-control" id="txtUserId" type="number" name="txtUserId" min="0" placeholder="User id" max="999" title="User id">
+                                            <input class="form-control" id="txtUserId" type="number" name="txtUserId" min="0" placeholder="User id" max="999" title="User id" >
                                             <div class="input-group-append">
                                                 <span class="input-group-text">
                                                     <i class="fa fa-search"></i>
@@ -29,24 +29,24 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-sm-4">
-                                    <input class="form-control" id="txtUserName" placeholder="User name" name="txtUserName" type="text" maxlength="20" title="User name" />
+                                    <input class="form-control" id="txtUserName" placeholder="User name" name="txtUserName" type="text" maxlength="20" title="User name" required />
                                 </div>
                                 <div class="form-group col-sm-4">
-                                    <input class="form-control" id="txtPassword" placeholder="Password" name="txtPassword" type="password" maxlength="20" title="Password" />
+                                    <input class="form-control" id="txtPassword" placeholder="Password" name="txtPassword" type="password" maxlength="20" title="Password" required />
                                 </div>
                                 <div class="form-group col-sm-4">
-                                    <input class="form-control" id="txtConfirmPassword" placeholder="Confirm password" name="txtConfirmPassword" type="password" maxlength="20" title="Confirm password" />
+                                    <input class="form-control" id="txtConfirmPassword" placeholder="Confirm password" name="txtConfirmPassword" type="password" maxlength="20" required title="Confirm password" />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group col-sm-4">
-                                    <input class="form-control" id="txtFirstName" placeholder="First name" name="txtFirstName" type="text" maxlength="20" title="First name" />
+                                    <input class="form-control" id="txtFirstName" placeholder="First name" name="txtFirstName" type="text" maxlength="20" title="First name" required />
                                 </div>
                                 <div class="form-group col-sm-4">
                                     <input class="form-control" id="txtLastName" placeholder="Last name" name="txtLastName" type="text" maxlength="20" title="Last name" />
                                 </div>
                                 <div class="form-group col-sm-4">
-                                    <select class="form-control" id="ddlUserGroupId" name="ddlUserGroupId">
+                                    <select class="form-control" id="ddlUserGroupId" name="ddlUserGroupId" required>
                                         <option value="0">User Group</option>
                                         @foreach (var group in ViewBag.UserGroups)
                                         {
@@ -121,6 +121,9 @@
                                 </div>
                             </div>
 
+                        </div>
+                        <div class="col-sm-6">
+                            <img id="imgProfilePic" src="~/images/others/no-image.png" alt="Profile pic" style="width:180px;height:200px; margin-top:50px" />
                         </div>
                     </div>
 
