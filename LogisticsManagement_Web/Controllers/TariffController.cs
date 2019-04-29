@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
 using LogisticsManagement_Web.Models;
+using LogisticsManagement_Web.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Rotativa.AspNetCore;
 
 namespace LogisticsManagement_Web.Controllers
 {
@@ -25,11 +30,17 @@ namespace LogisticsManagement_Web.Controllers
 
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
+
+        private readonly IEmailService _emailService;
+        private IHostingEnvironment _hostingEnvironment;
+
         SessionData sessionData = new SessionData();
 
-        public TariffController(IMemoryCache cache, LogisticsContext dbContext)
+        public TariffController(IMemoryCache cache, IEmailService emailService, IHostingEnvironment hostingEnvironment, LogisticsContext dbContext)
         {
             _cache = cache;
+            _emailService = emailService;
+            _hostingEnvironment = hostingEnvironment;
             _dbContext = dbContext;
             _tariffLogic = new Lms_TariffLogic(_cache, new EntityFrameworkGenericRepository<Lms_TariffPoco>(_dbContext));
         }
@@ -174,6 +185,26 @@ namespace LogisticsManagement_Web.Controllers
             }
 
             return Json(string.Empty);
+        }
+
+        public IActionResult StandardPdf()
+        {
+
+
+            var path = _hostingEnvironment.WebRootPath + "/contents/invoices/test.pdf";
+            var something = new ViewAsPdf("Reprtdfdf");
+            var file = something.BuildFile(ControllerContext).Result;
+            var path2 = HttpContext.Request.Host.ToString();
+            path2 += "/contents/invoices/test.pdf";
+
+            System.IO.File.WriteAllBytes(path2, file);
+            //_emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content");
+
+
+
+
+            return something;
+
         }
 
         private void ValidateSession()

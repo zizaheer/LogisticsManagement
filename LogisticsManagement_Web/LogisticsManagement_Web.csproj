@@ -12,12 +12,19 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.1.1" />
   </ItemGroup>
 
 
   <ItemGroup>
     <ProjectReference Include="..\LogisticsManagement_BusinessLogic\LogisticsManagement_BusinessLogic.csproj" />
     <ProjectReference Include="..\LogisticsManagement_DataAccess\LogisticsManagement_DataAccess.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Reports\" />
+    <Folder Include="wwwroot\contents\invoices\" />
   </ItemGroup>
 
 </Project>

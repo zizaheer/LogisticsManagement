@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_Poco;
+using Rotativa.AspNetCore;
+using LogisticsManagement_Web.Services;
 
 namespace LogisticsManagement_Web
 {
@@ -35,6 +37,7 @@ namespace LogisticsManagement_Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddTransient<IEmailService, EmailService>();
             services.AddDistributedMemoryCache();
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(20));
 
@@ -142,6 +145,9 @@ namespace LogisticsManagement_Web
                     name: "default",
                     template: "{controller=Login}/{action=Index}/{id?}");
             });
+
+            RotativaConfiguration.Setup(env);
+
         }
     }
 }
