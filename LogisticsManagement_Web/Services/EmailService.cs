@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace LogisticsManagement_Web.Services
@@ -21,7 +22,7 @@ namespace LogisticsManagement_Web.Services
         }
 
 
-        public async Task SendEmail(string email, string subject, string message)
+        public async Task SendEmail(string email, string subject, string message, string attachmentFilePath)
         {
             using (var client = new SmtpClient())
             {
@@ -43,7 +44,13 @@ namespace LogisticsManagement_Web.Services
                     emailMessage.From = new MailAddress(_configuration["Email:Email"]);
                     emailMessage.Subject = subject;
                     emailMessage.Body = message;
-                    
+
+                    if (!string.IsNullOrEmpty(attachmentFilePath))
+                    {
+                        Attachment attachment = new Attachment(attachmentFilePath);
+                        emailMessage.Attachments.Add(attachment);
+                    }
+
                     client.Send(emailMessage);
                 }
 

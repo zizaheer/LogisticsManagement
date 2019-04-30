@@ -1,5 +1,5 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model DispatchBoardViewModel
+@model List<PendingWaybillsForInvoice>
 
 
 <script>
@@ -20,14 +20,14 @@
                 <tr>
                     <th>Select</th>
                     <th>W/B #</th>
-                    <th>Shipper name</th>
-                    <th>Shipper address</th>
-                    <th>Consignee name</th>
-                    <th>Consignee address</th>
+                    <th>Biller name</th>
+                    <th>Department</th>
+                    <th>Order cost</th>
+                    <th>Return order cost</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.DispatchedOrderViewModels.OrderByDescending(c => c.WayBillNumber))
+                @foreach (var item in Model.OrderByDescending(c => c.WayBillNumber))
                 {
                     <tr>
                         <td>
@@ -40,16 +40,16 @@
                         </td>
 
                         <td>
-                            @item.ShipperName (@item.ShipperId)
+                            @item.BillerName (@item.WayBillNumber)
                         </td>
                         <td>
-                            @item.ShipperAddress
+                            @item.BillerDepartment
                         </td>
                         <td>
-                            @item.ConsigneeName (@item.ConsigneeId)
+                            @item.TotalOrderCost 
                         </td>
                         <td>
-                            @item.ConsigneeAddress
+                            @item.OrderType
                         </td>
                     </tr>
                 }

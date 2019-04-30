@@ -55,6 +55,13 @@ namespace LogisticsManagement_BusinessLogic
             return base.GetMaxId();
         }
 
+        public string GetPendingInvoiceOrders() {
+
+            var outPut = base.CallStoredProcedure("EXEC GetPendingInvoiceOrders");
+            return outPut;
+        }
+
+
 
         #endregion
 

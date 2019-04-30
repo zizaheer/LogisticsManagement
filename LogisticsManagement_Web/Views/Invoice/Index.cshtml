@@ -1,5 +1,5 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model DispatchBoardViewModel
+@model List<PendingWaybillsForInvoice>
 
 
 <script>
@@ -23,7 +23,7 @@
                             <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
                             <span style="margin-right:20px">Loading...</span>
                         </span>
-                        <button id="btnDownloadWayBillData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
+                        <button id="btnDownloadPendingInvoiceData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
                         <span style="display:none" id="loadingSpinner"><i class="fa fa-circle-o-notch"></i></span>
                         <span>&nbsp;&nbsp;</span>
                         <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div id="loadPendingWayBillDataTable">
+                    <div id="loadPendingInvoiceDataTable">
                         <partial name="_PartialViewWayBillData" />
                     </div>
 
@@ -54,10 +54,7 @@
 
                             <select class="form-control" id="ddlEmployeeId" name="ddlEmployeeId">
                                 <option value="0">Employee/driver</option>
-                                @foreach (var employee in Model.Employees)
-                                {
-                                    <option value="@employee.Id">@employee.FirstName @employee.LastName (@employee.EmployeeNumber)</option>
-                                }
+                               
                             </select>
                         </div>
                         <div class="col-sm-2">

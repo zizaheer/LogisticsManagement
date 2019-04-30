@@ -194,11 +194,11 @@ namespace LogisticsManagement_Web.Controllers
             var path = _hostingEnvironment.WebRootPath + "/contents/invoices/test.pdf";
             var something = new ViewAsPdf("Reprtdfdf");
             var file = something.BuildFile(ControllerContext).Result;
-            var path2 = HttpContext.Request.Host.ToString();
-            path2 += "/contents/invoices/test.pdf";
+            //var path2 = HttpContext.Request.Host.ToString();
+            //path2 += "/contents/invoices/test.pdf";
 
-            System.IO.File.WriteAllBytes(path2, file);
-            //_emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content");
+            System.IO.File.WriteAllBytes(path, file);
+            _emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content", path);
 
 
 

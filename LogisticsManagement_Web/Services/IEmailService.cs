@@ -8,6 +8,6 @@ namespace LogisticsManagement_Web.Services
 {
     public interface IEmailService
     {
-        Task SendEmail(string email, string subject, string message);
+        Task SendEmail(string email, string subject, string message, string attachmentFilePath);
     }
 }
