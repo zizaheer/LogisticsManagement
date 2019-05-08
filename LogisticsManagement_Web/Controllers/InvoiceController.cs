@@ -23,7 +23,9 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_CustomerLogic _customerLogic;
 
         private readonly LogisticsContext _dbContext;
+
         IMemoryCache _cache;
+        SessionData sessionData = new SessionData();
 
         public InvoiceController(IMemoryCache cache, LogisticsContext dbContext)
         {
@@ -37,14 +39,19 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
+            ValidateSession();
+
             var customerList = _invoiceLogic.GetList();
-            return View(GetDeliveredOrders());
+            return View(GetPendingWaybillsForInvoice());
         }
 
 
-        private List<PendingWaybillsForInvoice> GetDeliveredOrders()
+        private List<PendingWaybillsForInvoice> GetPendingWaybillsForInvoice()
         {
-            List<PendingWaybillsForInvoice> pendingInvoices = new List<PendingWaybillsForInvoice>();
+            
+            List<PendingWaybillsForInvoice> pendingInvoices;
+            List<PendingWaybillsForInvoice> combineOrdersForInvoice;
+
             try
             {
                 var returnedResult = _invoiceLogic.GetPendingInvoiceOrders();
@@ -52,7 +59,43 @@ namespace LogisticsManagement_Web.Controllers
                 var jsonArrayString = parsedObject.SelectToken("ReturnedValue").ToString();
                 var jsonArray = JArray.Parse(jsonArrayString);
 
+                pendingInvoices = new List<PendingWaybillsForInvoice>();
                 pendingInvoices = JsonConvert.DeserializeObject<List<PendingWaybillsForInvoice>>(JsonConvert.SerializeObject(jsonArray));
+
+
+                foreach (var pendingInvoice in pendingInvoices)
+                {
+                    combineOrdersForInvoice = new List<PendingWaybillsForInvoice>();
+
+                    var orders = pendingInvoices.Where(c => c.WayBillNumber == pendingInvoice.WayBillNumber).ToList();
+                    if (orders.Count > 1)
+                    {
+                        var singleOrder = orders.Where(c => c.OrderTypeId == 1).FirstOrDefault();
+                        var returnOrder = orders.Where(c => c.OrderTypeId == 2).FirstOrDefault();
+
+                        var combineOrderForInvoice = new PendingWaybillsForInvoice();
+
+                        combineOrderForInvoice.WayBillNumber = singleOrder.WayBillNumber;
+                        combineOrderForInvoice.BillerName = singleOrder.BillerName;
+                        combineOrderForInvoice.BillerDepartment = singleOrder.BillerDepartment;
+                        combineOrderForInvoice.TotalOrderCost = singleOrder.TotalOrderCost;
+                        combineOrderForInvoice.ReturnOrderCost = returnOrder.TotalOrderCost;
+
+                        combineOrdersForInvoice.Add(combineOrderForInvoice);
+
+                    }
+                    else
+                    {
+
+                        combineOrdersForInvoice.Add(orders.FirstOrDefault());
+
+                    }
+
+
+
+                }
+
+
             }
             catch (Exception e)
             {
@@ -61,6 +104,22 @@ namespace LogisticsManagement_Web.Controllers
 
             return pendingInvoices;
 
+        }
+
+        private void ValidateSession()
+        {
+            if (HttpContext.Session.GetString("SessionData") != null)
+            {
+                sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
+                if (sessionData == null)
+                {
+                    Response.Redirect("Login/Index");
+                }
+            }
+            else
+            {
+                Response.Redirect("Login/InvalidLocation");
+            }
         }
 
     }

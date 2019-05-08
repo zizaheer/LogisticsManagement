@@ -65,6 +65,7 @@ $('#frmOrderPickupForm').unbind('submit').submit(function (event) {
     var pickupDate = $('#txtPickupDateTime').val();
     var dispatchedDate = $('#txtDispatchedDateTime').val();
     var wayBillNumber = $('#txtWayBillNumber').val();
+    var orderTypeId = $('#ddlOrderTypeId').val();
 
     if (pickupDate <= dispatchedDate) {
         bootbox.alert('Pickup date must be greater than dispatch date.');
@@ -72,7 +73,7 @@ $('#frmOrderPickupForm').unbind('submit').submit(function (event) {
         return;
     }
 
-    var dataArray = [wayBillNumber, waitTime, pickupDate];
+    var dataArray = [wayBillNumber, waitTime, pickupDate, orderTypeId];
 
     UpdateEntry('OrderPickup/Update', dataArray);
 

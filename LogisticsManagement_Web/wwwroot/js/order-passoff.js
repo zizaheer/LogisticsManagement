@@ -76,6 +76,7 @@ $('#frmOrderPassOnForm').unbind('submit').submit(function (event) {
     var pickupDate = $('#txtPickupDateTime').val();
     var passOnDate = $('#txtPassOnDateTime').val();
     var passOnEmployeeId = $('#ddlEmployeeId').val();
+    var orderTypeId = $('#ddlOrderTypeId').val();
 
     var wayBillNumber = $('#txtWayBillNumber').val();
 
@@ -85,7 +86,7 @@ $('#frmOrderPassOnForm').unbind('submit').submit(function (event) {
         return;
     }
 
-    var dataArray = [wayBillNumber, waitTime, passOnEmployeeId, passOnDate];
+    var dataArray = [wayBillNumber, waitTime, passOnEmployeeId, passOnDate, orderTypeId];
 
     UpdateEntry('OrderPassOff/Update', dataArray);
 

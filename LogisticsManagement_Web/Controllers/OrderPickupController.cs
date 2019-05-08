@@ -65,17 +65,13 @@ namespace LogisticsManagement_Web.Controllers
                     var wayBillNumber = Convert.ToString(orderData[0]);
                     var waitTime = string.IsNullOrEmpty(Convert.ToString(orderData[1])) == true ? null : Convert.ToDecimal(orderData[1]);
                     var pickupDate = Convert.ToDateTime(orderData[2]);
+                    var ordertypeId = Convert.ToInt16(orderData[3]);
 
-                    var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == wayBillNumber).ToList();
-                    var orderStatuses = _orderStatusLogic.GetList();
-
-                    orderStatuses = (from orderStatus in orderStatuses
-                                     join order in orders on orderStatus.OrderId equals order.Id
-                                     select orderStatus).ToList();
-
-                    using (var scope = new TransactionScope())
+                    var order = _orderLogic.GetList().Where(c => c.WayBillNumber == wayBillNumber && c.OrderTypeId == ordertypeId).FirstOrDefault();
+                    var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == order.Id).FirstOrDefault();
+                    if (orderStatus != null)
                     {
-                        foreach (var orderStatus in orderStatuses)
+                        using (var scope = new TransactionScope())
                         {
                             orderStatus.IsPickedup = true;
                             orderStatus.PickupWaitTimeHour = waitTime;
@@ -83,12 +79,10 @@ namespace LogisticsManagement_Web.Controllers
                             orderStatus.StatusLastUpdatedOn = DateTime.Now;
 
                             _orderStatusLogic.Update(orderStatus);
+                            scope.Complete();
+
+                            result = "Success";
                         }
-
-                        scope.Complete();
-
-                        result = "Success";
-
                     }
                 }
             }
@@ -209,7 +203,7 @@ namespace LogisticsManagement_Web.Controllers
                     }
                 }
 
-                
+
                 dispatchedOrderViewModel.IsOrderPickedup = item.IsPickedup;
                 dispatchedOrderViewModel.PickupDatetime = item.PickupDatetime;
 
@@ -234,7 +228,7 @@ namespace LogisticsManagement_Web.Controllers
             try
             {
                 var orderPocos = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
-                var orderStatuses = _orderStatusLogic.GetList(); 
+                var orderStatuses = _orderStatusLogic.GetList();
 
                 var orderDetails = (from orderStatus in orderStatuses
                                     join order in orderPocos on orderStatus.OrderId equals order.Id

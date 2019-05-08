@@ -67,6 +67,7 @@ namespace LogisticsManagement_Web.Controllers
                     var proofNote = Convert.ToString(orderData[3]);
                     var receivedByName = Convert.ToString(orderData[4]);
                     var receivedBySign = Convert.ToString(orderData[5]);
+                    var orderTypeId = Convert.ToInt16(orderData[6]);
 
                     byte[] imageByte = null;
                     if (receivedBySign != null && receivedBySign != "")
@@ -75,16 +76,12 @@ namespace LogisticsManagement_Web.Controllers
                         imageByte = string.IsNullOrEmpty(base64Signature) == true ? null : Convert.FromBase64String(base64Signature);
                     }
 
-                    var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == wayBillNumber).ToList();
-                    var orderStatuses = _orderStatusLogic.GetList();
+                    var order = _orderLogic.GetList().Where(c => c.WayBillNumber == wayBillNumber && c.OrderTypeId == orderTypeId).FirstOrDefault();
+                    var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == order.Id).FirstOrDefault();
 
-                    orderStatuses = (from orderStatus in orderStatuses
-                                     join order in orders on orderStatus.OrderId equals order.Id
-                                     select orderStatus).ToList();
-
-                    using (var scope = new TransactionScope())
+                    if (orderStatus != null)
                     {
-                        foreach (var orderStatus in orderStatuses)
+                        using (var scope = new TransactionScope())
                         {
                             orderStatus.IsDelivered = true;
                             orderStatus.DeliveredDatetime = deliveryDate;
@@ -92,16 +89,13 @@ namespace LogisticsManagement_Web.Controllers
                             orderStatus.ReceivedByName = receivedByName;
                             orderStatus.ReceivedBySignature = imageByte;
                             orderStatus.ProofOfDeliveryNote = proofNote;
-
                             orderStatus.StatusLastUpdatedOn = DateTime.Now;
 
                             _orderStatusLogic.Update(orderStatus);
+                            scope.Complete();
+
+                            result = "Success";
                         }
-
-                        scope.Complete();
-
-                        result = "Success";
-
                     }
                 }
             }

@@ -13,7 +13,7 @@
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <div class="input-group">
-                                    <input class="form-control" style="padding: 4px 4px 4px 8px; height: 29px;" id="txtWayBillNumber" type="number" name="txtWayBillNumber" min="0" placeholder="W/B" title="Waybill number">
+                                    <input class="form-control" id="txtWayBillNumber" type="number" name="txtWayBillNumber" min="0" placeholder="W/B" title="Waybill number">
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-search"></i>
@@ -21,6 +21,12 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <select class="form-control" id="ddlOrderTypeId">
+                                <option value="1" selected>Single order</option>
+                                <option value="2">Return order</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -71,9 +77,9 @@
 
                         <div class="col-sm-2 form-group">
                             <label for="txtWaitTime">Wait time (hour)</label>
-                            <input type="number" id="txtWaitTime" class="form-control txtWaitTime" placeholder="Wait time" min="0" step=".01"  title="Wait time (in hours)" />
-
+                            <input type="number" id="txtWaitTime" class="form-control txtWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
                         </div>
+                       
 
                     </div>
 

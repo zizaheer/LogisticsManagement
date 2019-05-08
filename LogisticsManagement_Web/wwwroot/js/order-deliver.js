@@ -102,6 +102,7 @@ $('#frmOrderDeliverForm').unbind('submit').submit(function (event) {
     var receivedByName = $('#txtReceivedByName').val();
     var deliveryNote = $('#txtDeliveryNote').val();
     var receivedBySign = $('#imgSignature').val();
+    var orderTypeId = $('#ddlOrderTypeId').val();
 
     var wayBillNumber = $('#txtWayBillNumber').val();
 
@@ -111,7 +112,7 @@ $('#frmOrderDeliverForm').unbind('submit').submit(function (event) {
         return;
     }
 
-    var dataArray = [wayBillNumber, waitTime, deliveryDate, deliveryNote, receivedByName, receivedBySign];
+    var dataArray = [wayBillNumber, waitTime, deliveryDate, deliveryNote, receivedByName, receivedBySign, orderTypeId];
 
     UpdateEntry('OrderDeliver/Update', dataArray);
 

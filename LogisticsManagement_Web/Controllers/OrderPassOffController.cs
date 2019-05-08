@@ -64,17 +64,14 @@ namespace LogisticsManagement_Web.Controllers
                     var waitTime = string.IsNullOrEmpty(Convert.ToString(orderData[1])) == true ? null : Convert.ToDecimal(orderData[1]);
                     var passOffEmployeeId = string.IsNullOrEmpty(Convert.ToString(orderData[2])) == true ? null : Convert.ToInt16(orderData[2]);
                     var passOffDate = Convert.ToDateTime(orderData[3]);
+                    var orderTypeId = Convert.ToInt16(orderData[4]);
 
-                    var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == wayBillNumber).ToList();
-                    var orderStatuses = _orderStatusLogic.GetList();
+                    var order = _orderLogic.GetList().Where(c => c.WayBillNumber == wayBillNumber && c.OrderTypeId == orderTypeId).FirstOrDefault();
+                    var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == order.Id).FirstOrDefault();
 
-                    orderStatuses = (from orderStatus in orderStatuses
-                                     join order in orders on orderStatus.OrderId equals order.Id
-                                     select orderStatus).ToList();
-
-                    using (var scope = new TransactionScope())
+                    if (orderStatus != null)
                     {
-                        foreach (var orderStatus in orderStatuses)
+                        using (var scope = new TransactionScope())
                         {
                             orderStatus.IsPassedOff = true;
                             orderStatus.PassOffWaitTimeHour = waitTime;
@@ -83,12 +80,10 @@ namespace LogisticsManagement_Web.Controllers
                             orderStatus.StatusLastUpdatedOn = DateTime.Now;
 
                             _orderStatusLogic.Update(orderStatus);
+                            scope.Complete();
+
+                            result = "Success";
                         }
-
-                        scope.Complete();
-
-                        result = "Success";
-
                     }
                 }
             }
@@ -201,7 +196,7 @@ namespace LogisticsManagement_Web.Controllers
                     dispatchedOrderViewModel.DispatchedEmployeeName = employee.FirstName + "  " + employee.LastName;
                 }
 
-                
+
                 dispatchedOrderViewModel.IsOrderPickedup = item.IsPickedup;
                 dispatchedOrderViewModel.PickupDatetime = item.PickupDatetime;
 
