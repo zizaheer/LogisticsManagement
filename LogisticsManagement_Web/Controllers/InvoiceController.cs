@@ -44,19 +44,22 @@ namespace LogisticsManagement_Web.Controllers
 
         private List<PendingWaybillsForInvoice> GetDeliveredOrders()
         {
+            List<PendingWaybillsForInvoice> pendingInvoices = new List<PendingWaybillsForInvoice>();
             try
             {
-                var jSonResult = _invoiceLogic.GetPendingInvoiceOrders();
-                var parsedData = JObject.Parse(jSonResult);
-                var sdfsd = parsedData.SelectToken("ReturnedValue");
+                var returnedResult = _invoiceLogic.GetPendingInvoiceOrders();
+                var parsedObject = JObject.Parse(returnedResult);
+                var jsonArrayString = parsedObject.SelectToken("ReturnedValue").ToString();
+                var jsonArray = JArray.Parse(jsonArrayString);
 
-                var deserialObject = JsonConvert.DeserializeObject<List<PendingWaybillsForInvoice>>(JsonConvert.SerializeObject(sdfsd));
+                pendingInvoices = JsonConvert.DeserializeObject<List<PendingWaybillsForInvoice>>(JsonConvert.SerializeObject(jsonArray));
             }
             catch (Exception e)
             {
 
             }
-            return null;
+
+            return pendingInvoices;
 
         }
 

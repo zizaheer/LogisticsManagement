@@ -4,10 +4,10 @@
 
 <script>
     $(document).ready(function () {
-        if ($.fn.dataTable.isDataTable('#orderdispatch-list')) {
-            $('#orderdispatch-list').DataTable().destroy();
+        if ($.fn.dataTable.isDataTable('#pending-list')) {
+            $('#pending-list').DataTable().destroy();
         }
-        $('#orderdispatch-list').DataTable({
+        $('#pending-list').DataTable({
             "order": [[0, "desc"]]
         });
     });
@@ -15,7 +15,7 @@
 
 <div class="row" style="max-height:230px; overflow-y:scroll;">
     <div class="col-sm-12">
-        <table id="orderdispatch-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" width=100%>
+        <table id="pending-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" width=100%>
             <thead>
                 <tr>
                     <th>Select</th>

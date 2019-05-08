@@ -30,7 +30,7 @@ namespace LogisticsManagement_Web.Models
 
 
 
-Error converting value "[{"OrderId":29,"WayBillNumber":"1022","OrderType":"Single","BillToCustomerId":1649,"BillerName":"2 SOURCE MKTNG","TotalOrderCost":231.23,"BillingAddressId":1609,"MailingAddressId":1609},{"OrderId":30,"WayBillNumber":"1022","OrderType":"Return","BillToCustomerId":1649,"BillerName":"2 SOURCE MKTNG","TotalOrderCost":110.25,"BillingAddressId":1609,"MailingAddressId":1609}]" to type 'System.Collections.Generic.List`1[LogisticsManagement_Web.Models.PendingWaybillsForInvoice]'. Path '', line 1, position 417.
+//Error converting value "[{"OrderId":29,"WayBillNumber":"1022","OrderType":"Single","BillToCustomerId":1649,"BillerName":"2 SOURCE MKTNG","TotalOrderCost":231.23,"BillingAddressId":1609,"MailingAddressId":1609},{"OrderId":30,"WayBillNumber":"1022","OrderType":"Return","BillToCustomerId":1649,"BillerName":"2 SOURCE MKTNG","TotalOrderCost":110.25,"BillingAddressId":1609,"MailingAddressId":1609}]" to type 'System.Collections.Generic.List`1[LogisticsManagement_Web.Models.PendingWaybillsForInvoice]'. Path '', line 1, position 417.
 
 
 //SET @ReturnedResult = (SELECT O.OrderId, O.WayBillNumber, (CASE WHEN O.OrderTypeId = 1 THEN 'Single' WHEN O.OrderTypeId = 2 THEN 'Return' END) AS OrderType, O.BillToCustomerId
