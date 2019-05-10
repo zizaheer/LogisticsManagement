@@ -26,7 +26,7 @@ $('#btnDownloadOrderData').unbind().on('click', function (event) {
 
 
 
-$('#orderdispatch-list').on('click', '.chkOrderSelected', function (event) {
+$('#orderdispatch-list').on('change', '.chkOrderSelected', function (event) {
     //event.preventDefault();
 
     var wbNumber =
@@ -34,13 +34,18 @@ $('#orderdispatch-list').on('click', '.chkOrderSelected', function (event) {
         wbillNumber: $(this).data('waybillnumber')
     };
 
+    var isChecked = $(this).is(':checked');
 
     var index = wayBillNumberArray.findIndex(c => c.wbillNumber === wbNumber.wbillNumber);
     if (index >= 0) {
         wayBillNumberArray.splice(index, 1);
     }
 
-    wayBillNumberArray.push(wbNumber);
+    if (isChecked)
+    {
+        wayBillNumberArray.push(wbNumber);
+    }
+
 });
 
 $('#txtEmployeeNumber').keypress(function (event) {

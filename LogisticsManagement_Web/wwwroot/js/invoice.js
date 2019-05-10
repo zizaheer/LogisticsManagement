@@ -20,13 +20,13 @@ var employeeNumber;
 
 $('#btnDownloadPendingInvoiceData').unbind().on('click', function (event) {
     event.preventDefault();
-    $('#loadDataTable').load('Invoice/PartialViewDataTable');
+    $('#loadPendingInvoiceDataTable').load('Invoice/PartialViewDataTable');
 
 });
 
 
 
-$('#orderdispatch-list').on('click', '.chkOrderSelected', function (event) {
+$('#pending-list').on('click', '.chkOrderSelected', function (event) {
     //event.preventDefault();
 
     var wbNumber =
@@ -34,24 +34,21 @@ $('#orderdispatch-list').on('click', '.chkOrderSelected', function (event) {
         wbillNumber: $(this).data('waybillnumber')
     };
 
+    var isChecked = $(this).is(':checked');
+
     var index = wayBillNumberArray.findIndex(c => c.wbillNumber === wbNumber.wbillNumber);
     if (index >= 0) {
         wayBillNumberArray.splice(index, 1);
     }
 
-    wayBillNumberArray.push(wbNumber);
-});
-
-$('#txtEmployeeNumber').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-
-        $('#ddlEmployeeId').val($('#txtEmployeeNumber').val());
+    if (isChecked) {
+        wayBillNumberArray.push(wbNumber);
     }
 
 });
 
-$('#frmOrderDispatchForm').on('keyup keypress', function (e) {
+
+$('#frmInvoiceGenerationForm').on('keyup keypress', function (e) {
     var keyCode = e.keyCode || e.which;
     if (keyCode === 13) {
         e.preventDefault();
@@ -59,26 +56,19 @@ $('#frmOrderDispatchForm').on('keyup keypress', function (e) {
     }
 });
 
-$('#frmOrderDispatchForm').unbind('submit').submit(function (event) {
-    employeeNumber = $('#ddlEmployeeId').val();
-    dispatchDate = $('#txtDispatchDateTime').val();
-    if (employeeNumber < 1) {
-        bootbox.alert('Please select employee.');
-        event.preventDefault();
-        return;
-    }
+$('#frmInvoiceGenerationForm').unbind('submit').submit(function (event) {
 
     var dataArray = [wayBillNumberArray, employeeNumber, dispatchDate];
 
-    UpdateEntry('OrderDispatch/Update', dataArray);
+    UpdateEntry('Invoice/Update', dataArray);
 
     event.preventDefault();
     $('#loadDispatchedDataTable').load('Invoice/PartialViewDataTable');
-    $('#loadPendingDispatchDataTable').load('Invoice/PartialPendingDispatchDataTable');
+    $('#loadPendingDispatchDataTable').load('Invoice/PartialPendingInvoiceDataTable');
     wayBillNumberArray = [];
 });
 
-$('#dispatched-list').on('click', '.btnEdit', function (event) {
+$('#invoice-list').on('click', '.btnEdit', function (event) {
     event.preventDefault();
 
     var wbNumber = $(this).data('waybillnumber');
@@ -92,19 +82,19 @@ $('.btnDelete').unbind().on('click', function () {
     var waybillNumber = $(this).data('waybillnumber');
     RemoveEntry('OrderDispatch/Remove', waybillNumber);
     $('#loadDispatchedDataTable').load('Invoice/PartialViewDataTable');
-    $('#loadPendingDispatchDataTable').load('Invoice/PartialPendingDispatchDataTable');
+    $('#loadPendingDispatchDataTable').load('Invoice/PartialPendingInvoiceDataTable');
 });
 
-$('#btnDownloadDataDispatchData').unbind().on('click', function (event) {
+$('#btnDownloadDataInvoiceData').unbind().on('click', function (event) {
     event.preventDefault();
     $('#loadDispatchedDataTable').load('Invoice/PartialViewDataTable');
 
 });
 
 
-$('#btnDownloadOrderData').unbind().on('click', function (event) {
+$('#btnDownloadPendingInvoiceData').unbind().on('click', function (event) {
     event.preventDefault();
-    $('#loadPendingInvoiceDataTable').load('Invoice/PartialPendingDispatchDataTable');
+    $('#loadPendingInvoiceDataTable').load('Invoice/PartialPendingInvoiceDataTable');
 
 });
 

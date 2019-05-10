@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
@@ -14,6 +15,9 @@ using Newtonsoft.Json.Linq;
 
 namespace LogisticsManagement_Web.Controllers
 {
+    /// <summary>
+    /// Some refactors needed in method names with their purposess
+    /// </summary>
     public class InvoiceController : Controller
     {
         private Lms_InvoiceLogic _invoiceLogic;
@@ -48,9 +52,9 @@ namespace LogisticsManagement_Web.Controllers
 
         private List<PendingWaybillsForInvoice> GetPendingWaybillsForInvoice()
         {
-            
+
             List<PendingWaybillsForInvoice> pendingInvoices;
-            List<PendingWaybillsForInvoice> combineOrdersForInvoice;
+            var combineOrdersForInvoice = new List<PendingWaybillsForInvoice>();
 
             try
             {
@@ -82,29 +86,154 @@ namespace LogisticsManagement_Web.Controllers
                         combineOrderForInvoice.ReturnOrderCost = returnOrder.TotalOrderCost;
 
                         combineOrdersForInvoice.Add(combineOrderForInvoice);
-
                     }
                     else
                     {
-
                         combineOrdersForInvoice.Add(orders.FirstOrDefault());
-
                     }
-
-
-
                 }
-
-
             }
             catch (Exception e)
             {
 
             }
 
-            return pendingInvoices;
+            return combineOrdersForInvoice;
+        }
+
+
+
+
+
+
+
+        [HttpGet]
+        public IActionResult PartialViewDataTable()
+        {
+            ValidateSession();
+            return PartialView("_PartialViewInvoicedData", GetInvoicedOrders());
+        }
+
+        [HttpGet]
+        public IActionResult PartialPendingInvoiceDataTable()
+        {
+            ValidateSession();
+            return PartialView("_PartialViewPendingData", GetPendingWaybillsForInvoice());
+        }
+
+        [HttpPost]
+        public IActionResult Add([FromBody]dynamic invoiceData)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (invoiceData != null)
+                {
+                    var wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(invoiceData[0]));
+
+                    var orders = _orderLogic.GetList();
+                    var orderStatuses = _orderStatusLogic.GetList();
+
+                    using (var scope = new TransactionScope())
+                    {
+                        foreach (var item in wayBillNumberList)
+                        {
+                            var wbNumber = item.SelectToken("wbillNumber").ToString();
+
+                            orders = orders.Where(c => c.WayBillNumber == wbNumber).ToList();
+                            foreach (var order in orders)
+                            {
+                                var status = orderStatuses.Where(c => c.OrderId == order.Id).FirstOrDefault();
+                                _orderStatusLogic.Update(status);
+                            }
+
+                        }
+
+                        scope.Complete();
+
+                        result = "Success";
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult Remove(string id)
+        {
+            var result = "";
+            try
+            {
+                var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
+                var dispatchedList = _orderStatusLogic.GetList();
+
+                dispatchedList = (from dispatch in dispatchedList
+                                  join order in orders on dispatch.OrderId equals order.Id
+                                  select dispatch).ToList();
+
+                using (var scope = new TransactionScope())
+                {
+                    foreach (var item in dispatchedList)
+                    {
+                        item.IsDispatched = null;
+                        item.DispatchedDatetime = null;
+                        item.DispatchedToEmployeeId = null;
+
+                        _orderStatusLogic.Update(item);
+                    }
+
+                    scope.Complete();
+
+                    result = "Success";
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+
+        private List<InvoiceViewModel> GetInvoicedOrders()
+        {
+            List<InvoiceViewModel> invoicesViewModels = new List<InvoiceViewModel>();
+
+            var invoiceList = _invoiceLogic.GetList().Where(c => c.PaidAmount == null).ToList();
+            var invoiceWbMappingList = _invoiceWayBillMappingLogic.GetList();
+
+            var invoiceListNew = (from order in invoiceList
+                                  join mapping in invoiceWbMappingList on order.Id equals mapping.InvoiceId
+                                  select order).ToList();
+
+
+
+
+
+
+            return null;
 
         }
+
+
+
+
+
+
+
+
+
+
+
 
         private void ValidateSession()
         {

@@ -7,6 +7,13 @@ namespace LogisticsManagement_Web.Models
 {
     public class InvoiceViewModel
     {
+        public int InvoiceNumber { get; set; }
+        public int BillToCustomerId { get; set; }
+        public string BillerName { get; set; }
+        public string BillerDepartment { get; set; }
+        public string WayBillNumbers { get; set; }
+        public decimal TotalInvoiceAmnt { get; set; }
+        public DateTime PaymentDueDate { get; set; }
     }
 
 
