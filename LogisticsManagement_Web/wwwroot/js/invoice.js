@@ -58,9 +58,9 @@ $('#frmInvoiceGenerationForm').on('keyup keypress', function (e) {
 
 $('#frmInvoiceGenerationForm').unbind('submit').submit(function (event) {
 
-    var dataArray = [wayBillNumberArray, employeeNumber, dispatchDate];
+    var dataArray = [wayBillNumberArray];
 
-    UpdateEntry('Invoice/Update', dataArray);
+    AddEntry('Invoice/Add', dataArray);
 
     event.preventDefault();
     $('#loadDispatchedDataTable').load('Invoice/PartialViewDataTable');

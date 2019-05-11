@@ -15,7 +15,7 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public int InvoiceId { get; set; }
         public string WayBillNumber { get; set; }
-        public int OrderId { get; set; }
+        //public int OrderId { get; set; }
         public decimal TotalWayBillAmount { get; set; }
         public decimal? PaidAmount { get; set; }
         public decimal? WaivedAmount { get; set; }

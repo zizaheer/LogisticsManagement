@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace LogisticsManagement_BusinessLogic
 {
@@ -55,7 +57,8 @@ namespace LogisticsManagement_BusinessLogic
             return base.GetMaxId();
         }
 
-        public string GetPendingInvoiceOrders() {
+        public string GetPendingInvoiceOrders()
+        {
 
             var outPut = base.CallStoredProcedure("EXEC GetPendingInvoiceOrders");
             return outPut;
@@ -112,6 +115,49 @@ namespace LogisticsManagement_BusinessLogic
 
         #endregion
 
+        public string GenerateInvoice(int billerCustomerId, string billerDepartment, int createdBy, string[] wayBillNumbers)
+        {
+            string wbNumbers = "";
 
+            DataTable wayBillNumberList = new DataTable();
+            wayBillNumberList.Columns.Add("WayBillNumber", typeof(string));
+
+            if (wayBillNumbers.Length > 0)
+            {
+                //wbNumbers = wayBillNumbers[0].ToString();
+
+                foreach (var item in wayBillNumbers)
+                {
+                    var row = wayBillNumberList.NewRow();
+                    row[0] = item;
+                    wayBillNumberList.Rows.Add(row);
+
+                    if (!wbNumbers.Contains(item))
+                    {
+                        wbNumbers = wbNumbers + item.ToString() + ", ";
+                    }
+                }
+            }
+
+            wbNumbers = wbNumbers.Trim().TrimEnd(',');
+
+            SqlParameter[] sqlParameters = {
+                new SqlParameter("@BillerCustomerId", SqlDbType.Int) { Value = billerCustomerId },
+                new SqlParameter("@BillerDepartment", SqlDbType.VarChar, 100) { Value = billerDepartment },
+                new SqlParameter("@wbNumbers", SqlDbType.VarChar, 100) { Value = wbNumbers },
+                new SqlParameter("@CreatedBy", SqlDbType.Int) { Value = createdBy },
+                new SqlParameter("@WayBillNumberList", SqlDbType.Structured) { TypeName = "dbo.WayBillNumbers", Value = wayBillNumberList }
+            };
+
+            StringBuilder query = new StringBuilder();
+            query.Append("EXEC GenerateInvoice @BillerCustomerId, @BillerDepartment, @wbNumbers, @CreatedBy, @WayBillNumberList ");
+
+            var outPut = base.CallStoredProcedure(query.ToString(), sqlParameters);
+
+            _cache.Remove(App_CacheKeys.Invoices);
+            _cache.Remove(App_CacheKeys.InvoiceWayBillMappings);
+
+            return outPut;
+        }
     }
 }

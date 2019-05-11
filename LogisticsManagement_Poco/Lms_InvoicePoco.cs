@@ -14,6 +14,9 @@ namespace LogisticsManagement_Poco
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string InvoiceNumber { get; set; }
+        public int BillerCustomerId { get; set; }
+        public string BillerDepartment { get; set; }
+        public string WaybillNumbers { get; set; }
         public decimal? TotalInvoiceAmount { get; set; }
         public decimal? PaidAmount { get; set; }
         public string TransactionNo { get; set; }

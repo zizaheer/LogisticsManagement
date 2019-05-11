@@ -69,7 +69,7 @@ namespace LogisticsManagement_Web.Controllers
 
                 foreach (var pendingInvoice in pendingInvoices)
                 {
-                    combineOrdersForInvoice = new List<PendingWaybillsForInvoice>();
+                    //combineOrdersForInvoice = new List<PendingWaybillsForInvoice>();
 
                     var orders = pendingInvoices.Where(c => c.WayBillNumber == pendingInvoice.WayBillNumber).ToList();
                     if (orders.Count > 1)
@@ -79,13 +79,18 @@ namespace LogisticsManagement_Web.Controllers
 
                         var combineOrderForInvoice = new PendingWaybillsForInvoice();
 
+                        combineOrderForInvoice.BillToCustomerId = singleOrder.BillToCustomerId;
                         combineOrderForInvoice.WayBillNumber = singleOrder.WayBillNumber;
                         combineOrderForInvoice.BillerName = singleOrder.BillerName;
                         combineOrderForInvoice.BillerDepartment = singleOrder.BillerDepartment;
                         combineOrderForInvoice.TotalOrderCost = singleOrder.TotalOrderCost;
                         combineOrderForInvoice.ReturnOrderCost = returnOrder.TotalOrderCost;
 
-                        combineOrdersForInvoice.Add(combineOrderForInvoice);
+                        var existCount = combineOrdersForInvoice.Where(c => c.WayBillNumber == combineOrderForInvoice.WayBillNumber).ToList();
+                        if (existCount.Count < 1)
+                        {
+                            combineOrdersForInvoice.Add(combineOrderForInvoice);
+                        }
                     }
                     else
                     {
@@ -133,21 +138,43 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     var wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(invoiceData[0]));
 
+                    var countArray = ((JArray)wayBillNumberList).Count;
+                    string[] wbNumbers = new string[countArray];
+
                     var orders = _orderLogic.GetList();
-                    var orderStatuses = _orderStatusLogic.GetList();
+                    List<InvoiceViewModel> invoiceViewModels = new List<InvoiceViewModel>();
+
+                    for (int i = 0; i < countArray; i++)
+                    {
+                        wbNumbers[i] = wayBillNumberList[i].SelectToken("wbillNumber").ToString();
+                        InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
+
+                        invoiceViewModel.WayBillNumbers = wbNumbers[i];
+                        invoiceViewModels.Add(invoiceViewModel);
+                    }
+
+                    orders = (from order in orders
+                              join waybill in invoiceViewModels on order.WayBillNumber equals waybill.WayBillNumbers
+                              select order).ToList();
 
                     using (var scope = new TransactionScope())
                     {
-                        foreach (var item in wayBillNumberList)
+                        foreach (var item in orders)
                         {
-                            var wbNumber = item.SelectToken("wbillNumber").ToString();
+                            var customerWiseOrders = orders.Where(c => c.BillToCustomerId == item.BillToCustomerId).ToList();
+                            
+                            int billerCustomerId;
+                            string billerDepartment;
+                            int createdBy = sessionData.UserId;
 
-                            orders = orders.Where(c => c.WayBillNumber == wbNumber).ToList();
-                            foreach (var order in orders)
-                            {
-                                var status = orderStatuses.Where(c => c.OrderId == order.Id).FirstOrDefault();
-                                _orderStatusLogic.Update(status);
-                            }
+                            string[] customerWiseWbNumbers;
+                            customerWiseWbNumbers = customerWiseOrders.Select(c => c.WayBillNumber).ToArray();
+                            billerCustomerId = customerWiseOrders.FirstOrDefault().BillToCustomerId;
+                            billerDepartment = customerWiseOrders.FirstOrDefault().DepartmentName;
+
+                            _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, createdBy, customerWiseWbNumbers);
+
+                            orders.RemoveAll(c => c.BillToCustomerId == item.BillToCustomerId);
 
                         }
 
@@ -172,23 +199,17 @@ namespace LogisticsManagement_Web.Controllers
             var result = "";
             try
             {
-                var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
-                var dispatchedList = _orderStatusLogic.GetList();
-
-                dispatchedList = (from dispatch in dispatchedList
-                                  join order in orders on dispatch.OrderId equals order.Id
-                                  select dispatch).ToList();
+                var invoiceWbMappingList = _invoiceWayBillMappingLogic.GetList().Where(c => c.InvoiceId == Convert.ToInt32(id));
+                var invoiceToDelete = _invoiceLogic.GetSingleById(Convert.ToInt32(id));
 
                 using (var scope = new TransactionScope())
                 {
-                    foreach (var item in dispatchedList)
+                    foreach (var item in invoiceWbMappingList)
                     {
-                        item.IsDispatched = null;
-                        item.DispatchedDatetime = null;
-                        item.DispatchedToEmployeeId = null;
-
-                        _orderStatusLogic.Update(item);
+                        _invoiceWayBillMappingLogic.Remove(item);
                     }
+
+                    _invoiceLogic.Remove(invoiceToDelete);
 
                     scope.Complete();
 
@@ -206,21 +227,27 @@ namespace LogisticsManagement_Web.Controllers
 
         private List<InvoiceViewModel> GetInvoicedOrders()
         {
-            List<InvoiceViewModel> invoicesViewModels = new List<InvoiceViewModel>();
+            List<InvoiceViewModel> invoiceViewModels = new List<InvoiceViewModel>();
 
-            var invoiceList = _invoiceLogic.GetList().Where(c => c.PaidAmount == null).ToList();
+            var invoiceList = _invoiceLogic.GetList().Where(c => c.PaidAmount == null).OrderByDescending(c => c.InvoiceNumber).ToList();
             var invoiceWbMappingList = _invoiceWayBillMappingLogic.GetList();
 
-            var invoiceListNew = (from order in invoiceList
-                                  join mapping in invoiceWbMappingList on order.Id equals mapping.InvoiceId
-                                  select order).ToList();
+            _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+            var custoemrList = _customerLogic.GetList();
 
+            foreach (var invoice in invoiceList)
+            {
+                InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
+                invoiceViewModel.InvoiceId = invoice.Id;
+                invoiceViewModel.InvoiceNumber = invoice.InvoiceNumber;
+                invoiceViewModel.BillerName = custoemrList.Where(c => c.Id == invoice.BillerCustomerId).FirstOrDefault().CustomerName;
+                invoiceViewModel.WayBillNumbers = invoice.WaybillNumbers;
+                invoiceViewModel.TotalInvoiceAmnt = (decimal)invoice.TotalInvoiceAmount;
 
+                invoiceViewModels.Add(invoiceViewModel);
+            }
 
-
-
-
-            return null;
+            return invoiceViewModels;
 
         }
 
