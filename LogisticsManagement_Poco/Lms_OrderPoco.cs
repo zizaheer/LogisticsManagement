@@ -43,6 +43,7 @@ namespace LogisticsManagement_Poco
         public string DepartmentName { get; set; }
         public string ContactName { get; set; }
         public string ContactPhoneNumber { get; set; }
+        public bool IsInvoiced { get; set; }
         public string Remarks { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }

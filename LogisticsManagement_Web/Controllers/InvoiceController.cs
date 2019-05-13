@@ -45,7 +45,6 @@ namespace LogisticsManagement_Web.Controllers
         {
             ValidateSession();
 
-            var customerList = _invoiceLogic.GetList();
             return View(GetPendingWaybillsForInvoice());
         }
 
@@ -141,7 +140,7 @@ namespace LogisticsManagement_Web.Controllers
                     var countArray = ((JArray)wayBillNumberList).Count;
                     string[] wbNumbers = new string[countArray];
 
-                    var orders = _orderLogic.GetList();
+                    var orders = _orderLogic.GetList().Where(c => c.IsInvoiced == false).ToList();
                     List<InvoiceViewModel> invoiceViewModels = new List<InvoiceViewModel>();
 
                     for (int i = 0; i < countArray; i++)
@@ -162,7 +161,7 @@ namespace LogisticsManagement_Web.Controllers
                         foreach (var item in orders)
                         {
                             var customerWiseOrders = orders.Where(c => c.BillToCustomerId == item.BillToCustomerId).ToList();
-                            
+
                             int billerCustomerId;
                             string billerDepartment;
                             int createdBy = sessionData.UserId;

@@ -22,6 +22,8 @@ namespace LogisticsManagement_Poco
         public string InvoiceNumberStartFrom { get; set; }
         public int? DefaultWeightScaleId { get; set; }
         public decimal? DefaultFuelSurcharge { get; set; }
+        public string AccountReceivableGL { get; set; }
+        public string AccountPayableGL { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
     }

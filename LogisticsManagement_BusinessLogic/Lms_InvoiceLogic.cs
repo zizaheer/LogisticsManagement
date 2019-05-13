@@ -129,7 +129,7 @@ namespace LogisticsManagement_BusinessLogic
                 foreach (var item in wayBillNumbers)
                 {
                     var row = wayBillNumberList.NewRow();
-                    row[0] = item;
+                    row["WayBillNumber"] = item;
                     wayBillNumberList.Rows.Add(row);
 
                     if (!wbNumbers.Contains(item))
