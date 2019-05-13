@@ -13,8 +13,7 @@ namespace LogisticsManagement_Poco
         [Column("CustomerId")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string CustomerNumber { get; set; }
-        public string AccountNo { get; set; }
+        public int AccountId { get; set; }
         public string CustomerName { get; set; }
         
         public bool IsGstApplicable { get; set; }

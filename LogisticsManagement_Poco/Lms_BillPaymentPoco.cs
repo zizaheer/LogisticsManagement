@@ -15,7 +15,7 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public int PayeeId { get; set; }
         public decimal PaidAmount { get; set; }
-        public string TransactionNo { get; set; }
+        public int TransactionId { get; set; }
         public int PaymentMethodId { get; set; }
         public decimal? CashAmount { get; set; }
         public decimal? ChequeAmount { get; set; }

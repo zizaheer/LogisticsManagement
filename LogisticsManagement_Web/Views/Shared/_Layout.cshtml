@@ -37,7 +37,7 @@
         gtag('config', 'UA-118965717-5');
     </script>
 </head>
-<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+<body class="app header-fixed sidebar-minimized aside-menu-fixed sidebar-lg-show">
     <header class="app-header navbar">
         <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
             <span class="navbar-toggler-icon"></span>
@@ -205,7 +205,7 @@
         </div>
         <main class="main" style="background-color:#fbfbfb">
             <!-- Breadcrumb-->
-            <ol class="breadcrumb">
+            <ol class="breadcrumb" style="margin-bottom:.5rem">
                 @{
                     var controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
                     var actionName = this.ViewContext.RouteData.Values["action"].ToString();

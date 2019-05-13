@@ -13,11 +13,11 @@ namespace LogisticsManagement_Poco
         [Column("AccountId")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string AccountNo { get; set; }
         public int AccountTypeId { get; set; }
         public string AccountName { get; set; }
         public int BranchId { get; set; }
         public decimal? InitialBalance { get; set; }
+        public bool IsGLCode { get; set; }
         public bool IsActive { get; set; }
         public string Remarks { get; set; }
         public DateTime CreateDate { get; set; }

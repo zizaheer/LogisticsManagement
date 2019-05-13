@@ -12,7 +12,7 @@ namespace LogisticsManagement_Poco
         [Key, Column("AccountId", Order = 0)]
         public int Id { get; set; }
         [Key, Column(Order = 1)]
-        public string TransactionNo { get; set; }
+        public int TransactionId { get; set; }
 
         public decimal TransactionAmount { get; set; }
         public DateTime TransactionDate { get; set; }

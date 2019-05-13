@@ -117,31 +117,33 @@ namespace LogisticsManagement_BusinessLogic
 
         public string GenerateInvoice(int billerCustomerId, string billerDepartment, int createdBy, string[] wayBillNumbers)
         {
-            string wbNumbers = "";
-
-            DataTable wayBillNumberList = new DataTable();
-            wayBillNumberList.Columns.Add("WayBillNumber", typeof(string));
-
-            if (wayBillNumbers.Length > 0)
+            try
             {
-                //wbNumbers = wayBillNumbers[0].ToString();
+                string wbNumbers = "";
 
-                foreach (var item in wayBillNumbers)
+                DataTable wayBillNumberList = new DataTable();
+                wayBillNumberList.Columns.Add("WayBillNumber", typeof(string));
+
+                if (wayBillNumbers.Length > 0)
                 {
-                    var row = wayBillNumberList.NewRow();
-                    row["WayBillNumber"] = item;
-                    wayBillNumberList.Rows.Add(row);
+                    //wbNumbers = wayBillNumbers[0].ToString();
 
-                    if (!wbNumbers.Contains(item))
+                    foreach (var item in wayBillNumbers)
                     {
-                        wbNumbers = wbNumbers + item.ToString() + ", ";
+                        var row = wayBillNumberList.NewRow();
+                        row["WayBillNumber"] = item;
+                        wayBillNumberList.Rows.Add(row);
+
+                        if (!wbNumbers.Contains(item))
+                        {
+                            wbNumbers = wbNumbers + item.ToString() + ", ";
+                        }
                     }
                 }
-            }
 
-            wbNumbers = wbNumbers.Trim().TrimEnd(',');
+                wbNumbers = wbNumbers.Trim().TrimEnd(',');
 
-            SqlParameter[] sqlParameters = {
+                SqlParameter[] sqlParameters = {
                 new SqlParameter("@BillerCustomerId", SqlDbType.Int) { Value = billerCustomerId },
                 new SqlParameter("@BillerDepartment", SqlDbType.VarChar, 100) { Value = billerDepartment },
                 new SqlParameter("@wbNumbers", SqlDbType.VarChar, 100) { Value = wbNumbers },
@@ -149,15 +151,20 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@WayBillNumberList", SqlDbType.Structured) { TypeName = "dbo.WayBillNumbers", Value = wayBillNumberList }
             };
 
-            StringBuilder query = new StringBuilder();
-            query.Append("EXEC GenerateInvoice @BillerCustomerId, @BillerDepartment, @wbNumbers, @CreatedBy, @WayBillNumberList ");
+                StringBuilder query = new StringBuilder();
+                query.Append("EXEC GenerateInvoice @BillerCustomerId, @BillerDepartment, @wbNumbers, @CreatedBy, @WayBillNumberList ");
 
-            var outPut = base.CallStoredProcedure(query.ToString(), sqlParameters);
+                var outPut = base.CallStoredProcedure(query.ToString(), sqlParameters);
 
-            _cache.Remove(App_CacheKeys.Invoices);
-            _cache.Remove(App_CacheKeys.InvoiceWayBillMappings);
+                _cache.Remove(App_CacheKeys.Invoices);
+                _cache.Remove(App_CacheKeys.InvoiceWayBillMappings);
+                return outPut;
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
 
-            return outPut;
         }
     }
 }

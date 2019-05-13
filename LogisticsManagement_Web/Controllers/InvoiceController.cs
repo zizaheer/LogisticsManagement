@@ -228,7 +228,7 @@ namespace LogisticsManagement_Web.Controllers
         {
             List<InvoiceViewModel> invoiceViewModels = new List<InvoiceViewModel>();
 
-            var invoiceList = _invoiceLogic.GetList().Where(c => c.PaidAmount == null).OrderByDescending(c => c.InvoiceNumber).ToList();
+            var invoiceList = _invoiceLogic.GetList().Where(c => c.PaidAmount == null).OrderByDescending(c => c.Id).ToList();
             var invoiceWbMappingList = _invoiceWayBillMappingLogic.GetList();
 
             _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
@@ -238,7 +238,6 @@ namespace LogisticsManagement_Web.Controllers
             {
                 InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
                 invoiceViewModel.InvoiceId = invoice.Id;
-                invoiceViewModel.InvoiceNumber = invoice.InvoiceNumber;
                 invoiceViewModel.BillerName = custoemrList.Where(c => c.Id == invoice.BillerCustomerId).FirstOrDefault().CustomerName;
                 invoiceViewModel.WayBillNumbers = invoice.WaybillNumbers;
                 invoiceViewModel.TotalInvoiceAmnt = (decimal)invoice.TotalInvoiceAmount;

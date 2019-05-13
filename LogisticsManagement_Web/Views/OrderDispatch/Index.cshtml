@@ -56,7 +56,7 @@
                                 <option value="0">Employee/driver</option>
                                 @foreach (var employee in Model.Employees)
                                 {
-                                    <option value="@employee.Id">@employee.FirstName @employee.LastName (@employee.EmployeeNumber)</option>
+                                    <option value="@employee.Id">@employee.FirstName @employee.LastName (@employee.Id)</option>
                                 }
                             </select>
                         </div>

@@ -2,14 +2,14 @@
 
 $(document).ready(function () {
 
-    if ($.fn.dataTable.isDataTable('#service-list')) {
-        $('#service-list').DataTable().destroy();
-    }
-    $('#service-list').DataTable({
-        'paging': false, // hinds pagination
-        "bInfo": false, // hides the footer Showing Results n of n
-        'bFilter': false //hides the searchbox
-    });
+    //if ($.fn.dataTable.isDataTable('#service-list')) {
+    //    $('#service-list').DataTable().destroy();
+    //}
+    //$('#service-list').DataTable({
+    //    'paging': false, // hinds pagination
+    //    "bInfo": false, // hides the footer Showing Results n of n
+    //    'bFilter': false //hides the searchbox
+    //});
 
     MaskPhoneNumber('#txtMobileNo');
     MaskPhoneNumber('#txtPhoneNumber');

@@ -4,36 +4,38 @@ for details on configuring this project to bundle and minify static web assets. 
 
 
 
-.horizontal-list li
-{
-    display:inline;
-    list-style-type:none;
-    padding-right:30px;
-    float:left;
+.horizontal-list li {
+    display: inline;
+    list-style-type: none;
+    padding-right: 30px;
+    float: left;
 }
+
 .dashboard-task-button {
+    font-size: .8em;
     display: block;
-    padding: 10px;
     border: 1px solid #d8d8d8;
-    /*background-color: aliceblue;*/
     text-align: center;
 }
 
-.dashboard-task-button img {
-    max-width:90%;
-    height:auto;
-}
+    .dashboard-task-button img {
+        height: 55px;
+        width: 55px;
+        padding: 6px;
+    }
 
 .card {
     margin-bottom: 0.75rem;
 }
+
 .card-header {
     padding: 0.5rem .75rem;
 }
+
 .card-body {
     padding: .75rem;
-
 }
+
 .form-group {
     margin-bottom: .5rem;
 }

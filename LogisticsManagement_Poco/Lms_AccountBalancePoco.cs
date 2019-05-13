@@ -14,7 +14,5 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public decimal CurrentBalance { get; set; }
         public DateTime BalanceLastUpdated { get; set; }
-        public DateTime CreateDate { get; set; }
-        public int CreatedBy { get; set; }
     }
 }

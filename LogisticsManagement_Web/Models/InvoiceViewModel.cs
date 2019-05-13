@@ -8,7 +8,6 @@ namespace LogisticsManagement_Web.Models
     public class InvoiceViewModel
     {
         public int InvoiceId { get; set; }
-        public string InvoiceNumber { get; set; }
         public int BillToCustomerId { get; set; }
         public string BillerName { get; set; }
         public string BillerDepartment { get; set; }

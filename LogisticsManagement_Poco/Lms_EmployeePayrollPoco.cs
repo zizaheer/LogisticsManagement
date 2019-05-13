@@ -18,7 +18,7 @@ namespace LogisticsManagement_Poco
         public DateTime PayrollEndDate { get; set; }
         public int TotalEmployeeCount { get; set; }
         public decimal TotalAmountToPay { get; set; }
-        public int TransactionNo { get; set; }
+        public int TransactionId { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
     }

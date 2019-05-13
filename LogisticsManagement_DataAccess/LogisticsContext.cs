@@ -89,7 +89,7 @@ namespace LogisticsManagement_DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Lms_AccTransactionDetailPoco>().HasKey(table => new { table.Id, table.TransactionNo });
+            modelBuilder.Entity<Lms_AccTransactionDetailPoco>().HasKey(table => new { table.Id, table.TransactionId });
             modelBuilder.Entity<Lms_StorageOrderAdditionalServicePoco>().HasKey(table => new { table.Id, table.AdditionalServiceId });
 
         }
