@@ -23,6 +23,7 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_OrderLogic _orderLogic;
         private Lms_OrderStatusLogic _orderStatusLogic;
         private Lms_CustomerLogic _customerLogic;
+        private Lms_EmployeeLogic _employeeLogic;
         private App_CityLogic _cityLogic;
         private App_ProvinceLogic _provinceLogic;
         private Lms_DeliveryOptionLogic _deliveryOptionLogic;
@@ -42,19 +43,20 @@ namespace LogisticsManagement_Web.Controllers
             _cache = cache;
             _dbContext = dbContext;
             _orderLogic = new Lms_OrderLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderPoco>(_dbContext));
+            _orderStatusLogic = new Lms_OrderStatusLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderStatusPoco>(_dbContext));
         }
 
         public IActionResult Index()
         {
             ValidateSession();
-            return View(GetOrderData());
+            return View(GetAllRequiredDataForDispatchBoard());
         }
 
         [HttpGet]
-        public IActionResult PartialViewDataTable()
+        public IActionResult LoadOrdersForDispatch()
         {
             ValidateSession();
-            return PartialView("_PartialViewOrderData", GetOrderData());
+            return PartialView("_PartialViewOrderData", GetAllRequiredDataForDispatchBoard());
         }
 
         [HttpPost]
@@ -273,7 +275,7 @@ namespace LogisticsManagement_Web.Controllers
             var shipperTariffInfo = tariffList.Where(c =>
                                                           c.CityId == shipperCityId && c.DeliveryOptionId == deliveryOptionId
                                                           && c.VehicleTypeId == vehicleTypeId && c.UnitTypeId == unitTypeId
-                                                          && c.WeightScaleId == weightScaleId && c.UptoWeight >= weightQuantity
+                                                          && c.UptoWeight >= weightQuantity
                                                           ).ToList().FirstOrDefault();
             if (shipperTariffInfo != null)
             {
@@ -290,7 +292,7 @@ namespace LogisticsManagement_Web.Controllers
             var consigneeTariffInfo = tariffList.Where(c =>
                                                           c.CityId == consigneeCityId && c.DeliveryOptionId == deliveryOptionId
                                                           && c.VehicleTypeId == vehicleTypeId && c.UnitTypeId == unitTypeId
-                                                          && c.WeightScaleId == weightScaleId && c.UptoWeight >= weightQuantity
+                                                          && c.UptoWeight >= weightQuantity
                                                           ).ToList().FirstOrDefault();
 
             if (consigneeTariffInfo != null)
@@ -342,14 +344,17 @@ namespace LogisticsManagement_Web.Controllers
             }
         }
 
-        private DeliveryOrderViewModel GetOrderData()
+
+        private DeliveryOrderViewModel GetAllRequiredDataForDispatchBoard()
         {
             DeliveryOrderViewModel deliveryOrderViewModel = new DeliveryOrderViewModel();
-            deliveryOrderViewModel.Orders = _orderLogic.GetList().Where(c => c.OrderTypeId == 1).ToList();
 
+            #region Get relevant data for a new order
+            
             _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
-            _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
             deliveryOrderViewModel.Cities = _cityLogic.GetList();
+
+            _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
             deliveryOrderViewModel.Provinces = _provinceLogic.GetList();
 
             _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
@@ -367,12 +372,64 @@ namespace LogisticsManagement_Web.Controllers
             _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
             deliveryOrderViewModel.WeightScales = _weightScaleLogic.GetList();
 
-            //_orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
-            //deliveryOrderViewModel.OrderAdditionalServices = _orderAdditionalServiceLogic.GetList();
-
             _additionalServiceLogic = new Lms_AdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_AdditionalServicePoco>(_dbContext));
             deliveryOrderViewModel.AdditionalServices = _additionalServiceLogic.GetList();
 
+            _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
+            deliveryOrderViewModel.Employees = _employeeLogic.GetList();
+
+            if (deliveryOrderViewModel.Configuration.IsSignInRequiredForDispatch != null) {
+                if ((bool)deliveryOrderViewModel.Configuration.IsSignInRequiredForDispatch) {
+
+                    var _timesheetLogic = new Lms_EmployeeTimesheetLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeeTimesheetPoco>(_dbContext));
+                    var signedInEmployees = _timesheetLogic.GetList().Where(c => c.SignInDatetime != null && c.SignOutDatetime == null).ToList();
+
+                    deliveryOrderViewModel.Employees = (from employees in deliveryOrderViewModel.Employees
+                                                        join signedIn in signedInEmployees on employees.Id equals signedIn.EmployeeId
+                                                        select employees).ToList();
+
+                }
+            }
+
+
+            #endregion
+
+            #region get datatable for dispatch board
+
+            List<DispatchBoardDataTable> dataList = new List<DispatchBoardDataTable>();
+            var orders = _orderLogic.GetList().Where(c => c.OrderTypeId == 1).ToList(); //Load single orders 
+            var ordersStatus = _orderStatusLogic.GetList().Where(c => c.IsDispatched == null || c.IsDispatched == false).ToList();
+
+            var filteredOrdersForDispatchBoard = (from order in orders
+                                                  join status in ordersStatus on order.Id equals status.OrderId
+                                                  select order).ToList();
+
+            foreach (var item in filteredOrdersForDispatchBoard)
+            {
+                DispatchBoardDataTable data = new DispatchBoardDataTable();
+                data.OrderDateString = item.CreateDate.ToString("dd-MMM-yy");
+                data.DeliveryOptionId = (int)item.DeliveryOptionId;
+                data.DeliveryOptionName = deliveryOrderViewModel.DeliveryOptions.Where(c=>c.Id == data.DeliveryOptionId).FirstOrDefault().OptionName;
+                data.DeliveryOptionCode = deliveryOrderViewModel.DeliveryOptions.Where(c => c.Id == data.DeliveryOptionId).FirstOrDefault().ShortCode;
+                data.WayBillNumber = item.WayBillNumber;
+                data.CustomerRefNumber = item.ReferenceNumber;
+                data.UnitTypeId = item.UnitTypeId;
+                data.UnitTypeName = deliveryOrderViewModel.UnitTypes.Where(c => c.Id == data.UnitTypeId).FirstOrDefault().ShortCode;
+                data.UnitQuantity = item.UnitQuantity;
+                data.SpcIns = "";
+                data.ShipperCustomerId = (int)item.ShipperCustomerId;
+                data.ShipperCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ShipperCustomerId).FirstOrDefault().CustomerName;  
+                data.ConsigneeCustomerId = (int)item.ConsigneeCustomerId;
+                data.ConsigneeCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ConsigneeCustomerId).FirstOrDefault().CustomerName;
+                data.BillerCustomerId = item.BillToCustomerId;
+                data.BillerCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.BillerCustomerId).FirstOrDefault().CustomerName;
+
+                dataList.Add(data);
+            }
+
+            deliveryOrderViewModel.DispatchBoardData = dataList;
+
+            #endregion
 
             return deliveryOrderViewModel;
         }

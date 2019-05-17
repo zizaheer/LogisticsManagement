@@ -12,16 +12,17 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development" //"Production"
       }
     },
     "LogisticsManagement_Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development" //"Production"
+        "ASPNETCORE_DETAILEDERRORS": "1",
+        "ASPNETCORE_ENVIRONMENT": "Production"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000" //"applicationUrl": "https://localhost:85;http://localhost:85"
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
     }
   }
 }

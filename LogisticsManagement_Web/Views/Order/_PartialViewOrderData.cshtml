@@ -1,6 +1,5 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model DeliveryOrderViewModel  
-
+@model DeliveryOrderViewModel 
 
 <script>
     $(document).ready(function () {
@@ -8,59 +7,70 @@
             $('#order-list').DataTable().destroy();
         }
         $('#order-list').DataTable({
-            "order": [[0, "desc"]]
+            "order": [[0, "desc"]],
+            "lengthChange": false,
+            searching: false,
+            paging: false,
+            info: false
         });
     });
 </script>
 
-<div class="row">
-    <div class="col-sm-12">
-        <table id="order-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" width=100%>
-            <thead>
-                <tr>
-                    <th>W/B #</th>
-                    <th>Biller</th>
-                    <th>Shipper</th>
-                    <th>Consignee</th>
-                    <th>Ordered by</th>
-                    <th>Phone</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Orders.OrderByDescending(c => c.WayBillNumber))
-                {
-                <tr>
-                    <td>
-                        @item.WayBillNumber
-                    </td>
-                   
-                    <td>
-                        @item.BillToCustomerId
-                    </td>
-                    <td>
-                        @item.ShipperCustomerId
-                    </td>
-                    <td>
-                        @item.ConsigneeCustomerId
-                    </td>
-                    <td>
-                        @item.OrderedBy
-                    </td>
-                    <td>
-                        @item.ContactPhoneNumber
-                    </td>
+<table id="order-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important">
+    <thead>
+        <tr>
+            <th>W/B #</th>
+            <th>Date</th>
+            <th>Svc.</th>
+            <th>Ref #</th>
+            <th>Unit/Qty</th>
+            <th>Spc/Ins</th>
+            <th>Shipper</th>
+            <th>Consignee</th>
+            <th>Biller</th>
 
-                    <td>
-                        <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
-                        <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                    </td>
-                </tr>
-                }
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DispatchBoardData.OrderByDescending(c => c.WayBillNumber))
+        {
+            <tr style="font-size:.85em">
+                <td>
+                    <input type="checkbox" id="chkDispatchToEmployee" class="chkDispatchToEmployee" name="chkDispatchToEmployee" data-waybillnumber="@item.WayBillNumber"> @item.WayBillNumber
+                </td>
+                <td>
+                    @item.OrderDateString
+                </td>
+                <td>
+                    @item.DeliveryOptionName
+                </td>
+                <td>
+                    @item.CustomerRefNumber
+                </td>
+                <td>
+                    @item.UnitQuantity (@item.UnitTypeName)
+                </td>
+                <td>
+                    @item.SpcIns
+                </td>
+                <td>
+                    (@item.ShipperCustomerId) @item.ShipperCustomerName
+                </td>
+                <td>
+                    (@item.ConsigneeCustomerId) @item.ConsigneeCustomerName
+                </td>
+                <td>
+                    (@item.BillerCustomerId) @item.BillerCustomerName
+                </td>
 
+                <td>
+                    <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-primary btnEdit" type="button" title="Edit"><i class="fa fa-edit"></i></button>
+                    <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button" title="Delete"><i class="fa fa-trash"></i> </button>
+                </td>
+            </tr>
+        }
 
-            </tbody>
-        </table>
-    </div>
-</div>
+    </tbody>
+</table>
 <script src="~/js/order.js"></script>

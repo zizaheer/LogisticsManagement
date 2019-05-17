@@ -147,6 +147,12 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@DepartmentName", SqlDbType.VarChar, 50) { Value = (object)orderPoco.DepartmentName ?? DBNull.Value },
                 new SqlParameter("@ContactName", SqlDbType.VarChar, 50) { Value =(object) orderPoco.ContactName ?? DBNull.Value },
                 new SqlParameter("@ContactPhoneNumber", SqlDbType.VarChar, 50) { Value = (object)orderPoco.ContactPhoneNumber ?? DBNull.Value },
+
+                new SqlParameter("@CommentsForWayBill", SqlDbType.VarChar, 200) { Value = (object)orderPoco.CommentsForWayBill ?? DBNull.Value },
+                new SqlParameter("@IsPrintedOnWayBill", SqlDbType.Bit) { Value = (object)orderPoco.IsPrintedOnWayBill ?? DBNull.Value },
+                new SqlParameter("@CommentsForInvoice", SqlDbType.VarChar, 200) { Value = (object)orderPoco.CommentsForInvoice ?? DBNull.Value },
+                new SqlParameter("@IsPrintedOnInvoice", SqlDbType.Bit) { Value = (object)orderPoco.IsPrintedOnInvoice ?? DBNull.Value },
+
                 new SqlParameter("@Remarks", SqlDbType.VarChar, 150) { Value = (object)orderPoco.Remarks ?? DBNull.Value },
                 new SqlParameter("@CreatedBy", SqlDbType.Int) { Value = (object)orderPoco.CreatedBy ?? DBNull.Value },
                 new SqlParameter("@OrderAdditionalServiceList", SqlDbType.Structured) { TypeName = "dbo.OrderAdditionalServices", Value = additionalServiceList }
@@ -162,7 +168,7 @@ namespace LogisticsManagement_BusinessLogic
             query.Append("@BasicCostOverriden, @FuelSurchargePercentage, @DiscountPercentOnOrderCost, @ApplicableGstPercent,@TotalOrderCost, ");
 
             query.Append("@TotalAdditionalServiceCost, @OrderedBy, @DepartmentName, @ContactName, @ContactPhoneNumber,  ");
-            query.Append("@Remarks, @CreatedBy, @OrderAdditionalServiceList ");
+            query.Append("@CommentsForWayBill, @IsPrintedOnWayBill, @CommentsForInvoice, @IsPrintedOnInvoice, @Remarks, @CreatedBy, @OrderAdditionalServiceList ");
 
             var outPut = base.CallStoredProcedure(query.ToString(), sqlParameters);
 

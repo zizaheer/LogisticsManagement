@@ -44,6 +44,12 @@ namespace LogisticsManagement_Poco
         public string ContactName { get; set; }
         public string ContactPhoneNumber { get; set; }
         public bool IsInvoiced { get; set; }
+
+        public string CommentsForWayBill { get; set; }
+        public bool? IsPrintedOnWayBill { get; set; }
+        public string CommentsForInvoice { get; set; }
+        public bool? IsPrintedOnInvoice { get; set; }
+
         public string Remarks { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
