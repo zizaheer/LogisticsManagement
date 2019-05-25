@@ -23,9 +23,8 @@ namespace LogisticsManagement_DataAccess
         DbSet<App_ScreenPermissionPoco> appScreenPermissionPocos { get; set; }
         DbSet<App_UserPoco> appUserPocos { get; set; }
         DbSet<App_UserGroupPoco> appUserGroupPocos { get; set; }
-        DbSet<Lms_AccountBalancePoco> lmsAccountBalancePocos { get; set; }
+        DbSet<Lms_ParentGLCodePoco> lmsParentGLCodePocos { get; set; }
         DbSet<Lms_AccountTypePoco> lmsAccountTypePocos { get; set; }
-        DbSet<Lms_AccTransactionDetailPoco> lmsAccTransactionDetailPocos { get; set; }
         DbSet<Lms_AdditionalServicePoco> lmsAdditionalServicePocos { get; set; }
         DbSet<Lms_AddressPoco> lmsAddressPocos { get; set; }
         DbSet<Lms_AddressMappingPoco> lmsAddressMappingPocos { get; set; }
@@ -63,6 +62,7 @@ namespace LogisticsManagement_DataAccess
         DbSet<Lms_StorageOrderDeliveryPoco> lmsStorageOrderDeliveryPocos { get; set; }
         DbSet<Lms_TariffPoco> lmsTariffPocos { get; set; }
         DbSet<Lms_TransactionPoco> lmsTransactionPocos { get; set; }
+        DbSet<Lms_TransactionDetailPoco> lmsTransactionDetailPocos { get; set; }
         DbSet<Lms_UnitTypePoco> lmsUnitTypePocos { get; set; }
 
         DbSet<Lms_VehicleTypePoco> lmsVehicleTypePocos { get; set; }
@@ -89,7 +89,7 @@ namespace LogisticsManagement_DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Lms_AccTransactionDetailPoco>().HasKey(table => new { table.Id, table.TransactionId });
+            modelBuilder.Entity<Lms_TransactionPoco>().HasKey(table => new { table.Id, table.SerialNo });
             modelBuilder.Entity<Lms_StorageOrderAdditionalServicePoco>().HasKey(table => new { table.Id, table.AdditionalServiceId });
 
         }

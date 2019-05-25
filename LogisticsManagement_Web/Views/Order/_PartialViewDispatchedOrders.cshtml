@@ -1,0 +1,86 @@
+﻿@using LogisticsManagement_Web.Models;
+@model DeliveryOrderViewModel 
+
+<div class="row">
+    @foreach (var emp in Model.Employees)
+    {
+        var orders = Model.DispatchBoardData.Where(c => c.DispatchedToEmployeeId == emp.Id);
+        if (orders.Count() < 1)
+        {
+            continue;
+        }
+
+        <div class="col-4" style="margin-bottom:20px">
+            <div style="overflow-y:scroll; overflow-x:scroll; display:block; height:115px;margin:5px;border:1px solid #9fecfd;background-color:#fff">
+                <table class="table-striped" style="width:450px; ">
+                    <thead>
+                        <tr style="color:#1052f1; height:22px">
+                            <th colspan="7">(@orders.First().DispatchedToEmployeeId) @orders.First().DispatchedToEmployeeName - @orders.First().DispatchedToEmployeeContactNo </th>
+
+                        </tr>
+                        <tr style="background-color:#e3f4f8">
+                            <th style="width:110px; text-align:center">Action</th>
+                            <th>W/B</th>
+                            <th>Type</th>
+                            <th>SVC</th>
+                            <th>Unit</th>
+                            <th>Shipper</th>
+                            <th>Consignee</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in orders)
+                        {
+                            <tr style="background-color:@item.RowColorCode">
+                                <td style="text-align:center">
+                                    <button class="btn-primary btnPickup" title="Pick up" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber" data-toggle="modal" data-target="#orderPickup">
+                                        <i class="fa fa-arrow-circle-up"></i>
+                                    </button>
+                                    <button class="btn-warning btnPasson" title="Pass on" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber" data-toggle="modal" data-target="#orderPassOn">
+                                        <i class="fa fa-arrow-circle-right"></i>
+                                    </button>
+                                    <button class="btn-success btnDeliver" title="Deliver" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber" data-toggle="modal" data-target="#orderDeliver">
+                                        <i class="fa fa-check-circle"></i>
+                                    </button>
+                                    <button class="btn-danger btnRemoveDispatch" title="Remove this dispatch" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                                <td>@item.WayBillNumber</td>
+                                <td><span title="S: Single Order; R: Return Order">@item.OrderTypeFlag</span></td>
+                                <td>@item.DeliveryOptionCode</td>
+                                <td>@item.UnitQuantity (@item.UnitTypeName)</td>
+                                <td title="@item.ShipperCustomerName">
+                                    @{
+                                        if (item.ShipperCustomerName.Length > 15)
+                                        {
+                                            @item.ShipperCustomerName.Substring(0, 15);
+                                        }
+                                        else
+                                        {
+                                            @item.ShipperCustomerName;
+                                        }
+                                    }
+                                </td>
+                                <td title="@item.ConsigneeCustomerName">
+                                    @{
+                                        if (item.ConsigneeCustomerName.Length > 15)
+                                        {
+                                            @item.ConsigneeCustomerName.Substring(0, 12);
+                                        }
+                                        else
+                                        {
+                                            @item.ConsigneeCustomerName;
+                                        }
+                                    }
+                                </td>
+                                <td>@item.OrderStatus</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

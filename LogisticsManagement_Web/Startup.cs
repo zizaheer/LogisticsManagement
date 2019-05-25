@@ -55,9 +55,8 @@ namespace LogisticsManagement_Web
             services.AddScoped<IDataRepository<App_ScreenPermissionPoco>, EntityFrameworkGenericRepository<App_ScreenPermissionPoco>>();
             services.AddScoped<IDataRepository<App_UserPoco>, EntityFrameworkGenericRepository<App_UserPoco>>();
             services.AddScoped<IDataRepository<App_UserGroupPoco>, EntityFrameworkGenericRepository<App_UserGroupPoco>>();
-            services.AddScoped<IDataRepository<Lms_AccountBalancePoco>, EntityFrameworkGenericRepository<Lms_AccountBalancePoco>>();
+            services.AddScoped<IDataRepository<Lms_ParentGLCodePoco>, EntityFrameworkGenericRepository<Lms_ParentGLCodePoco>>();
             services.AddScoped<IDataRepository<Lms_AccountTypePoco>, EntityFrameworkGenericRepository<Lms_AccountTypePoco>>();
-            services.AddScoped<IDataRepository<Lms_AccTransactionDetailPoco>, EntityFrameworkGenericRepository<Lms_AccTransactionDetailPoco>>();
             services.AddScoped<IDataRepository<Lms_AdditionalServicePoco>, EntityFrameworkGenericRepository<Lms_AdditionalServicePoco>>();
             services.AddScoped<IDataRepository<Lms_AddressPoco>, EntityFrameworkGenericRepository<Lms_AddressPoco>>();
             services.AddScoped<IDataRepository<Lms_AddressMappingPoco>, EntityFrameworkGenericRepository<Lms_AddressMappingPoco>>();
@@ -95,6 +94,7 @@ namespace LogisticsManagement_Web
             services.AddScoped<IDataRepository<Lms_StorageOrderDeliveryPoco>, EntityFrameworkGenericRepository<Lms_StorageOrderDeliveryPoco>>();
             services.AddScoped<IDataRepository<Lms_TariffPoco>, EntityFrameworkGenericRepository<Lms_TariffPoco>>();
             services.AddScoped<IDataRepository<Lms_TransactionPoco>, EntityFrameworkGenericRepository<Lms_TransactionPoco>>();
+            services.AddScoped<IDataRepository<Lms_TransactionDetailPoco>, EntityFrameworkGenericRepository<Lms_TransactionDetailPoco>>();
             services.AddScoped<IDataRepository<Lms_UnitTypePoco>, EntityFrameworkGenericRepository<Lms_UnitTypePoco>>();
             services.AddScoped<IDataRepository<Lms_VehicleTypePoco>, EntityFrameworkGenericRepository<Lms_VehicleTypePoco>>();
             services.AddScoped<IDataRepository<Lms_VehicleUnitMappingPoco>, EntityFrameworkGenericRepository<Lms_VehicleUnitMappingPoco>>();

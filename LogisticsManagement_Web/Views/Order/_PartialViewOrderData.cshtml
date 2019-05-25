@@ -33,7 +33,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.DispatchBoardData.OrderByDescending(c => c.WayBillNumber))
+        @foreach (var item in Model.DispatchBoardData.Where(c=>c.OrderStatus=="0").ToList().OrderByDescending(c => c.WayBillNumber))
         {
             <tr style="font-size:.85em">
                 <td>

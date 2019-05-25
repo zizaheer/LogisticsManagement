@@ -63,8 +63,6 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_ChartOfAccountPoco Add(Lms_ChartOfAccountPoco poco)
         {
-            //var newAccount = GetList().Where(c => c.AccountTypeId == poco.AccountTypeId).OrderByDescending(c => c.Id).FirstOrDefault().AccountNo;
-            //poco.AccountNo = (Convert.ToInt32(newAccount) + 1).ToString().PadLeft(8, '0');
             poco.CreateDate = DateTime.Now;
 
             var addedPoco = base.Add(poco);

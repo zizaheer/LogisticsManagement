@@ -9,15 +9,13 @@ namespace LogisticsManagement_Poco
     [Table("Lms_Transaction")]
     public class Lms_TransactionPoco : IPoco
     {
-        [Key]
-        [Column("TransactionId")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, Column("TransactionId", Order =0)]
         public int Id { get; set; }
-        public int DebitAccountId { get; set; }
-        public int CreditAccountId { get; set; }
+        [Key, Column(Order = 1)]
+        public int SerialNo { get; set; }
+
+        public int AccountId { get; set; }
         public decimal TransactionAmount { get; set; }
-        public DateTime TransactionDate { get; set; }
-        public DateTime? ValueDate { get; set; }
         public string Remarks { get; set; }
     }
 }

@@ -59,6 +59,13 @@ namespace LogisticsManagement_Web.Controllers
             return PartialView("_PartialViewOrderData", GetAllRequiredDataForDispatchBoard());
         }
 
+        [HttpGet]
+        public IActionResult LoadDispatchedOrdersForDispatchBoard()
+        {
+            ValidateSession();
+            return PartialView("_PartialViewDispatchedOrders", GetAllRequiredDataForDispatchBoard());
+        }
+
         [HttpPost]
         public IActionResult Add([FromBody]dynamic orderData)
         {
@@ -251,6 +258,368 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public IActionResult UpdateDispatchStatus([FromBody]dynamic orderData)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (orderData != null)
+                {
+                    var wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(orderData[0]));
+                    var employeeNumber = Convert.ToInt32(orderData[1]);
+                    var dispatchDate = Convert.ToDateTime(orderData[2]);
+
+                    var orders = _orderLogic.GetList();
+                    var orderStatuses = _orderStatusLogic.GetList();
+
+                    using (var scope = new TransactionScope())
+                    {
+                        foreach (var item in wayBillNumberList)
+                        {
+                            var wbNumber = item.ToString();
+
+                            var filteredOrders = orders.Where(c => c.WayBillNumber == wbNumber).ToList();
+                            foreach (var order in filteredOrders)
+                            {
+                                var status = orderStatuses.Where(c => c.OrderId == order.Id).FirstOrDefault();
+
+                                status.IsDispatched = true;
+                                status.DispatchedToEmployeeId = employeeNumber;
+                                status.DispatchedDatetime = dispatchDate == null ? DateTime.Now : dispatchDate;
+                                status.StatusLastUpdatedOn = DateTime.Now;
+
+                                _orderStatusLogic.Update(status);
+                            }
+
+                        }
+
+                        scope.Complete();
+
+                        result = "Success";
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult UpdatePickupStatus([FromBody]dynamic orderData)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (orderData != null)
+                {
+                    var waitTime = string.IsNullOrEmpty(Convert.ToString(orderData[1])) == true ? null : Convert.ToDecimal(orderData[1]);
+                    var pickupDate = Convert.ToDateTime(orderData[2]);
+                    var orderId = Convert.ToInt16(orderData[3]);
+
+                    var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == orderId).FirstOrDefault();
+                    if (orderStatus != null)
+                    {
+                        using (var scope = new TransactionScope())
+                        {
+                            if (!string.IsNullOrEmpty(Convert.ToString(pickupDate)))
+                            {
+                                orderStatus.IsPickedup = true;
+                            }
+
+                            orderStatus.PickupWaitTimeHour = waitTime;
+                            orderStatus.PickupDatetime = pickupDate;
+                            orderStatus.StatusLastUpdatedOn = DateTime.Now;
+
+                            _orderStatusLogic.Update(orderStatus);
+                            scope.Complete();
+
+                            result = "Success";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult UpdatePassonStatus([FromBody]dynamic orderData)
+        {
+
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (orderData != null)
+                {
+                    var wayBillNumber = Convert.ToString(orderData[0]);
+                    var waitTime = string.IsNullOrEmpty(Convert.ToString(orderData[1])) == true ? null : Convert.ToDecimal(orderData[1]);
+                    var passOnToEmployeeId = string.IsNullOrEmpty(Convert.ToString(orderData[2])) == true ? null : Convert.ToInt16(orderData[2]);
+                    var passOffDate = Convert.ToDateTime(orderData[3]);
+                    var orderId = Convert.ToInt16(orderData[4]);
+
+                    var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == orderId).FirstOrDefault();
+
+                    if (orderStatus != null)
+                    {
+                        using (var scope = new TransactionScope())
+                        {
+                            if (!string.IsNullOrEmpty(Convert.ToString(passOffDate)))
+                            {
+                                orderStatus.IsPassedOff = true;
+                            }
+
+                            orderStatus.PassOffWaitTimeHour = waitTime;
+                            orderStatus.PassOffDatetime = passOffDate;
+                            orderStatus.PassedOffFromEmployeeId = orderStatus.DispatchedToEmployeeId;
+                            if (orderStatus.PassedOffToEmployeeId != null) {
+                                orderStatus.PassedOffFromEmployeeId = orderStatus.PassedOffToEmployeeId;
+                            }
+                            orderStatus.PassedOffToEmployeeId = passOnToEmployeeId;
+                            orderStatus.StatusLastUpdatedOn = DateTime.Now;
+
+                            _orderStatusLogic.Update(orderStatus);
+                            scope.Complete();
+
+                            result = "Success";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateDeliveryStatus([FromBody]dynamic orderData)
+        {
+
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (orderData != null)
+                {
+                    var wayBillNumber = Convert.ToString(orderData[0]);
+                    var waitTime = string.IsNullOrEmpty(Convert.ToString(orderData[1])) == true ? null : Convert.ToDecimal(orderData[1]);
+                    var deliveryDate = Convert.ToDateTime(orderData[2]);
+                    var proofNote = Convert.ToString(orderData[3]);
+                    var receivedByName = Convert.ToString(orderData[4]);
+                    var receivedBySign = Convert.ToString(orderData[5]);
+                    var orderId = Convert.ToInt16(orderData[6]);
+
+                    byte[] imageByte = null;
+                    if (receivedBySign != null && receivedBySign != "")
+                    {
+                        var base64Signature = receivedBySign.Split(",")[1];
+                        imageByte = string.IsNullOrEmpty(base64Signature) == true ? null : Convert.FromBase64String(base64Signature);
+                    }
+
+                    var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == orderId).FirstOrDefault();
+
+                    if (orderStatus != null)
+                    {
+                        using (var scope = new TransactionScope())
+                        {
+                            if (!string.IsNullOrEmpty(Convert.ToString(deliveryDate)))
+                            {
+                                orderStatus.IsDelivered = true;
+                            }
+
+                            orderStatus.DeliveredDatetime = deliveryDate;
+                            orderStatus.DeliveryWaitTimeHour = waitTime;
+                            orderStatus.ReceivedByName = receivedByName;
+                            orderStatus.ReceivedBySignature = imageByte;
+                            orderStatus.ProofOfDeliveryNote = proofNote;
+                            orderStatus.StatusLastUpdatedOn = DateTime.Now;
+
+                            _orderStatusLogic.Update(orderStatus);
+                            scope.Complete();
+
+                            result = "Success";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult RemoveDispatchStatus(string id)
+        {
+            var result = "";
+            try
+            {
+                var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
+                var dispatchedList = _orderStatusLogic.GetList();
+
+                dispatchedList = (from dispatch in dispatchedList
+                                  join order in orders on dispatch.OrderId equals order.Id
+                                  select dispatch).ToList();
+
+                using (var scope = new TransactionScope())
+                {
+                    foreach (var item in dispatchedList)
+                    {
+                        item.IsDispatched = null;
+                        item.DispatchedDatetime = null;
+                        item.DispatchedToEmployeeId = null;
+
+                        _orderStatusLogic.Update(item);
+                    }
+
+                    scope.Complete();
+
+                    result = "Success";
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult RemovePickupStatus(string id)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (id != null)
+                {
+                    var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == Convert.ToInt32(id)).FirstOrDefault();
+                    if (orderStatus != null)
+                    {
+                        using (var scope = new TransactionScope())
+                        {
+                            orderStatus.IsPickedup = null;
+                            orderStatus.PickupWaitTimeHour = null;
+                            orderStatus.PickupDatetime = null;
+                            orderStatus.StatusLastUpdatedOn = DateTime.Now;
+
+                            _orderStatusLogic.Update(orderStatus);
+                            scope.Complete();
+
+                            result = "Success";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult RemovePassonStatus(string id)
+        {
+
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (id != null)
+                {
+                    var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == Convert.ToInt32(id)).FirstOrDefault();
+
+                    if (orderStatus != null)
+                    {
+                        using (var scope = new TransactionScope())
+                        {
+                            orderStatus.IsPassedOff = null;
+                            orderStatus.PassOffWaitTimeHour = null;
+                            orderStatus.PassOffDatetime = null;
+                            orderStatus.PassedOffToEmployeeId = null;
+                            orderStatus.StatusLastUpdatedOn = DateTime.Now;
+
+                            _orderStatusLogic.Update(orderStatus);
+                            scope.Complete();
+
+                            result = "Success";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult RemoveDeliveryStatus(string id)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (id != null)
+                {
+                    var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == Convert.ToInt32(id)).FirstOrDefault();
+                    if (orderStatus != null)
+                    {
+                        using (var scope = new TransactionScope())
+                        {
+                            orderStatus.IsDelivered = null;
+                            orderStatus.DeliveredDatetime = null;
+                            orderStatus.DeliveryWaitTimeHour = null;
+                            orderStatus.ReceivedByName = null;
+                            orderStatus.ReceivedBySignature = null;
+                            orderStatus.ProofOfDeliveryNote = null;
+                            orderStatus.StatusLastUpdatedOn = DateTime.Now;
+
+                            _orderStatusLogic.Update(orderStatus);
+                            scope.Complete();
+
+                            result = "Success";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+
         public JsonResult GetTariffCostByParam(string jsonStringParam)
         {
             ValidateSession();
@@ -319,7 +688,7 @@ namespace LogisticsManagement_Web.Controllers
             return Json(JsonConvert.SerializeObject(returnedValue));
         }
 
-        public JsonResult GetOrderByWayBillId(string id)
+        public JsonResult GetOrderDetailsByWayBillId(string id)
         {
             ValidateSession();
 
@@ -334,9 +703,23 @@ namespace LogisticsManagement_Web.Controllers
                                            join order in orderPocos on addServ.OrderId equals order.Id
                                            select addServ).ToList();
 
-
                 return Json(JsonConvert.SerializeObject(new { orderPocos, orderAdditionalServices }));
+            }
+            catch (Exception ex)
+            {
+                return Json("");
+            }
+        }
 
+        public JsonResult GetOrderStatusByOrderId(string id)
+        {
+            ValidateSession();
+
+            try
+            {
+                var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == Convert.ToInt32(id)).FirstOrDefault();
+
+                return Json(JsonConvert.SerializeObject(orderStatus));
             }
             catch (Exception ex)
             {
@@ -350,7 +733,7 @@ namespace LogisticsManagement_Web.Controllers
             DeliveryOrderViewModel deliveryOrderViewModel = new DeliveryOrderViewModel();
 
             #region Get relevant data for a new order
-            
+
             _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
             deliveryOrderViewModel.Cities = _cityLogic.GetList();
 
@@ -378,8 +761,10 @@ namespace LogisticsManagement_Web.Controllers
             _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
             deliveryOrderViewModel.Employees = _employeeLogic.GetList();
 
-            if (deliveryOrderViewModel.Configuration.IsSignInRequiredForDispatch != null) {
-                if ((bool)deliveryOrderViewModel.Configuration.IsSignInRequiredForDispatch) {
+            if (deliveryOrderViewModel.Configuration.IsSignInRequiredForDispatch != null)
+            {
+                if ((bool)deliveryOrderViewModel.Configuration.IsSignInRequiredForDispatch)
+                {
 
                     var _timesheetLogic = new Lms_EmployeeTimesheetLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeeTimesheetPoco>(_dbContext));
                     var signedInEmployees = _timesheetLogic.GetList().Where(c => c.SignInDatetime != null && c.SignOutDatetime == null).ToList();
@@ -397,32 +782,80 @@ namespace LogisticsManagement_Web.Controllers
             #region get datatable for dispatch board
 
             List<DispatchBoardDataTable> dataList = new List<DispatchBoardDataTable>();
-            var orders = _orderLogic.GetList().Where(c => c.OrderTypeId == 1).ToList(); //Load single orders 
-            var ordersStatus = _orderStatusLogic.GetList().Where(c => c.IsDispatched == null || c.IsDispatched == false).ToList();
+            var orders = _orderLogic.GetList().Where(c => c.IsInvoiced == false).ToList(); //Load all orders 
+            var ordersStatus = _orderStatusLogic.GetList();
 
             var filteredOrdersForDispatchBoard = (from order in orders
                                                   join status in ordersStatus on order.Id equals status.OrderId
-                                                  select order).ToList();
+                                                  select new { order, status }).ToList();
 
             foreach (var item in filteredOrdersForDispatchBoard)
             {
                 DispatchBoardDataTable data = new DispatchBoardDataTable();
-                data.OrderDateString = item.CreateDate.ToString("dd-MMM-yy");
-                data.DeliveryOptionId = (int)item.DeliveryOptionId;
-                data.DeliveryOptionName = deliveryOrderViewModel.DeliveryOptions.Where(c=>c.Id == data.DeliveryOptionId).FirstOrDefault().OptionName;
+                data.OrderId = item.order.Id;
+                data.OrderTypeId = item.order.OrderTypeId;
+                data.OrderTypeFlag = data.OrderTypeId == 1 ? "S" : data.OrderTypeId == 2 ? "R" : "";
+                data.WayBillNumber = item.order.WayBillNumber;
+                data.OrderDateString = item.order.CreateDate.ToString("dd-MMM-yy");
+                data.DeliveryOptionId = (int)item.order.DeliveryOptionId;
+                data.DeliveryOptionName = deliveryOrderViewModel.DeliveryOptions.Where(c => c.Id == data.DeliveryOptionId).FirstOrDefault().OptionName;
                 data.DeliveryOptionCode = deliveryOrderViewModel.DeliveryOptions.Where(c => c.Id == data.DeliveryOptionId).FirstOrDefault().ShortCode;
-                data.WayBillNumber = item.WayBillNumber;
-                data.CustomerRefNumber = item.ReferenceNumber;
-                data.UnitTypeId = item.UnitTypeId;
+
+                data.CustomerRefNumber = item.order.ReferenceNumber;
+                data.UnitTypeId = item.order.UnitTypeId;
                 data.UnitTypeName = deliveryOrderViewModel.UnitTypes.Where(c => c.Id == data.UnitTypeId).FirstOrDefault().ShortCode;
-                data.UnitQuantity = item.UnitQuantity;
+                data.UnitQuantity = item.order.UnitQuantity;
                 data.SpcIns = "";
-                data.ShipperCustomerId = (int)item.ShipperCustomerId;
-                data.ShipperCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ShipperCustomerId).FirstOrDefault().CustomerName;  
-                data.ConsigneeCustomerId = (int)item.ConsigneeCustomerId;
+                data.ShipperCustomerId = (int)item.order.ShipperCustomerId;
+                data.ShipperCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ShipperCustomerId).FirstOrDefault().CustomerName;
+                data.ConsigneeCustomerId = (int)item.order.ConsigneeCustomerId;
                 data.ConsigneeCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ConsigneeCustomerId).FirstOrDefault().CustomerName;
-                data.BillerCustomerId = item.BillToCustomerId;
+                data.BillerCustomerId = item.order.BillToCustomerId;
                 data.BillerCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.BillerCustomerId).FirstOrDefault().CustomerName;
+
+                if (item.status.IsDispatched == null || item.status.IsDispatched == false)
+                {
+                    data.OrderStatus = "0"; // 0 represents not yet dispatched; just the order is created 
+
+                }
+                else if (item.status.IsDispatched == true && (item.status.IsPickedup == null || item.status.IsPickedup == false))
+                {
+                    data.OrderStatus = "WFP"; // WFP - Waiting for pickup
+                    data.RowColorCode = "#f9e6e0";
+                }
+                else if (item.status.IsPickedup == true && (item.status.IsDelivered == null || item.status.IsDelivered == false))
+                {
+                    data.OrderStatus = "WFD"; // WFD - Waiting for delivery
+                    data.RowColorCode = "#fbffbd";
+                }
+                else if (item.status.IsDelivered == true)
+                {
+                    data.OrderStatus = "WFB"; // WFB - Waiting for bill
+                    data.RowColorCode = "#ccffc6";
+                }
+
+                data.DispatchedToEmployeeId = item.status.DispatchedToEmployeeId;
+                if (data.DispatchedToEmployeeId != null)
+                {
+                    if (item.status.PassedOffToEmployeeId != null)
+                    {
+                        data.DispatchedToEmployeeId = item.status.PassedOffToEmployeeId;
+                    }
+
+                    var empInfo = deliveryOrderViewModel.Employees.Where(c => c.Id == data.DispatchedToEmployeeId).FirstOrDefault();
+                    data.DispatchedToEmployeeName = empInfo.FirstName + " " + empInfo.LastName;
+
+                    if (!string.IsNullOrEmpty(empInfo.MobileNumber))
+                    {
+                        data.DispatchedToEmployeeContactNo = empInfo.MobileNumber;
+                    }
+                    else if (!string.IsNullOrEmpty(empInfo.PhoneNumber))
+                    {
+                        data.DispatchedToEmployeeContactNo = empInfo.PhoneNumber;
+                    }
+
+                    data.DispatchedToEmployeeEmail = empInfo.EmailAddress;
+                }
 
                 dataList.Add(data);
             }
@@ -433,6 +866,9 @@ namespace LogisticsManagement_Web.Controllers
 
             return deliveryOrderViewModel;
         }
+
+
+
 
         private void ValidateSession()
         {

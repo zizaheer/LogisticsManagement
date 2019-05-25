@@ -25,11 +25,15 @@ namespace LogisticsManagement_Web.Models
 
     public class DispatchBoardDataTable
     {
+        public int OrderId { get; set; }
+        public int OrderTypeId { get; set; }
+        public string OrderTypeFlag { get; set; }
+        public string WayBillNumber { get; set; }
         public string OrderDateString { get; set; }
         public int DeliveryOptionId { get; set; }
         public string DeliveryOptionName { get; set; }
         public string DeliveryOptionCode { get; set; }
-        public string WayBillNumber { get; set; }
+        
         public string CustomerRefNumber { get; set; }
         public int UnitTypeId { get; set; }
         public string UnitTypeName { get; set; }
@@ -41,5 +45,17 @@ namespace LogisticsManagement_Web.Models
         public string ConsigneeCustomerName { get; set; }
         public int BillerCustomerId { get; set; }
         public string BillerCustomerName { get; set; }
+        public string OrderStatus { get; set; }
+        public int? DispatchedToEmployeeId { get; set; }
+        public string DispatchedToEmployeeName { get; set; }
+        public string DispatchedToEmployeeContactNo { get; set; }
+        public string DispatchedToEmployeeEmail { get; set; }
+        public string RowColorCode { get; set; }
+        //public int? PassedOffFromEmployeeId { get; set; }
+        public int? PassedOffToEmployeeId { get; set; }
+        //public string PassedOffToEmployeeName { get; set; }
+        //public string PassedOffToEmployeeContactNo { get; set; }
+        //public string PassedOffToEmployeeEmail { get; set; }
+
     }
 }

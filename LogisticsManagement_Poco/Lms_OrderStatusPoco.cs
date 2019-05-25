@@ -23,6 +23,7 @@ namespace LogisticsManagement_Poco
         public DateTime? PickupDatetime { get; set; }
         public decimal? PickupWaitTimeHour { get; set; }
         public bool? IsPassedOff { get; set; }
+        public int? PassedOffFromEmployeeId { get; set; }
         public int? PassedOffToEmployeeId { get; set; }
         public DateTime? PassOffDatetime { get; set; }
         public decimal? PassOffWaitTimeHour { get; set; }

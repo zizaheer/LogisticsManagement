@@ -20,7 +20,7 @@
     <link href="~/lib/css/style.css" rel="stylesheet">
     <link href="~/lib/vendors/pace-progress/css/pace.min.css" rel="stylesheet">
     <link href="~/css/site.min.css" rel="stylesheet" />
-    
+
 
     <!-- Global site tag (gtag.js) - Google Analytics-->
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
@@ -37,8 +37,9 @@
         gtag('config', 'UA-118965717-5');
     </script>
 </head>
-<body class="app header-fixed sidebar-minimized aside-menu-fixed sidebar-lg-show">
 
+<body class="app sidebar-minimized aside-menu-fixed sidebar-lg-show">
+    <div style="width:1150px !important; margin:0 auto">
         <header class="app-header navbar">
             <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
                 <span class="navbar-toggler-icon"></span>
@@ -86,6 +87,7 @@
             </ul>
 
         </header>
+
         <div class="app-body">
             <div class="sidebar">
                 <nav class="sidebar-nav">
@@ -249,29 +251,31 @@
         </div>
 
         <footer class="app-footer">
-            <div class="ml-auto">
+            <div class="ml-auto" style="height:100px">
                 <span style="font-size:.8em">Developed by <a href="https://www.retoll.com/" target="_blank"> <img src="~/lib/img/retoll-logo.png" width="15" height="15" /> Retoll inc.</a> Third party <a asp-area="" asp-controller="Credits" asp-action="Index">credits</a></span>
             </div>
         </footer>
-    @*@RenderSection("scripts", true)*@
+    </div>
+        @*@RenderSection("scripts", true)*@
 
-    <script src="~/lib/vendors/jquery-ui/jquery-ui.js"></script>
-    <script src="~/lib/vendors/bootstrap/js/bootstrap.min.js"></script>
+        <script src="~/lib/vendors/jquery-ui/jquery-ui.js"></script>
+        <script src="~/lib/vendors/bootstrap/js/bootstrap.min.js"></script>
 
 
-    <!-- CoreUI and necessary plugins-->
-    @*<script src="~/lib/vendors/popper.js/js/popper.min.js"></script>*@
-    <script src="~/lib/vendors/pace-progress/js/pace.min.js"></script>
-    <script src="~/lib/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js"></script>
-    <script src="~/lib/vendors/from-coreui/coreui/js/coreui.min.js"></script>
-    <!-- Plugins and scripts required by this view-->
-    @*<script src="~/lib/vendors/chart.js/js/Chart.min.js"></script>*@
-    @*<script src="~/lib/vendors/from-coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js"></script>*@
-    @*<script src="~/lib/js/main.js"></script>*@
+        <!-- CoreUI and necessary plugins-->
+        @*<script src="~/lib/vendors/popper.js/js/popper.min.js"></script>*@
+        <script src="~/lib/vendors/pace-progress/js/pace.min.js"></script>
+        <script src="~/lib/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js"></script>
+        <script src="~/lib/vendors/from-coreui/coreui/js/coreui.min.js"></script>
+        <!-- Plugins and scripts required by this view-->
+        @*<script src="~/lib/vendors/chart.js/js/Chart.min.js"></script>*@
+        @*<script src="~/lib/vendors/from-coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js"></script>*@
+        @*<script src="~/lib/js/main.js"></script>*@
 
-    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-datatables/datatables.min.css" />
-    <script type="text/javascript" src="~/lib/bootstrap-datatables/datatables.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
-    <script src="~/lib/js/bootbox.all.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-datatables/datatables.min.css" />
+        <script type="text/javascript" src="~/lib/bootstrap-datatables/datatables.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+        <script src="~/lib/js/bootbox.all.min.js"></script>
 </body>
+
 </html>
