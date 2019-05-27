@@ -7,11 +7,14 @@ using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
 using LogisticsManagement_Web.Models;
+using LogisticsManagement_Web.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Rotativa.AspNetCore;
 
 namespace LogisticsManagement_Web.Controllers
 {
@@ -37,11 +40,15 @@ namespace LogisticsManagement_Web.Controllers
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
+        private readonly IEmailService _emailService;
+        private IHostingEnvironment _hostingEnvironment;
 
-        public OrderController(IMemoryCache cache, LogisticsContext dbContext)
+        public OrderController(IMemoryCache cache, IEmailService emailService, IHostingEnvironment hostingEnvironment, LogisticsContext dbContext)
         {
             _cache = cache;
             _dbContext = dbContext;
+            _emailService = emailService;
+            _hostingEnvironment = hostingEnvironment;
             _orderLogic = new Lms_OrderLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderPoco>(_dbContext));
             _orderStatusLogic = new Lms_OrderStatusLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderStatusPoco>(_dbContext));
         }
@@ -483,13 +490,30 @@ namespace LogisticsManagement_Web.Controllers
 
                 using (var scope = new TransactionScope())
                 {
-                    foreach (var item in dispatchedList)
+                    foreach (var orderStatus in dispatchedList)
                     {
-                        item.IsDispatched = null;
-                        item.DispatchedDatetime = null;
-                        item.DispatchedToEmployeeId = null;
+                        orderStatus.IsDispatched = null;
+                        orderStatus.DispatchedDatetime = null;
+                        orderStatus.DispatchedToEmployeeId = null;
 
-                        _orderStatusLogic.Update(item);
+                        orderStatus.IsPickedup = null;
+                        orderStatus.PickupWaitTimeHour = null;
+                        orderStatus.PickupDatetime = null;
+
+                        orderStatus.IsPassedOff = null;
+                        orderStatus.PassOffWaitTimeHour = null;
+                        orderStatus.PassOffDatetime = null;
+                        orderStatus.PassedOffToEmployeeId = null;
+
+                        orderStatus.IsDelivered = null;
+                        orderStatus.DeliveredDatetime = null;
+                        orderStatus.DeliveryWaitTimeHour = null;
+                        orderStatus.ReceivedByName = null;
+                        orderStatus.ReceivedBySignature = null;
+                        orderStatus.ProofOfDeliveryNote = null;
+                        orderStatus.StatusLastUpdatedOn = DateTime.Now;
+
+                        _orderStatusLogic.Update(orderStatus);
                     }
 
                     scope.Complete();
@@ -726,6 +750,21 @@ namespace LogisticsManagement_Web.Controllers
                 return Json("");
             }
         }
+
+        public IActionResult PrintWaybill(string id)
+        {
+            var path = _hostingEnvironment.WebRootPath + "/contents/invoices/waybill_002.pdf";
+            var something = new ViewAsPdf("PrintWaybill");
+            var file = something.BuildFile(ControllerContext).Result;
+            //var path2 = HttpContext.Request.Host.ToString();
+            //path2 += "/contents/invoices/test.pdf";
+
+            System.IO.File.WriteAllBytes(path, file);
+            _emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content", path);
+
+
+            return something;
+        } 
 
 
         private DeliveryOrderViewModel GetAllRequiredDataForDispatchBoard()

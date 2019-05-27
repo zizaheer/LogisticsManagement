@@ -65,7 +65,8 @@
                 </td>
 
                 <td>
-                    <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-primary btnEdit" type="button" title="Edit"><i class="fa fa-edit"></i></button>
+                    <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-primary btnEdit" type="button" title="Edit" data-target="#newOrder" data-toggle="modal"><i class="fa fa-edit"></i></button>
+                    <a id="btnPrintPreview" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-warning btnPrintPreview" href="@Url.Action("PrintWaybill","Order")" target="_blank" title="Print preview"><i class="fa fa-print"></i> </a>
                     <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button" title="Delete"><i class="fa fa-trash"></i> </button>
                 </td>
             </tr>

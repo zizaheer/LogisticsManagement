@@ -187,26 +187,6 @@ namespace LogisticsManagement_Web.Controllers
             return Json(string.Empty);
         }
 
-        public IActionResult StandardPdf()
-        {
-
-
-            var path = _hostingEnvironment.WebRootPath + "/contents/invoices/test.pdf";
-            var something = new ViewAsPdf("Reprtdfdf");
-            var file = something.BuildFile(ControllerContext).Result;
-            //var path2 = HttpContext.Request.Host.ToString();
-            //path2 += "/contents/invoices/test.pdf";
-
-            System.IO.File.WriteAllBytes(path, file);
-            _emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content", path);
-
-
-
-
-            return something;
-
-        }
-
         private void ValidateSession()
         {
             if (HttpContext.Session.GetString("SessionData") != null)
