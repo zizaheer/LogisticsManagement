@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogisticsManagement_Web.Models
 {
-    public class CustomerViewModel
+    public class ViewModel_Customer
     {
         public List<Lms_CustomerPoco> Customers { get; set; }
         public List<Lms_AddressPoco> Addressess { get; set; }
@@ -14,5 +14,6 @@ namespace LogisticsManagement_Web.Models
         public List<App_ProvincePoco> Provinces { get; set; }
         public List<App_CountryPoco> Countries { get; set; }
         public List<Lms_EmployeePoco> Employees { get; set; }
+        public List<ViewModel_AddressForAutoComplete> AddressLinesForAutoComplete { get; set; }
     }
 }

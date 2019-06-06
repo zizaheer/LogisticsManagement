@@ -1,8 +1,13 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model CustomerViewModel
+@model ViewModel_Customer
 
 
-
+<style>
+    .dataTables_filter {
+        float: left;
+        margin-left:-100%;
+    }
+</style>
 <script>
     $(document).ready(function () {
 
@@ -10,7 +15,13 @@
             $('#customer-list').DataTable().destroy();
         }
         $('#customer-list').DataTable({
-            "order": [[0, "desc"]]
+            "order": [[0, "desc"]],
+            "paging": false,
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+                
+            }
         });
     });
 </script>
@@ -18,7 +29,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <table id="customer-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" width=100%>
+        <table id="customer-list" class="table table-sm  table-striped table-bordered lms_dataTable"  cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
             <thead>
                 <tr>
                     <th>Number</th>
@@ -51,8 +62,8 @@
                         </td>
 
                         <td>
-                            <button id="btnEdit" data-customerid='@item.Id' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
-                            <button id="btnDelete" data-customerid='@item.Id' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                            <button id="btnEdit" data-customerid='@item.Id' class="btn btn-sm btn-ghost-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
+                            <button id="btnDelete" data-customerid='@item.Id' class="btn btn-sm btn-ghost-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
                         </td>
                     </tr>
                 }

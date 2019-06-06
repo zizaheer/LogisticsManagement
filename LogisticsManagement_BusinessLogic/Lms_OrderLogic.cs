@@ -125,7 +125,9 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@CargoCtlNumber", SqlDbType.VarChar, 50) { Value = (object)orderPoco.CargoCtlNumber ?? DBNull.Value },
                 new SqlParameter("@AwbCtnNumber", SqlDbType.VarChar, 50) { Value =(object) orderPoco.AwbCtnNumber ?? DBNull.Value },
                 new SqlParameter("@ShipperCustomerId", SqlDbType.Int) { Value = (object)orderPoco.ShipperCustomerId ?? DBNull.Value },
+                new SqlParameter("@ShipperAddressId", SqlDbType.Int) { Value = (object)orderPoco.ShipperAddressId ?? DBNull.Value },
                 new SqlParameter("@ConsigneeCustomerId", SqlDbType.Int) { Value = (object)orderPoco.ConsigneeCustomerId ?? DBNull.Value },
+                new SqlParameter("@ConsigneeAddressId", SqlDbType.Int) { Value = (object)orderPoco.ConsigneeAddressId ?? DBNull.Value },
                 new SqlParameter("@BillToCustomerId", SqlDbType.Int) { Value = (object)orderPoco.BillToCustomerId ?? DBNull.Value },
                 new SqlParameter("@ScheduledPickupDate", SqlDbType.DateTime) { Value =(object) orderPoco.ScheduledPickupDate ?? DBNull.Value },
                 new SqlParameter("@ExpectedDeliveryDate", SqlDbType.DateTime) { Value =(object) orderPoco.ExpectedDeliveryDate ?? DBNull.Value },
@@ -138,7 +140,7 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@UnitQuantity", SqlDbType.Int) { Value = (object)orderPoco.UnitQuantity ?? DBNull.Value },
                 new SqlParameter("@OrderBasicCost", SqlDbType.Decimal) { Value = (object)orderPoco.OrderBasicCost ?? DBNull.Value },
                 new SqlParameter("@BasicCostOverriden", SqlDbType.Decimal) { Value = (object)orderPoco.BasicCostOverriden?? DBNull.Value  },
-                new SqlParameter("@FuelSurchargePercentage", SqlDbType.Bit) { Value = (object)orderPoco.FuelSurchargePercentage?? DBNull.Value  },
+                new SqlParameter("@FuelSurchargePercentage", SqlDbType.Decimal) { Value = (object)orderPoco.FuelSurchargePercentage?? DBNull.Value  },
                 new SqlParameter("@DiscountPercentOnOrderCost", SqlDbType.Decimal) { Value = (object)orderPoco.DiscountPercentOnOrderCost ?? DBNull.Value },
                 new SqlParameter("@ApplicableGstPercent", SqlDbType.Decimal) { Value = (object)orderPoco.ApplicableGstPercent ?? DBNull.Value },
                 new SqlParameter("@TotalOrderCost", SqlDbType.Decimal) { Value = (object)orderPoco.TotalOrderCost ?? DBNull.Value },
@@ -161,7 +163,7 @@ namespace LogisticsManagement_BusinessLogic
 
             StringBuilder query = new StringBuilder();
             query.Append("EXEC CreateNewOrder ");
-            query.Append("@OrderTypeId, @WayBillNumber, @ReferenceNumber, @CargoCtlNumber, @AwbCtnNumber, @ShipperCustomerId, @ConsigneeCustomerId, ");
+            query.Append("@OrderTypeId, @WayBillNumber, @ReferenceNumber, @CargoCtlNumber, @AwbCtnNumber, @ShipperCustomerId, @ShipperAddressId, @ConsigneeCustomerId, @ConsigneeAddressId, ");
             query.Append("@BillToCustomerId, @ScheduledPickupDate, @ExpectedDeliveryDate, @CityId, @DeliveryOptionId, ");
 
             query.Append("@VehicleTypeId, @UnitTypeId, @WeightScaleId, @WeightTotal, @UnitQuantity, @OrderBasicCost, ");

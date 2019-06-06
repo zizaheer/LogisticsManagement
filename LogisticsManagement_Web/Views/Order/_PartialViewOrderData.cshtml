@@ -1,5 +1,5 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model DeliveryOrderViewModel 
+@model ViewModel_DeliveryOrder 
 
 <script>
     $(document).ready(function () {
@@ -16,7 +16,7 @@
     });
 </script>
 
-<table id="order-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important">
+<table id="order-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr>
             <th>W/B #</th>
@@ -33,9 +33,9 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.DispatchBoardData.Where(c=>c.OrderStatus=="0").ToList().OrderByDescending(c => c.WayBillNumber))
+        @foreach (var item in Model.DispatchedOrders.Where(c=>c.OrderStatus=="0").ToList().OrderByDescending(c => c.WayBillNumber))
         {
-            <tr style="font-size:.85em">
+            <tr >
                 <td>
                     <input type="checkbox" id="chkDispatchToEmployee" class="chkDispatchToEmployee" name="chkDispatchToEmployee" data-waybillnumber="@item.WayBillNumber"> @item.WayBillNumber
                 </td>
@@ -66,7 +66,6 @@
 
                 <td>
                     <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-primary btnEdit" type="button" title="Edit" data-target="#newOrder" data-toggle="modal"><i class="fa fa-edit"></i></button>
-                    <a id="btnPrintPreview" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-warning btnPrintPreview" href="@Url.Action("PrintWaybill","Order")" target="_blank" title="Print preview"><i class="fa fa-print"></i> </a>
                     <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button" title="Delete"><i class="fa fa-trash"></i> </button>
                 </td>
             </tr>

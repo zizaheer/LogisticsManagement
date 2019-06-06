@@ -1,10 +1,10 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model DeliveryOrderViewModel 
+@model ViewModel_DeliveryOrder
 
 <div class="row">
     @foreach (var emp in Model.Employees)
     {
-        var orders = Model.DispatchBoardData.Where(c => c.DispatchedToEmployeeId == emp.Id);
+        var orders = Model.DispatchedOrders.Where(c => c.DispatchedToEmployeeId == emp.Id);
         if (orders.Count() < 1)
         {
             continue;
@@ -15,7 +15,7 @@
                 <table class="table-striped" style="width:450px; ">
                     <thead>
                         <tr style="color:#1052f1; height:22px">
-                            <th colspan="7">(@orders.First().DispatchedToEmployeeId) @orders.First().DispatchedToEmployeeName - @orders.First().DispatchedToEmployeeContactNo </th>
+                            <th colspan="7">(@orders.First().DispatchedToEmployeeId) @orders.First().DispatchedToEmployeeName - @orders.First().DispatchedToEmployeePhone </th>
 
                         </tr>
                         <tr style="background-color:#e3f4f8">
@@ -84,3 +84,7 @@
         </div>
     }
 </div>
+
+
+
+<script src="~/js/order-dispatched-orders.js"></script>

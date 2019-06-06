@@ -37,6 +37,8 @@ namespace LogisticsManagement_Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddHttpContextAccessor();
+
             services.AddTransient<IEmailService, EmailService>();
             services.AddDistributedMemoryCache();
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(20));

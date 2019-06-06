@@ -156,9 +156,9 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-        private CustomerViewModel GetCustomerData()
+        private ViewModel_Customer GetCustomerData()
         {
-            CustomerViewModel customerViewModel = new CustomerViewModel();
+            ViewModel_Customer customerViewModel = new ViewModel_Customer();
             customerViewModel.Customers = _customerLogic.GetList();
 
             _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
@@ -172,6 +172,28 @@ namespace LogisticsManagement_Web.Controllers
             customerViewModel.Cities = _cityLogic.GetList();
             customerViewModel.Provinces = _provinceLogic.GetList();
             customerViewModel.Countries = _countryLogic.GetList();
+
+            List<ViewModel_AddressForAutoComplete> addressesForAutoComplete = new List<ViewModel_AddressForAutoComplete>();
+
+            foreach (var address in customerViewModel.Addressess)
+            {
+                ViewModel_AddressForAutoComplete addressForAutoComplete = new ViewModel_AddressForAutoComplete();
+
+                addressForAutoComplete.AddressId = address.Id;
+
+                string addressLine = "";
+                addressLine += address.UnitNumber;
+                addressLine += !string.IsNullOrEmpty(address.UnitNumber) ? ", " + address.AddressLine : address.AddressLine;
+                addressLine += !string.IsNullOrEmpty(address.AddressLine) ? ", " + customerViewModel.Cities.Find(c => c.Id == address.CityId).CityName : customerViewModel.Cities.Find(c => c.Id == address.CityId).CityName;
+                addressLine += !string.IsNullOrEmpty(address.CityId.ToString()) ? ", " + customerViewModel.Provinces.Find(c => c.Id == address.ProvinceId).ShortCode : customerViewModel.Provinces.Find(c => c.Id == address.ProvinceId).ShortCode;
+                addressLine += !string.IsNullOrEmpty(address.ProvinceId.ToString()) ? ", " + customerViewModel.Countries.Find(c => c.Id == address.CountryId).CountryName : customerViewModel.Countries.Find(c => c.Id == address.CountryId).CountryName;
+                addressLine += !string.IsNullOrEmpty(address.CountryId.ToString()) ? ", " + address.PostCode : address.PostCode;
+                addressForAutoComplete.AddressLine = addressLine;
+
+                addressesForAutoComplete.Add(addressForAutoComplete);
+            }
+
+            customerViewModel.AddressLinesForAutoComplete = addressesForAutoComplete;
 
             return customerViewModel;
         }

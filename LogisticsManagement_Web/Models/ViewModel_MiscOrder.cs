@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogisticsManagement_Web.Models
 {
-    public class StorageOrderViewModel
+    public class ViewModel_MiscOrder
     {
     }
 }

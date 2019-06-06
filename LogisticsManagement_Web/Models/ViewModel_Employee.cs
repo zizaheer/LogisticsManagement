@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogisticsManagement_Web.Models
 {
-    public class EmployeeViewModel
+    public class ViewModel_Employee
     {
         public List<Lms_EmployeePoco> Employees { get; set; }
         public List<Lms_EmployeeTypePoco> EmployeeTypes { get; set; }

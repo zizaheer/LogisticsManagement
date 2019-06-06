@@ -6,7 +6,7 @@ using LogisticsManagement_Poco;
 
 namespace LogisticsManagement_Web.Models
 {
-    public class TariffViewModel
+    public class ViewModel_Tariff
     {
         public Lms_TariffPoco Tariff { get; set; }
         public List<App_CityPoco> Cities { get; set; }

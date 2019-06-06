@@ -138,7 +138,7 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult PartialViewDataTable()
         {
             ValidateSession();
-            List<AddressViewModelForDataTable> filteredAddresses = new List<AddressViewModelForDataTable>();
+            List<ViewModel_AddressDetail> filteredAddresses = new List<ViewModel_AddressDetail>();
 
             try
             {
@@ -149,7 +149,7 @@ namespace LogisticsManagement_Web.Controllers
                 foreach (var address in addresses)
                 {
 
-                    AddressViewModelForDataTable filteredAddress = new AddressViewModelForDataTable();
+                    ViewModel_AddressDetail filteredAddress = new ViewModel_AddressDetail();
                     filteredAddress.AddressId = address.Id;
                     filteredAddress.UnitNumber = address.UnitNumber;
                     filteredAddress.HouseNumber = address.HouseNumber;
@@ -182,16 +182,16 @@ namespace LogisticsManagement_Web.Controllers
         {
             var addressList = _addressLogic.GetList();
 
-            List<AddressViewModelForAutoComplete> addressesForAutoComplete = new List<AddressViewModelForAutoComplete>();
+            List<ViewModel_AddressDetail> addressesForAutoComplete = new List<ViewModel_AddressDetail>();
             if (addressList.Count > 0)
             {
                 foreach (var address in addressList)
                 {
-                    AddressViewModelForAutoComplete addressForAutoComplete = new AddressViewModelForAutoComplete();
+                    ViewModel_AddressDetail addressForAutoComplete = new ViewModel_AddressDetail();
                     addressForAutoComplete.label = (address.UnitNumber == null ? "" : address.UnitNumber + ", ") + address.AddressLine + "  (" + address.Id + ")";
                     addressForAutoComplete.value = address.Id.ToString();
 
-                    addressForAutoComplete.Id = address.Id.ToString();
+                    addressForAutoComplete.AddressId = address.Id;
                     addressForAutoComplete.UnitNumber = address.UnitNumber;
 
                     addressForAutoComplete.HouseNumber = address.HouseNumber;
@@ -209,9 +209,9 @@ namespace LogisticsManagement_Web.Controllers
             return Json(JsonConvert.SerializeObject(addressesForAutoComplete));
         }
 
-        private AddressViewModel GetAddresses()
+        private ViewModel_Address GetAddresses()
         {
-            AddressViewModel addressViewModels = new AddressViewModel();
+            ViewModel_Address addressViewModels = new ViewModel_Address();
             addressViewModels.Addresses = _addressLogic.GetList();
             addressViewModels.Cities = _cityLogic.GetList();
             addressViewModels.Provinces = _provinceLogic.GetList();

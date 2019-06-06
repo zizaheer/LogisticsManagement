@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace LogisticsManagement_Web.Models
 {
-    public class UserViewModel
+    public class ViewModel_User
     {
         public int Id { get; set; }
         public int GroupId { get; set; }

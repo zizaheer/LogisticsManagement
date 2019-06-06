@@ -22,42 +22,61 @@ namespace LogisticsManagement_Web.Services
         }
 
 
-        public async Task SendEmail(string email, string subject, string message, string attachmentFilePath)
+        public async Task SendEmail(string sentToFirstName, string sendToEmailAddress, int emailType, string attachmentFilePath = "", string emailSubject = "", string emailMessage = "")
         {
-            using (var client = new SmtpClient())
+            try
             {
-
-                var credential = new NetworkCredential
+                using (var client = new SmtpClient())
                 {
-                    UserName = _configuration["Email:Email"],
-                    Password = _configuration["Email:Password"]
-                };
 
-                client.Credentials = credential;
-                client.Host = _configuration["Email:Host"];
-                client.Port = int.Parse(_configuration["Email:Port"]);
-                client.EnableSsl = true;
-
-                using (var emailMessage = new MailMessage())
-                {
-                    emailMessage.To.Add(email);
-                    emailMessage.From = new MailAddress(_configuration["Email:Email"]);
-                    emailMessage.Subject = subject;
-                    emailMessage.Body = message;
-
-                    if (!string.IsNullOrEmpty(attachmentFilePath))
+                    var credential = new NetworkCredential
                     {
-                        Attachment attachment = new Attachment(attachmentFilePath);
-                        emailMessage.Attachments.Add(attachment);
+                        UserName = _configuration["Email:Email"],
+                        Password = _configuration["Email:Password"]
+                    };
+
+                    client.Credentials = credential;
+                    client.Host = _configuration["Email:Host"];
+                    client.Port = int.Parse(_configuration["Email:Port"]);
+                    client.EnableSsl = true;
+
+                    using (var mailMessage = new MailMessage())
+                    {
+                        mailMessage.To.Add(sendToEmailAddress);
+                        mailMessage.From = new MailAddress(_configuration["Email:Email"]);
+
+                        if (emailType == 1)
+                        {
+                            mailMessage.Subject = _configuration["WaybillEmail:Subject"];
+                            mailMessage.Body = _configuration["WaybillEmail:Salutation"];
+                            mailMessage.Body = mailMessage.Body + sentToFirstName + Environment.NewLine;
+                            mailMessage.Body = mailMessage.Body + _configuration["WaybillEmail:BodyText"];
+                        }
+                        else if (emailType == 2)
+                        {
+                            mailMessage.Subject = _configuration["InvoiceEmail:Subject"];
+                            mailMessage.Body = _configuration["InvoiceEmail:Salutation"];
+                            mailMessage.Body = mailMessage.Body + sentToFirstName + Environment.NewLine;
+                            mailMessage.Body = mailMessage.Body + _configuration["InvoiceEmail:BodyText"];
+                        }
+
+                        if (!string.IsNullOrEmpty(attachmentFilePath))
+                        {
+                            Attachment attachment = new Attachment(attachmentFilePath);
+                            mailMessage.Attachments.Add(attachment);
+                        }
+
+                        client.Send(mailMessage);
                     }
 
-                    client.Send(emailMessage);
                 }
 
+                await Task.CompletedTask;
             }
+            catch (Exception ex)
+            {
 
-            await Task.CompletedTask;
-
+            }
         }
     }
 }

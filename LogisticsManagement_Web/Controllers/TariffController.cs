@@ -152,7 +152,7 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-        private TariffViewModel GetTariffData()
+        private ViewModel_Tariff GetTariffData()
         {
             _tariffLogic = new Lms_TariffLogic(_cache, new EntityFrameworkGenericRepository<Lms_TariffPoco>(_dbContext));
             _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
@@ -161,7 +161,7 @@ namespace LogisticsManagement_Web.Controllers
             _unitTypeLogic = new Lms_UnitTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_UnitTypePoco>(_dbContext));
             _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
 
-            TariffViewModel tariffViewModel = new TariffViewModel();
+            ViewModel_Tariff tariffViewModel = new ViewModel_Tariff();
 
             tariffViewModel.Tariffs = _tariffLogic.GetList();
             tariffViewModel.Cities = _cityLogic.GetList();

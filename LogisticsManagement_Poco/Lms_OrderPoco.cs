@@ -19,7 +19,9 @@ namespace LogisticsManagement_Poco
         public string CargoCtlNumber { get; set; }
         public string AwbCtnNumber { get; set; }
         public int? ShipperCustomerId { get; set; }
+        public int? ShipperAddressId { get; set; }
         public int? ConsigneeCustomerId { get; set; }
+        public int? ConsigneeAddressId { get; set; }
         public int BillToCustomerId { get; set; }
         public DateTime? ScheduledPickupDate { get; set; }
         public DateTime? ExpectedDeliveryDate { get; set; }

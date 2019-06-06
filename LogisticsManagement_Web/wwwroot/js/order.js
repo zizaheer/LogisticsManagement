@@ -24,23 +24,6 @@ $(document).ready(function () {
     $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(new Date));
     $('#txtDispatchDatetimeForNewOrders').val(ConvertDatetimeToUSDatetime(new Date));
 
-    $(function () {
-        var canvas = document.querySelector('#signatureCanvas');
-        var pad = new SignaturePad(canvas);
-
-        $('#btnOk').click(function () {
-            var data = pad.toDataURL();
-            $('#imgSignature').val(data);
-            pad.off();
-        });
-
-        $('#btnCancel').click(function () {
-            pad.clear();
-            pad.on();
-            $('#imgSignature').val('');
-        });
-    });
-
 });
 
 //#endregion 
@@ -139,42 +122,6 @@ $('#txtBillerCustomerNo').keypress(function (event) {
     }
 
 });
-
-$('#txtShipperCustomerNo').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-
-        var id = $('#txtShipperCustomerNo').val();
-        $('#ddlShipperId').val(id);
-
-        if ($('#ddlShipperId').val() === null) {
-            $('#ddlShipperId').val(0);
-            bootbox.alert('Customer not found');
-        }
-        else {
-            $('#ddlShipperId').change();
-        }
-
-    }
-});
-
-$('#txtConsigneeCustomerNo').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-
-        var id = $('#txtConsigneeCustomerNo').val();
-        $('#ddlConsigneeId').val(id);
-
-        if ($('#ddlConsigneeId').val() === null) {
-            $('#ddlConsigneeId').val(0);
-            bootbox.alert('Customer not found');
-        }
-        else {
-            $('#ddlConsigneeId').change();
-        }
-    }
-});
-
 $('#ddlBillerId').on('change', function () {
 
     $('#txtBillerCustomerNo').val($('#ddlBillerId').val());
@@ -200,47 +147,71 @@ $('#ddlBillerId').on('change', function () {
 
 });
 
+$('#txtShipperCustomerNo').keypress(function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+
+        var id = $('#txtShipperCustomerNo').val();
+        $('#ddlShipperId').val(id);
+
+        if ($('#ddlShipperId').val() === null) {
+            $('#ddlShipperId').val(0);
+            bootbox.alert('Customer not found');
+        }
+        else {
+            $('#ddlShipperId').change();
+        }
+
+    }
+});
 $('#ddlShipperId').on('change', function () {
 
-    var shipperAddress = null;
     var selectedValue = $('#ddlShipperId').val();
 
     var shipperInfo = JSON.parse(GetCustomerInfo(selectedValue));
     if (shipperInfo !== null || shipperInfo !== undefined) {
+
         var mailingAddId = shipperInfo.MailingAddressId;
         var billingAddId = shipperInfo.BillingAddressId;
 
         if (mailingAddId !== null) {
-            shipperAddress = JSON.parse(GetAddressInfo(mailingAddId));
+            FillShipperAddress(mailingAddId);
         }
         else if (billingAddId !== null) {
-            shipperAddress = JSON.parse(GetAddressInfo(billingAddId));
-        }
-
-        if (shipperAddress !== null) {
-            $('#txtShipperCustomerNo').val($('#ddlShipperId').val());
-            $('#txtShipperAddressline').val(shipperAddress.AddressLine);
-            $('#txtShipperUnitNo').val(shipperAddress.UnitNumber);
-            $('#ddlShipperCityId').val(shipperAddress.CityId);
-            $('#ddlShipperProvinceId').val(shipperAddress.ProvinceId);
-            $('#txtShipperPostcode').val(shipperAddress.PostCode);
-
+            FillShipperAddress(billingAddId);
         }
     }
 
     if (paidByValue === '1') {
         $('#ddlBillerId').val(selectedValue);
+        $('#txtBillerCustomerNo').val($('#ddlBillerId').val());
     }
     else if (paidByValue === '2') {
         $('#ddlBillerId').val($('#ddlConsigneeId').val());
+        $('#txtBillerCustomerNo').val($('#ddlBillerId').val());
     }
 
     $('#txtUnitQuantity').change();
 });
 
+$('#txtConsigneeCustomerNo').keypress(function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+
+        var id = $('#txtConsigneeCustomerNo').val();
+        $('#ddlConsigneeId').val(id);
+
+        if ($('#ddlConsigneeId').val() === null) {
+            $('#ddlConsigneeId').val(0);
+            bootbox.alert('Customer not found');
+        }
+        else {
+            $('#ddlConsigneeId').change();
+        }
+    }
+});
 $('#ddlConsigneeId').on('change', function () {
 
-    var consigneeAddress = null;
     var selectedValue = $('#ddlConsigneeId').val();
 
     var consigneeInfo = JSON.parse(GetCustomerInfo(selectedValue));
@@ -250,27 +221,20 @@ $('#ddlConsigneeId').on('change', function () {
         var billingAddId = consigneeInfo.BillingAddressId;
 
         if (mailingAddId !== null) {
-            consigneeAddress = JSON.parse(GetAddressInfo(mailingAddId));
+            FillConsigneeAddress(mailingAddId);
         }
         else if (billingAddId !== null) {
-            consigneeAddress = JSON.parse(GetAddressInfo(billingAddId));
-        }
-
-        if (consigneeAddress !== null) {
-            $('#txtConsigneeCustomerNo').val($('#ddlConsigneeId').val());
-            $('#txtConsigneeAddressline').val(consigneeAddress.AddressLine);
-            $('#txtConsigneeUnitNo').val(consigneeAddress.UnitNumber);
-            $('#ddlConsigneeCityId').val(consigneeAddress.CityId);
-            $('#ddlConsigneeProvinceId').val(consigneeAddress.ProvinceId);
-            $('#txtConsigneePostcode').val(consigneeAddress.PostCode);
+            FillConsigneeAddress(billingAddId);
         }
     }
 
     if (paidByValue === '2') {
         $('#ddlBillerId').val(selectedValue);
+        $('#txtBillerCustomerNo').val($('#ddlBillerId').val());
     }
     else if (paidByValue === '1') {
         $('#ddlBillerId').val($('#ddlShipperId').val());
+        $('#txtBillerCustomerNo').val($('#ddlBillerId').val());
     }
 
     $('#txtUnitQuantity').change();
@@ -317,7 +281,7 @@ $('#txtOverriddenOrderCost').on('change', function (event) {
     $('#txtUnitQuantity').change();
 });
 
-$('#service-list .chkAddService').change(function (event) {
+$('#service-list .chkAddService').unbind('change').change(function (event) {
     event.preventDefault();
 
     //$(this).prop('disabled', true);
@@ -385,8 +349,6 @@ $('#txtWayBillNo').on('change', function (event) {
     GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, 1);
 });
 
-
-
 $('.btnDelete').unbind().on('click', function () {
     var waybillNumber = $(this).data('waybillnumber');
     bootbox.confirm("This waybill number will be deleted along with all relavant data. Are you sure to proceed?", function (result) {
@@ -416,6 +378,12 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
 
     if (dataArray[0].unitQuantity < 1 || dataArray[0].shipperCustomerId < 1 || dataArray[0].consigneeCustomerId < 1) {
         bootbox.alert('Shipper, consignee and unit quantity is required!');
+        event.preventDefault();
+        return;
+    }
+
+    if (dataArray[0].shipperCustomerId === dataArray[0].consigneeCustomerId && dataArray[0].shipperAddressId === dataArray[0].consigneeAddressId) {
+        bootbox.alert('Shipper and consignee address must be different!');
         event.preventDefault();
         return;
     }
@@ -462,204 +430,8 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
     selectedAdditionalServiceArray = [];
 });
 
-$('.btnPickup').unbind().on('click', function () {
-    var orderId = $(this).data('orderid');
-    $('#txtOrderIdForPickupModal').val(orderId);
-    var wayBillNumber = $(this).data('waybillnumber');
-    $('#txtWayBillNoForPickupModal').val(wayBillNumber);
-
-    var orderInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
-
-    if (orderInfo !== null) {
-        $('#txtDispatchDateTimeForPickupModal').val(orderInfo.DispatchedDatetime);
-
-        $('#ddlEmployeeId').val(orderInfo.DispatchedToEmployeeId);
-        $('#txtDispatchEmployeeNameForPickupModal').val($("#ddlEmployeeId option:selected").text());
-        $('#ddlEmployeeId').val(0); // reset <select>
-
-        if (orderInfo.PickupDatetime !== null) {
-            $('#txtPickupDateTime').val(orderInfo.PickupDatetime);
-        }
-        else
-        {
-            $('#txtPickupDateTime').val(ConvertDatetimeToUSDatetime(new Date));
-        }
-
-        $('#txtPickupWaitTime').val(orderInfo.PickupWaitTimeHour);
-    }
-});
-$('#btnSavePickup').unbind().on('click', function () {
-    var waitTime = $('#txtPickupWaitTime').val();
-    var pickupDate = $('#txtPickupDateTime').val();
-    var dispatchedDate = $('#txtDispatchDateTimeForPickupModal').val();
-    var wayBillNumber = $('#txtWayBillNoForPickupModal').val();
-    var orderId = $('#txtOrderIdForPickupModal').val();
-
-    if (pickupDate <= dispatchedDate) {
-        bootbox.alert('Pickup date must be greater than dispatch date.');
-        event.preventDefault();
-        return;
-    }
-
-    var dataArray = [wayBillNumber, waitTime, pickupDate, orderId];
-
-    UpdateEntry('Order/UpdatePickupStatus', dataArray);
-
-    event.preventDefault();
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-});
-$('#btnRemovePickup').unbind().on('click', function () {
-    var orderId = $('#txtOrderIdForPickupModal').val();
-    RemoveEntry('Order/RemovePickupStatus', orderId);
-
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-});
-
-$('.btnPasson').unbind().on('click', function () {
-
-    var orderId = $(this).data('orderid');
-    $('#txtOrderIdForPassOnModal').val(orderId);
-    var wayBillNumber = $(this).data('waybillnumber');
-    $('#txtWayBillNoForPassOnModal').val(wayBillNumber);
-
-    var orderInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
-
-    if (orderInfo !== null) {
-        $('#txtDispatchDateTimeForPassOnModal').val(orderInfo.DispatchedDatetime);
-
-        $('#ddlEmployeeId').val(orderInfo.DispatchedToEmployeeId);
-        $('#txtDispatchEmployeeNameForPassOnModal').val($("#ddlEmployeeId option:selected").text());
-        $('#ddlEmployeeId').val(0); // reset <select>
-
-        if (orderInfo.PassOffDatetime !== null) {
-            $('#txtPassOnDateTime').val(orderInfo.PassOffDatetime);
-        }
-        else
-        {
-            $('#txtPassOnDateTime').val(ConvertDatetimeToUSDatetime(new Date));
-        }
-        $('#txtPickupDateTimeForPassOnModal').val(orderInfo.PickupDatetime);
-        $('#ddlPassOnEmployeeId').val(orderInfo.PassedOffToEmployeeId);
-        $('#txtPassOnEmployeeNumber').val($('#ddlPassOnEmployeeId').val());
-        $('#txtPassOnWaitTime').val(orderInfo.PassOffWaitTimeHour);
-    }
-});
-$('#txtPassOnEmployeeNumber').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-
-        $('#ddlPassOnEmployeeId').val($('#txtPassOnEmployeeNumber').val());
-    }
-
-});
-$('#btnSavePassOn').unbind().on('click', function () {
-    var waitTime = $('#txtPassOnWaitTime').val();
-    var pickupDate = $('#txtPickupDateTimeForPassOnModal').val();
-    var passOnDate = $('#txtPassOnDateTime').val();
-    var passOnEmployeeId = $('#ddlPassOnEmployeeId').val();
-    var orderId = $('#txtOrderIdForPassOnModal').val();
-    var wayBillNumber = $('#txtWayBillNoForPassOnModal').val();
-
-    if (passOnDate <= pickupDate) {
-        bootbox.alert('Pass-on date must be greater than pickup date.');
-        event.preventDefault();
-        return;
-    }
-
-    var dataArray = [wayBillNumber, waitTime, passOnEmployeeId, passOnDate, orderId];
-
-    UpdateEntry('Order/UpdatePassonStatus', dataArray);
-
-    event.preventDefault();
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-});
-$('#btnRemovePassOn').unbind().on('click', function () {
-    var orderId = $('#txtOrderIdForPassOnModal').val();
-    RemoveEntry('Order/RemovePassonStatus', orderId);
-
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-});
-
-$('.btnDeliver').unbind().on('click', function () {
-    var orderId = $(this).data('orderid');
-    $('#txtOrderIdForDeliverModal').val(orderId);
-    var wayBillNumber = $(this).data('waybillnumber');
-    $('#txtWayBillNoForDeliverModal').val(wayBillNumber);
-
-    var orderInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
-
-    if (orderInfo !== null) {
-        $('#txtDispatchDateTimeForDeliverModal').val(orderInfo.DispatchedDatetime);
-
-
-        $('#ddlEmployeeId').val(orderInfo.DispatchedToEmployeeId);
-        $('#txtDispatchEmployeeNameForDeliverModal').val($("#ddlEmployeeId option:selected").text());
-        $('#ddlEmployeeId').val(0); // reset <select>
-
-        $('#ddlEmployeeId').val(orderInfo.PassedOffToEmployeeId);
-        $('#txtPassOnEmployeeNameForDeliverModal').val($("#ddlEmployeeId option:selected").text());
-        $('#ddlEmployeeId').val(0); // reset <select>
-
-        $('#txtPickupDateTimeForDeliverModal').val(orderInfo.PickupDatetime);
-        if (orderInfo.DeliveredDatetime !== null) {
-            $('#txtDeliveryDateTime').val(orderInfo.DeliveredDatetime);
-        }
-        else
-        {
-            $('#txtDeliveryDateTime').val(ConvertDatetimeToUSDatetime(new Date));
-        }
-        
-        $('#txtDeliveryWaitTime').val(orderInfo.DeliveryWaitTimeHour);
-        $('#txtReceivedByName').val(orderInfo.ReceivedByName);
-        $('#txtDeliveryNote').val(orderInfo.ProofOfDeliveryNote);
-        DrawSignatureImage(orderInfo.ReceivedBySignature);
-
-    }
-});
-$('#btnSaveDeliver').unbind().on('click', function () {
-    var waitTime = $('#txtDeliveryWaitTime').val();
-    var pickupDate = $('#txtPickupDateTimeForDeliverModal').val();
-    var deliveryDate = $('#txtDeliveryDateTime').val();
-    var receivedByName = $('#txtReceivedByName').val();
-    var deliveryNote = $('#txtDeliveryNote').val();
-    var receivedBySign = $('#imgSignature').val();
-    var orderId = $('#txtOrderIdForDeliverModal').val();
-
-    var wayBillNumber = $('#txtWayBillNumber').val();
-
-    if (deliveryDate <= pickupDate) {
-        bootbox.alert('Delivery date must be greater than pickup date.');
-        event.preventDefault();
-        return;
-    }
-
-    var dataArray = [wayBillNumber, waitTime, deliveryDate, deliveryNote, receivedByName, receivedBySign, orderId];
-
-    UpdateEntry('Order/UpdateDeliveryStatus', dataArray);
-
-    event.preventDefault();
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-});
-$('#btnRemoveDelivery').unbind().on('click', function () {
-    var orderId = $('#txtOrderIdForDeliverModal').val();
-    RemoveEntry('Order/RemoveDeliveryStatus', orderId);
-
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-});
-
-$('.btnRemoveDispatch').unbind().on('click', function () {
-    var wayBillNumber = $(this).data('waybillnumber');
-    bootbox.confirm("This will also remove the pickup and delivery status. Are you sure you want to remove?", function (result) {
-        if (result === true) {
-            RemoveEntry('Order/RemoveDispatchStatus', wayBillNumber);
-            $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
-            $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-        }
-    });
-});
-
 $('#btnDispatch').unbind().on('click', function (event) {
-    event.preventDefault();
+    //event.preventDefault();
     var selectedEmployeeId = $('#ddlEmployeeId').val();
     var dispatchDate = $('#txtDispatchDatetimeForNewOrders').val();
 
@@ -669,8 +441,7 @@ $('#btnDispatch').unbind().on('click', function (event) {
         return;
     }
 
-    if (dispatchDate === null || dispatchDate === "")
-    {
+    if (dispatchDate === null || dispatchDate === "") {
         bootbox.alert('Please enter dispatch date');
         event.preventDefault();
         return;
@@ -687,7 +458,7 @@ $('#btnDispatch').unbind().on('click', function (event) {
 
     UpdateEntry('Order/UpdateDispatchStatus', dataArray);
 
-    event.preventDefault();
+    //event.preventDefault();
     $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
     $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
     selectedOrdersForDispatch = [];
@@ -713,12 +484,50 @@ $('#order-list').on('click', '.btnEdit', function (event) {
 
     ClearForm();
     $('#frmOrderForm').trigger('reset');
-   
+
 
     var wbNumber = $(this).data('waybillnumber');
 
     GetAndFillOrderDetailsByWayBillNumber(wbNumber, 1);
     //$('#txtWayBillNo').attr('readonly', true);
+
+});
+
+
+$('#btnPrintWaybill').unbind().on('click', function (event) {
+    event.preventDefault();
+
+    if (selectedOrdersForDispatch.length < 1) {
+        bootbox.alert('Please select order/s to print.');
+        event.preventDefault();
+        return;
+    }
+
+    var dataArray = [selectedOrdersForDispatch];
+
+    $.ajax({
+        'async': false,
+        url: "Order/PrintWaybill",
+        type: 'POST',
+        data: JSON.stringify(dataArray),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            if (result.length > 0) {
+                window.open(result, "_blank");
+            }
+        },
+        error: function (result) {
+
+        }
+    });
+
+    //parent.document.location.href = "Order/PrintWaybill";
+
+    event.preventDefault();
+    $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
+    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+    selectedOrdersForDispatch = [];
 
 });
 
@@ -795,6 +604,36 @@ function GetCustomerInfo(customerId) {
     var customerInfo = GetSingleObjectById('Customer/GetCustomerById', customerId);
     return customerInfo;
 }
+
+function FillShipperAddress(addressId) {
+    var shipperAddress = JSON.parse(GetAddressInfo(addressId));
+
+    if (shipperAddress !== null) {
+        $('#hfShipperAddressId').val(shipperAddress.Id);
+        $('#txtShipperCustomerNo').val($('#ddlShipperId').val());
+        $('#txtShipperAddressline').val(shipperAddress.AddressLine);
+        $('#txtShipperUnitNo').val(shipperAddress.UnitNumber);
+        $('#ddlShipperCityId').val(shipperAddress.CityId);
+        $('#ddlShipperProvinceId').val(shipperAddress.ProvinceId);
+        $('#txtShipperPostcode').val(shipperAddress.PostCode);
+    }
+}
+
+function FillConsigneeAddress(addressId) {
+
+    var consigneeAddress = JSON.parse(GetAddressInfo(addressId));
+
+    if (consigneeAddress !== null) {
+        $('#hfConsigneeAddressId').val(consigneeAddress.Id);
+        $('#txtConsigneeCustomerNo').val($('#ddlConsigneeId').val());
+        $('#txtConsigneeAddressline').val(consigneeAddress.AddressLine);
+        $('#txtConsigneeUnitNo').val(consigneeAddress.UnitNumber);
+        $('#ddlConsigneeCityId').val(consigneeAddress.CityId);
+        $('#ddlConsigneeProvinceId').val(consigneeAddress.ProvinceId);
+        $('#txtConsigneePostcode').val(consigneeAddress.PostCode);
+    }
+}
+
 
 function GetAddressInfo(addressId) {
 
@@ -932,6 +771,7 @@ function FillOrderDetails(orderRelatedData) {
     if (orderRelatedData !== null) {
         $('#hfOrderId').val(orderRelatedData.Id);
 
+
         var toggle = $('input[name=chkIsReturnOrder]').data('bs.toggle');
         if (orderRelatedData.OrderTypeId === 1) {
             toggle.off(true);
@@ -946,9 +786,10 @@ function FillOrderDetails(orderRelatedData) {
         $('#txtCargoCtlNo').val(orderRelatedData.CargoCtlNumber);
         $('#txtAwbCtnNo').val(orderRelatedData.AwbCtnNumber);
         $('#ddlShipperId').val(orderRelatedData.ShipperCustomerId);
-        $('#ddlShipperId').change();
+        FillShipperAddress(orderRelatedData.ShipperAddressId);
+
         $('#ddlConsigneeId').val(orderRelatedData.ConsigneeCustomerId);
-        $('#ddlConsigneeId').change();
+        FillConsigneeAddress(orderRelatedData.ConsigneeAddressId);
 
         $('#ddlBillerId').val(orderRelatedData.BillToCustomerId);
 
@@ -1055,7 +896,9 @@ function GetFormData() {
         cargoCtlNumber: $('#txtCargoCtlNo').val() === "" ? null : $('#txtCargoCtlNo').val(),
         awbCtnNumber: $('#txtAwbCtnNo').val() === "" ? null : $('#txtAwbCtnNo').val(),
         shipperCustomerId: $('#ddlShipperId').val(),
+        shipperAddressId: $('#hfShipperAddressId').val(),
         consigneeCustomerId: $('#ddlConsigneeId').val(),
+        consigneeAddressId: $('#hfConsigneeAddressId').val(),
         billToCustomerId: $('#ddlBillerId').val(),
         scheduledPickupDate: date,
         expectedDeliveryDate: $('#txtSchedulePickupDate').val(),
@@ -1071,8 +914,8 @@ function GetFormData() {
         fuelSurchargePercentage: $('#txtFuelSurchargePercent').val() === "" ? null : $('#txtFuelSurchargePercent').val(),
         discountPercentOnOrderCost: $('#txtDiscountPercent').val() === "" ? null : $('#txtDiscountPercent').val(),
         applicableGstPercent: taxPercentage <= 0 ? null : taxPercentage,
-        totalOrderCost: $('#txtGrandTotalOrderCost').val(),
-        totalAdditionalServiceCost: $('#txtGrandAddServiceAmount').val(),
+        totalOrderCost: $('#lblGrandTotalOrderCost').text(),
+        totalAdditionalServiceCost: $('#lblGrandAddServiceAmount').text(),
         orderedBy: $('#txtContactPerson').val() === "" ? null : $('#txtContactPerson').val(),
         departmentName: null,
         contactName: $('#txtContactPerson').val() === "" ? null : $('#txtContactPerson').val(),
@@ -1102,6 +945,7 @@ function ClearForm() {
     $('#txtAwbCtnNo').val('');
     $('#lblShipperAccountNo').text('');
     $('#ddlShipperId').val(0);
+    paidByValue = '1';
 
     $('#txtShipperCustomerNo').val('');
     $('#txtShipperAddressline').val('');
@@ -1113,6 +957,11 @@ function ClearForm() {
     $('#ddlConsigneeId').val(0);
     $('#txtConsigneeCustomerNo').val('');
     $('#txtConsigneeAddressline').val('');
+
+    $('#hfOrderId').val('');
+    $('#hfShipperAddressId').val('');
+    $('#hfConsigneeAddressId').val('');
+
     $('#txtConsigneeUnitNo').val('');
     $('#ddlConsigneeCityId').val(0);
     $('#ddlConsigneeProvinceId').val(0);
@@ -1150,18 +999,6 @@ function ClearForm() {
     $('#chkIsReturnOrder').is(':checked', false);
     var toggle = $('#chkIsReturnOrder').data('bs.toggle');
     toggle.off(true);
-
-}
-
-function DrawSignatureImage(base64String) {
-    var canvas = document.getElementById('signatureCanvas');
-    var canvasContext = canvas.getContext('2d');
-    var image = new Image();
-    image.onload = function () {
-        canvasContext.drawImage(image, 0, 0);
-    };
-    image.src = "data:image/png;base64," + base64String;
-
 }
 
 //#endregion 

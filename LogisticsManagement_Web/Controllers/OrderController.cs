@@ -25,6 +25,7 @@ namespace LogisticsManagement_Web.Controllers
 
         private Lms_OrderLogic _orderLogic;
         private Lms_OrderStatusLogic _orderStatusLogic;
+        private Lms_AddressLogic _addressLogic;
         private Lms_CustomerLogic _customerLogic;
         private Lms_EmployeeLogic _employeeLogic;
         private App_CityLogic _cityLogic;
@@ -42,13 +43,16 @@ namespace LogisticsManagement_Web.Controllers
         SessionData sessionData = new SessionData();
         private readonly IEmailService _emailService;
         private IHostingEnvironment _hostingEnvironment;
+        private IHttpContextAccessor _httpContext;
 
-        public OrderController(IMemoryCache cache, IEmailService emailService, IHostingEnvironment hostingEnvironment, LogisticsContext dbContext)
+        public OrderController(IMemoryCache cache, IEmailService emailService, IHostingEnvironment hostingEnvironment, IHttpContextAccessor httpContext, LogisticsContext dbContext)
         {
             _cache = cache;
             _dbContext = dbContext;
             _emailService = emailService;
             _hostingEnvironment = hostingEnvironment;
+            _httpContext = httpContext;
+
             _orderLogic = new Lms_OrderLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderPoco>(_dbContext));
             _orderStatusLogic = new Lms_OrderStatusLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderStatusPoco>(_dbContext));
         }
@@ -393,7 +397,8 @@ namespace LogisticsManagement_Web.Controllers
                             orderStatus.PassOffWaitTimeHour = waitTime;
                             orderStatus.PassOffDatetime = passOffDate;
                             orderStatus.PassedOffFromEmployeeId = orderStatus.DispatchedToEmployeeId;
-                            if (orderStatus.PassedOffToEmployeeId != null) {
+                            if (orderStatus.PassedOffToEmployeeId != null)
+                            {
                                 orderStatus.PassedOffFromEmployeeId = orderStatus.PassedOffToEmployeeId;
                             }
                             orderStatus.PassedOffToEmployeeId = passOnToEmployeeId;
@@ -751,27 +756,153 @@ namespace LogisticsManagement_Web.Controllers
             }
         }
 
-        public IActionResult PrintWaybill(string id)
+        public JsonResult PrintWaybill([FromBody]dynamic orderData)
         {
-            var path = _hostingEnvironment.WebRootPath + "/contents/invoices/waybill_002.pdf";
-            var something = new ViewAsPdf("PrintWaybill");
-            var file = something.BuildFile(ControllerContext).Result;
-            //var path2 = HttpContext.Request.Host.ToString();
-            //path2 += "/contents/invoices/test.pdf";
+            try
+            {
+                List<ViewModel_PrintWaybill> waybillPrintViewModels = new List<ViewModel_PrintWaybill>();
+                JArray wayBillNumberList = null;
 
-            System.IO.File.WriteAllBytes(path, file);
-            _emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content", path);
+                var orderList = _orderLogic.GetList();
+
+                _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
+                var addresses = _addressLogic.GetList();
+
+                _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
+                var cities = _cityLogic.GetList();
+
+                _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
+                var provinces = _provinceLogic.GetList();
+
+                _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+                var customers = _customerLogic.GetList();
+
+                _deliveryOptionLogic = new Lms_DeliveryOptionLogic(_cache, new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
+                var deliveryOptions = _deliveryOptionLogic.GetList();
+
+                _unitTypeLogic = new Lms_UnitTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_UnitTypePoco>(_dbContext));
+                var unitTypes = _unitTypeLogic.GetList();
+
+                _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
+                var weightScales = _weightScaleLogic.GetList();
+
+                if (orderData != null)
+                {
+                    wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(orderData[0]));
+                }
+
+                foreach (var item in wayBillNumberList)
+                {
+                    var wbNumber = item.ToString();
+                    var orderInfo = orderList.Where(c => c.WayBillNumber == wbNumber && c.OrderTypeId == 1).FirstOrDefault(); //consider only the single order; not the return order
+                    if (orderInfo != null)
+                    {
+                        ViewModel_PrintWaybill waybillPrintViewModel = new ViewModel_PrintWaybill();
+
+                        waybillPrintViewModel.WaybillNumber = orderInfo.WayBillNumber;
+                        waybillPrintViewModel.WayBillDate = orderInfo.CreateDate.ToString("dd-MMM-yy");
+                        waybillPrintViewModel.BillerCustomerId = orderInfo.BillToCustomerId;
+                        waybillPrintViewModel.CustomerRefNo = orderInfo.ReferenceNumber;
+                        waybillPrintViewModel.CargoCtlNo = orderInfo.CargoCtlNumber;
+                        waybillPrintViewModel.AwbContainerNo = orderInfo.AwbCtnNumber;
+                        waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == orderInfo.BillToCustomerId).FirstOrDefault().CustomerName;
+                        waybillPrintViewModel.OrderedByName = orderInfo.OrderedBy;
+                        waybillPrintViewModel.DeliveryOptionShortCode = deliveryOptions.Where(c => c.Id == orderInfo.DeliveryOptionId).FirstOrDefault().ShortCode;
+
+                        waybillPrintViewModel.OrderBasePrice = orderInfo.OrderBasicCost.ToString();
+                        if (orderInfo.BasicCostOverriden != null && orderInfo.BasicCostOverriden > 0)
+                        {
+                            waybillPrintViewModel.OrderBasePrice = orderInfo.BasicCostOverriden.ToString();
+                        }
+
+                        if (orderInfo.DiscountPercentOnOrderCost != null && orderInfo.DiscountPercentOnOrderCost > 0)
+                        {
+                            waybillPrintViewModel.OrderBasePrice = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) - (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.DiscountPercentOnOrderCost / 100)).ToString();
+                        }
+
+                        if (orderInfo.FuelSurchargePercentage != null && orderInfo.FuelSurchargePercentage > 0)
+                        {
+                            waybillPrintViewModel.FuelSurcharge = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.FuelSurchargePercentage / 100).ToString();
+                        }
+
+                        waybillPrintViewModel.AdditionalServiceCost = orderInfo.TotalAdditionalServiceCost.ToString();
+
+                        if (orderInfo.ApplicableGstPercent != null && orderInfo.ApplicableGstPercent > 0)
+                        {
+                            waybillPrintViewModel.OrderTaxAmount = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.ApplicableGstPercent / 100).ToString();
+                        }
+
+                        waybillPrintViewModel.TotalOrderCost = orderInfo.TotalOrderCost.ToString();
+                        waybillPrintViewModel.PickupFromCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName;
+
+                        var shippperAddress = addresses.Where(c => c.Id == orderInfo.ShipperAddressId).FirstOrDefault();
+
+                        waybillPrintViewModel.PickupFromCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber + ", " + shippperAddress.AddressLine : shippperAddress.AddressLine;
+                        waybillPrintViewModel.PickupFromCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + shippperAddress.PostCode;
+
+                        waybillPrintViewModel.DeliveredToCustomerName = customers.Where(c => c.Id == orderInfo.ConsigneeCustomerId).FirstOrDefault().CustomerName;
+
+                        var consigneeAddress = addresses.Where(c => c.Id == orderInfo.ConsigneeAddressId).FirstOrDefault();
 
 
-            return something;
-        } 
+                        waybillPrintViewModel.DeliveredToCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
+                        waybillPrintViewModel.DeliveredToCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
+
+                        waybillPrintViewModel.TotalSkidPieces = 0;
+                        waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().TypeName;
+                        waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().ShortCode;
+                        waybillPrintViewModel.UnitQuantity = orderInfo.UnitQuantity;
+                        waybillPrintViewModel.WeightScaleShortCode = weightScales.Where(c => c.Id == orderInfo.WeightScaleId).FirstOrDefault().ShortCode;
+                        waybillPrintViewModel.WeightTotal = orderInfo.WeightTotal.ToString();
+                        waybillPrintViewModel.DeliveryDate = null;
+                        waybillPrintViewModel.DeliveryTime = null;
+                        waybillPrintViewModel.PUDriverName = "";
+                        waybillPrintViewModel.DeliveryDriverName = orderInfo.WayBillNumber;
+                        if (orderInfo.IsPrintedOnWayBill != null && orderInfo.IsPrintedOnWayBill == true)
+                        {
+                            waybillPrintViewModel.WaybillComments = orderInfo.CommentsForWayBill;
+                        }
+
+                        waybillPrintViewModels.Add(waybillPrintViewModel);
+
+                    }
+                }
+
+                var webrootPath = _hostingEnvironment.WebRootPath;
+                var uniqueId = DateTime.Now.ToFileTime();
+                var path = "/contents/waybills/waybill_" + uniqueId + ".pdf";
+                var filePath = webrootPath + path;
+
+                var pdfReport = new ViewAsPdf("PrintWaybill", waybillPrintViewModels);
+                var file = pdfReport.BuildFile(ControllerContext).Result;
+
+                System.IO.File.WriteAllBytes(filePath, file);
+
+                //_emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content", path);
 
 
-        private DeliveryOrderViewModel GetAllRequiredDataForDispatchBoard()
+                return Json(path);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            //return View();
+        }
+
+        private ViewModel_DeliveryOrder GetAllRequiredDataForDispatchBoard()
         {
-            DeliveryOrderViewModel deliveryOrderViewModel = new DeliveryOrderViewModel();
+            var deliveryOrderViewModel = GetDeliveryOrderRelatedAdditionalData();
+            deliveryOrderViewModel.DispatchedOrders = GetDispatchedOrders(deliveryOrderViewModel);
 
+            return deliveryOrderViewModel;
+        }
+
+        private ViewModel_DeliveryOrder GetDeliveryOrderRelatedAdditionalData()
+        {
             #region Get relevant data for a new order
+
+            ViewModel_DeliveryOrder deliveryOrderViewModel = new ViewModel_DeliveryOrder();
 
             _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
             deliveryOrderViewModel.Cities = _cityLogic.GetList();
@@ -816,11 +947,17 @@ namespace LogisticsManagement_Web.Controllers
             }
 
 
+            return deliveryOrderViewModel;
+
             #endregion
 
+        }
+
+        private List<ViewModel_OrderDispatched> GetDispatchedOrders(ViewModel_DeliveryOrder deliveryOrderViewModel)
+        {
             #region get datatable for dispatch board
 
-            List<DispatchBoardDataTable> dataList = new List<DispatchBoardDataTable>();
+            List<ViewModel_OrderDispatched> dispatchedOrders = new List<ViewModel_OrderDispatched>();
             var orders = _orderLogic.GetList().Where(c => c.IsInvoiced == false).ToList(); //Load all orders 
             var ordersStatus = _orderStatusLogic.GetList();
 
@@ -830,7 +967,7 @@ namespace LogisticsManagement_Web.Controllers
 
             foreach (var item in filteredOrdersForDispatchBoard)
             {
-                DispatchBoardDataTable data = new DispatchBoardDataTable();
+                ViewModel_OrderDispatched data = new ViewModel_OrderDispatched();
                 data.OrderId = item.order.Id;
                 data.OrderTypeId = item.order.OrderTypeId;
                 data.OrderTypeFlag = data.OrderTypeId == 1 ? "S" : data.OrderTypeId == 2 ? "R" : "";
@@ -886,26 +1023,23 @@ namespace LogisticsManagement_Web.Controllers
 
                     if (!string.IsNullOrEmpty(empInfo.MobileNumber))
                     {
-                        data.DispatchedToEmployeeContactNo = empInfo.MobileNumber;
+                        data.DispatchedToEmployeePhone = empInfo.MobileNumber;
                     }
                     else if (!string.IsNullOrEmpty(empInfo.PhoneNumber))
                     {
-                        data.DispatchedToEmployeeContactNo = empInfo.PhoneNumber;
+                        data.DispatchedToEmployeePhone = empInfo.PhoneNumber;
                     }
 
                     data.DispatchedToEmployeeEmail = empInfo.EmailAddress;
                 }
 
-                dataList.Add(data);
+                dispatchedOrders.Add(data);
             }
 
-            deliveryOrderViewModel.DispatchBoardData = dataList;
+            return dispatchedOrders;
 
             #endregion
-
-            return deliveryOrderViewModel;
         }
-
 
 
 

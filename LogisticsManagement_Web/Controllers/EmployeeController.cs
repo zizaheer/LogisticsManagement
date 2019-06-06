@@ -49,9 +49,9 @@ namespace LogisticsManagement_Web.Controllers
             return PartialView("_PartialViewEmployeeData", GetEmployeeData());
         }
 
-        private EmployeeViewModel GetEmployeeData()
+        private ViewModel_Employee GetEmployeeData()
         {
-            EmployeeViewModel employeeViewModel = new EmployeeViewModel();
+            ViewModel_Employee employeeViewModel = new ViewModel_Employee();
             employeeViewModel.Employees = _employeeLogic.GetList();
 
             _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));

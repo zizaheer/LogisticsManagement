@@ -25,6 +25,7 @@
   <ItemGroup>
     <Folder Include="Reports\" />
     <Folder Include="wwwroot\contents\invoices\" />
+    <Folder Include="wwwroot\contents\waybills\" />
   </ItemGroup>
 
 </Project>

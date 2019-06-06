@@ -88,7 +88,7 @@
 
         </header>
 
-        <div class="app-body">
+        <div class="app-body" style="height:100% !important">
             <div class="sidebar">
                 <nav class="sidebar-nav">
                     <ul class="nav">
@@ -244,15 +244,16 @@
 
                         @RenderBody()
 
+                        <div style="padding-top:200px"></div>
                     </div>
                 </div>
             </main>
 
         </div>
 
-        <footer class="app-footer">
+        <footer class="app-footer"  >
             <div class="ml-auto" style="height:100px">
-                <span style="font-size:.8em">Developed by <a href="https://www.retoll.com/" target="_blank"> <img src="~/lib/img/retoll-logo.png" width="15" height="15" /> Retoll inc.</a> Third party <a asp-area="" asp-controller="Credits" asp-action="Index">credits</a></span>
+                <span style="font-size:.8em;">Developed by <a href="https://www.retoll.com/" target="_blank"> <img src="~/lib/img/retoll-logo.png" width="15" height="15" /> Retoll inc.</a> Third party <a asp-area="" asp-controller="Credits" asp-action="Index">credits</a></span>
             </div>
         </footer>
     </div>

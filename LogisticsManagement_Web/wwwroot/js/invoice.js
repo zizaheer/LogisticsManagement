@@ -18,11 +18,6 @@ var wayBillNumberArray = [];
 var employeeNumber;
 
 
-$('#btnDownloadPendingInvoiceData').unbind().on('click', function (event) {
-    event.preventDefault();
-    $('#loadPendingInvoiceDataTable').load('Invoice/PartialViewDataTable');
-
-});
 
 
 
@@ -63,7 +58,7 @@ $('#frmInvoiceGenerationForm').unbind('submit').submit(function (event) {
     AddEntry('Invoice/Add', dataArray);
 
     event.preventDefault();
-    $('#loadDispatchedDataTable').load('Invoice/PartialViewDataTable');
+    $('#loadInvoicedDataTable').load('Invoice/PartialViewDataTable');
     $('#loadPendingDispatchDataTable').load('Invoice/PartialPendingInvoiceDataTable');
     wayBillNumberArray = [];
 });
@@ -81,7 +76,7 @@ $('#invoice-list').on('click', '.btnEdit', function (event) {
 $('.btnDelete').unbind().on('click', function () {
     var waybillNumber = $(this).data('waybillnumber');
     RemoveEntry('OrderDispatch/Remove', waybillNumber);
-    $('#loadDispatchedDataTable').load('Invoice/PartialViewDataTable');
+    $('#loadInvoicedDataTable').load('Invoice/PartialViewDataTable');
     $('#loadPendingDispatchDataTable').load('Invoice/PartialPendingInvoiceDataTable');
 });
 

@@ -1,307 +1,246 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model CustomerViewModel
+@model ViewModel_Customer
 
 
 @{
     ViewData["Title"] = "Customer";
 }
 
+<style>
+    .addressBox {
+        margin-left: 8px !important;
+        margin-bottom: 8px !important;
+    }
+</style>
+
+<h3>
+    @ViewData["Title"]
+</h3>
+<hr style="margin-bottom:40px" />
+
 <form id="frmCustomerForm">
     <div class="row">
-        <div class="col-sm-12">
-
-            <div class="card">
-                <div class="card-header" style="background-color: #3b80a9;color: #fff;">
-                    <strong><i class="fa fa-sliders"></i> Customer</strong>
-                </div>
-                <div>
-                    <input type="hidden" id="hfMailingAddressId" name="hfMailingAddressId" />
-                    <input type="hidden" id="hfBillingAddressId" name="hfBillingAddressId" />
-                </div>
-
-                <div class="card-body">
-                    <div class="row">
-                        <div class="form-group col-sm-3">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input class="form-control" id="txtCustomerId" type="number" name="txtCustomerId" min="0" placeholder="Customer no." max="999999" title="Customer no.">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <i class="fa fa-search"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="form-group col-sm-5">
-                            <input class="form-control" id="txtCustomerName" placeholder="Customer Name" type="text" name="txtCustomerName" required />
-                        </div>
-                        <div class="form-group col-sm-4">
-                            <select class="form-control" id="ddlEmployeeId" style="display:none">
-                                <option value=0 selected> -- Assign Employee -- </option>
-
-                            </select>
-                        </div>
-                        <div class="form-group col-sm-2" style="padding-left: 0px;display:none">
-                            <a asp-controller="Employee" asp-action="Index" class="btn btn-outline-secondary">New employee</a>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="form-group col-sm-1">
-                            <input class="form-control" id="txtFuelSurcharge" placeholder="Fuel (%)" type="number" max="100" step=".01"  name="txtFuelSurcharge" value="@ViewBag.DefaultFuelSurcharge" title="Fuel surcharge" />
-                        </div>
-                        <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtSpecialDiscount" placeholder="Discount (%)" type="number" max="100" step=".01"  name="txtSpecialDiscount" />
-                        </div>
-                        <div class="form-group col-sm-2">
-                            <input class="form-control" id="txtInvoiceDueDays" placeholder="Invoice Due Days" type="number" max="90" name="txtInvoiceDueDays" />
-                        </div>
-                        <div class="form-group col-sm-1">
-                            <div class="form-check form-check-inline mr-1">
-                                <input class="form-check-input" id="isGstApplicable" type="checkbox" name="isGstApplicable">
-                                <label class="form-check-label" for="isGstApplicable"> GST? </label>
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-6">
-                            <div class="row">
-                                <label class="col-md-3 col-form-label">Address type</label>
-                                <div class="col-md-9 col-form-label">
-                                    <div class="form-check form-check-inline mr-1">
-                                        <input class="form-check-input" id="addressType1" type="radio" value="1" name="addressType">
-                                        <label class="form-check-label" for="addressType1">Billing only</label>
-                                    </div>
-                                    <div class="form-check form-check-inline mr-1">
-                                        <input class="form-check-input" id="addressType2" type="radio" value="2" name="addressType">
-                                        <label class="form-check-label" for="addressType2">Mailing only</label>
-                                    </div>
-                                    <div class="form-check form-check-inline mr-1">
-                                        <input class="form-check-input" id="addressType3" type="radio" value="3" name="addressType" checked>
-                                        <label class="form-check-label" for="addressType3">Both</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr />
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="card" id="cardBillingAddress">
-                                <div class="card-header">
-                                    <i class="fa fa-send"></i>Billing Address <span style="float:right"> <input type="checkbox" name="chkIsSameAsMailing" id="chkIsSameAsMailing" /> Same as mailing</span>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-sm-9">
-                                            <div class="form-group">
-                                                <input class="form-control" id="txtBillingAddressLine" name="txtBillingAddressLine" placeholder="Address Line" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <div class="form-group">
-                                                <input class="form-control" id="txtBillingAddressUnit" type="text" name="txtBillingAddressUnit" placeholder="Unit " />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-sm-5">
-                                            <select class="form-control" id="ddlBillingCityId" name="ddlBillingCityId">
-                                                <option value="0">City </option>
-                                                @foreach (var city in Model.Cities)
-                                                {
-                                                    var selected = false;
-                                                    if (city.Id == 335)
-                                                    {
-                                                        selected = true;
-                                                    }
-                                                    <option value="@city.Id" selected="@selected">@city.CityName</option>
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-sm-3">
-                                            <select class="form-control" id="ddlBillingProvinceId" name="ddlBillingProvinceId">
-                                                <option value="0">Province</option>
-                                                @foreach (var province in Model.Provinces)
-                                                {
-                                                    var selected = false;
-                                                    if (province.Id == 7)
-                                                    {
-                                                        selected = true;
-                                                    }
-                                                    <option value="@province.Id" selected="@selected">@province.ShortCode</option>
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-sm-4">
-                                            <select class="form-control" id="ddlBillingCountryId" name="ddlBillingCountryId">
-                                                <option value="0">Country</option>
-                                                @foreach (var country in Model.Countries)
-                                                {
-                                                    var selected = false;
-                                                    if (country.Id == 41)
-                                                    {
-                                                        selected = true;
-                                                    }
-                                                    <option value="@country.Id" selected="@selected">@country.CountryName</option>
-                                                }
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-
-                                        <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtBillingPostCode" type="text" name="txtBillingPostCode" placeholder="Postcode" />
-                                        </div>
-                                        <div class="form-group col-sm-5">
-                                            <input class="form-control" id="txtBillingPrimaryPhoneNumber" type="tel" name="txtBillingPrimaryPhoneNumber" placeholder="Phone" />
-                                        </div>
-                                        <div class="form-group col-sm-4">
-                                            <input class="form-control" id="txtBillingFaxNumber" type="tel" name="txtBillingFaxNumber" placeholder="Fax" />
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-sm-6">
-                                            <input class="form-control" id="txtBillingContactPerson" type="text" name="txtBillingContactPerson" placeholder="Contact person" />
-                                        </div>
-                                        <div class="form-group col-sm-6">
-                                            <input class="form-control" id="txtBillingEmailAddress" type="email" name="txtBillingEmailAddress" placeholder="Email address" />
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6" id="cardMailingAddress">
-                            <div class="card">
-                                <div class="card-header">
-                                    <i class="fa fa-send"></i>Mailing/Warehouse Address <span style="float:right"> <input type="checkbox" name="chkIsSameAsBilling" id="chkIsSameAsBilling" /> Same as billing</span>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-sm-9">
-                                            <div class="form-group">
-                                                <input class="form-control" id="txtMailingAddressLine" type="text" name="txtMailingAddressLine" placeholder="Address Line" />
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-3">
-                                            <div class="form-group">
-                                                <input class="form-control" id="txtMailingAddressUnit" type="text" name="txtMailingAddressUnit" placeholder="Unit " />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-sm-5">
-                                            <select class="form-control" id="ddlMailingCityId" name="ddlMailingCityId">
-                                                <option value="0">City</option>
-                                                @foreach (var city in Model.Cities)
-                                                {
-                                                    var selected = false;
-                                                    if (city.Id == 335)
-                                                    {
-                                                        selected = true;
-                                                    }
-                                                    <option value="@city.Id" selected="@selected">@city.CityName</option>
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-sm-3">
-                                            <select class="form-control" id="ddlMailingProvinceId" name="ddlMailingProvinceId">
-                                                <option value="0">Province</option>
-                                                @foreach (var province in Model.Provinces)
-                                                {
-                                                    var selected = false;
-                                                    if (province.Id == 7)
-                                                    {
-                                                        selected = true;
-                                                    }
-                                                    <option value="@province.Id" selected="@selected">@province.ShortCode</option>
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-sm-4">
-                                            <select class="form-control" id="ddlMailingCountryId" name="ddlMailingCountryId">
-                                                <option value="0">Country</option>
-                                                @foreach (var country in Model.Countries)
-                                                {
-                                                    var selected = false;
-                                                    if (country.Id == 41)
-                                                    {
-                                                        selected = true;
-                                                    }
-                                                    <option value="@country.Id" selected="@selected">@country.CountryName</option>
-                                                }
-                                            </select>
-                                        </div>
-
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-sm-3">
-                                            <input class="form-control" id="txtMailingPostCode" type="text" name="txtMailingPostCode" placeholder="Postcode" />
-                                        </div>
-                                        <div class="form-group col-sm-5">
-                                            <input class="form-control" id="txtMailingPrimaryPhoneNumber" type="tel" name="txtMailingPrimaryPhoneNumber" placeholder="Phone" />
-                                        </div> <div class="form-group col-sm-4">
-                                            <input class="form-control" id="txtMailingFaxNumber" type="tel" name="txtMailingFaxNumber" placeholder="Fax" />
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-sm-6">
-                                            <input class="form-control" id="txtMailingContactPerson" type="text" name="txtMailingContactPerson" placeholder="Contact person" />
-                                        </div>
-                                        <div class="form-group col-sm-6">
-                                            <input class="form-control" id="txtMailingEmailAddress" type="email" name="txtMailingEmailAddress" placeholder="Email address" />
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr />
-                    <button type="button" class="btn btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
-                    <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
-
-                    <span style="margin-left:20px">
-                        <button type="reset" class="btn btn-secondary" id="btnClear"><i class="fa fa-refresh"></i> Clear</button>
-                    </span>
-                </div>
-            </div>
+        <div class="col-sm-12 form-group">
+            <input type="hidden" id="hfMailingAddressId" name="hfMailingAddressId" />
+            <input type="hidden" id="hfBillingAddressId" name="hfBillingAddressId" />
+            <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Customer id" style="font-family:Arial, FontAwesome" id="txtCustomerId" type="number" min="1" name="txtCustomerId">
         </div>
     </div>
+
+    <div class="row">
+        <div class="form-group col-sm-6">
+            <label for="txtCustomerName" class="form-group">Customer name</label>
+            <input class="form-control form-control-sm" id="txtCustomerName" placeholder="Name" type="text" name="txtCustomerName" title="Customer name" />
+        </div>
+        <div class="form-group col-sm-2">
+            <label for="txtInvoiceDueDays">Apply GST?</label>
+            <span class="col-12 form-control form-control-sm">
+                <input id="isGstApplicable" type="checkbox" name="isGstApplicable"> YES
+            </span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-3">
+            <label for="txtFuelSurcharge" class="form-group">Fuel sur-charge(%)</label>
+            <input class="form-control form-control-sm" id="txtFuelSurcharge" placeholder="Fuel (%)" type="number" max="100" step=".01" name="txtFuelSurcharge" value="@ViewBag.DefaultFuelSurcharge" title="Fuel surcharge" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtSpecialDiscount">Discount</label>
+            <input class="form-control form-control-sm" id="txtSpecialDiscount" placeholder="Discount (%)" type="number" max="100" step=".01" name="txtSpecialDiscount" title="Discount (%)" />
+        </div>
+        <div class="form-group col-sm-2">
+            <label for="txtInvoiceDueDays">Invoice due days</label>
+            <input class="form-control form-control-sm" id="txtInvoiceDueDays" placeholder="Invoice Due Days" type="number" max="90" name="txtInvoiceDueDays" title="Invoice due days" />
+        </div>
+    </div>
+
+    @*<div class="row">
+            <div class="form-group col-sm-8">
+                <label for="ddlEmployeeId">Assign employee</label>
+                <select class="form-control form-control-sm" id="ddlEmployeeId" disabled>
+                    <option value="0" selected> -- Assign Employee -- </option>
+                </select>
+            </div>
+        </div>*@
+
+
+
+
+    <hr />
+    <button type="submit" class="col-1 btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
+    <button type="reset" class="col-1 btn btn-sm btn-primary" id="btnClear"><i class="fa fa-refresh"></i> Clear</button>
+
 </form>
 
 <div class="row">
-    <div class="col-sm-12">
-        <div class="card">
-            <div class="card-header" style="background-color: #c3c3c3;">
-                <strong><i class="fa fa-sliders"></i> Customers</strong>
-                <div class="card-header-actions">
-                    <span id="spinnerLoadingDataTable" style="display:none">
-                        <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
-                        <span style="margin-right:20px">Loading...</span>
-                    </span>
-                    <button id="btnDownloadData" type="button" class="btn btn-sm btn-primary" title="Load existing data" style="padding:0px 5px 0px 5px"><i class="fa fa-download"></i></button>
-                    <span style="display:none" id="loadingSpinner"><i class="fa fa-circle-o-notch"></i></span>
-                    <span>&nbsp;&nbsp;</span>
-                    <a class="card-header-action btn-minimize" href="#" data-toggle="collapse" data-target="#collapseDatatable" aria-expanded="true">
-                        <i class="icon-arrow-up"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="collapse show" id="collapseDatatable">
-                <div class="card-body">
-                    <div id="loadDataTable">
-                    </div>
-                </div>
-            </div>
+    <div class="col-md-12" style="margin-top:40px">
+        <h3>Add addresses</h3>
+        <hr style="margin-bottom:40px" />
+
+    </div>
+</div>
+<div class="row">
+        <div class="form-group col-sm-2">
+            <label for="">Address type</label>
+        </div>
+        <div class="form-group col-sm-8 form-check-inline"  style="margin-bottom:20px">
+            <div class="col-3 input-group"><input type="radio" id="rdoAddTypeSame" name="addressType" value="1" style="margin-top:5px; margin-right:5px" checked /> Same for both</div>
+            <div class="col-3 input-group"><input type="radio" id="rdoAddTypeBilling" name="addressType" value="2" style="margin-top:5px; margin-right:5px" /> Billing address</div>
+            <div class="col-3 input-group"><input type="radio" id="rdoAddTypeShipping" name="addressType" value="3" style="margin-top:5px; margin-right:5px" /> Shipping address</div>
+            <div class="col-3 input-group"><input type="radio" id="rdoAddTypeDifferent" name="addressType" value="4" style="margin-top:5px; margin-right:5px" /> Different for both</div>
+        </div>
+</div>
+<div class="row">
+    <div class="col-sm-5" id="divAddress2">
+        <div class="row m-0 input-group">
+            <input class="col-8 form-control form-control-sm" id="txtAddressLine" name="txtAddressLine" placeholder="Address Line" list="addresses" />
+            <datalist id="addresses">
+                @foreach (var item in Model.AddressLinesForAutoComplete)
+                {
+                    <option data-value="@item.AddressId" value="@item.AddressLine"></option>
+                }
+            </datalist>
+            <input class="col-4 form-control form-control-sm addressBox" id="txtAddressUnit" type="text" name="txtAddressUnit" placeholder="Unit " />
+        </div>
+        <div class="row m-0 input-group">
+            <select class="col-5 form-control form-control-sm" id="ddlCityId" name="ddlCityId">
+                <option value="0">City </option>
+                @foreach (var city in Model.Cities)
+                {
+                    var selected = false;
+                    if (city.Id == 335)
+                    {
+                        selected = true;
+                    }
+                    <option value="@city.Id" selected="@selected">@city.CityName</option>
+                }
+            </select>
+            <select class="col-2 form-control form-control-sm addressBox" id="ddlProvinceId" name="ddlProvinceId">
+                <option value="0">Province</option>
+                @foreach (var province in Model.Provinces)
+                {
+                    var selected = false;
+                    if (province.Id == 7)
+                    {
+                        selected = true;
+                    }
+                    <option value="@province.Id" selected="@selected">@province.ShortCode</option>
+                }
+            </select>
+            <select class="col-3 form-control form-control-sm addressBox" id="ddlCountryId" name="ddlCountryId">
+                <option value="0">Country</option>
+                @foreach (var country in Model.Countries)
+                {
+                    var selected = false;
+                    if (country.Id == 41)
+                    {
+                        selected = true;
+                    }
+                    <option value="@country.Id" selected="@selected">@country.CountryName</option>
+                }
+            </select>
+            <input class="col-2 form-control form-control-sm addressBox" id="txtPostCode" name="txtPostCode" placeholder="Postcode" />
+        </div>
+
+        <div class="row m-0 input-group">
+            <input class="col-6 form-control form-control-sm " id="txtContactPerson" type="text" name="txtContactPerson" placeholder="Contact person" />
+            <input class="col-6 form-control form-control-sm addressBox" id="txtEmailAddress" type="email" name="txtEmailAddress" placeholder="Email address" />
+        </div>
+        <div class="row m-0 input-group">
+            <input class="col-6 form-control form-control-sm " id="txtPrimaryPhoneNumber" type="tel" name="txtPrimaryPhoneNumber" placeholder="Phone" />
+            <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumber" type="tel" name="txtFaxNumber" placeholder="Fax" />
+        </div>
+    </div>
+    <div class="col-sm-5" id="divAddress2" style="pointer-events:none; opacity:0.6; color:gray" >
+        <div class="row m-0 input-group">
+            <input class="col-8 form-control form-control-sm" id="txtAddressLine2" name="txtAddressLine2" placeholder="Address Line" list="addresses" />
+            <datalist id="addresses">
+                @foreach (var item in Model.AddressLinesForAutoComplete)
+                {
+                    <option data-value="@item.AddressId" value="@item.AddressLine"></option>
+                }
+            </datalist>
+            <input class="col-4 form-control form-control-sm addressBox" id="txtAddressUnit2" type="text" name="txtAddressUnit2" placeholder="Unit " />
+        </div>
+        <div class="row m-0 input-group">
+            <select class="col-5 form-control form-control-sm" id="ddlCityId2" name="ddlCityId2">
+                <option value="0">City </option>
+                @foreach (var city in Model.Cities)
+                {
+                    var selected = false;
+                    if (city.Id == 335)
+                    {
+                        selected = true;
+                    }
+                    <option value="@city.Id" selected="@selected">@city.CityName</option>
+                }
+            </select>
+            <select class="col-2 form-control form-control-sm addressBox" id="ddlProvinceId2" name="ddlProvinceId2">
+                <option value="0">Province</option>
+                @foreach (var province in Model.Provinces)
+                {
+                    var selected = false;
+                    if (province.Id == 7)
+                    {
+                        selected = true;
+                    }
+                    <option value="@province.Id" selected="@selected">@province.ShortCode</option>
+                }
+            </select>
+            <select class="col-3 form-control form-control-sm addressBox" id="ddlCountryId2" name="ddlCountryId2">
+                <option value="0">Country</option>
+                @foreach (var country in Model.Countries)
+                {
+                    var selected = false;
+                    if (country.Id == 41)
+                    {
+                        selected = true;
+                    }
+                    <option value="@country.Id" selected="@selected">@country.CountryName</option>
+                }
+            </select>
+            <input class="col-2 form-control form-control-sm addressBox" id="txtPostCode2" name="txtPostCode2" placeholder="Postcode" />
+        </div>
+
+        <div class="row m-0 input-group">
+            <input class="col-6 form-control form-control-sm " id="txtContactPerson2" type="text" name="txtContactPerson2" placeholder="Contact person" />
+            <input class="col-6 form-control form-control-sm addressBox" id="txtEmailAddress2" type="email" name="txtEmailAddress2" placeholder="Email address" />
+        </div>
+        <div class="row m-0 input-group">
+            <input class="col-6 form-control form-control-sm " id="txtPrimaryPhoneNumber2" type="tel" name="txtPrimaryPhoneNumber2" placeholder="Phone" />
+            <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumber2" type="tel" name="txtFaxNumber2" placeholder="Fax" />
         </div>
     </div>
 </div>
+
+<hr />
+<button type="button" class="col-1 btn btn-sm btn-success" id="btnSaveAddress"><i class="fa fa-save"></i> Save </button>
+
+
+<div class="row">
+    <div class="col-md-12 input-group" style="margin-top:40px">
+        <h3>Existing customers</h3>
+        <button style="margin-left:15px; margin-top:8px" class="btn btn-sm btn-primary" id="btnLoadCustomerData"><i class="fa fa-download"></i> Load data </button>
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-sm-12">
+        <div style="display:block; height:200px; padding:10px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadDataTable">
+            @* <partial name="_PartialViewCustomerData" />*@
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="row">
+
+
+</div>
+
+
 <script src="~/js/customer.js"></script>

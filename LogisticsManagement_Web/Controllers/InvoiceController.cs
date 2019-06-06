@@ -49,11 +49,11 @@ namespace LogisticsManagement_Web.Controllers
         }
 
 
-        private List<PendingWaybillsForInvoice> GetPendingWaybillsForInvoice()
+        private List<ViewModel_OrderReadyForInvoice> GetPendingWaybillsForInvoice()
         {
 
-            List<PendingWaybillsForInvoice> pendingInvoices;
-            var combineOrdersForInvoice = new List<PendingWaybillsForInvoice>();
+            List<ViewModel_OrderReadyForInvoice> pendingInvoices;
+            var combineOrdersForInvoice = new List<ViewModel_OrderReadyForInvoice>();
 
             try
             {
@@ -62,8 +62,8 @@ namespace LogisticsManagement_Web.Controllers
                 var jsonArrayString = parsedObject.SelectToken("ReturnedValue").ToString();
                 var jsonArray = JArray.Parse(jsonArrayString);
 
-                pendingInvoices = new List<PendingWaybillsForInvoice>();
-                pendingInvoices = JsonConvert.DeserializeObject<List<PendingWaybillsForInvoice>>(JsonConvert.SerializeObject(jsonArray));
+                pendingInvoices = new List<ViewModel_OrderReadyForInvoice>();
+                pendingInvoices = JsonConvert.DeserializeObject<List<ViewModel_OrderReadyForInvoice>>(JsonConvert.SerializeObject(jsonArray));
 
 
                 foreach (var pendingInvoice in pendingInvoices)
@@ -76,7 +76,7 @@ namespace LogisticsManagement_Web.Controllers
                         var singleOrder = orders.Where(c => c.OrderTypeId == 1).FirstOrDefault();
                         var returnOrder = orders.Where(c => c.OrderTypeId == 2).FirstOrDefault();
 
-                        var combineOrderForInvoice = new PendingWaybillsForInvoice();
+                        var combineOrderForInvoice = new ViewModel_OrderReadyForInvoice();
 
                         combineOrderForInvoice.BillToCustomerId = singleOrder.BillToCustomerId;
                         combineOrderForInvoice.WayBillNumber = singleOrder.WayBillNumber;
@@ -141,12 +141,12 @@ namespace LogisticsManagement_Web.Controllers
                     string[] wbNumbers = new string[countArray];
 
                     var orders = _orderLogic.GetList().Where(c => c.IsInvoiced == false).ToList();
-                    List<InvoiceViewModel> invoiceViewModels = new List<InvoiceViewModel>();
+                    List<ViewModel_GeneratedInvoice> invoiceViewModels = new List<ViewModel_GeneratedInvoice>();
 
                     for (int i = 0; i < countArray; i++)
                     {
                         wbNumbers[i] = wayBillNumberList[i].SelectToken("wbillNumber").ToString();
-                        InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
+                        ViewModel_GeneratedInvoice invoiceViewModel = new ViewModel_GeneratedInvoice();
 
                         invoiceViewModel.WayBillNumbers = wbNumbers[i];
                         invoiceViewModels.Add(invoiceViewModel);
@@ -224,9 +224,9 @@ namespace LogisticsManagement_Web.Controllers
         }
 
 
-        private List<InvoiceViewModel> GetInvoicedOrders()
+        private List<ViewModel_GeneratedInvoice> GetInvoicedOrders()
         {
-            List<InvoiceViewModel> invoiceViewModels = new List<InvoiceViewModel>();
+            List<ViewModel_GeneratedInvoice> invoiceViewModels = new List<ViewModel_GeneratedInvoice>();
 
             var invoiceList = _invoiceLogic.GetList().Where(c => c.PaidAmount == null).OrderByDescending(c => c.Id).ToList();
             var invoiceWbMappingList = _invoiceWayBillMappingLogic.GetList();
@@ -236,7 +236,7 @@ namespace LogisticsManagement_Web.Controllers
 
             foreach (var invoice in invoiceList)
             {
-                InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
+                ViewModel_GeneratedInvoice invoiceViewModel = new ViewModel_GeneratedInvoice();
                 invoiceViewModel.InvoiceId = invoice.Id;
                 invoiceViewModel.BillerName = custoemrList.Where(c => c.Id == invoice.BillerCustomerId).FirstOrDefault().CustomerName;
                 invoiceViewModel.WayBillNumbers = invoice.WaybillNumbers;

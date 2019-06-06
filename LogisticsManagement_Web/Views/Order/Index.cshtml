@@ -1,5 +1,5 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model DeliveryOrderViewModel
+@model ViewModel_DeliveryOrder
 
 
 @{
@@ -22,15 +22,263 @@
 </style>
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
 
-<h3>
-    @ViewData["Title"]
 
-</h3>
-<div class="row">
-    <div class="col-12">
-        <hr />
+<!-- Modal - Pickup Order -->
+<div class="modal fade bd-example-modal-xl" id="orderPickup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content bg-light">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/trolley.png" style="height:25px; padding-left:28px; padding-right:10px" />Pickup Order</h5>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-5 form-group">
+                            <label for="txtWayBillNoForPickupModal">W/B number</label>
+                            <div class="row mb-1 ">
+                                <div class="col-sm-12 input-group">
+                                    <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPickupModal" type="number" name="txtWayBillNoForPickupModal">
+                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForPickupModal" style="font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 form-group">
+                            <label for="txtDispatchDateTimeForPickupModal">Dispatch date and time</label>
+                            <input type="datetime-local" id="txtDispatchDateTimeForPickupModal" class="form-control form-control-sm txtDispatchDateTimeForPickupModal" readonly />
+                        </div>
+                        <div class="col-sm-7 form-group">
+                            <label for="txtDispatchEmployeeNameForPickupModal">Dispatched to</label>
+                            <input type="text" id="txtDispatchEmployeeNameForPickupModal" class="form-control form-control-sm txtDispatchEmployeeNameForPickupModal" readonly />
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 form-group">
+                            <label for="txtPickupDateTime">Pickup date and time</label>
+                            <input type="datetime-local" id="txtPickupDateTime" class="form-control form-control-sm txtPickupDateTime" />
+                        </div>
+                        <div class="col-sm-3 form-group">
+                            <label for="txtPickupWaitTime">Wait time (hour)</label>
+                            <input type="number" id="txtPickupWaitTime" class="form-control form-control-sm txtPickupWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
+                        </div>
+
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-sm btn-success" id="btnSavePickup"><i class="fa fa-save"></i> Save pickup</button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePickup"><i class="fa fa-trash"></i> Remove pickup </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<!-- Modal - Pickup Order -->
+<!-- Modal - Pass-on Order -->
+<div class="modal fade bd-example-modal-xl" id="orderPassOn" tabindex="-2" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content bg-light">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">
+
+                    <img src="~/images/flaticons-64x64/shipping-and-delivery.png" style="height:25px; padding-left:28px; padding-right:5px" />
+                    Pass-On Order
+                </h5>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-5 form-group">
+                            <label for="txtWayBillNoForPassOnModal">W/B number</label>
+                            <div class="row mb-1 ">
+                                <div class="col-sm-12 input-group">
+                                    <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPassOnModal" type="number" name="txtWayBillNoForPassOnModal">
+                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForPassOnModal" style="font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4 form-group">
+                            <label for="txtDispatchDateTimeForPassOnModal">Dispatch date and time</label>
+                            <input type="datetime-local" id="txtDispatchDateTimeForPassOnModal" class="form-control form-control-sm txtDispatchDateTimeForPassOnModal" readonly />
+                        </div>
+                        <div class="col-sm-4 form-group">
+                            <label for="txtPickupDateTimeForPassOnModal">Pickup date and time</label>
+                            <input type="datetime-local" id="txtPickupDateTimeForPassOnModal" class="form-control form-control-sm txtPickupDateTimeForPassOnModal" readonly />
+                        </div>
+                        <div class="col-sm-4 form-group">
+                            <label for="txtDispatchEmployeeNameForPassOnModal">Dispatched to</label>
+                            <input type="text" id="txtDispatchEmployeeNameForPassOnModal" class="form-control form-control-sm txtDispatchEmployeeNameForPassOnModal" readonly />
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-sm-4 form-group">
+                            <label for="txtPassOnDateTime">Pass-on date</label>
+                            <input type="datetime-local" id="txtPassOnDateTime" class="form-control form-control-sm txtPassOnDateTime" />
+
+                        </div>
+
+
+                        <div class="col-sm-4">
+                            <label for="ddlPassOnEmployeeId">Pass-on to</label>
+                            <div class="row mb-1 ">
+                                <div class="col-sm-12 input-group">
+                                    <select class="col-8 form-control form-control-sm" id="ddlPassOnEmployeeId">
+                                        <option value="0"> Employee/driver </option>
+                                        @foreach (var employee in Model.Employees)
+                                        {
+                                            <option value="@employee.Id">@employee.FirstName @employee.LastName (@employee.Id)</option>
+                                        }
+                                    </select>
+                                    <input class="col-4 form-control form-control-sm" placeholder="&#xF002; Find" style="font-family:Arial, FontAwesome" id="txtPassOnEmployeeNumber" type="number" min="1" name="txtPassOnEmployeeNumber">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-3 form-group">
+                            <label for="txtPassOnWaitTime">Wait time (hour)</label>
+                            <input type="number" id="txtPassOnWaitTime" class="form-control form-control-sm txtPassOnWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
+                        </div>
+
+
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-sm btn-success" id="btnSavePassOn"><i class="fa fa-save"></i> Save pass-on</button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePassOn"><i class="fa fa-trash"></i> Remove pass-on </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal - Pass-on Order -->
+<!-- Modal - Deliver Order -->
+<div class="modal fade bd-example-modal-xl" id="orderDeliver" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content bg-light">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/delivery-truck.png" style="height:25px; padding-left:28px; padding-right:10px" />Deliver Order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-4 form-group">
+                            <label for="txtWayBillNoForDeliverModal">W/B number</label>
+                            <div class="row mb-1 ">
+                                <div class="col-sm-12 input-group">
+                                    <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForDeliverModal" type="number" name="txtWayBillNoForDeliverModal">
+                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForDeliverModal" style="font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4 form-group">
+                            <label for="txtDispatchDateTimeForDeliverModal">Dispatch date and time</label>
+                            <input type="datetime-local" id="txtDispatchDateTimeForDeliverModal" class="form-control form-control-sm txtDispatchDateTimeForDeliverModal" readonly />
+                        </div>
+                        <div class="col-sm-4 form-group">
+                            <label for="txtPickupDateTimeForDeliverModal">Pickup date and time</label>
+                            <input type="datetime-local" id="txtPickupDateTimeForDeliverModal" class="form-control form-control-sm txtPickupDateTimeForDeliverModal" readonly />
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label for="txtDispatchEmployeeNameForDeliverModal">Dispatched to</label>
+                            <input type="text" id="txtDispatchEmployeeNameForDeliverModal" class="form-control form-control-sm txtDispatchEmployeeNameForDeliverModal" readonly />
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label for="txtPassOnEmployeeNameForDeliverModal">Pass-on to</label>
+                            <input type="text" id="txtPassOnEmployeeNameForDeliverModal" class="form-control form-control-sm txtPassOnEmployeeNameForDeliverModal" readonly />
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-sm-4 form-group">
+                            <label for="txtDeliveryDateTime">Delivery Date</label>
+                            <input type="datetime-local" id="txtDeliveryDateTime" class="form-control form-control-sm txtDeliveryDateTime" />
+
+                        </div>
+                        <div class="col-sm-3 form-group">
+                            <label for="txtDeliveryWaitTime">Wait time (hour)</label>
+                            <input type="number" id="txtDeliveryWaitTime" class="form-control form-control-sm txtDeliveryWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
+
+                        </div>
+
+                        <div class="col-sm-5 form-group">
+                            <label for="txtReceivedByName">Received By </label>
+                            <input type="text" id="txtReceivedByName" class="form-control form-control-sm txtReceivedByName" placeholder="Received by (Name)" title="Received by (Name)" />
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-4 form-group">
+                            <label for="txtDeliveryNote">Notes</label>
+                            <textarea id="txtDeliveryNote" class="form-control form-control-sm txtDeliveryNote" placeholder="Delivery note" title="Delivery note"></textarea>
+                        </div>
+
+                        <div class="col-sm-8">
+                            <label for="txtReceivedBySign">Signature </label>
+                            <canvas id="signatureCanvas" class="card"></canvas>
+                            <span style="float:left">
+                                <button type="button" class="btn btn-sm btn-secondary" id="btnOk"><i class="fa fa-check"></i> Ok </button>
+                                <button type="button" class="btn btn-sm btn-secondary" id="btnCancel"><i class="fa fa-times"></i> Cancel</button>
+                                <input type="hidden" id="imgSignature" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Remove delivery </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal - Deliver Order -->
+
+
+<h3>
+    @ViewData["Title"]
+</h3>
+<hr style="margin-bottom:40px" />
+
 
 
 <div class="row">
@@ -43,18 +291,19 @@
             }
         </select>
         <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Find" style="font-family:Arial, FontAwesome" id="txtDispatchToEmployeeNumber" type="number" min="1" name="txtDispatchToEmployeeNumber">
-        <input class="col-3 form-control form-control-sm" id="txtDispatchDatetimeForNewOrders" type="datetime-local" min="1" name="txtDispatchDatetimeForNewOrders">
+        <input class="col-4 form-control form-control-sm" id="txtDispatchDatetimeForNewOrders" type="datetime-local" min="1" name="txtDispatchDatetimeForNewOrders">
 
-        <span class="col-2 form-control form-control-sm ">
-            <span class="form-check-inline">
-            <input type="checkbox" checked /> <i style="padding-left:5px"></i>Send email
+        <span class="col-1 form-control form-control-sm ">
+            <span class="form-check-inline" title="Send email to the employee">
+                <input type="checkbox" id="chkSendEmail" /> <i style="padding-left:5px"></i>Email
             </span>
         </span>
         <button id="btnDispatch" type="button" class="col-2 btn btn-sm btn-primary form-control" title="Dispatch to employee"><i class="fa fa-arrow-circle-right"></i> Dispatch</button>
+        <span style="padding-left:20px;" title="Print waybills"><button class="btn btn-sm btn-secondary" id="btnPrintWaybill"> <i class="fa fa-print"></i></button></span>
         @*<div class="col-sm-3" id="spinnerLoadingDataTable" style="display:none">
-            <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
-            <span style="margin-right:20px">Loading...</span>
-        </div>*@
+                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                <span style="margin-right:20px">Loading...</span>
+            </div>*@
     </div>
     <div class="col-sm-3">
         <div class="col-7" style="float:right;padding-bottom:20px">
@@ -71,6 +320,14 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-12"  style="margin-top:40px">
+        <h3>Already dispatched orders</h3>
+    </div>
+</div>
+
+
+<hr/>
 
 <div class="row">
     <div class="col-md-12">
@@ -168,14 +425,14 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-12 input-group">
-                                                <select class="col-6 form-control form-control-sm" id="ddlShipperCityId" name="ddlShipperCityId" disabled>
+                                                <select class="col-6 form-control form-control-sm" id="ddlShipperCityId" name="ddlShipperCityId" style="-webkit-appearance: none;" >
                                                     <option value="0"> City  </option>
                                                     @foreach (var item in Model.Cities)
                                                     {
                                                         <option value="@item.Id">@item.CityName</option>
                                                     }
                                                 </select>
-                                                <select class="col-3 form-control form-control-sm" id="ddlShipperProvinceId" name="ddlShipperProvinceId" disabled>
+                                                <select class="col-3 form-control form-control-sm" id="ddlShipperProvinceId" name="ddlShipperProvinceId" style="-webkit-appearance: none;" >
                                                     <option value="0"> Province </option>
                                                     @foreach (var item in Model.Provinces)
                                                     {
@@ -210,14 +467,14 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-12 input-group">
-                                                <select class="col-6 form-control form-control-sm" id="ddlConsigneeCityId" name="ddlConsigneeCityId" disabled>
+                                                <select class="col-6 form-control form-control-sm" id="ddlConsigneeCityId" name="ddlConsigneeCityId" style="-webkit-appearance: none;" >
                                                     <option value="0"> City  </option>
                                                     @foreach (var item in Model.Cities)
                                                     {
                                                         <option value="@item.Id">@item.CityName</option>
                                                     }
                                                 </select>
-                                                <select class="col-3 form-control form-control-sm" id="ddlConsigneeProvinceId" name="ddlConsigneeProvinceId" disabled>
+                                                <select class="col-3 form-control form-control-sm" id="ddlConsigneeProvinceId" name="ddlConsigneeProvinceId" style="-webkit-appearance: none;" >
                                                     <option value="0"> Province </option>
                                                     @foreach (var item in Model.Provinces)
                                                     {
@@ -230,8 +487,8 @@
                                     </div>
                                 </div>
                                 <div class="row mt-2 mb-2">
-                                    <div class="col-md-3 input-group">
-                                        <select class="col-6 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId">
+                                    <div class="col-md-6 input-group">
+                                        <select class="col-3 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId">
                                             <option value="0" selected> Unit </option>
                                             @foreach (var item in Model.UnitTypes)
                                             {
@@ -239,12 +496,11 @@
                                                 <option value="@item.Id" selected="@item.IsDefault">@item.ShortCode</option>
                                             }
                                         </select>
-                                        <input class="col-6 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
-                                    </div>
-                                    <div class="col-md-3 input-group">
-                                        <input class="col-7 form-control form-control-sm" placeholder="Weight" id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
-                                        <select class="col-5 form-control form-control-sm" id="ddlWeightScaleId" name="ddlWeightScaleId">
-                                            <option value="0" selected> Weight </option>
+                                        <input class="col-2 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
+                                        <input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtSkidPieces" type="number" min="1" name="txtSkidPieces">
+                                        &nbsp;
+                                        <input class="col-3 form-control form-control-sm" placeholder="Weight" id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
+                                        <select class="col-2 form-control form-control-sm" id="ddlWeightScaleId" name="ddlWeightScaleId" style="-webkit-appearance: none;">
                                             @foreach (var item in Model.WeightScales)
                                             {
                                                 var selected = item.IsDefault;
@@ -252,6 +508,17 @@
                                             }
                                         </select>
                                     </div>
+                                    @*<div class="col-md-2 input-group">
+                                            <input class="col-7 form-control form-control-sm" placeholder="Weight" id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
+                                            <select class="col-5 form-control form-control-sm" id="ddlWeightScaleId" name="ddlWeightScaleId">
+                                                <option value="0" selected> Weight </option>
+                                                @foreach (var item in Model.WeightScales)
+                                                {
+                                                    var selected = item.IsDefault;
+                                                    <option value="@item.Id" selected="@selected">@item.ShortCode</option>
+                                                }
+                                            </select>
+                                        </div>*@
                                     <div class="col-md-5 input-group">
                                         <input type="text" class="col-3 form-control form-control-sm" value="Pickup at:" disabled readonly />
                                         <input class="col-9 form-control form-control-sm" id="txtSchedulePickupDate" type="datetime-local" title="Schedule pickup date" name="txtSchedulePickupDate">
@@ -452,12 +719,14 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <input type="hidden" id="hfOrderId" class="hfOrderId" name="hfOrderId" />
+                                <input type="hidden" id="hfShipperAddressId" class="hfShipperAddressId" name="hfShipperAddressId" />
+                                <input type="hidden" id="hfConsigneeAddressId" class="hfConsigneeAddressId" name="hfConsigneeAddressId" />
 
                                 <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save order</button>
                                 <button type="reset" class="btn btn-sm btn-info" id="btnClear"><i class="fa fa-refresh"></i> Clear</button>
 
                                 <span style="padding-right:10px; padding-left:10px"> | </span>
-                                <input type="checkbox" id="chkIsReturnOrder" name="chkIsReturnOrder" title="Turn it on if you want to place a return order" data-toggle="toggle" data-on="<i class='fa fa-mail-reply'></i> Return" data-off="<i class='fa fa-mail-forward'></i> Single " data-onstyle="danger" data-offstyle="secondary" data-size="mini" data-width="100" data-height="28">
+                                <input type="checkbox" id="chkIsReturnOrder" name="chkIsReturnOrder" title="Turn it on if you want to place a return order" data-toggle="toggle" data-on="<i class='fa fa-mail-forward'></i> Single" data-off="<i class='fa fa-mail-reply'></i> Return " data-onstyle="danger" data-offstyle="secondary" data-size="mini" data-width="100" data-height="28">
 
                             </div>
 
@@ -472,256 +741,7 @@
     <!-- Modal - New Order -->
 </form>
 
-<!-- Modal - Pickup Order -->
-<div class="modal fade bd-example-modal-xl" id="orderPickup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content bg-light">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/trolley.png" style="height:25px; padding-left:28px; padding-right:10px" />Pickup Order</h5>
 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-5 form-group">
-                            <label for="txtWayBillNoForPickupModal">W/B number</label>
-                            <div class="row mb-1 ">
-                                <div class="col-sm-12 input-group">
-                                    <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPickupModal" type="number" name="txtWayBillNoForPickupModal">
-                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForPickupModal" style="font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-5 form-group">
-                            <label for="txtDispatchDateTimeForPickupModal">Dispatch date and time</label>
-                            <input type="datetime-local" id="txtDispatchDateTimeForPickupModal" class="form-control form-control-sm txtDispatchDateTimeForPickupModal" readonly />
-                        </div>
-                        <div class="col-sm-7 form-group">
-                            <label for="txtDispatchEmployeeNameForPickupModal">Dispatched to</label>
-                            <input type="text" id="txtDispatchEmployeeNameForPickupModal" class="form-control form-control-sm txtDispatchEmployeeNameForPickupModal" readonly />
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-5 form-group">
-                            <label for="txtPickupDateTime">Pickup date and time</label>
-                            <input type="datetime-local" id="txtPickupDateTime" class="form-control form-control-sm txtPickupDateTime" />
-                        </div>
-                        <div class="col-sm-3 form-group">
-                            <label for="txtPickupWaitTime">Wait time (hour)</label>
-                            <input type="number" id="txtPickupWaitTime" class="form-control form-control-sm txtPickupWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
-                        </div>
-
-                    </div>
-                    <hr />
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-sm btn-success" id="btnSavePickup"><i class="fa fa-save"></i> Save pickup</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePickup"><i class="fa fa-trash"></i> Remove pickup </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal - Pickup Order -->
-
-<!-- Modal - Pass-on Order -->
-<div class="modal fade bd-example-modal-xl" id="orderPassOn" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content bg-light">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">
-
-                    <img src="~/images/flaticons-64x64/shipping-and-delivery.png" style="height:25px; padding-left:28px; padding-right:5px" />
-                    Pass-On Order
-                </h5>
-
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-5 form-group">
-                            <label for="txtWayBillNoForPassOnModal">W/B number</label>
-                            <div class="row mb-1 ">
-                                <div class="col-sm-12 input-group">
-                                    <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPassOnModal" type="number" name="txtWayBillNoForPassOnModal">
-                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForPassOnModal" style="font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-4 form-group">
-                            <label for="txtDispatchDateTimeForPassOnModal">Dispatch date and time</label>
-                            <input type="datetime-local" id="txtDispatchDateTimeForPassOnModal" class="form-control form-control-sm txtDispatchDateTimeForPassOnModal" readonly />
-                        </div>
-                        <div class="col-sm-4 form-group">
-                            <label for="txtPickupDateTimeForPassOnModal">Pickup date and time</label>
-                            <input type="datetime-local" id="txtPickupDateTimeForPassOnModal" class="form-control form-control-sm txtPickupDateTimeForPassOnModal" readonly />
-                        </div>
-                        <div class="col-sm-4 form-group">
-                            <label for="txtDispatchEmployeeNameForPassOnModal">Dispatched to</label>
-                            <input type="text" id="txtDispatchEmployeeNameForPassOnModal" class="form-control form-control-sm txtDispatchEmployeeNameForPassOnModal" readonly />
-                        </div>
-
-                    </div>
-                    <div class="row">
-
-                        <div class="col-sm-4 form-group">
-                            <label for="txtPassOnDateTime">Pass-on date</label>
-                            <input type="datetime-local" id="txtPassOnDateTime" class="form-control form-control-sm txtPassOnDateTime" />
-
-                        </div>
-
-
-                        <div class="col-sm-4">
-                            <label for="ddlPassOnEmployeeId">Pass-on to</label>
-                            <div class="row mb-1 ">
-                                <div class="col-sm-12 input-group">
-                                    <select class="col-8 form-control form-control-sm" id="ddlPassOnEmployeeId">
-                                        <option value="0"> Employee/driver </option>
-                                        @foreach (var employee in Model.Employees)
-                                        {
-                                            <option value="@employee.Id">@employee.FirstName @employee.LastName (@employee.Id)</option>
-                                        }
-                                    </select>
-                                    <input class="col-4 form-control form-control-sm" placeholder="&#xF002; Find" style="font-family:Arial, FontAwesome" id="txtPassOnEmployeeNumber" type="number" min="1" name="txtPassOnEmployeeNumber">
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-sm-3 form-group">
-                            <label for="txtPassOnWaitTime">Wait time (hour)</label>
-                            <input type="number" id="txtPassOnWaitTime" class="form-control form-control-sm txtPassOnWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
-                        </div>
-
-
-                    </div>
-
-                    <hr />
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-sm btn-success" id="btnSavePassOn"><i class="fa fa-save"></i> Save pass-on</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePassOn"><i class="fa fa-trash"></i> Remove pass-on </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal - Pass-on Order -->
-<!-- Modal - Deliver Order -->
-<div class="modal fade bd-example-modal-xl" id="orderDeliver" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content bg-light">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/delivery-truck.png" style="height:25px; padding-left:28px; padding-right:10px" />Deliver Order</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-4 form-group">
-                            <label for="txtWayBillNoForDeliverModal">W/B number</label>
-                            <div class="row mb-1 ">
-                                <div class="col-sm-12 input-group">
-                                    <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForDeliverModal" type="number" name="txtWayBillNoForDeliverModal">
-                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForDeliverModal" style="font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-4 form-group">
-                            <label for="txtDispatchDateTimeForDeliverModal">Dispatch date and time</label>
-                            <input type="datetime-local" id="txtDispatchDateTimeForDeliverModal" class="form-control form-control-sm txtDispatchDateTimeForDeliverModal" readonly />
-                        </div>
-                        <div class="col-sm-4 form-group">
-                            <label for="txtPickupDateTimeForDeliverModal">Pickup date and time</label>
-                            <input type="datetime-local" id="txtPickupDateTimeForDeliverModal" class="form-control form-control-sm txtPickupDateTimeForDeliverModal" readonly />
-                        </div>
-                        <div class="col-sm-2 form-group">
-                            <label for="txtDispatchEmployeeNameForDeliverModal">Dispatched to</label>
-                            <input type="text" id="txtDispatchEmployeeNameForDeliverModal" class="form-control form-control-sm txtDispatchEmployeeNameForDeliverModal" readonly />
-                        </div>
-                        <div class="col-sm-2 form-group">
-                            <label for="txtPassOnEmployeeNameForDeliverModal">Pass-on to</label>
-                            <input type="text" id="txtPassOnEmployeeNameForDeliverModal" class="form-control form-control-sm txtPassOnEmployeeNameForDeliverModal" readonly />
-                        </div>
-
-                    </div>
-                    <div class="row">
-
-                        <div class="col-sm-4 form-group">
-                            <label for="txtDeliveryDateTime">Delivery Date</label>
-                            <input type="datetime-local" id="txtDeliveryDateTime" class="form-control form-control-sm txtDeliveryDateTime" />
-
-                        </div>
-                        <div class="col-sm-3 form-group">
-                            <label for="txtDeliveryWaitTime">Wait time (hour)</label>
-                            <input type="number" id="txtDeliveryWaitTime" class="form-control form-control-sm txtDeliveryWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
-
-                        </div>
-
-                        <div class="col-sm-5 form-group">
-                            <label for="txtReceivedByName">Received By </label>
-                            <input type="text" id="txtReceivedByName" class="form-control form-control-sm txtReceivedByName" placeholder="Received by (Name)" title="Received by (Name)" />
-                        </div>
-
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-sm-4 form-group">
-                            <label for="txtDeliveryNote">Notes</label>
-                            <textarea id="txtDeliveryNote" class="form-control form-control-sm txtDeliveryNote" placeholder="Delivery note" title="Delivery note"></textarea>
-                        </div>
-
-                        <div class="col-sm-8">
-                            <label for="txtReceivedBySign">Signature </label>
-                            <canvas id="signatureCanvas" class="card"></canvas>
-                            <span style="float:left">
-                                <button type="button" class="btn btn-sm btn-secondary" id="btnOk"><i class="fa fa-check"></i> Ok </button>
-                                <button type="button" class="btn btn-sm btn-secondary" id="btnCancel"><i class="fa fa-times"></i> Cancel</button>
-                                <input type="hidden" id="imgSignature" />
-                            </span>
-                        </div>
-                    </div>
-
-                    <hr />
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Remove delivery </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal - Deliver Order -->
 
 
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
