@@ -5,6 +5,7 @@ var cityData;
 var provinceData;
 var countryData;
 var addressLineForAutocomplete;
+var defaultObjectLoadCount = 20;
 
 $(document).ready(function () {
 
@@ -19,54 +20,35 @@ $(document).ready(function () {
     });
 });
 
-
-
-$('input[type=radio][name=addressType]').change(function () {
-
-    var addOption = $("input[name='addressType']:checked").val();
-    if (addOption === '1') {
-        $('#cardBillingAddress *').removeAttr('disabled');
-        $('#cardMailingAddress *').attr('disabled', 'disabled');
-    }
-    else if (addOption === '2') {
-        $('#cardBillingAddress *').attr('disabled', 'disabled');
-        $('#cardMailingAddress *').removeAttr('disabled');
-    }
-    else {
-        $('#cardBillingAddress *').removeAttr('disabled');
-        $('#cardMailingAddress *').removeAttr('disabled');
-    }
-
-});
-
-
 $('#txtCustomerId').unbind('keypress').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
 
-        var customerId = $('#txtCustomerId').val();
-        var customerInfo = GetSingleObjectById('Customer/GetCustomerById', customerId);
+        var customerId = '';
+        customerId = $('#txtCustomerId').val();
 
-        if (customerInfo !== "" && customerInfo !== null) {
-            customerInfo = JSON.parse(customerInfo);
-        }
-        else {
-            bootbox.alert('The customer was not found. Please check or select from the bottom list of customers.');
-            event.preventDefault();
-            return;
-        }
+        if (customerId !== '') {
+            var customerInfo = GetSingleObjectById('Customer/GetCustomerById', customerId);
 
-        if (customerInfo !== null) {
-            FillCustomerInfo(customerInfo);
+            if (customerInfo !== "" && customerInfo !== null && customerInfo !== undefined) {
+                FillCustomerInfo(JSON.parse(customerInfo));
+            }
+            else {
+                bootbox.alert('The customer was not found. Please check and try again.');
+                event.preventDefault();
+                return;
+            }
         }
     }
 });
 
 
-$('#btnDownloadData').unbind().on('click', function () {
-    $('#loadDataTable').load('Customer/PartialViewDataTable');
-});
+$('#btnLoadCustomerData').unbind().on('click', function (event) {
+    event.preventDefault();
 
+    var count = $('#ddlLoadCustomerCount').val();
+    $('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + count);
+});
 
 $('#frmCustomerForm').on('keyup keypress', function (e) {
     var keyCode = e.keyCode || e.which;
@@ -79,9 +61,9 @@ $('#frmCustomerForm').unbind('submit').submit(function () {
 
     var dataArray = GetFormData();
 
-    if ($('#hfBillingAddressId').val() === '' && $('#hfMailingAddressId').val() === '') {
-        bootbox.alert('Please select address from suggestions and try again.');
+    if (dataArray[0].customerName === '') {
         event.preventDefault();
+        bootbox.alert('Please enter customer name.');
         return;
     }
 
@@ -90,39 +72,218 @@ $('#frmCustomerForm').unbind('submit').submit(function () {
         UpdateEntry('Customer/Update', dataArray);
     }
     else {
-        AddEntry('Customer/Add', dataArray);
+        result = AddEntry('Customer/Add', dataArray);
+        $('#frmCustomerForm').trigger('reset');
     }
     event.preventDefault();
-    $('#loadDataTable').load('Customer/PartialViewDataTable');
+    $('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + defaultObjectLoadCount);
 
 });
 
 $('#customer-list').on('click', '.btnEdit', function () {
-    $('#txtCustomerId').prop('readonly', true);
+    //$('#txtCustomerId').prop('readonly', true);
 
     var customerId = $(this).data('customerid');
 
-    var customerInfo = GetSingleObjectById('Customer/GetCustomerById', customerId);
-    if (customerInfo !== "") {
-        customerInfo = JSON.parse(customerInfo);
+    if (customerId !== '') {
+        var customerInfo = GetSingleObjectById('Customer/GetCustomerById', customerId);
+        if (customerInfo !== null && customerInfo !== undefined) {
+            FillCustomerInformation(JSON.parse(customerInfo));
+        }
+        else {
+            bootbox.alert('The employee was not found. Please check or select from the bottom list of employees.');
+            event.preventDefault();
+            return;
+        }
     }
-    else {
-        bootbox.alert('The employee was not found. Please check or select from the bottom list of employees.');
-        event.preventDefault();
-        return;
-    }
-
-    FillCustomerInformation(customerInfo);
-
 
 });
 
 $('.btnDelete').unbind().on('click', function () {
-    customerId = $(this).data('customerid');
-    RemoveEntry('Customer/Remove', customerId);
-    $('#loadDataTable').load('Customer/PartialViewDataTable');
+
+    var customerId = $(this).data('customerid');
+
+    bootbox.confirm("This customer will be deleted with all relavant data. Are you sure to proceed?", function (result) {
+        if (result === true) {
+            RemoveEntry('Customer/Remove', customerId);
+            $('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + defaultObjectLoadCount);
+        }
+    });
+
 });
 
+
+
+$('#btnAddAddress').unbind().on('click', function (event) {
+    event.preventDefault();
+    $('#hfAddressId').val(0);
+
+    var customerId = $('#txtCustomerId').val();
+    var customerName = $('#txtCustomerName').val();
+    $('#txtCustomerIdForAddress').val(customerId);
+    $('#txtCustomerNameForAddress').val(customerName);
+
+    if (customerId === '' || customerId === undefined) {
+        $('#addAddress').modal('hide');
+        bootbox.alert('Please select a customer to add/view address');
+        return;
+    }
+    else {
+        $('#addAddress').modal('show');
+    }
+
+    $('#loadAddressDataTable').load('Customer/LoadCustomerAddressData/' + customerId);
+
+    var addressLinesForAutoComplete = GetListObject('Address/GetAddressForAutoComplete');
+
+    if (addressLinesForAutoComplete !== null) {
+        var addressLines = JSON.parse(addressLinesForAutoComplete);
+
+        $.each(addressLines, function (i, item) {
+            $('#addresses').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
+        });
+    }
+
+});
+
+$('#btnNewAddress').unbind().on('click', function (event) {
+    event.preventDefault();
+    ClearAddressForm();
+});
+
+$(document).unbind('change').on('change', 'input', function (event) {
+    event.preventDefault();
+    var valueSelected = $('#txtAddressLine').val();
+    var addressId = $('#addresses option').filter(function () {
+        return this.value === valueSelected;
+    }).data('addressid');
+
+    FillAddress(addressId);
+});
+
+$('input[name=rdoAddressType]').on('change', function () {
+
+    var selectedValue = $('input[name=rdoAddressType]:checked').val();
+
+    if (selectedValue === '1') {
+        $('#lblIsDefault').text('Default billing address');
+    }
+    else if (selectedValue === '2') {
+        $('#lblIsDefault').text('Default shipping address');
+    }
+    else if (selectedValue === '4') {
+        $('#lblIsDefault').text('Default warehouse address');
+    }
+
+
+});
+
+
+$('#txtCustomerIdForAddress ').unbind('keypress').keypress(function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+
+        var customerId = '';
+        customerId = $('#txtCustomerIdForAddress').val();
+
+        if (customerId !== '') {
+            var customerInfo = GetSingleObjectById('Customer/GetCustomerById', customerId);
+
+            if (customerInfo !== "" && customerInfo !== null && customerInfo !== undefined) {
+                var customer = JSON.parse(customerInfo);
+                $('#txtCustomerIdForAddress').val(customer.Id);
+                $('#txtCustomerNameForAddress').val(customer.CustomerName);
+            }
+            else {
+                bootbox.alert('The customer was not found. Please check and try again.');
+                event.preventDefault();
+                return;
+            }
+        }
+    }
+});
+
+$('#frmCustomerAddress').on('keyup keypress', function (e) {
+    var keyCode = e.keyCode || e.which;
+    if (keyCode === 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+$('#frmCustomerAddress').unbind('submit').submit(function () {
+
+    var dataArray = GetAddressData();
+    var customerId = dataArray[0].customerId;
+    if (dataArray[0].addressLine === '' || dataArray[0].cityId === '0' || dataArray[0].provinceId === '0' || dataArray[0].countryId === '0') {
+        event.preventDefault();
+        bootbox.alert('Please enter address correctly with address line, city, province and country');
+        return;
+    }
+
+    if (customerId === '0') {
+        event.preventDefault();
+        bootbox.alert('Customer id was not found to enter the address. Please check and try again');
+        return;
+    }
+
+    result = AddEntry('Customer/AddAddress', dataArray);
+    $('#frmCustomerAddress').trigger('reset');
+
+    event.preventDefault();
+    $('#loadAddressDataTable').load('Customer/LoadCustomerAddressData/' + customerId);
+
+});
+
+
+$('#customer-address-list').unbind().on('click', '.btnEditAddress', function (event) {
+    //$('#txtCustomerId').prop('readonly', true);
+    event.preventDefault();
+
+    var customerId = $(this).data('customerid');
+    var addressId = $(this).data('addressid');
+    var addressTypeId = $(this).data('addresstypeid');
+    var isDefault = $(this).data('isdefault').toLowerCase();
+
+    if (isDefault === 'true') {
+        $('#chkIsDefault').prop('checked', true);
+    } else {
+        $('#chkIsDefault').prop('checked', false);
+    }
+
+    if (addressTypeId === 1) {
+        $('#rdoBilling').prop('checked', true);
+    }
+    else if (addressTypeId === 2) {
+        $('#rdoShipping').prop('checked', true);
+    }
+    else if (addressTypeId === 4) {
+        $('#rdoWarehouse').prop('checked', true);
+    }
+    if (addressId !== '') {
+        FillAddress(addressId);
+    }
+
+});
+
+$('.btnDeleteAddress').unbind().on('click', function () {
+
+    var custId = $(this).data('customerid');
+
+    var custAddData = {
+        customerId: custId,
+        addressId: $(this).data('addressid'),
+        addressTypeId: $(this).data('addresstypeid')
+    };
+
+    bootbox.confirm("Selected address will be deleted from this customer. Are you sure to proceed?", function (result) {
+        if (result === true) {
+            RemoveEntryWithParams('Customer/RemoveAddress', [custAddData]);
+            $('#loadAddressDataTable').load('Customer/LoadCustomerAddressData/' + custId);
+            ClearAddressForm();
+        }
+    });
+
+});
 
 
 function GetFormData() {
@@ -133,126 +294,75 @@ function GetFormData() {
         discountPercentage: $('#txtSpecialDiscount').val(),
         invoiceDueDays: $('#txtInvoiceDueDays').val(),
         isGstApplicable: $('#isGstApplicable').is(':checked') ? 1 : 0,
-        isActive: $('#chkIsActive').is(':checked') === true ? 1 : 0,
-        mailingAddressId: $('#hfMailingAddressId').val(),
-        billingAddressId: $('#hfBillingAddressId').val()
-
+        isActive: $('#chkIsActive').is(':checked') === true ? 1 : 0
     };
 
-    var billingAddressData = {
-        billingAddressId: $('#hfBillingAddressId').val(),
-        unitNumber: $('#txtBillingAddressUnit').val(),
-        addressLine: $('#txtBillingAddressLine').val(),
-        cityId: $('#ddlBillingCityId').val(),
-        provinceId: $('#ddlBillingProvinceId').val(),
-        countryId: $('#ddlBillingCountryId').val(),
-        postCode: $('#txtBillingPostCode').val(),
-        contactPersonName: $('#txtBillingContactPerson').val(),
-        fax: $('#txtBillingFaxNumber').val(),
-        primaryPhoneNumber: $('#txtBillingPrimaryPhoneNumber').val(),
-        emailAddress1: $('#txtBillingEmailAddress').val()
-    };
-
-    var mailingAddressData = {
-        billingAddressId: $('#hfMailingAddressId').val(),
-        unitNumber: $('#txtMailingAddressUnit').val(),
-        addressLine: $('#txtMailingAddressLine').val(),
-        cityId: $('#ddlMailingCityId').val(),
-        provinceId: $('#ddlMailingProvinceId').val(),
-        countryId: $('#ddlMailingCountryId').val(),
-        postCode: $('#txtMailingPostCode').val(),
-        contactPersonName: $('#txtMailingContactPerson').val(),
-        fax: $('#txtMailingFaxNumber').val(),
-        primaryPhoneNumber: $('#txtMailingPrimaryPhoneNumber').val(),
-        emailAddress1: $('#txtMailingEmailAddress').val()
-    };
-
-
-    return [customerData, billingAddressData, mailingAddressData];
+    return [customerData];
 }
 
-function FillCustomerInfo(customerInfo) {
+function GetAddressData() {
+    var addressData = {
+        customerId: $('#txtCustomerIdForAddress').val() === "" ? "0" : $('#txtCustomerIdForAddress').val(),
+        addressTypeId: $('input[name="rdoAddressType"]:checked').val(),
+        addressId: $('#hfAddressId').val(),
+        isDefault: $('#chkIsDefault').is(':checked') ? 1 : 0,
 
-    $('#hfBillingAddressId').val(customerInfo.BillingAddressId);
-    $('#hfMailingAddressId').val(customerInfo.MailingAddressId);
+        addressLine: $('#txtAddressLine').val(),
+        unitNumber: $('#txtAddressUnit').val(),
+        cityId: $('#ddlCityId').val(),
+        provinceId: $('#ddlProvinceId').val(),
+        countryId: $('#ddlCountryId').val(),
+        postCode: $('#txtPostCode').val(),
+        contactPersonName: $('#txtContactPerson').val(),
+        emailAddress1: $('#txtEmailAddress').val(),
+        primaryPhoneNumber: $('#txtPrimaryPhoneNumber').val(),
+        fax: $('#txtFaxNumber').val()
+    };
 
-    $('#txtCustomerId').val(customerInfo.Id);
-    $('#txtCustomerName').val(customerInfo.CustomerName);
-    $('#txtFuelSurcharge').val(customerInfo.FuelSurChargePercentage);
-    $('#txtSpecialDiscount').val(customerInfo.DiscountPercentage);
-    $('#txtInvoiceDueDays').val(customerInfo.InvoiceDueDays);
+    return [addressData];
+}
 
-    if (customerInfo.BillingAddressId !== null)
-    {
-
-    }
-
-    $('#txtAddressUnit').val(address.UnitNumber);
-    $('#txtAddressLine').val(address.UnitNumber);
-    $('#ddlCityId').val(address.UnitNumber);
-    $('#ddlBillingProvinceId').val(address.UnitNumber);
-    $('#ddlBillingCountryId').val(address.UnitNumber);
-    $('#txtBillingPostCode').val(address.UnitNumber);
-    $('#txtBillingContactPerson').val(address.UnitNumber);
-    $('#txtBillingFaxNumber').val(address.UnitNumber);
-    $('#txtBillingPrimaryPhoneNumber').val(address.UnitNumber);
-    $('#txtBillingEmailAddress').val(address.UnitNumber);
-
-
-
-    $('#txtMailingAddressUnit').val('');
-    $('#txtMailingAddressLine').val('');
-    $('#ddlMailingCityId').val('0');
-    $('#ddlMailingProvinceId').val('0');
-    $('#ddlMailingCountryId').val('0');
-    $('#txtMailingPostCode').val('');
-    $('#txtMailingContactPerson').val('');
-    $('#txtMailingFaxNumber').val('');
-    $('#txtMailingPrimaryPhoneNumber').val('');
-    $('#txtMailingEmailAddress').val('');
+function FillCustomerInformation(customerInfo) {
 
     $('#txtCustomerId').val(customerInfo.Id);
     $('#txtCustomerName').val(customerInfo.CustomerName);
     $('#txtFuelSurcharge').val(customerInfo.FuelSurChargePercentage);
     $('#txtSpecialDiscount').val(customerInfo.DiscountPercentage);
     $('#txtInvoiceDueDays').val(customerInfo.InvoiceDueDays);
+}
 
-    if (customerInfo.BillingAddressId !== null && customerInfo.BillingAddressId !== undefined) {
-        $('#hfBillingAddressId').val(customerInfo.BillingAddressId);
+function FillAddress(addressId) {
+    var addressInfo = GetSingleObjectById('Address/GetAddressById', addressId);
 
-        var billingAddressRaw = GetSingleObjectById('Address/GetAddressById', customerInfo.BillingAddressId);
-        if (billingAddressRaw !== null) {
-            var billingAddress = JSON.parse(billingAddressRaw);
-            $('#txtBillingAddressUnit').val(billingAddress.UnitNumber);
-            $('#txtBillingAddressLine').val(billingAddress.AddressLine);
-            $('#ddlBillingCityId').val(billingAddress.CityId);
-            $('#ddlBillingProvinceId').val(billingAddress.ProvinceId);
-            $('#ddlBillingCountryId').val(billingAddress.CountryId);
-            $('#txtBillingPostCode').val(billingAddress.PostCode);
-            $('#txtBillingContactPerson').val(billingAddress.ContactPersonName);
-            $('#txtBillingFaxNumber').val(billingAddress.Fax);
-            $('#txtBillingPrimaryPhoneNumber').val(billingAddress.PrimaryPhoneNumber);
-            $('#txtBillingEmailAddress').val(billingAddress.EmailAddress1);
-        }
-
+    if (addressInfo !== null && addressInfo !== undefined) {
+        var address = JSON.parse(addressInfo);
+        $('#hfAddressId').val(addressId);
+        $('#txtAddressUnit').val(address.UnitNumber);
+        $('#txtAddressLine').val(address.AddressLine);
+        $('#ddlCityId').val(address.CityId);
+        $('#ddlProvinceId').val(address.ProvinceId);
+        $('#ddlCountryId').val(address.CountryId);
+        $('#txtPostCode').val(address.PostCode);
+        $('#txtContactPerson').val(address.ContactPersonName);
+        $('#txtFaxNumber').val(address.Fax);
+        $('#txtPrimaryPhoneNumber').val(address.PrimaryPhoneNumber);
+        $('#txtEmailAddress').val(address.EmailAddress1);
     }
+}
 
-    if (customerInfo.MailingAddressId !== null && customerInfo.MailingAddressId !== undefined) {
-        $('#hfMailingAddressId').val(customerInfo.MailingAddressId);
+function ClearAddressForm() {
+    $('#hfAddressId').val('');
+    $('#txtAddressLine').val('');
+    $('#txtAddressUnit').val('');
+    $('#ddlCityId').val('335');
+    $('#ddlProvinceId').val('7');
+    $('#ddlCountryId').val('41');
+    $('#txtPostCode').val('');
+    $('#txtContactPerson').val('');
+    $('#txtEmailAddress').val('');
+    $('#txtPrimaryPhoneNumber').val('');
+    $('#txtFaxNumber').val('');
+    $('#chkIsDefault').prop('checked', false);
+    $('#rdoBilling').prop('checked', true);
 
-        var mailingAddressRaw = GetSingleObjectById('Address/GetAddressById', customerInfo.MailingAddressId);
-        if (mailingAddressRaw !== null) {
-            var mailingAddress = JSON.parse(mailingAddressRaw);
-            $('#txtMailingAddressUnit').val(mailingAddress.UnitNumber);
-            $('#txtMailingAddressLine').val(mailingAddress.AddressLine);
-            $('#ddlMailingCityId').val(mailingAddress.CityId);
-            $('#ddlMailingProvinceId').val(mailingAddress.ProvinceId);
-            $('#ddlMailingCountryId').val(mailingAddress.CountryId);
-            $('#txtMailingPostCode').val(mailingAddress.PostCode);
-            $('#txtMailingContactPerson').val(mailingAddress.ContactPersonName);
-            $('#txtMailingFaxNumber').val(mailingAddress.Fax);
-            $('#txtMailingPrimaryPhoneNumber').val(mailingAddress.PrimaryPhoneNumber);
-            $('#txtMailingEmailAddress').val(mailingAddress.EmailAddress1);
-        }
-    }
 }

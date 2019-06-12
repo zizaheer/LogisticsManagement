@@ -41,7 +41,7 @@ namespace LogisticsManagement_Web.Controllers
             _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
             _countryLogic = new App_CountryLogic(_cache, new EntityFrameworkGenericRepository<App_CountryPoco>(_dbContext));
 
-            ViewBag.UserGroups = Enum.GetValues(typeof(UserGroup)).Cast<UserGroup>();
+            ViewBag.UserGroups = Enum.GetValues(typeof(Enum_UserGroup)).Cast<Enum_UserGroup>();
             ViewBag.Cities = _cityLogic.GetList().Select(c => new App_CityPoco { Id = c.Id, CityName = c.CityName }).ToList();
             ViewBag.Provinces = _provinceLogic.GetList().Select(c => new App_ProvincePoco { Id = c.Id, ShortCode = c.ShortCode, IsDefault = c.IsDefault }).ToList();
             ViewBag.Countries = _countryLogic.GetList().Select(c => new App_CountryPoco { Id = c.Id, CountryName = c.CountryName, IsDefault = c.IsDefault }).ToList();

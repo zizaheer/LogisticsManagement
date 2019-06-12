@@ -48,6 +48,48 @@ function GetListObjectByParam(actionUrl, paramData) {
     return returnObject;
 }
 
+function GetListObjectById(actionUrl, id) {
+
+    var returnObject = null;
+
+    $.ajax({
+        'async': false,
+        url: actionUrl + '/' + id,
+        type: 'GET',
+        dataType: 'json',
+        id: id,
+        success: function (result) {
+            returnObject = result;
+        },
+        error: function (result) {
+            returnObject = result;
+        }
+    });
+
+    return returnObject;
+}
+
+function GetListObjectByCount(actionUrl, count) {
+
+    var returnObject = null;
+
+    $.ajax({
+        'async': false,
+        url: actionUrl + '/' + count,
+        type: 'GET',
+        dataType: 'json',
+        count: count,
+        success: function (result) {
+            returnObject = result;
+        },
+        error: function (result) {
+            returnObject = result;
+        }
+    });
+
+    return returnObject;
+}
+
 function GetSingleObjectById(actionUrl, id) {
 
     var returnObject = null;
@@ -141,6 +183,35 @@ function RemoveEntry(actionUrl, id) {
         }
     });
 }
+
+function RemoveEntryWithParams(actionUrl, dataArray) {
+    var returnObject = null;
+
+    $.ajax({
+        'async': false,
+        url: actionUrl,
+        type: 'POST',
+        data: JSON.stringify(dataArray),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            if (result.length > 0) {
+                returnObject = result;
+                bootbox.alert('Success! Data removed successfully. ');
+            }
+            else {
+                bootbox.alert('Failed! An error occurred while saving data. Please check your input and try again.');
+            }
+
+        },
+        error: function (result) {
+
+        }
+    });
+
+    return returnObject;
+}
+
 
 function MaskPhoneNumber(element) {
     $(element).mask('000-000-0000');

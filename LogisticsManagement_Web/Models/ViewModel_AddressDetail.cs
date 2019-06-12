@@ -7,12 +7,6 @@ namespace LogisticsManagement_Web.Models
 {
     public class ViewModel_AddressDetail
     {
-
-        // This 2 fields (label, value) are required to pass on lower case for Jquiry UI Autocomplete to work
-        // Give some more thoughts later
-        public string label { get; set; }
-        public string value { get; set; }
-
         public int AddressId { get; set; }
         public string UnitNumber { get; set; }
         public string HouseNumber { get; set; }
@@ -32,6 +26,5 @@ namespace LogisticsManagement_Web.Models
         public string MobileNumber { get; set; }
         public string EmailAddress1 { get; set; }
         public string EmailAddress2 { get; set; }
-
     }
 }

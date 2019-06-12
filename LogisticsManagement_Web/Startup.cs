@@ -70,6 +70,7 @@ namespace LogisticsManagement_Web
             services.AddScoped<IDataRepository<Lms_CompanyInfoPoco>, EntityFrameworkGenericRepository<Lms_CompanyInfoPoco>>();
             services.AddScoped<IDataRepository<Lms_ConfigurationPoco>, EntityFrameworkGenericRepository<Lms_ConfigurationPoco>>();
             services.AddScoped<IDataRepository<Lms_CustomerPoco>, EntityFrameworkGenericRepository<Lms_CustomerPoco>>();
+            services.AddScoped<IDataRepository<Lms_CustomerAddressMappingPoco>, EntityFrameworkGenericRepository<Lms_CustomerAddressMappingPoco>>();
             services.AddScoped<IDataRepository<Lms_CustomerEmployeeMappingPoco>, EntityFrameworkGenericRepository<Lms_CustomerEmployeeMappingPoco>>();
             services.AddScoped<IDataRepository<Lms_DeliveryOptionPoco>, EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>>();
             services.AddScoped<IDataRepository<Lms_EmployeePoco>, EntityFrameworkGenericRepository<Lms_EmployeePoco>>();

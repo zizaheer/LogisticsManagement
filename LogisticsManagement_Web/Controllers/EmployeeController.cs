@@ -36,7 +36,7 @@ namespace LogisticsManagement_Web.Controllers
         {
             ValidateSession();
 
-            ViewBag.EmployeeTypes = Enum.GetValues(typeof(EmployeeType)).Cast<EmployeeType>();
+            ViewBag.EmployeeTypes = Enum.GetValues(typeof(Enum_EmployeeType)).Cast<Enum_EmployeeType>();
 
             return View(GetEmployeeData());
 

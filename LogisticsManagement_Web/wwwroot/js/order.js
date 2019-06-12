@@ -170,16 +170,11 @@ $('#ddlShipperId').on('change', function () {
 
     var shipperInfo = JSON.parse(GetCustomerInfo(selectedValue));
     if (shipperInfo !== null || shipperInfo !== undefined) {
-
-        var mailingAddId = shipperInfo.MailingAddressId;
-        var billingAddId = shipperInfo.BillingAddressId;
-
-        if (mailingAddId !== null) {
-            FillShipperAddress(mailingAddId);
+        var shipperAddressId = GetCustomerDefaultShippingAddress(selectedValue);
+        if (shipperAddressId < 1) {
+            shipperAddressId = GetCustomerDefaultBillingAddress(selectedValue);
         }
-        else if (billingAddId !== null) {
-            FillShipperAddress(billingAddId);
-        }
+        FillShipperAddress(shipperAddressId);
     }
 
     if (paidByValue === '1') {
@@ -216,16 +211,11 @@ $('#ddlConsigneeId').on('change', function () {
 
     var consigneeInfo = JSON.parse(GetCustomerInfo(selectedValue));
     if (consigneeInfo !== null || consigneeInfo !== undefined) {
-
-        var mailingAddId = consigneeInfo.MailingAddressId;
-        var billingAddId = consigneeInfo.BillingAddressId;
-
-        if (mailingAddId !== null) {
-            FillConsigneeAddress(mailingAddId);
+        var consigneeAddressId = GetCustomerDefaultShippingAddress(selectedValue);
+        if (consigneeAddressId < 1) {
+            consigneeAddressId = GetCustomerDefaultBillingAddress(selectedValue);
         }
-        else if (billingAddId !== null) {
-            FillConsigneeAddress(billingAddId);
-        }
+        FillConsigneeAddress(consigneeAddressId);
     }
 
     if (paidByValue === '2') {
@@ -493,7 +483,6 @@ $('#order-list').on('click', '.btnEdit', function (event) {
 
 });
 
-
 $('#btnPrintWaybill').unbind().on('click', function (event) {
     event.preventDefault();
 
@@ -605,6 +594,16 @@ function GetCustomerInfo(customerId) {
     return customerInfo;
 }
 
+function GetCustomerDefaultShippingAddress(customerId) {
+    var customerDefaultShippingAddressId = GetSingleObjectById('Customer/GetCustomerDefaultShippingAddressById', customerId);
+    return customerDefaultShippingAddressId;
+}
+
+function GetCustomerDefaultBillingAddress(customerId) {
+    var customerDefaultBillingAddressId = GetSingleObjectById('Customer/GetCustomerDefaultBillingAddressById', customerId);
+    return customerDefaultBillingAddressId;
+}
+
 function FillShipperAddress(addressId) {
     var shipperAddress = JSON.parse(GetAddressInfo(addressId));
 
@@ -633,7 +632,6 @@ function FillConsigneeAddress(addressId) {
         $('#txtConsigneePostcode').val(consigneeAddress.PostCode);
     }
 }
-
 
 function GetAddressInfo(addressId) {
 
@@ -742,6 +740,9 @@ function CalculateOrderBaseCost() {
     }
     else {
         overriddenOrderCost = baseOrderCost;
+        $('#txtOverriddenOrderGST').val('');
+        $('#txtOverriddenOrderSurcharge').val('');
+
         $('#lblGrandBasicCost').text($('#txtBaseOrderCost').val());
 
         overriddenFuelSurchargeAmount = baseFuelSurchargeAmount;

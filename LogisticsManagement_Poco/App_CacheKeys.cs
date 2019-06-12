@@ -12,6 +12,7 @@ namespace LogisticsManagement_Poco
         public static string Tariffs { get { return "_Tariffs"; } }
         public static string Addresses { get { return "_Addresses"; } }
         public static string Customers { get { return "_Customers"; } }
+        public static string CustomerAddresses { get { return "_CustomerAddresses"; } }
         public static string Employees { get { return "_Employees"; } }
         public static string Orders { get { return "_Orders"; } }
         public static string OrderAdditionalServices { get { return "_OrderAdditionalServices"; } }

@@ -13,7 +13,7 @@ namespace LogisticsManagement_Poco
         [Column("AccountId")]
         public int Id { get; set; }
 
-        public int ParentGLCode { get; set; }
+        public int? ParentGLCode { get; set; }
         public string AccountName { get; set; }
         public int BranchId { get; set; }
         public decimal? CurrentBalance { get; set; }

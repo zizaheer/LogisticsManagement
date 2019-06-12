@@ -1,13 +1,13 @@
-﻿@using LogisticsManagement_Web.Models;
-@model ViewModel_Customer
+﻿@using LogisticsManagement_Poco;
+@model List<Lms_CustomerPoco>
 
 
-<style>
+@*<style>
     .dataTables_filter {
         float: left;
         margin-left:-100%;
     }
-</style>
+</style>*@
 <script>
     $(document).ready(function () {
 
@@ -42,7 +42,7 @@
             </thead>
             <tbody id="tBodyCustomer">
 
-                @foreach (var item in Model.Customers)
+                @foreach (var item in Model)
                 {
                     <tr>
                         <td>

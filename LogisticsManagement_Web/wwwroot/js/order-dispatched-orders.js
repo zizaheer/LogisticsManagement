@@ -1,7 +1,7 @@
 ﻿//#region document.ready
 
 $(document).ready(function () {
-    
+
     $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(new Date));
     $('#txtDispatchDatetimeForNewOrders').val(ConvertDatetimeToUSDatetime(new Date));
 
@@ -83,9 +83,13 @@ $('#btnSavePickup').unbind().on('click', function () {
 });
 $('#btnRemovePickup').unbind().on('click', function () {
     var orderId = $('#txtOrderIdForPickupModal').val();
-    RemoveEntry('Order/RemovePickupStatus', orderId);
 
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+    bootbox.confirm("Pickup information related to this order will be deleted. Are you sure to proceed?", function (result) {
+        if (result === true) {
+            RemoveEntry('Order/RemovePickupStatus', orderId);
+            $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+        }
+    });
 });
 
 $('.btnPasson').unbind().on('click', function () {
@@ -118,7 +122,7 @@ $('.btnPasson').unbind().on('click', function () {
         } else {
             $('#ddlPassOnEmployeeId').val(0);
         }
-        
+
         $('#txtPassOnEmployeeNumber').val($('#ddlPassOnEmployeeId').val());
         $('#txtPassOnWaitTime').val(orderInfo.PassOffWaitTimeHour);
     }
@@ -154,9 +158,13 @@ $('#btnSavePassOn').unbind().on('click', function () {
 });
 $('#btnRemovePassOn').unbind().on('click', function () {
     var orderId = $('#txtOrderIdForPassOnModal').val();
-    RemoveEntry('Order/RemovePassonStatus', orderId);
+    bootbox.confirm("Pass-on information related to this order will be deleted. Are you sure to proceed?", function (result) {
+        if (result === true) {
+            RemoveEntry('Order/RemovePassonStatus', orderId);
+            $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+        }
+    });
 
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
 });
 
 $('.btnDeliver').unbind().on('click', function () {
@@ -223,9 +231,15 @@ $('#btnSaveDeliver').unbind().on('click', function () {
 });
 $('#btnRemoveDelivery').unbind().on('click', function () {
     var orderId = $('#txtOrderIdForDeliverModal').val();
-    RemoveEntry('Order/RemoveDeliveryStatus', orderId);
 
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+    bootbox.confirm("Pass-on information related to this order will be deleted. Are you sure to proceed?", function (result) {
+        if (result === true) {
+            RemoveEntry('Order/RemoveDeliveryStatus', orderId);
+            $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+        }
+    });
+
+    
 });
 
 $('.btnRemoveDispatch').unbind().on('click', function () {

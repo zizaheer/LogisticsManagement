@@ -42,7 +42,8 @@
                             <div class="row mb-1 ">
                                 <div class="col-sm-12 input-group">
                                     <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPickupModal" type="number" name="txtWayBillNoForPickupModal">
-                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForPickupModal" style="font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
+                                    <input type="hidden" id="hfOrderIdForPickupModal" />
+                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForPickupModal" style="display:none; font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
                                 </div>
                             </div>
                         </div>
@@ -74,7 +75,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <button type="button" class="btn btn-sm btn-success" id="btnSavePickup"><i class="fa fa-save"></i> Save pickup</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePickup"><i class="fa fa-trash"></i> Remove pickup </button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePickup"><i class="fa fa-trash"></i> Delete pickup </button>
                         </div>
                     </div>
                 </div>
@@ -106,7 +107,8 @@
                             <div class="row mb-1 ">
                                 <div class="col-sm-12 input-group">
                                     <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPassOnModal" type="number" name="txtWayBillNoForPassOnModal">
-                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForPassOnModal" style="font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
+                                    <input type="hidden" id="hfOrderIdForPassOnModal" />
+                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForPassOnModal" style="display:none; font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
                                 </div>
                             </div>
                         </div>
@@ -166,7 +168,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <button type="button" class="btn btn-sm btn-success" id="btnSavePassOn"><i class="fa fa-save"></i> Save pass-on</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePassOn"><i class="fa fa-trash"></i> Remove pass-on </button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePassOn"><i class="fa fa-trash"></i> Delete pass-on </button>
                         </div>
                     </div>
                 </div>
@@ -193,7 +195,8 @@
                             <div class="row mb-1 ">
                                 <div class="col-sm-12 input-group">
                                     <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForDeliverModal" type="number" name="txtWayBillNoForDeliverModal">
-                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForDeliverModal" style="font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
+                                    <input type="hidden" id="hfOrderIdForDeliverModal" />
+                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForDeliverModal" style="display:none; font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
                                 </div>
                             </div>
                         </div>
@@ -263,7 +266,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Remove delivery </button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Delete delivery </button>
                         </div>
                     </div>
                 </div>

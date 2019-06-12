@@ -178,29 +178,30 @@ namespace LogisticsManagement_Web.Controllers
             return PartialView("_PartialViewAddressData", filteredAddresses);
         }
 
-        public JsonResult GetAddressesForAutoComplete()
+        public JsonResult GetAddressForAutoComplete()
         {
             var addressList = _addressLogic.GetList();
+            var cities = _cityLogic.GetList();
+            var provinces = _provinceLogic.GetList();
+            var countries = _countryLogic.GetList();
 
-            List<ViewModel_AddressDetail> addressesForAutoComplete = new List<ViewModel_AddressDetail>();
+            List<ViewModel_AddressForAutoComplete> addressesForAutoComplete = new List<ViewModel_AddressForAutoComplete>();
             if (addressList.Count > 0)
             {
                 foreach (var address in addressList)
                 {
-                    ViewModel_AddressDetail addressForAutoComplete = new ViewModel_AddressDetail();
-                    addressForAutoComplete.label = (address.UnitNumber == null ? "" : address.UnitNumber + ", ") + address.AddressLine + "  (" + address.Id + ")";
-                    addressForAutoComplete.value = address.Id.ToString();
-
+                    ViewModel_AddressForAutoComplete addressForAutoComplete = new ViewModel_AddressForAutoComplete();
                     addressForAutoComplete.AddressId = address.Id;
-                    addressForAutoComplete.UnitNumber = address.UnitNumber;
+                    addressForAutoComplete.AddressLine = (address.UnitNumber == null ? "" : address.UnitNumber + ", ") + address.AddressLine + "  (" + address.Id + ")";
 
-                    addressForAutoComplete.HouseNumber = address.HouseNumber;
-                    addressForAutoComplete.StreetNumber = address.StreetNumber;
-                    addressForAutoComplete.AddressLine = address.AddressLine;
-                    addressForAutoComplete.CityId = address.CityId.ToString();
-                    addressForAutoComplete.ProvinceId = address.ProvinceId.ToString();
-                    addressForAutoComplete.CountryId = address.CountryId.ToString();
-                    addressForAutoComplete.PostCode = address.PostCode;
+                    string addressLine = "";
+                    addressLine += address.UnitNumber;
+                    addressLine += !string.IsNullOrEmpty(address.UnitNumber) ? ", " + address.AddressLine : address.AddressLine;
+                    addressLine += !string.IsNullOrEmpty(address.AddressLine) ? ", " + cities.Find(c => c.Id == address.CityId).CityName : cities.Find(c => c.Id == address.CityId).CityName;
+                    addressLine += !string.IsNullOrEmpty(address.CityId.ToString()) ? ", " + provinces.Find(c => c.Id == address.ProvinceId).ShortCode : provinces.Find(c => c.Id == address.ProvinceId).ShortCode;
+                    addressLine += !string.IsNullOrEmpty(address.ProvinceId.ToString()) ? ", " + countries.Find(c => c.Id == address.CountryId).CountryName : countries.Find(c => c.Id == address.CountryId).CountryName;
+                    addressLine += !string.IsNullOrEmpty(address.CountryId.ToString()) ? ", " + address.PostCode : address.PostCode;
+                    addressForAutoComplete.AddressLine = addressLine;
 
                     addressesForAutoComplete.Add(addressForAutoComplete);
                 }

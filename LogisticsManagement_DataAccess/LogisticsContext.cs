@@ -36,6 +36,7 @@ namespace LogisticsManagement_DataAccess
         DbSet<Lms_CompanyInfoPoco> lmsCompanyInfoPocos { get; set; }
         DbSet<Lms_ConfigurationPoco> lmsConfigurationPocos { get; set; }
         DbSet<Lms_CustomerPoco> lmsCustomerPocos { get; set; }
+        DbSet<Lms_CustomerAddressMappingPoco> lmsCustomerAddressMappingPocos { get; set; }
         DbSet<Lms_CustomerEmployeeMappingPoco> lmsCustomerEmployeeMappingPocos { get; set; }
         DbSet<Lms_DeliveryOptionPoco> lmsDeliveryOptionPocos { get; set; }
         DbSet<Lms_EmployeePoco> lmsEmployeePocos { get; set; }

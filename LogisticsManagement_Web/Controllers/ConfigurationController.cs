@@ -33,7 +33,7 @@ namespace LogisticsManagement_Web.Controllers
         {
             ValidateSession();
 
-            ViewBag.TaxToCall = Enum.GetValues(typeof(TaxToCall)).Cast<TaxToCall>();
+            ViewBag.TaxToCall = Enum.GetValues(typeof(Enum_TaxToCall)).Cast<Enum_TaxToCall>();
             var configuration = _configurationLogic.GetSingleById(1);
             return View(configuration);
         }

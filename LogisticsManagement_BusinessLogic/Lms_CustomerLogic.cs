@@ -123,8 +123,6 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@FuelSurChargePercentage", SqlDbType.Decimal) { Value = (object)customerPoco.FuelSurChargePercentage ?? DBNull.Value },
                 new SqlParameter("@DiscountPercentage", SqlDbType.Decimal) { Value = (object)customerPoco.DiscountPercentage ?? DBNull.Value },
                 new SqlParameter("@InvoiceDueDays", SqlDbType.Int) { Value = (object)customerPoco.InvoiceDueDays  ?? DBNull.Value},
-                new SqlParameter("@MailingAddressId", SqlDbType.Int) { Value = (object)customerPoco.MailingAddressId  ?? DBNull.Value},
-                new SqlParameter("@BillingAddressId", SqlDbType.Int) { Value = (object)customerPoco.BillingAddressId  ?? DBNull.Value},
                 new SqlParameter("@IsMailingBillingAddressSame", SqlDbType.Bit) { Value = isMailingBillingAddressSame },
                 new SqlParameter("@CreatedBy", SqlDbType.Int) { Value = customerPoco.CreatedBy },
 

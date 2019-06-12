@@ -11,7 +11,7 @@ namespace LogisticsManagement_Poco
         MiscellaneousOrder,
     }
 
-    public enum TaxToCall
+    public enum Enum_TaxToCall
     {
         GST = 1,
         HST,
@@ -21,14 +21,14 @@ namespace LogisticsManagement_Poco
         VAT
     }
 
-    public enum AccountType
+    public enum Enum_AccountType
     {
         Asset = 1,
         Liability,
         Income,
         Expense
     }
-    public enum EmployeeType
+    public enum Enum_EmployeeType
     {
         Employee = 1,
         EmployeeDriver,
@@ -39,13 +39,21 @@ namespace LogisticsManagement_Poco
         UnknownType,
     }
 
-    public enum UserGroup
+    public enum Enum_UserGroup
     {
         Administrator = 1,
         Manager,
         Supervisor,
         Restricted,
         ThirdParty
+    }
+
+    public enum Enum_AddressType
+    {
+        Billing = 1,
+        Shipping,
+        Residential,
+        Warehouse
     }
 
 }

@@ -21,8 +21,6 @@ namespace LogisticsManagement_Poco
         public decimal? DiscountPercentage { get; set; }
         public byte? InvoiceDueDays { get; set; }
 
-        public int? BillingAddressId { get; set; }
-        public int? MailingAddressId { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }

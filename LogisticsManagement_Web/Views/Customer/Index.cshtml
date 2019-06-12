@@ -1,8 +1,4 @@
-﻿@using LogisticsManagement_Web.Models;
-@model ViewModel_Customer
-
-
-@{
+﻿@{
     ViewData["Title"] = "Customer";
 }
 
@@ -13,17 +9,168 @@
     }
 </style>
 
+<div class="modal fade bd-example-modal-xl" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content bg-light">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/paper-plane.png" style="height:25px; padding-left:28px; padding-right:10px" />Add address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-sm-4 form-group">
+                            <label for="txtCustomerIdForAddress">Customer number</label>
+                            <div class="row mb-1 ">
+                                <div class="col-sm-12 input-group">
+                                    <input class="col-9 form-control form-control-sm " placeholder="&#xF002; Customer no." style="font-family:Arial, FontAwesome" id="txtCustomerIdForAddress" type="number" name="txtCustomerIdForAddress" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-8 form-group">
+                            <label for="txtCustomerNameForAddress">Name</label>
+                            <div class="row mb-1 ">
+                                <div class="col-sm-12 input-group">
+                                    <input type="text" id="txtCustomerNameForAddress" class="form-control form-control-sm" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <form id="frmCustomerAddress">
+                        <div class="row">
+                            <div class="col-sm-12" id="divAddress1">
+                                <div class="row m-0 input-group">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="rdoAddressType" id="rdoBilling" value="1" checked />
+                                        <label class="form-check-label" for="rdoBilling">Billing </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="rdoAddressType" id="rdoShipping" value="2" />
+                                        <label class="form-check-label" for="rdoShipping">Shipping </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="rdoAddressType" id="rdoWarehouse" value="4" />
+                                        <label class="form-check-label" for="rdoWarehouse">Warehouse </label>
+                                    </div>
+                                    <br /><br /><br />
+                                </div>
+                                <div class="row m-0 input-group">
+                                    <input type="hidden" id="hfAddressId" />
+                                    <input class="col-8 form-control form-control-sm" id="txtAddressLine" name="txtAddressLine" placeholder="Address Line" list="addresses" type="search" />
+                                    <datalist id="addresses">
+                                        @*<option data-addressid="@item.AddressId" value="@item.AddressLine"></option>*@
+                                    </datalist>
+                                    <input class="col-4 form-control form-control-sm addressBox" id="txtAddressUnit" type="text" name="txtAddressUnit" placeholder="Unit " />
+                                </div>
+                                <div class="row m-0 input-group">
+                                    <select class="col-5 form-control form-control-sm" id="ddlCityId" name="ddlCityId">
+                                        <option value="0">City </option>
+                                        @foreach (var city in ViewBag.Cities)
+                                        {
+                                            var selected = false;
+                                            if (city.Id == 335)
+                                            {
+                                                selected = true;
+                                            }
+                                            <option value="@city.Id" selected="@selected">@city.CityName</option>
+                                        }
+                                    </select>
+                                    <select class="col-2 form-control form-control-sm addressBox" id="ddlProvinceId" name="ddlProvinceId">
+                                        <option value="0">Province</option>
+                                        @foreach (var province in ViewBag.Provinces)
+                                        {
+                                            var selected = false;
+                                            if (province.Id == 7)
+                                            {
+                                                selected = true;
+                                            }
+                                            <option value="@province.Id" selected="@selected">@province.ShortCode</option>
+                                        }
+                                    </select>
+                                    <select class="col-3 form-control form-control-sm addressBox" id="ddlCountryId" name="ddlCountryId">
+                                        <option value="0">Country</option>
+                                        @foreach (var country in ViewBag.Countries)
+                                        {
+                                            var selected = false;
+                                            if (country.Id == 41)
+                                            {
+                                                selected = true;
+                                            }
+                                            <option value="@country.Id" selected="@selected">@country.CountryName</option>
+                                        }
+                                    </select>
+                                    <input class="col-2 form-control form-control-sm addressBox" id="txtPostCode" name="txtPostCode" placeholder="Postcode" />
+                                </div>
+
+                                <div class="row m-0 input-group">
+                                    <input class="col-6 form-control form-control-sm " id="txtContactPerson" type="text" name="txtContactPerson" placeholder="Contact person" />
+                                    <input class="col-6 form-control form-control-sm addressBox" id="txtEmailAddress" type="email" name="txtEmailAddress" placeholder="Email address" />
+                                </div>
+                                <div class="row m-0 input-group">
+                                    <input class="col-6 form-control form-control-sm " id="txtPrimaryPhoneNumber" type="tel" name="txtPrimaryPhoneNumber" placeholder="Phone" />
+                                    <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumber" type="tel" name="txtFaxNumber" placeholder="Fax" />
+                                </div>
+                                <div class="row m-0 input-group" style="margin-top:12px !important; margin-bottom:10px !important">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input chkIsDefault" type="checkbox" id="chkIsDefault" name="chkIsDefault" />
+                                        <b><label class="form-check-label" for="chkIsDefault" id="lblIsDefault">Default billing address</label></b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+                        <button type="reset" class="col-1 btn btn-sm btn-primary" id="btnNewAddress" name="btnNewAddress"><i class="fa fa-plus-circle"></i> New </button>
+                        <button type="submit" class="col-1 btn btn-sm btn-success" id="btnSaveAddress" name="btnSaveAddress"><i class="fa fa-save"></i> Save </button>
+
+                    </form>
+
+
+
+                    <div class="row">
+                        <div class="col-md-12 input-group" style="margin-top:40px">
+                            <h5>Existing address/s</h5>
+                            <div style="margin-left:15px">
+                                <span id="spinnerLoadingDataTable" style="display:block">
+                                    <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                                    <span style="margin-right:20px">Loading...</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div style="display:block; height:150px; padding:10px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadAddressDataTable">
+                                @* <partial name="_PartialViewCustomerAddress" />*@
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <h3>
     @ViewData["Title"]
 </h3>
 <hr style="margin-bottom:40px" />
+
+
 
 <form id="frmCustomerForm">
     <div class="row">
         <div class="col-sm-12 form-group">
             <input type="hidden" id="hfMailingAddressId" name="hfMailingAddressId" />
             <input type="hidden" id="hfBillingAddressId" name="hfBillingAddressId" />
-            <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Customer id" style="font-family:Arial, FontAwesome" id="txtCustomerId" type="number" min="1" name="txtCustomerId">
+            <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Customer id" style="font-family:Arial, FontAwesome" id="txtCustomerId" type="number" min="1" name="txtCustomerId" readonly>
         </div>
     </div>
 
@@ -55,190 +202,42 @@
         </div>
     </div>
 
-    @*<div class="row">
-            <div class="form-group col-sm-8">
-                <label for="ddlEmployeeId">Assign employee</label>
-                <select class="form-control form-control-sm" id="ddlEmployeeId" disabled>
-                    <option value="0" selected> -- Assign Employee -- </option>
-                </select>
-            </div>
-        </div>*@
-
-
-
-
     <hr />
+    <button type="reset" class="col-1 btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
     <button type="submit" class="col-1 btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
-    <button type="reset" class="col-1 btn btn-sm btn-primary" id="btnClear"><i class="fa fa-refresh"></i> Clear</button>
+    <button style="float:right" data-toggle="modal" type="button" class="col-1 btn btn-sm btn-danger" id="btnAddAddress"><i class="fa fa-envelop"></i> Address</button>
 
 </form>
-
-<div class="row">
-    <div class="col-md-12" style="margin-top:40px">
-        <h3>Add addresses</h3>
-        <hr style="margin-bottom:40px" />
-
-    </div>
-</div>
-<div class="row">
-        <div class="form-group col-sm-2">
-            <label for="">Address type</label>
-        </div>
-        <div class="form-group col-sm-8 form-check-inline"  style="margin-bottom:20px">
-            <div class="col-3 input-group"><input type="radio" id="rdoAddTypeSame" name="addressType" value="1" style="margin-top:5px; margin-right:5px" checked /> Same for both</div>
-            <div class="col-3 input-group"><input type="radio" id="rdoAddTypeBilling" name="addressType" value="2" style="margin-top:5px; margin-right:5px" /> Billing address</div>
-            <div class="col-3 input-group"><input type="radio" id="rdoAddTypeShipping" name="addressType" value="3" style="margin-top:5px; margin-right:5px" /> Shipping address</div>
-            <div class="col-3 input-group"><input type="radio" id="rdoAddTypeDifferent" name="addressType" value="4" style="margin-top:5px; margin-right:5px" /> Different for both</div>
-        </div>
-</div>
-<div class="row">
-    <div class="col-sm-5" id="divAddress2">
-        <div class="row m-0 input-group">
-            <input class="col-8 form-control form-control-sm" id="txtAddressLine" name="txtAddressLine" placeholder="Address Line" list="addresses" />
-            <datalist id="addresses">
-                @foreach (var item in Model.AddressLinesForAutoComplete)
-                {
-                    <option data-value="@item.AddressId" value="@item.AddressLine"></option>
-                }
-            </datalist>
-            <input class="col-4 form-control form-control-sm addressBox" id="txtAddressUnit" type="text" name="txtAddressUnit" placeholder="Unit " />
-        </div>
-        <div class="row m-0 input-group">
-            <select class="col-5 form-control form-control-sm" id="ddlCityId" name="ddlCityId">
-                <option value="0">City </option>
-                @foreach (var city in Model.Cities)
-                {
-                    var selected = false;
-                    if (city.Id == 335)
-                    {
-                        selected = true;
-                    }
-                    <option value="@city.Id" selected="@selected">@city.CityName</option>
-                }
-            </select>
-            <select class="col-2 form-control form-control-sm addressBox" id="ddlProvinceId" name="ddlProvinceId">
-                <option value="0">Province</option>
-                @foreach (var province in Model.Provinces)
-                {
-                    var selected = false;
-                    if (province.Id == 7)
-                    {
-                        selected = true;
-                    }
-                    <option value="@province.Id" selected="@selected">@province.ShortCode</option>
-                }
-            </select>
-            <select class="col-3 form-control form-control-sm addressBox" id="ddlCountryId" name="ddlCountryId">
-                <option value="0">Country</option>
-                @foreach (var country in Model.Countries)
-                {
-                    var selected = false;
-                    if (country.Id == 41)
-                    {
-                        selected = true;
-                    }
-                    <option value="@country.Id" selected="@selected">@country.CountryName</option>
-                }
-            </select>
-            <input class="col-2 form-control form-control-sm addressBox" id="txtPostCode" name="txtPostCode" placeholder="Postcode" />
-        </div>
-
-        <div class="row m-0 input-group">
-            <input class="col-6 form-control form-control-sm " id="txtContactPerson" type="text" name="txtContactPerson" placeholder="Contact person" />
-            <input class="col-6 form-control form-control-sm addressBox" id="txtEmailAddress" type="email" name="txtEmailAddress" placeholder="Email address" />
-        </div>
-        <div class="row m-0 input-group">
-            <input class="col-6 form-control form-control-sm " id="txtPrimaryPhoneNumber" type="tel" name="txtPrimaryPhoneNumber" placeholder="Phone" />
-            <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumber" type="tel" name="txtFaxNumber" placeholder="Fax" />
-        </div>
-    </div>
-    <div class="col-sm-5" id="divAddress2" style="pointer-events:none; opacity:0.6; color:gray" >
-        <div class="row m-0 input-group">
-            <input class="col-8 form-control form-control-sm" id="txtAddressLine2" name="txtAddressLine2" placeholder="Address Line" list="addresses" />
-            <datalist id="addresses">
-                @foreach (var item in Model.AddressLinesForAutoComplete)
-                {
-                    <option data-value="@item.AddressId" value="@item.AddressLine"></option>
-                }
-            </datalist>
-            <input class="col-4 form-control form-control-sm addressBox" id="txtAddressUnit2" type="text" name="txtAddressUnit2" placeholder="Unit " />
-        </div>
-        <div class="row m-0 input-group">
-            <select class="col-5 form-control form-control-sm" id="ddlCityId2" name="ddlCityId2">
-                <option value="0">City </option>
-                @foreach (var city in Model.Cities)
-                {
-                    var selected = false;
-                    if (city.Id == 335)
-                    {
-                        selected = true;
-                    }
-                    <option value="@city.Id" selected="@selected">@city.CityName</option>
-                }
-            </select>
-            <select class="col-2 form-control form-control-sm addressBox" id="ddlProvinceId2" name="ddlProvinceId2">
-                <option value="0">Province</option>
-                @foreach (var province in Model.Provinces)
-                {
-                    var selected = false;
-                    if (province.Id == 7)
-                    {
-                        selected = true;
-                    }
-                    <option value="@province.Id" selected="@selected">@province.ShortCode</option>
-                }
-            </select>
-            <select class="col-3 form-control form-control-sm addressBox" id="ddlCountryId2" name="ddlCountryId2">
-                <option value="0">Country</option>
-                @foreach (var country in Model.Countries)
-                {
-                    var selected = false;
-                    if (country.Id == 41)
-                    {
-                        selected = true;
-                    }
-                    <option value="@country.Id" selected="@selected">@country.CountryName</option>
-                }
-            </select>
-            <input class="col-2 form-control form-control-sm addressBox" id="txtPostCode2" name="txtPostCode2" placeholder="Postcode" />
-        </div>
-
-        <div class="row m-0 input-group">
-            <input class="col-6 form-control form-control-sm " id="txtContactPerson2" type="text" name="txtContactPerson2" placeholder="Contact person" />
-            <input class="col-6 form-control form-control-sm addressBox" id="txtEmailAddress2" type="email" name="txtEmailAddress2" placeholder="Email address" />
-        </div>
-        <div class="row m-0 input-group">
-            <input class="col-6 form-control form-control-sm " id="txtPrimaryPhoneNumber2" type="tel" name="txtPrimaryPhoneNumber2" placeholder="Phone" />
-            <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumber2" type="tel" name="txtFaxNumber2" placeholder="Fax" />
-        </div>
-    </div>
-</div>
-
-<hr />
-<button type="button" class="col-1 btn btn-sm btn-success" id="btnSaveAddress"><i class="fa fa-save"></i> Save </button>
 
 
 <div class="row">
     <div class="col-md-12 input-group" style="margin-top:40px">
         <h3>Existing customers</h3>
-        <button style="margin-left:15px; margin-top:8px" class="btn btn-sm btn-primary" id="btnLoadCustomerData"><i class="fa fa-download"></i> Load data </button>
+
+        <div style="margin-left:20px;margin-top:4px;">
+            <select class="form-control form-control-sm" id="ddlLoadCustomerCount">
+                <option value="0">All</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        <button style="margin-left:10px;margin-right:15px; margin-top:4px;height:27px" class="btn btn-sm btn-danger" id="btnLoadCustomerData"><i class="fa fa-download"></i> Load customer </button>
+        <div style="margin-top:5px">
+            <span id="spinnerLoadingDataTable" style="display:none">
+                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                <span style="margin-right:20px">Loading...</span>
+            </span>
+        </div>
     </div>
 </div>
 <hr />
 
 <div class="row">
     <div class="col-sm-12">
-        <div style="display:block; height:200px; padding:10px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadDataTable">
-            @* <partial name="_PartialViewCustomerData" />*@
+        <div style="display: block; max-height: 240px; min-height: 80px; padding:10px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadCustomerDataTable">
+            <partial name="_PartialViewCustomerData" />
         </div>
     </div>
-</div>
-
-
-
-
-<div class="row">
-
 
 </div>
 

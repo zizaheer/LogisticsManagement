@@ -23,16 +23,16 @@ namespace LogisticsManagement_Poco
         public int? DefaultWeightScaleId { get; set; }
         public decimal? DefaultFuelSurcharge { get; set; }
 
-        public string ParentGLForCustomerAccount { get; set; }
-        public string ParentGLForEmployeeAccount { get; set; }
-        public string SalesTaxPayableAccount { get; set; }
-        public string SalesIncomeAccount { get; set; }
-        public string SalaryExpenseAccount { get; set; }
-        public string BonusExpenseAccount { get; set; }
-        public string OtherReceivableAccount { get; set; }
-        public string OtherPayableAccount { get; set; }
-        public string OtherIncomeAccount { get; set; }
-        public string OtherExpenseAccount { get; set; }
+        public int? ParentGLForCustomerAccount { get; set; }
+        public int? ParentGLForEmployeeAccount { get; set; }
+        public int? SalesTaxPayableAccount { get; set; }
+        public int? SalesIncomeAccount { get; set; }
+        public int? SalaryExpenseAccount { get; set; }
+        public int? BonusExpenseAccount { get; set; }
+        public int? OtherReceivableAccount { get; set; }
+        public int? OtherPayableAccount { get; set; }
+        public int? OtherIncomeAccount { get; set; }
+        public int? OtherExpenseAccount { get; set; }
 
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
