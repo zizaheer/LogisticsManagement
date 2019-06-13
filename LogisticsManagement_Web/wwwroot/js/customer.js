@@ -18,6 +18,12 @@ $(document).ready(function () {
     $(document).ajaxComplete(function () {
         $("#spinnerLoadingDataTable").css("display", "none");
     });
+    $(document).ajaxStart(function () {
+        $("#addressSpinnerLoadingDataTable").css("display", "inline-block");
+    });
+    $(document).ajaxComplete(function () {
+        $("#addressSpinnerLoadingDataTable").css("display", "none");
+    });
 });
 
 $('#txtCustomerId').unbind('keypress').keypress(function (event) {
@@ -252,12 +258,15 @@ $('#customer-address-list').unbind().on('click', '.btnEditAddress', function (ev
 
     if (addressTypeId === 1) {
         $('#rdoBilling').prop('checked', true);
+        $('#lblIsDefault').text('Default billing address');
     }
     else if (addressTypeId === 2) {
         $('#rdoShipping').prop('checked', true);
+        $('#lblIsDefault').text('Default shipping address');
     }
     else if (addressTypeId === 4) {
         $('#rdoWarehouse').prop('checked', true);
+        $('#lblIsDefault').text('Default warehouse address');
     }
     if (addressId !== '') {
         FillAddress(addressId);
