@@ -77,7 +77,9 @@ $('#btnNew').on('click', function () {
 
 $('input[type=radio][name=rdoPaidBy]').change(function () {
     paidByValue = this.value;
-    $('#ddlBillerId').change();
+
+
+
 });
 
 $('input[name=chkIsReturnOrder]').change(function () {
@@ -105,23 +107,142 @@ $('input[name=chkIsReturnOrder]').change(function () {
     $('#lblOrderTypeText').text('This is a return order.');
 });
 
-$('#txtBillerCustomerNo').keypress(function (event) {
+//$('#txtBillerCustomerNo').keypress(function (event) {
 
-    if (event.keyCode === 13) {
-        event.preventDefault();
+//    if (event.keyCode === 13) {
+//        event.preventDefault();
 
-        var id = $('#txtBillerCustomerNo').val();
-        $('#ddlBillerId').val(id);
+//        var id = $('#txtBillerCustomerNo').val();
+//        $('#ddlBillerId').val(id);
 
-        if ($('#ddlBillerId').val() === null) {
-            $('#ddlBillerId').val(0);
-            bootbox.alert('Customer not found');
-            return;
+//        if ($('#ddlBillerId').val() === null) {
+//            $('#ddlBillerId').val(0);
+//            bootbox.alert('Customer not found');
+//            return;
+//        }
+//        $('#ddlBillerId').change();
+//    }
+
+//});
+
+$('#txtBillToCustomerName').on('input', function (event) {
+    event.preventDefault();
+    var valueSelected = $(this).val();
+    var customerId = $('#dlBillers option').filter(function () {
+        return this.value === valueSelected;
+    }).data('customerid');
+
+    var addressId = 0;
+
+    var customerInfo = JSON.parse(GetCustomerInfo(customerId));
+
+    if (customerInfo !== null) {
+        if (customerInfo.FuelSurChargePercentage > 0) {
+            $('#txtFuelSurchargePercent').val(customerInfo.FuelSurChargePercentage);
         }
-        $('#ddlBillerId').change();
+        $('#txtBillToCustomerName').val(customerInfo.CustomerName);
+        $('#txtDiscountPercent').val(customerInfo.DiscountPercentage);
+        $('#chkIsGstApplicable').prop('checked', customerInfo.IsGstApplicable);
+    }
+
+    if (paidByValue === '1') {
+        $('#txtShipperCustomerName').val(customerInfo.CustomerName);
+        addressId = GetCustomerDefaultShippingAddress(customerId);
+        if (addressId < 1) {
+            addressId = GetCustomerDefaultBillingAddress(customerId);
+        }
+        if (addressId > 0) {
+            FillShipperAddress(addressId);
+        }
+        else {
+            ClearShipperAddressArea();
+        }
+    }
+    else if (paidByValue === '2') {
+        $('#txtConsigneeCustomerName').val(customerInfo.CustomerName);
+        addressId = GetCustomerDefaultShippingAddress(customerId);
+
+        if (addressId < 1) {
+            addressId = GetCustomerDefaultBillingAddress(customerId);
+        }
+        if (addressId > 0) {
+            FillConsigneeAddress(addressId);
+        }
+        else {
+            ClearConsigneeAddressArea();
+        }
     }
 
 });
+
+$('#txtShipperCustomerName').on('input', function (event) {
+    event.preventDefault();
+    var valueSelected = $('#txtShipperCustomerName').val();
+    var customerId = $('#dlShipperCustomers option').filter(function () {
+        return this.value === valueSelected;
+    }).data('customerid');
+
+    var addressId = 0;
+
+    var customerInfo = JSON.parse(GetCustomerInfo(customerId));
+
+    if (customerInfo !== null) {
+
+        $('#txtShipperCustomerName').val(customerInfo.CustomerName);
+        addressId = GetCustomerDefaultShippingAddress(customerId);
+
+        if (addressId < 1) {
+            addressId = GetCustomerDefaultBillingAddress(customerId);
+        }
+        if (addressId > 0) {
+            FillShipperAddress(addressId);
+        }
+        else {
+            ClearShipperAddressArea();
+        }
+
+        if (paidByValue === '1') {
+            if (customerInfo.FuelSurChargePercentage > 0) {
+                $('#txtFuelSurchargePercent').val(customerInfo.FuelSurChargePercentage);
+            }
+            $('#txtBillToCustomerName').val(customerInfo.CustomerName);
+            $('#txtDiscountPercent').val(customerInfo.DiscountPercentage);
+            $('#chkIsGstApplicable').prop('checked', customerInfo.IsGstApplicable);
+        }
+    }
+
+});
+
+$('#txtConsigneeCustomerName').on('input', function (event) {
+    event.preventDefault();
+    var valueSelected = $('#txtConsigneeCustomerName').val();
+    var customerId = $('#dlConsigneeCustomers option').filter(function () {
+        return this.value === valueSelected;
+    }).data('customerid');
+
+    var addressId = 0;
+
+    var customerInfo = JSON.parse(GetCustomerInfo(customerId));
+
+    if (customerInfo !== null) {
+        $('#txtConsigneeCustomerName').val(customerInfo.CustomerName);
+        addressId = GetCustomerDefaultBillingAddress(customerId);
+        FillConsigneeAddress(addressId);
+
+        if (paidByValue === '2') {
+            if (customerInfo.FuelSurChargePercentage > 0) {
+                $('#txtFuelSurchargePercent').val(customerInfo.FuelSurChargePercentage);
+            }
+            $('#txtBillToCustomerName').val(customerInfo.CustomerName);
+            $('#txtDiscountPercent').val(customerInfo.DiscountPercentage);
+            $('#chkIsGstApplicable').prop('checked', customerInfo.IsGstApplicable);
+        }
+    }
+});
+
+
+
+
 $('#ddlBillerId').on('change', function () {
 
     $('#txtBillerCustomerNo').val($('#ddlBillerId').val());
@@ -607,9 +728,10 @@ function GetCustomerDefaultBillingAddress(customerId) {
 function FillShipperAddress(addressId) {
     var shipperAddress = JSON.parse(GetAddressInfo(addressId));
 
+    ClearShipperAddressArea();
+
     if (shipperAddress !== null) {
         $('#hfShipperAddressId').val(shipperAddress.Id);
-        $('#txtShipperCustomerNo').val($('#ddlShipperId').val());
         $('#txtShipperAddressline').val(shipperAddress.AddressLine);
         $('#txtShipperUnitNo').val(shipperAddress.UnitNumber);
         $('#ddlShipperCityId').val(shipperAddress.CityId);
@@ -622,9 +744,10 @@ function FillConsigneeAddress(addressId) {
 
     var consigneeAddress = JSON.parse(GetAddressInfo(addressId));
 
+    ClearConsigneeAddressArea();
+
     if (consigneeAddress !== null) {
         $('#hfConsigneeAddressId').val(consigneeAddress.Id);
-        $('#txtConsigneeCustomerNo').val($('#ddlConsigneeId').val());
         $('#txtConsigneeAddressline').val(consigneeAddress.AddressLine);
         $('#txtConsigneeUnitNo').val(consigneeAddress.UnitNumber);
         $('#ddlConsigneeCityId').val(consigneeAddress.CityId);
@@ -1000,6 +1123,24 @@ function ClearForm() {
     $('#chkIsReturnOrder').is(':checked', false);
     var toggle = $('#chkIsReturnOrder').data('bs.toggle');
     toggle.off(true);
+}
+
+function ClearShipperAddressArea() {
+    $('#hfShipperAddressId').val('');
+    $('#txtShipperAddressline').val('');
+    $('#txtShipperUnitNo').val('');
+    $('#ddlShipperCityId').val('335');
+    $('#ddlShipperProvinceId').val('7');
+    $('#txtShipperPostcode').val('');
+}
+
+function ClearConsigneeAddressArea() {
+    $('#hfConsigneeAddressId').val('');
+    $('#txtConsigneeAddressline').val('');
+    $('#txtConsigneeUnitNo').val('');
+    $('#ddlConsigneeCityId').val('335');
+    $('#ddlConsigneeProvinceId').val('7');
+    $('#txtConsigneePostcode').val('');
 }
 
 //#endregion 
