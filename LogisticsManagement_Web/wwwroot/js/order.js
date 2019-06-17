@@ -32,6 +32,10 @@ $(document).ready(function () {
 var employeeData;
 var paidByValue = '1';
 
+var billerCustomerId = 0;
+var shipperCustomerId = 0;
+var consigneeCustomerId = 0;
+
 var shipperCityId = 0;
 var consigneeCityId = 0;
 var deliveryOptionId = 0;
@@ -71,9 +75,24 @@ var selectedOrdersForDispatch = [];
 
 //#region Events 
 
-$('#btnNew').on('click', function () {
-    $('#txtWayBillNo').removeAttr('readonly');
+
+$('#btnNewOrder').unbind().on('click', function () {
+    ClearForm();
+    $('#frmOrderForm').trigger('reset');
+
+    var addressLinesForAutoComplete = GetListObject('Address/GetAddressForAutoComplete');
+
+    if (addressLinesForAutoComplete !== null) {
+        var addressLines = JSON.parse(addressLinesForAutoComplete);
+
+        $.each(addressLines, function (i, item) {
+            $('#dlShipperAddressLines').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
+            $('#dlConsigneeAddressLines').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
+        });
+    }
+
 });
+
 
 $('input[type=radio][name=rdoPaidBy]').change(function () {
     paidByValue = this.value;
@@ -107,184 +126,246 @@ $('input[name=chkIsReturnOrder]').change(function () {
     $('#lblOrderTypeText').text('This is a return order.');
 });
 
-//$('#txtBillerCustomerNo').keypress(function (event) {
-
-//    if (event.keyCode === 13) {
-//        event.preventDefault();
-
-//        var id = $('#txtBillerCustomerNo').val();
-//        $('#ddlBillerId').val(id);
-
-//        if ($('#ddlBillerId').val() === null) {
-//            $('#ddlBillerId').val(0);
-//            bootbox.alert('Customer not found');
-//            return;
-//        }
-//        $('#ddlBillerId').change();
-//    }
-
-//});
-
-$('#txtBillToCustomerName').on('input', function (event) {
-    event.preventDefault();
-    var valueSelected = $(this).val();
-    var customerId = $('#dlBillers option').filter(function () {
-        return this.value === valueSelected;
-    }).data('customerid');
-
-    var addressId = 0;
-
-    var customerInfo = JSON.parse(GetCustomerInfo(customerId));
-
-    if (customerInfo !== null) {
-        if (customerInfo.FuelSurChargePercentage > 0) {
-            $('#txtFuelSurchargePercent').val(customerInfo.FuelSurChargePercentage);
-        }
-        $('#txtBillToCustomerName').val(customerInfo.CustomerName);
-        $('#txtDiscountPercent').val(customerInfo.DiscountPercentage);
-        $('#chkIsGstApplicable').prop('checked', customerInfo.IsGstApplicable);
-    }
-
-    if (paidByValue === '1') {
-        $('#txtShipperCustomerName').val(customerInfo.CustomerName);
-        addressId = GetCustomerDefaultShippingAddress(customerId);
-        if (addressId < 1) {
-            addressId = GetCustomerDefaultBillingAddress(customerId);
-        }
-        if (addressId > 0) {
-            FillShipperAddress(addressId);
-        }
-        else {
-            ClearShipperAddressArea();
-        }
-    }
-    else if (paidByValue === '2') {
-        $('#txtConsigneeCustomerName').val(customerInfo.CustomerName);
-        addressId = GetCustomerDefaultShippingAddress(customerId);
-
-        if (addressId < 1) {
-            addressId = GetCustomerDefaultBillingAddress(customerId);
-        }
-        if (addressId > 0) {
-            FillConsigneeAddress(addressId);
-        }
-        else {
-            ClearConsigneeAddressArea();
-        }
-    }
-
-});
-
-$('#txtShipperCustomerName').on('input', function (event) {
-    event.preventDefault();
-    var valueSelected = $('#txtShipperCustomerName').val();
-    var customerId = $('#dlShipperCustomers option').filter(function () {
-        return this.value === valueSelected;
-    }).data('customerid');
-
-    var addressId = 0;
-
-    var customerInfo = JSON.parse(GetCustomerInfo(customerId));
-
-    if (customerInfo !== null) {
-
-        $('#txtShipperCustomerName').val(customerInfo.CustomerName);
-        addressId = GetCustomerDefaultShippingAddress(customerId);
-
-        if (addressId < 1) {
-            addressId = GetCustomerDefaultBillingAddress(customerId);
-        }
-        if (addressId > 0) {
-            FillShipperAddress(addressId);
-        }
-        else {
-            ClearShipperAddressArea();
-        }
-
-        if (paidByValue === '1') {
-            if (customerInfo.FuelSurChargePercentage > 0) {
-                $('#txtFuelSurchargePercent').val(customerInfo.FuelSurChargePercentage);
-            }
-            $('#txtBillToCustomerName').val(customerInfo.CustomerName);
-            $('#txtDiscountPercent').val(customerInfo.DiscountPercentage);
-            $('#chkIsGstApplicable').prop('checked', customerInfo.IsGstApplicable);
-        }
-    }
-
-});
-
-$('#txtConsigneeCustomerName').on('input', function (event) {
-    event.preventDefault();
-    var valueSelected = $('#txtConsigneeCustomerName').val();
-    var customerId = $('#dlConsigneeCustomers option').filter(function () {
-        return this.value === valueSelected;
-    }).data('customerid');
-
-    var addressId = 0;
-
-    var customerInfo = JSON.parse(GetCustomerInfo(customerId));
-
-    if (customerInfo !== null) {
-        $('#txtConsigneeCustomerName').val(customerInfo.CustomerName);
-        addressId = GetCustomerDefaultBillingAddress(customerId);
-        FillConsigneeAddress(addressId);
-
-        if (paidByValue === '2') {
-            if (customerInfo.FuelSurChargePercentage > 0) {
-                $('#txtFuelSurchargePercent').val(customerInfo.FuelSurChargePercentage);
-            }
-            $('#txtBillToCustomerName').val(customerInfo.CustomerName);
-            $('#txtDiscountPercent').val(customerInfo.DiscountPercentage);
-            $('#chkIsGstApplicable').prop('checked', customerInfo.IsGstApplicable);
-        }
-    }
-});
-
-
-
-
-$('#ddlBillerId').on('change', function () {
-
-    $('#txtBillerCustomerNo').val($('#ddlBillerId').val());
-
-    if (paidByValue === '1') {
-        $('#ddlShipperId').val($('#ddlBillerId').val());
-        $('#ddlShipperId').change();
-    }
-    else if (paidByValue === '2') {
-        $('#ddlConsigneeId').val($('#ddlBillerId').val());
-        $('#ddlConsigneeId').change();
-    }
-
-    var customerInfo = JSON.parse(GetCustomerInfo($('#ddlBillerId').val()));
-
-    if (customerInfo !== null) {
-        if (customerInfo.FuelSurChargePercentage > 0) {
-            $('#txtFuelSurchargePercent').val(customerInfo.FuelSurChargePercentage);
-        }
-        $('#txtDiscountPercent').val(customerInfo.DiscountPercentage);
-        $('#chkIsGstApplicable').prop('checked', customerInfo.IsGstApplicable);
-    }
-
-});
-
-$('#txtShipperCustomerNo').keypress(function (event) {
+$('#txtBillToCustomerName').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
 
-        var id = $('#txtShipperCustomerNo').val();
-        $('#ddlShipperId').val(id);
-
-        if ($('#ddlShipperId').val() === null) {
-            $('#ddlShipperId').val(0);
-            bootbox.alert('Customer not found');
-        }
-        else {
-            $('#ddlShipperId').change();
-        }
-
+        billerCustomerId = $('#txtBillToCustomerName').val();
+        if (billerCustomerId > 0) {
+            FillCustomerInfo();
+        } 
     }
 });
+$('#txtBillToCustomerName').on('input', function (event) {
+    event.preventDefault();
+    var valueSelected = $(this).val();
+
+    billerCustomerId = $('#dlBillers option').filter(function () {
+        return this.value === valueSelected;
+    }).data('customerid');
+
+    if (billerCustomerId > 0) {
+        FillCustomerInfo();
+    }
+   
+});
+
+$('#txtShipperCustomerName').keypress(function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+
+        shipperCustomerId = $('#txtShipperCustomerName').val();
+        if (shipperCustomerId > 0) {
+            FillCustomerInfo();
+        }
+    }
+});
+$('#txtShipperCustomerName').on('input', function (event) {
+    event.preventDefault();
+    var valueSelected = $('#txtShipperCustomerName').val();
+    shipperCustomerId = $('#dlShipperCustomers option').filter(function () {
+        return this.value === valueSelected;
+    }).data('customerid');
+
+    if (shipperCustomerId > 0) {
+        FillCustomerInfo();
+    }
+
+});
+
+$('#txtConsigneeCustomerName').keypress(function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+
+        consigneeCustomerId = $('#txtConsigneeCustomerName').val();
+        if (consigneeCustomerId > 0) {
+            FillCustomerInfo();
+        }
+    }
+});
+$('#txtConsigneeCustomerName').on('input', function (event) {
+    event.preventDefault();
+    var valueSelected = $('#txtConsigneeCustomerName').val();
+    consigneeCustomerId = $('#dlConsigneeCustomers option').filter(function () {
+        return this.value === valueSelected;
+    }).data('customerid');
+
+    if (consigneeCustomerId > 0) {
+        FillCustomerInfo();
+    }
+});
+
+$('#txtShipperAddressline').on('input', function (event) {
+    event.preventDefault();
+    var valueSelected = $(this).val();
+    var addressId = $('#dlShipperAddressLines option').filter(function () {
+        return this.value === valueSelected;
+    }).data('addressid');
+    if (addressId > 0) {
+        FillShipperAddress(addressId);
+    }
+    else {
+        ClearShipperAddressArea();
+    }
+});
+
+$('#txtConsigneeAddressline').on('input', function (event) {
+    event.preventDefault();
+    var valueSelected = $(this).val();
+    var addressId = $('#dlConsigneeAddressLines option').filter(function () {
+        return this.value === valueSelected;
+    }).data('addressid');
+    if (addressId > 0) {
+        FillConsigneeAddress(addressId);
+    }
+    else {
+        ClearShipperAddressArea();
+    }
+});
+
+
+
+
+function FillCustomerInfo()
+{
+    var billerCustomerInfo = null;
+    var shipperCustomerInfo = null;
+    var consigneeCustomerInfo = null;
+    
+    var addressId = 0;
+
+    if (billerCustomerId > 0) {
+        
+        billerCustomerInfo = JSON.parse(GetCustomerInfo(billerCustomerId));
+        if (billerCustomerInfo !== null) {
+            if (billerCustomerInfo.FuelSurChargePercentage > 0) {
+                $('#txtFuelSurchargePercent').val(billerCustomerInfo.FuelSurChargePercentage);
+            }
+            $('#txtBillToCustomerName').val(billerCustomerInfo.CustomerName);
+            $('#txtDiscountPercent').val(billerCustomerInfo.DiscountPercentage);
+            $('#chkIsGstApplicable').prop('checked', billerCustomerInfo.IsGstApplicable);
+
+            if (paidByValue === '1') {
+                $('#txtShipperCustomerName').val(billerCustomerInfo.CustomerName);
+                $('#lblShipperAccountNo').text(billerCustomerId);
+                addressId = GetCustomerDefaultShippingAddress(billerCustomerId);
+                if (addressId < 1) {
+                    addressId = GetCustomerDefaultBillingAddress(billerCustomerId);
+                }
+                if (addressId > 0) {
+                    FillShipperAddress(addressId);
+                }
+                else {
+                    ClearShipperAddressArea();
+                }
+            }
+            else if (paidByValue === '2') {
+                $('#txtConsigneeCustomerName').val(billerCustomerInfo.CustomerName);
+                $('#lblConsigneeAccountNo').text(billerCustomerId);
+                addressId = GetCustomerDefaultShippingAddress(billerCustomerId);
+
+                if (addressId < 1) {
+                    addressId = GetCustomerDefaultBillingAddress(billerCustomerId);
+                }
+                if (addressId > 0) {
+                    FillConsigneeAddress(addressId);
+                }
+                else {
+                    ClearConsigneeAddressArea();
+                }
+            }
+
+
+
+        }
+    }
+
+
+    if (shipperCustomerId > 0) {
+
+        shipperCustomerInfo = JSON.parse(GetCustomerInfo(shipperCustomerId));
+        if (shipperCustomerInfo != null) {
+            $('#txtShipperCustomerName').val(shipperCustomerInfo.CustomerName);
+            $('#lblShipperAccountNo').text(shipperCustomerId);
+
+            addressId = GetCustomerDefaultShippingAddress(shipperCustomerId);
+
+            if (addressId < 1) {
+                addressId = GetCustomerDefaultBillingAddress(shipperCustomerId);
+            }
+            if (addressId > 0) {
+                FillShipperAddress(addressId);
+            }
+            else {
+                ClearShipperAddressArea();
+            }
+
+            if (paidByValue === '1') {
+                if (shipperCustomerInfo.FuelSurChargePercentage > 0) {
+                    $('#txtFuelSurchargePercent').val(shipperCustomerInfo.FuelSurChargePercentage);
+                }
+                $('#txtBillToCustomerName').val(shipperCustomerInfo.CustomerName);
+                $('#txtDiscountPercent').val(shipperCustomerInfo.DiscountPercentage);
+                $('#chkIsGstApplicable').prop('checked', shipperCustomerInfo.IsGstApplicable);
+            }
+
+        }
+    }
+
+    if (consigneeCustomerId > 0) {
+
+        consigneeCustomerInfo = JSON.parse(GetCustomerInfo(consigneeCustomerId));
+        if (consigneeCustomerInfo != null) {
+            $('#txtConsigneeCustomerName').val(consigneeCustomerInfo.CustomerName);
+            $('#lblConsigneeAccountNo').text(consigneeCustomerId);
+            addressId = GetCustomerDefaultShippingAddress(consigneeCustomerId);
+
+            if (addressId < 1) {
+                addressId = GetCustomerDefaultBillingAddress(shipperCustomerId);
+            }
+            if (addressId > 0) {
+                FillConsigneeAddress(addressId);
+            }
+            else {
+                ClearConsigneeAddressArea();
+            }
+
+            if (paidByValue === '2') {
+                if (consigneeCustomerInfo.FuelSurChargePercentage > 0) {
+                    $('#txtFuelSurchargePercent').val(consigneeCustomerInfo.FuelSurChargePercentage);
+                }
+                $('#txtBillToCustomerName').val(consigneeCustomerInfo.CustomerName);
+                $('#txtDiscountPercent').val(consigneeCustomerInfo.DiscountPercentage);
+                $('#chkIsGstApplicable').prop('checked', consigneeCustomerInfo.IsGstApplicable);
+            }
+
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $('#ddlShipperId').on('change', function () {
 
     var selectedValue = $('#ddlShipperId').val();
@@ -470,10 +551,7 @@ $('.btnDelete').unbind().on('click', function () {
     });
 });
 
-$('#btnNewOrder').unbind().on('click', function () {
-    ClearForm();
-    $('#frmOrderForm').trigger('reset');
-});
+
 
 $('#frmOrderForm').on('keyup keypress', function (e) {
     var keyCode = e.keyCode || e.which;

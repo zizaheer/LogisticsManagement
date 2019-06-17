@@ -394,10 +394,10 @@
                                         <input type="text" class="form-control form-control-sm" placeholder="Ordered by" id="txtOrderedBy" name="txtOrderedBy" title="Ordered by">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblOrderedByDepartment" for="txtOrderedByDepartment"><b>Pkp. ref#</b></label>
+                                        <label style="margin-top:5px" id="lblPickupRefNo" for="txtPickupRefNo"><b>Pkp. ref#</b></label>
                                     </small>
                                     <div class="col-sm-1">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Department" id="txtOrderedByDepartment" name="txtOrderedByDepartment" title="Department" style="width:107px">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Pickup ref" id="txtPickupRefNo" name="txtPickupRefNo" title="Pickup ref #" style="width:107px">
                                     </div>
                                 </div>
                                 <div class="row" style="margin-top:8px">
@@ -460,7 +460,10 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="col-12 input-group">
-                                                <input type="text" class="col-9 form-control form-control-sm" placeholder="Address" id="txtShipperAddressline" name="txtShipperAddressline">
+                                                <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtShipperAddressline" name="txtShipperAddressline" list="dlShipperAddressLines" type="search" />
+                                                <datalist id="dlShipperAddressLines">
+                                                    
+                                                </datalist>
                                                 <input type="text" class="col-3 form-control form-control-sm" placeholder="Unit" id="txtShipperUnitNo" name="txtShipperUnitNo">
                                             </div>
                                         </div>
@@ -501,7 +504,10 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="col-12 input-group">
-                                                <input type="text" class="col-9 form-control form-control-sm" placeholder="Address" id="txtConsigneeAddressline" name="txtConsigneeAddressline">
+                                                <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtConsigneeAddressline" name="txtConsigneeAddressline" list="dlConsigneeAddressLines" type="search" />
+                                                <datalist id="dlConsigneeAddressLines">
+
+                                                </datalist>
                                                 <input type="text" class="col-3 form-control form-control-sm" placeholder="Unit" id="txtConsigneeUnitNo" name="txtConsigneeUnitNo">
                                             </div>
                                         </div>
@@ -558,7 +564,7 @@
                                                 <input class="col-2 form-control form-control-sm" placeholder="Skids" id="txtSkidPieces" type="number" min="1" name="txtSkidPieces">
                                                 <input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtSkidPieces" type="number" min="1" name="txtSkidPieces">
                                                 &nbsp;
-                                                <input class="col-2 form-control form-control-sm" placeholder="Weight" id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
+                                                <input class="col-2 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
                                                 <select class="col-1 form-control form-control-sm" id="ddlWeightScaleId" name="ddlWeightScaleId" style="-webkit-appearance: none;">
                                                     @foreach (var item in Model.WeightScales)
                                                     {
