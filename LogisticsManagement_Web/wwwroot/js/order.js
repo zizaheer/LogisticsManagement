@@ -453,8 +453,12 @@ $('.txtAdditionalServiceName').on('input', function () {
         return this.value === valueSelected;
     }).data('serviceid');
 
-    $('.btnAddService').attr('data-serviceid', serviceId);
-    $('.btnDeleteService').attr('data-serviceid', serviceId);
+    var row = $(this).closest('tr').find('.btnAddService').text();
+    console.log(row);
+    //console.log(row.html());
+
+    $('.btnAddService', this).attr('data-serviceid', serviceId);
+    $('.btnDeleteService', this).attr('data-serviceid', serviceId);
 
 });
 
@@ -465,15 +469,18 @@ $('#btnAddAddtionalServiceRow').on('click', function (event) {
 });
 
 
-$('.btnDeleteService').unbind().on('click', function (event) {
+$('#service-list').unbind().on('click', '.btnDeleteService', function (event) {
     event.preventDefault();
     //selectedAdditionalServiceArray
-
-    $(this).closest('tr').remove();
-
+    var selectedRow = $(this).closest('tr');
+    bootbox.confirm("Are you sure you want to remove this additional service?", function (result) {
+        if (result === true) {
+            selectedRow.remove();
+        }
+    });
 });
 
-$('.btnAddService').unbind().on('click', function (event) {
+$('#service-list').unbind().on('click', '.btnAddService', function (event) {
     event.preventDefault();
 
 
@@ -1240,9 +1247,10 @@ function GenerateNewAdditionalServiceRow() {
     appendString += '<input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" />';
     appendString += '</td>';
     appendString += '<td style="width:100px;text-align:center;">';
-    appendString += '<button class="btn btn-sm btn-primary btnAssignService additionalServiceControl" id="btnAssignService" name="btnAssignService"><i class="fa fa-plus-circle"></i> </button>';
+    appendString += '<button class="btn btn-sm btn-primary additionalServiceControl btnAddService" id="btnAddService" name="btnAddService" title="Click to add to order"><i class="fa fa-plus-circle"></i> </button>';
+    appendString += '<button class="btn btn-sm btn-success additionalServiceControl" style="display:block" title="Service added to order" disabled><i class="fa fa-check-circle"></i> </button>';
     appendString += '&nbsp;';
-    appendString += '<button class="btn btn-sm btn-danger btnDeleteService additionalServiceControl" id="btnDeleteService" name="btnDeleteService"><i class="fa fa-trash"></i> </button>';
+    appendString += '<button class="btn btn-sm btn-danger additionalServiceControl btnDeleteService" id="btnDeleteService" name="btnDeleteService" title="Delete from order"><i class="fa fa-trash"></i> </button>';
     appendString += '</td>';
     appendString += '</tr>';
 
