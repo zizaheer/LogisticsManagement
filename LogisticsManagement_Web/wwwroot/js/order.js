@@ -447,18 +447,19 @@ $('#service-list .chkAddService').unbind('change').change(function (event) {
 
 });
 
-$('.txtAdditionalServiceName').on('input', function () {
+$('#service-list .txtAdditionalServiceName').on('input', function () {
     var valueSelected = $(this).val();
     serviceId = $('.additionalServices option').filter(function () {
         return this.value === valueSelected;
     }).data('serviceid');
 
-    var row = $(this).closest('tr').find('.btnAddService').text();
-    console.log(row);
+    console.log('triggered');
+
+    $(this).closest('tr').find('td:eq(5) .btnAddService').attr('data-serviceid', serviceId);
     //console.log(row.html());
 
-    $('.btnAddService', this).attr('data-serviceid', serviceId);
-    $('.btnDeleteService', this).attr('data-serviceid', serviceId);
+    //$('.btnAddService', this).attr('data-serviceid', serviceId);
+    //$('.btnDeleteService', this).attr('data-serviceid', serviceId);
 
 });
 
