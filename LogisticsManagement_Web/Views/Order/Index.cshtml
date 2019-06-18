@@ -19,6 +19,11 @@
     #order-list tbody tr {
         height: 35px; /* or whatever height you need to make them all consistent */
     }
+
+    .additionalServiceControl {
+        height: 22px;
+        padding: 1px 6px 3px 6px;
+    }
 </style>
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
 
@@ -444,12 +449,12 @@
 
                                     <div class="col-4" style="padding-left:0px">
                                         <div class="row mb-1">
-                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Shipper Acc#: <label id="lblShipperAccountNo"></label></small>
+                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Shipper Acc#: <label style="margin-bottom:0px" id="lblShipperAccountNo"></label></small>
                                         </div>
                                         <div class="row mb-1">
 
                                             <div class="form-group col-md-12 input-group">
-                                                <input list="dlShipperCustomers" class="form-control form-control-sm" placeholder="Shipper name" id="txtShipperCustomerName" type="search"/>
+                                                <input list="dlShipperCustomers" class="form-control form-control-sm" placeholder="Shipper name" id="txtShipperCustomerName" type="search" />
                                                 <datalist id="dlShipperCustomers">
                                                     @foreach (var item in Model.Customers)
                                                     {
@@ -461,9 +466,7 @@
                                         <div class="row mb-1">
                                             <div class="col-12 input-group">
                                                 <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtShipperAddressline" name="txtShipperAddressline" list="dlShipperAddressLines" type="search" />
-                                                <datalist id="dlShipperAddressLines">
-                                                    
-                                                </datalist>
+                                                <datalist id="dlShipperAddressLines"></datalist>
                                                 <input type="text" class="col-3 form-control form-control-sm" placeholder="Unit" id="txtShipperUnitNo" name="txtShipperUnitNo">
                                             </div>
                                         </div>
@@ -489,7 +492,7 @@
                                     </div>
                                     <div class="col-4">
                                         <div class="row mb-1">
-                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Consignee Acc#: <label id="lblConsigneeAccountNo"></label></small>
+                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Consignee Acc#: <label style="margin-bottom:0px" id="lblConsigneeAccountNo"></label></small>
                                         </div>
                                         <div class="row mb-1">
                                             <div class="form-group col-md-12 input-group">
@@ -505,9 +508,7 @@
                                         <div class="row mb-1">
                                             <div class="col-12 input-group">
                                                 <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtConsigneeAddressline" name="txtConsigneeAddressline" list="dlConsigneeAddressLines" type="search" />
-                                                <datalist id="dlConsigneeAddressLines">
-
-                                                </datalist>
+                                                <datalist id="dlConsigneeAddressLines"></datalist>
                                                 <input type="text" class="col-3 form-control form-control-sm" placeholder="Unit" id="txtConsigneeUnitNo" name="txtConsigneeUnitNo">
                                             </div>
                                         </div>
@@ -540,7 +541,7 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="form-group col-md-4 input-group">
-                                                <select class="form-control form-control-sm">
+                                                <select class="form-control form-control-sm" id="ddlVehicleTypeId">
                                                     <option value="1">Truck</option>
                                                     <option value="2">Car</option>
                                                     <option value="3">Van</option>
@@ -561,8 +562,8 @@
                                                     }
                                                 </select>
                                                 <input class="col-2 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
-                                                <input class="col-2 form-control form-control-sm" placeholder="Skids" id="txtSkidPieces" type="number" min="1" name="txtSkidPieces">
-                                                <input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtSkidPieces" type="number" min="1" name="txtSkidPieces">
+                                                <input class="col-2 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity">
+                                                <input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces">
                                                 &nbsp;
                                                 <input class="col-2 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
                                                 <select class="col-1 form-control form-control-sm" id="ddlWeightScaleId" name="ddlWeightScaleId" style="-webkit-appearance: none;">
@@ -579,26 +580,26 @@
                                                 <div class="row" style="border: 1px solid #92dcff;background-color: #e0f9ff;">
                                                     <div class="col-sm-1">
                                                         <small>
-                                                            <label style="margin-top:5px" id="lblDeliveryOptionId" for="ddlDeliveryOptionId"><b>Fuel</b></label>
+                                                            <label style="margin-top:5px" id="lblFuelSurcharge" for="txtFuelSurchargePercent"><b>Fuel</b></label>
                                                         </small>
                                                     </div>
                                                     <div class="col-sm-2" style="padding-left: 14px;">
-                                                        <input class="form-control form-control-sm" style="width:60px" placeholder="Sur." id="txtWayBillNo" type="number" name="txtWayBillNo">
+                                                        <input class="form-control form-control-sm" style="width:60px" placeholder="Sur." id="txtFuelSurchargePercent" type="number" name="txtFuelSurchargePercent">
                                                     </div>
                                                     <div class="col-sm-1" style="padding-left:25px">
                                                         <small>
-                                                            <label style="margin-top:5px;" id="lblDeliveryOptionId" for="ddlDeliveryOptionId"><b>Disc.</b></label>
+                                                            <label style="margin-top:5px;" id="lblDiscountPercent" for="txtDiscountPercent"><b>Disc.</b></label>
                                                         </small>
                                                     </div>
                                                     <div class="col-sm-2" style="padding-left:15px; margin-right:15px">
-                                                        <input class="form-control form-control-sm" style="width:60px" placeholder="Disc." id="txtWayBillNo" type="number" name="txtWayBillNo">
+                                                        <input class="form-control form-control-sm" style="width:60px" placeholder="Disc." id="txtDiscountPercent" type="number" name="txtDiscountPercent">
                                                     </div>
                                                     <div class="col-sm-5" style="padding-left:30px; padding-right:0px">
                                                         <small>
                                                             <b>
                                                                 @*<label style="margin-top:5px; " id="lblDeliveryOptionId" for="ddlDeliveryOptionId"><b>Disc.</b></label>*@
                                                                 <input type="checkbox" class="form-check-inline form-check-input" id="chkIsGstApplicable" />
-                                                                <label class="form-check-inline form-check-label" id="lblGstAmount">Apply @Model.Configuration.TaxToCall-@Model.Configuration.TaxAmount%</label>
+                                                                Apply @Model.Configuration.TaxToCall-<label class="form-check-inline form-check-label" id="lblGstAmount">@Model.Configuration.TaxAmount</label>%
                                                             </b>
                                                         </small>
                                                     </div>
@@ -614,42 +615,78 @@
                                 <div class="row" style="margin-top:8px">
 
                                     <div class="col-sm-9" style="padding-left:0px">
-                                        <div style="overflow-y:scroll; max-height:207px; display:block;border:1px solid #d0d0d0; border-top:0px">
-                                            <table id="service-list" class="table table-sm table-striped service-list">
+                                        <div style="overflow-y:scroll; height:207px; display:block;border:1px solid #d0d0d0; padding:10px">
+                                            <table style="margin-bottom:10px">
                                                 <thead>
                                                     <tr>
-                                                        <th scope="col" style="width:200px">Additional service</th>
-                                                        <th scope="col" style="width:100px">Pay Driver</th>
-                                                        <th scope="col">Srv. Charge</th>
-                                                        <th scope="col">Driver %</th>
-                                                        <th scope="col" style="width:100px">Apply GST</th>
+                                                        <th style="width:220px">Additional service</th>
+                                                        <th style="width:100px; text-align:center">Pay Driver</th>
+                                                        <th style="width:110px; padding-right:5px">Srv. Charge</th>
+                                                        <th style="width:110px;">Driver %</th>
+                                                        <th style="width:100px; text-align:center">Apply GST</th>
+                                                        <th style="width:100px; text-align:center; margin-bottom:10px"><button class="btn btn-sm btn-dark additionalServiceControl" id="btnAddAddtionalServiceRow"> <i class="fa fa-th-list"></i> Add row</button></th>
                                                     </tr>
                                                 </thead>
+                                            </table>
+                                            
+                                            <table id="service-list" class="service-list">
                                                 <tbody>
-                                                    @foreach (var item in Model.AdditionalServices)
-                                                    {
-                                                        <tr>
-                                                            <td>
-                                                                <input class="chkAddService" type="checkbox" value="" id="chkAddService" data-serviceid="@item.Id" title="Click to add" />
-                                                                <b> @item.ServiceName</b>
-                                                            </td>
+                                                    <tr style="height:32px; background-color:#dcf0ff">
+                                                        <td style="width:220px">
+                                                            <input class="form-control form-control-sm additionalServiceControl txtAdditionalServiceName" id="txtAdditionalServiceName" style="width:200px; margin-left:3px" placeholder="Service name" list="additionalServices"/>
+                                                            <datalist id="additionalServices" class="additionalServices">
+                                                                @foreach (var item in Model.AdditionalServices)
+                                                                {
+                                                                    <option data-serviceid="@item.Id" value="@item.ServiceName"></option>
+                                                                }
+                                                            </datalist>
+                                                        </td>
 
-                                                            <td>
-                                                                <input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" checked="@item.PayToDriver" disabled />
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" class="col-8 form-control form-control-sm txtServiceFee" min="0" id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" class="col-8 form-control form-control-sm txtDriverPercentage" min="0" id="txtDriverPercentage" step=".01" name="txtDriverPercentage" placeholder="Percent" title="Driver portion of the fee" />
-                                                            </td>
+                                                        <td style="width:100px; text-align:center">
+                                                            <input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" disabled />
+                                                        </td>
+                                                        <td style="width:110px; padding-right:5px">
+                                                            <input type="number" class="form-control form-control-sm additionalServiceControl txtServiceFee " min="0" id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />
+                                                        </td>
+                                                        <td style="width:110px;">
+                                                            <input type="number" class="form-control form-control-sm additionalServiceControl txtDriverPercentage" min="0" id="txtDriverPercentage" step=".01" name="txtDriverPercentage" placeholder="Percent" title="Driver portion of the fee" />
+                                                        </td>
 
-                                                            <td>
-                                                                <input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" checked="@item.IsTaxApplicable" />
-                                                            </td>
+                                                        <td style="width:100px; text-align:center">
+                                                            <input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" />
+                                                        </td>
+                                                        <td style="width:100px;text-align:center;">
+                                                            <button class="btn btn-sm btn-primary btnAddService additionalServiceControl" id="btnAddService" name="btnAddService"><i class="fa fa-plus-circle"></i> </button>
+                                                            <button class="btn btn-sm btn-success additionalServiceControl" style="display:block" disabled><i class="fa fa-check-circle"></i> </button>
+                                                            <button class="btn btn-sm btn-danger btnDeleteService additionalServiceControl" id="btnDeleteService" name="btnDeleteService"><i class="fa fa-trash"></i> </button>
+                                                        </td>
+                                                    </tr>
 
-                                                        </tr>
-                                                    }
+
+                                                    @*@foreach (var item in Model.AdditionalServices)
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    <input class="chkAddService" type="checkbox" value="" id="chkAddService" data-serviceid="@item.Id" title="Click to add" />
+                                                                    <b> @item.ServiceName</b>
+                                                                </td>
+
+                                                                <td>
+                                                                    <input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" checked="@item.PayToDriver" disabled />
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" class="col-8 form-control form-control-sm txtServiceFee" min="0" id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" class="col-8 form-control form-control-sm txtDriverPercentage" min="0" id="txtDriverPercentage" step=".01" name="txtDriverPercentage" placeholder="Percent" title="Driver portion of the fee" />
+                                                                </td>
+
+                                                                <td>
+                                                                    <input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" checked="@item.IsTaxApplicable" />
+                                                                </td>
+
+                                                            </tr>
+                                                        }*@
                                                 </tbody>
                                             </table>
                                         </div>
@@ -759,7 +796,7 @@
                         <div class="row" style="margin-left:-30px;">
                             <div class="col-sm-12" style="padding-left:0px">
                                 <label style="margin-left:15px;font-size:.75em;color:#0577b9" id="lblOrderTypeText">This is a single order.</label>
-                                <hr style="border: .5px solid #c1c1c1; width:97%; margin-top:-7px" />
+                                <hr style="border: .5px solid #c1c1c1; margin-top:-7px; margin-left:10px" />
                             </div>
                         </div>
                         <div class="row">
@@ -777,11 +814,11 @@
 
 
                 </div>
-                
+
             </div>
         </div>
     </div>
-   
+
     <!-- Modal - New Order -->
 </form>
 

@@ -2,7 +2,6 @@
 
 $(document).ready(function () {
 
-    $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(new Date));
     $('#txtDispatchDatetimeForNewOrders').val(ConvertDatetimeToUSDatetime(new Date));
 
     $(function () {
