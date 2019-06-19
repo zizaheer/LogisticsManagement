@@ -430,13 +430,13 @@
                                         <input type="text" class="form-control form-control-sm" placeholder="Cust Ref" id="txtCustomerRefNo" name="txtCustomerRefNo" title="Customer ref #">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="txtCargoCtlNo" for="txtCargoCtlNo"><b>Cargo ctl#</b></label>
+                                        <label style="margin-top:5px" id="lblCargoCtlNo" for="txtCargoCtlNo"><b>Cargo ctl#</b></label>
                                     </small>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="txtAwbCtnNo" for="txtAwbCtnNo"><b>Awb ctl#</b></label>
+                                        <label style="margin-top:5px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>Awb ctl#</b></label>
                                     </small>
                                     <div class="col-sm-1">
                                         <input type="text" class="form-control form-control-sm" placeholder="Awb Ctl#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
@@ -624,69 +624,18 @@
                                                         <th style="width:110px; padding-right:5px">Srv. Charge</th>
                                                         <th style="width:110px;">Driver %</th>
                                                         <th style="width:100px; text-align:center">Apply GST</th>
-                                                        <th style="width:100px; text-align:center; margin-bottom:10px"><button class="btn btn-sm btn-dark additionalServiceControl" id="btnAddAddtionalServiceRow"> <i class="fa fa-th-list"></i> Add row</button></th>
+                                                        <th style="width:100px; text-align:center; margin-bottom:10px"><button class="btn btn-sm btn-dark additionalServiceControl" id="btnAddAddtionalServiceRow"> <i class="fa fa-eyedropper"></i> Add service</button></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6">
+                                                            <hr style="width:100%; margin-top:5px; margin-bottom:0px"/>
+                                                        </td>
                                                     </tr>
                                                 </thead>
                                             </table>
                                             
                                             <table id="service-list" class="service-list">
                                                 <tbody>
-                                                    <tr style="height:32px; background-color:#dcf0ff">
-                                                        <td style="width:220px">
-                                                            <input class="form-control form-control-sm additionalServiceControl txtAdditionalServiceName" id="txtAdditionalServiceName" style="width:200px; margin-left:3px" placeholder="Service name" list="additionalServices"/>
-                                                            <datalist id="additionalServices" class="additionalServices">
-                                                                @foreach (var item in Model.AdditionalServices)
-                                                                {
-                                                                    <option data-serviceid="@item.Id" value="@item.ServiceName"></option>
-                                                                }
-                                                            </datalist>
-                                                        </td>
-
-                                                        <td style="width:100px; text-align:center">
-                                                            <input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" disabled />
-                                                        </td>
-                                                        <td style="width:110px; padding-right:5px">
-                                                            <input type="number" class="form-control form-control-sm additionalServiceControl txtServiceFee " min="0" id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />
-                                                        </td>
-                                                        <td style="width:110px;">
-                                                            <input type="number" class="form-control form-control-sm additionalServiceControl txtDriverPercentage" min="0" id="txtDriverPercentage" step=".01" name="txtDriverPercentage" placeholder="Percent" title="Driver portion of the fee" />
-                                                        </td>
-
-                                                        <td style="width:100px; text-align:center">
-                                                            <input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" />
-                                                        </td>
-                                                        <td style="width:100px;text-align:center;">
-                                                            <button class="btn btn-sm btn-primary additionalServiceControl btnAddService" id="btnAddService" name="btnAddService" title="Click to add to order"><i class="fa fa-plus-circle"></i> </button>
-                                                            <button class="btn btn-sm btn-success additionalServiceControl" style="display:block" title="Service added to order" disabled><i class="fa fa-check-circle"></i> </button>
-                                                            <button class="btn btn-sm btn-danger additionalServiceControl btnDeleteService" id="btnDeleteService" name="btnDeleteService" title="Delete from order"><i class="fa fa-trash"></i> </button>
-                                                        </td>
-                                                    </tr>
-
-
-                                                    @*@foreach (var item in Model.AdditionalServices)
-                                                        {
-                                                            <tr>
-                                                                <td>
-                                                                    <input class="chkAddService" type="checkbox" value="" id="chkAddService" data-serviceid="@item.Id" title="Click to add" />
-                                                                    <b> @item.ServiceName</b>
-                                                                </td>
-
-                                                                <td>
-                                                                    <input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" checked="@item.PayToDriver" disabled />
-                                                                </td>
-                                                                <td>
-                                                                    <input type="number" class="col-8 form-control form-control-sm txtServiceFee" min="0" id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />
-                                                                </td>
-                                                                <td>
-                                                                    <input type="number" class="col-8 form-control form-control-sm txtDriverPercentage" min="0" id="txtDriverPercentage" step=".01" name="txtDriverPercentage" placeholder="Percent" title="Driver portion of the fee" />
-                                                                </td>
-
-                                                                <td>
-                                                                    <input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" checked="@item.IsTaxApplicable" />
-                                                                </td>
-
-                                                            </tr>
-                                                        }*@
                                                 </tbody>
                                             </table>
                                         </div>
@@ -711,7 +660,14 @@
                                             </div>
                                         </div>
                                         <div style="margin-top:30px; font-size:.5em">
-                                            <button type="button" class="btn btn-sm btn-primary"><i class="fa fa-cart-plus"></i> Add services</button>
+                                            @*<button type="button" class="btn btn-sm btn-primary"><i class="fa fa-cart-plus"></i> Add services</button>*@
+                                            @*<span class="form-check form-check-inline">
+                                                <input class="form-check-input" id="rdoCalculateBySkid" type="radio" name="rdoCalculateBy" />
+                                                <label class="form-check-label" id="lblCalculateBySkid" for="rdoCalculateBySkid">By SKID</label>
+                                                <input class="form-check-input" id="rdoCalculateByUnit" type="radio" name="rdoCalculateBy" />
+                                                <label class="form-check-label" id="lblCalculateByUnit" for="rdoCalculateByUnit">By Unit</label>
+                                            </span>*@
+                                            <input type="checkbox" id="chkIsCalculateByUnit" style="font-size:.5em" name="chkIsCalculateByUnit" title="Calculate by unit/skid" data-toggle="toggle" data-on="<i class='fa fa-balance-scale'></i> By unit" data-off="<i class='fa fa-stack-overflow'></i> By skid" data-onstyle="primary" data-offstyle="success" data-size="mini" data-width="106" data-height="28">
                                             <span style="padding-right:4px; padding-left:4px"> | </span>
                                             <input type="checkbox" id="chkIsReturnOrder" style="font-size:.5em" name="chkIsReturnOrder" title="Turn it on if you want to place a return order" data-toggle="toggle" data-on="<i class='fa fa-mail-forward'></i> Single order" data-off="<i class='fa fa-mail-reply'></i> Return order" data-onstyle="danger" data-offstyle="secondary" data-size="mini" data-width="118" data-height="28">
                                         </div>

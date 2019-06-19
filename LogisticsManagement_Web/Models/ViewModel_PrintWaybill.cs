@@ -30,7 +30,9 @@ namespace LogisticsManagement_Web.Models
         public int TotalSkidPieces { get; set; }
         public string UnitTypeName { get; set; }
         public string UnitTypeShortCode { get; set; }
-        public int UnitQuantity { get; set; }
+        public int? UnitQuantity { get; set; }
+        public int? SkidQuantity { get; set; }
+        public int? TotalPiece { get; set; }
         public string WeightScaleShortCode { get; set; }
         public string WeightTotal { get; set; }
         public string DeliveryDate { get; set; }

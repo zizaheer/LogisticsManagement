@@ -18,6 +18,7 @@ namespace LogisticsManagement_Poco
         public string TrackingNumber { get; set; }
         public bool? IsDispatched { get; set; }
         public int? DispatchedToEmployeeId { get; set; }
+        public int? VehicleId { get; set; }
         public DateTime? DispatchedDatetime { get; set; }
         public bool? IsPickedup { get; set; }
         public DateTime? PickupDatetime { get; set; }

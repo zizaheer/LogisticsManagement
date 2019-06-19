@@ -18,6 +18,7 @@ namespace LogisticsManagement_Poco
         public string ReferenceNumber { get; set; }
         public string CargoCtlNumber { get; set; }
         public string AwbCtnNumber { get; set; }
+        public string PickupReferenceNumber { get; set; }
         public int? ShipperCustomerId { get; set; }
         public int? ShipperAddressId { get; set; }
         public int? ConsigneeCustomerId { get; set; }
@@ -31,7 +32,9 @@ namespace LogisticsManagement_Poco
         public int UnitTypeId { get; set; }
         public int? WeightScaleId { get; set; }
         public decimal? WeightTotal { get; set; }
-        public int UnitQuantity { get; set; }
+        public int? UnitQuantity { get; set; }
+        public int? SkidQuantity { get; set; }
+        public int? TotalPiece { get; set; }
 
         public decimal OrderBasicCost { get; set; }
         public decimal? BasicCostOverriden { get; set; }

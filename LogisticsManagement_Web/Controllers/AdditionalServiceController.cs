@@ -33,5 +33,24 @@ namespace LogisticsManagement_Web.Controllers
             var customerList = _additionalServiceLogic.GetList();
             return View();
         }
+
+        public JsonResult GetAdditionalServiceList()
+        {
+
+            var serviceList = _additionalServiceLogic.GetList();
+            return Json(JsonConvert.SerializeObject(serviceList));
+
+        }
+
+        public JsonResult GetAdditionalServiceInfoById(string id)
+        {
+            if (id != "")
+            {
+                var serviceInfo = _additionalServiceLogic.GetList().Where(c => c.Id == Convert.ToInt32(id)).FirstOrDefault();
+                return Json(JsonConvert.SerializeObject(serviceInfo));
+            }
+
+            return Json(string.Empty);
+        }
     }
 }

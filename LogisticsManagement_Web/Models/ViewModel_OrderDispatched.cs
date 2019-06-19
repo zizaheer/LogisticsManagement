@@ -38,7 +38,9 @@ namespace LogisticsManagement_Web.Models
         public string CustomerRefNumber { get; set; }
         public int UnitTypeId { get; set; }
         public string UnitTypeName { get; set; }
-        public int UnitQuantity { get; set; }
+        public int? UnitQuantity { get; set; }
+        public int? SkidQuantity { get; set; }
+        public int? TotalPiece { get; set; }
         public string SpcIns { get; set; }
 
         public bool? IsOrderDispatched { get; set; }

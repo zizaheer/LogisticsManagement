@@ -87,8 +87,23 @@ namespace LogisticsManagement_Web.Controllers
             {
                 if (orderData != null)
                 {
+
+                    var orderAddressData = (JObject)(JsonConvert.SerializeObject(orderData[0]));
+
+
                     Lms_OrderPoco orderPoco = JsonConvert.DeserializeObject<Lms_OrderPoco>(JsonConvert.SerializeObject(orderData[0]));
                     List<Lms_OrderAdditionalServicePoco> orderAdditionalServices = JsonConvert.DeserializeObject<List<Lms_OrderAdditionalServicePoco>>(JsonConvert.SerializeObject(orderData[1]));
+
+
+
+
+
+
+
+
+
+
+
 
                     if (orderPoco.Id < 1 && orderPoco.BillToCustomerId > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId > 0)
                     {
@@ -282,6 +297,7 @@ namespace LogisticsManagement_Web.Controllers
                     var wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(orderData[0]));
                     var employeeNumber = Convert.ToInt32(orderData[1]);
                     var dispatchDate = Convert.ToDateTime(orderData[2]);
+                    var vehicleId = Convert.ToInt16(orderData[3]);
 
                     var orders = _orderLogic.GetList();
                     var orderStatuses = _orderStatusLogic.GetList();
@@ -299,6 +315,7 @@ namespace LogisticsManagement_Web.Controllers
 
                                 status.IsDispatched = true;
                                 status.DispatchedToEmployeeId = employeeNumber;
+                                status.VehicleId = vehicleId;
                                 status.DispatchedDatetime = dispatchDate == null ? DateTime.Now : dispatchDate;
                                 status.StatusLastUpdatedOn = DateTime.Now;
 

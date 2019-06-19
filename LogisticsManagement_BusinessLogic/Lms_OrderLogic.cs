@@ -104,7 +104,7 @@ namespace LogisticsManagement_BusinessLogic
 
             if (orderAdditionalServices.Count > 0)
             {
-                foreach(var item in orderAdditionalServices)
+                foreach (var item in orderAdditionalServices)
                 {
                     var row = additionalServiceList.NewRow();
                     row[0] = item.AdditionalServiceId;
@@ -124,6 +124,7 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@ReferenceNumber", SqlDbType.VarChar, 50) { Value = (object)orderPoco.ReferenceNumber ?? DBNull.Value },
                 new SqlParameter("@CargoCtlNumber", SqlDbType.VarChar, 50) { Value = (object)orderPoco.CargoCtlNumber ?? DBNull.Value },
                 new SqlParameter("@AwbCtnNumber", SqlDbType.VarChar, 50) { Value =(object) orderPoco.AwbCtnNumber ?? DBNull.Value },
+                new SqlParameter("@PickupReferenceNumber", SqlDbType.VarChar, 50) { Value =(object) orderPoco.PickupReferenceNumber ?? DBNull.Value },
                 new SqlParameter("@ShipperCustomerId", SqlDbType.Int) { Value = (object)orderPoco.ShipperCustomerId ?? DBNull.Value },
                 new SqlParameter("@ShipperAddressId", SqlDbType.Int) { Value = (object)orderPoco.ShipperAddressId ?? DBNull.Value },
                 new SqlParameter("@ConsigneeCustomerId", SqlDbType.Int) { Value = (object)orderPoco.ConsigneeCustomerId ?? DBNull.Value },
@@ -138,6 +139,8 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@WeightScaleId", SqlDbType.Int) { Value = (object)orderPoco.WeightScaleId?? DBNull.Value  },
                 new SqlParameter("@WeightTotal", SqlDbType.Decimal) { Value = (object)orderPoco.WeightTotal?? DBNull.Value  },
                 new SqlParameter("@UnitQuantity", SqlDbType.Int) { Value = (object)orderPoco.UnitQuantity ?? DBNull.Value },
+                new SqlParameter("@SkidQuantity", SqlDbType.Int) { Value = (object)orderPoco.SkidQuantity ?? DBNull.Value },
+                new SqlParameter("@TotalPiece", SqlDbType.Int) { Value = (object)orderPoco.TotalPiece ?? DBNull.Value },
                 new SqlParameter("@OrderBasicCost", SqlDbType.Decimal) { Value = (object)orderPoco.OrderBasicCost ?? DBNull.Value },
                 new SqlParameter("@BasicCostOverriden", SqlDbType.Decimal) { Value = (object)orderPoco.BasicCostOverriden?? DBNull.Value  },
                 new SqlParameter("@FuelSurchargePercentage", SqlDbType.Decimal) { Value = (object)orderPoco.FuelSurchargePercentage?? DBNull.Value  },
@@ -155,7 +158,7 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@CommentsForInvoice", SqlDbType.VarChar, 200) { Value = (object)orderPoco.CommentsForInvoice ?? DBNull.Value },
                 new SqlParameter("@IsPrintedOnInvoice", SqlDbType.Bit) { Value = (object)orderPoco.IsPrintedOnInvoice ?? DBNull.Value },
 
-                new SqlParameter("@Remarks", SqlDbType.VarChar, 150) { Value = (object)orderPoco.Remarks ?? DBNull.Value },
+                new SqlParameter("@Remarks", SqlDbType.VarChar, 150) { Value = (object)(orderPoco.CommentsForWayBill + orderPoco.CommentsForInvoice) ?? DBNull.Value },
                 new SqlParameter("@CreatedBy", SqlDbType.Int) { Value = (object)orderPoco.CreatedBy ?? DBNull.Value },
                 new SqlParameter("@OrderAdditionalServiceList", SqlDbType.Structured) { TypeName = "dbo.OrderAdditionalServices", Value = additionalServiceList }
 
@@ -163,10 +166,10 @@ namespace LogisticsManagement_BusinessLogic
 
             StringBuilder query = new StringBuilder();
             query.Append("EXEC CreateNewOrder ");
-            query.Append("@OrderTypeId, @WayBillNumber, @ReferenceNumber, @CargoCtlNumber, @AwbCtnNumber, @ShipperCustomerId, @ShipperAddressId, @ConsigneeCustomerId, @ConsigneeAddressId, ");
+            query.Append("@OrderTypeId, @WayBillNumber, @ReferenceNumber, @CargoCtlNumber, @AwbCtnNumber, @PickupReferenceNumber, @ShipperCustomerId, @ShipperAddressId, @ConsigneeCustomerId, @ConsigneeAddressId, ");
             query.Append("@BillToCustomerId, @ScheduledPickupDate, @ExpectedDeliveryDate, @CityId, @DeliveryOptionId, ");
 
-            query.Append("@VehicleTypeId, @UnitTypeId, @WeightScaleId, @WeightTotal, @UnitQuantity, @OrderBasicCost, ");
+            query.Append("@VehicleTypeId, @UnitTypeId, @WeightScaleId, @WeightTotal, @UnitQuantity, @SkidQuantity, @TotalPiece, @OrderBasicCost, ");
             query.Append("@BasicCostOverriden, @FuelSurchargePercentage, @DiscountPercentOnOrderCost, @ApplicableGstPercent,@TotalOrderCost, ");
 
             query.Append("@TotalAdditionalServiceCost, @OrderedBy, @DepartmentName, @ContactName, @ContactPhoneNumber,  ");
