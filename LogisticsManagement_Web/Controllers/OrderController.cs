@@ -87,23 +87,77 @@ namespace LogisticsManagement_Web.Controllers
             {
                 if (orderData != null)
                 {
-
-                    var orderAddressData = (JObject)(JsonConvert.SerializeObject(orderData[0]));
-
-
                     Lms_OrderPoco orderPoco = JsonConvert.DeserializeObject<Lms_OrderPoco>(JsonConvert.SerializeObject(orderData[0]));
+
+                    _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
+                    var addressList = _addressLogic.GetList();
+
+                    Lms_AddressPoco newAddress = new Lms_AddressPoco();
+
+                    var orderAddressData = (JObject)orderData[0];
+                    var shipperAddressline = orderAddressData.SelectToken("shipperAddressline").ToString();
+                    var shipperUnitNo = orderAddressData.SelectToken("shipperUnitNo").ToString();
+                    var shipperCityId = orderAddressData.SelectToken("shipperCityId").ToString();
+                    var shipperProvinceId = orderAddressData.SelectToken("shipperProvinceId").ToString();
+                    var shipperPostcode = orderAddressData.SelectToken("shipperPostcode").ToString();
+                    var shipperAddressInfo = addressList.Where(c => c.Id == orderPoco.ShipperAddressId).FirstOrDefault();
+                    if (shipperAddressInfo != null) {
+                        if (shipperAddressline.Trim().ToUpper() == shipperAddressInfo.AddressLine.Trim().ToUpper() && shipperUnitNo.Trim().ToUpper() == Convert.ToString(shipperAddressInfo.UnitNumber).Trim().ToUpper() && Convert.ToInt16(shipperCityId) == shipperAddressInfo.CityId)
+                        {
+                            if (Convert.ToInt16(shipperProvinceId) != shipperAddressInfo.ProvinceId || shipperPostcode != shipperAddressInfo.PostCode)
+                            {
+                                shipperAddressInfo.ProvinceId = Convert.ToInt16(shipperProvinceId);
+                                shipperAddressInfo.PostCode = shipperPostcode;
+                                _addressLogic.Update(shipperAddressInfo);
+                            }
+                        }
+                        else
+                        {
+                            newAddress = new Lms_AddressPoco();
+                            newAddress.AddressLine = shipperAddressline;
+                            newAddress.UnitNumber = shipperUnitNo;
+                            newAddress.CityId = Convert.ToInt16(shipperCityId);
+                            newAddress.ProvinceId = Convert.ToInt16(shipperProvinceId);
+                            newAddress.CountryId = 41; // default Canada
+                            newAddress.PostCode = shipperPostcode;
+                            newAddress.CreatedBy = sessionData.UserId;
+                            orderPoco.ShipperAddressId =  _addressLogic.Add(newAddress).Id;
+                        }
+                    }
+
+                    var consigneeAddressline = orderAddressData.SelectToken("consigneeAddressline").ToString();
+                    var consigneeUnitNo = orderAddressData.SelectToken("consigneeUnitNo").ToString();
+                    var consigneeCityId = orderAddressData.SelectToken("consigneeCityId").ToString();
+                    var consigneeProvinceId = orderAddressData.SelectToken("consigneeProvinceId").ToString();
+                    var consigneePostcode = orderAddressData.SelectToken("consigneePostcode").ToString();
+                    var consigneeAddressInfo = addressList.Where(c => c.Id == orderPoco.ConsigneeAddressId).FirstOrDefault();
+                    if (consigneeAddressInfo != null)
+                    {
+                        if (consigneeAddressline.Trim().ToUpper() == consigneeAddressInfo.AddressLine.Trim().ToUpper() && consigneeUnitNo.Trim().ToUpper() == Convert.ToString(consigneeAddressInfo.UnitNumber).Trim().ToUpper() && Convert.ToInt16(consigneeCityId) == consigneeAddressInfo.CityId)
+                        {
+                            if (Convert.ToInt16(consigneeProvinceId) != consigneeAddressInfo.ProvinceId || consigneePostcode != consigneeAddressInfo.PostCode)
+                            {
+                                consigneeAddressInfo.ProvinceId = Convert.ToInt16(consigneeProvinceId);
+                                consigneeAddressInfo.PostCode = consigneePostcode;
+                                _addressLogic.Update(consigneeAddressInfo);
+                            }
+                        }
+                        else
+                        {
+                            newAddress = new Lms_AddressPoco();
+                            newAddress.AddressLine = consigneeAddressline;
+                            newAddress.UnitNumber = consigneeUnitNo;
+                            newAddress.CityId = Convert.ToInt16(consigneeCityId);
+                            newAddress.ProvinceId = Convert.ToInt16(consigneeProvinceId);
+                            newAddress.CountryId = 41; // default Canada
+                            newAddress.PostCode = consigneePostcode;
+                            newAddress.CreatedBy = sessionData.UserId;
+                            orderPoco.ConsigneeAddressId = _addressLogic.Add(newAddress).Id;
+                        }
+                    }
+
+
                     List<Lms_OrderAdditionalServicePoco> orderAdditionalServices = JsonConvert.DeserializeObject<List<Lms_OrderAdditionalServicePoco>>(JsonConvert.SerializeObject(orderData[1]));
-
-
-
-
-
-
-
-
-
-
-
 
                     if (orderPoco.Id < 1 && orderPoco.BillToCustomerId > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId > 0)
                     {

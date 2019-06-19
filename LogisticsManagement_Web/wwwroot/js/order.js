@@ -518,8 +518,14 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
     var result;
     var parseData;
 
-    if (dataArray[0].unitQuantity < 1 || dataArray[0].shipperCustomerId < 1 || dataArray[0].consigneeCustomerId < 1) {
-        bootbox.alert('Shipper, consignee and unit quantity is required!');
+    if (dataArray[0].unitQuantity < 1 && dataArray[0].skidQuantity < 1 && dataArray[0].totalPieces < 1) {
+        bootbox.alert('Quantity required either for Unit/Skid/Piece!');
+        event.preventDefault();
+        return;
+    }
+
+    if (dataArray[0].shipperCustomerId < 1 || dataArray[0].consigneeCustomerId < 1) {
+        bootbox.alert('Shipper and consignee information are required!');
         event.preventDefault();
         return;
     }
@@ -808,7 +814,7 @@ function GetTariffInfo() {
         unitTypeId = 2;
         unitQuantity = $('#txtSkidQuantity').val();
     }
-    
+
     weightScaleId = $('#ddlWeightScaleId').val();
     weightQuantity = $('#txtWeightTotal').val();
 
@@ -868,6 +874,10 @@ function CalculateOrderBaseCost() {
         baseOrderCost = baseOrderCost + baseFuelSurchargeAmount;
         $('#txtBaseOrderSurcharge').val(baseFuelSurchargeAmount.toFixed(2));
     }
+    else {
+        baseFuelSurchargeAmount = 0;
+        $('#txtBaseOrderSurcharge').val('');
+    }
     if (discountPercentage > 0) {
         baseDiscountAmount = discountPercentage * baseOrderCost / 100;
         baseOrderCost = baseOrderCost - baseDiscountAmount;
@@ -891,10 +901,19 @@ function CalculateOrderBaseCost() {
             overriddenOrderCost = overriddenOrderCost + overriddenFuelSurchargeAmount;
             $('#txtOverriddenOrderSurcharge').val(overriddenFuelSurchargeAmount.toFixed(2));
         }
+        else {
+            overriddenFuelSurchargeAmount = 0;
+            $('#txtOverriddenOrderSurcharge').val('');
+        }
+
         if (discountPercentage > 0) {
             overriddenDiscountAmount = discountPercentage * overriddenOrderCost / 100;
             overriddenOrderCost = overriddenOrderCost - overriddenDiscountAmount;
         }
+        else {
+            overriddenDiscountAmount = 0;
+        }
+
         if (taxPercentage > 0 && baseTaxAmount > 0) {
             overriddenTaxAmount = taxPercentage * overriddenOrderCost / 100;
             overriddenOrderCost = overriddenOrderCost + overriddenTaxAmount;

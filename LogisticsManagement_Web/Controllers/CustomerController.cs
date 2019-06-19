@@ -246,8 +246,10 @@ namespace LogisticsManagement_Web.Controllers
                             if (customerAddress.IsDefault)
                             {
                                 var typeWiseAddresses = customerAddressList.Where(c => c.CustomerId == customerAddress.CustomerId && c.AddressTypeId == customerAddress.AddressTypeId).ToList();
-                                if (typeWiseAddresses.Count > 0) {
-                                    foreach (var item in typeWiseAddresses) {
+                                if (typeWiseAddresses.Count > 0)
+                                {
+                                    foreach (var item in typeWiseAddresses)
+                                    {
                                         item.IsDefault = false;
                                         _customerAddressLogic.Update(item);
                                     }
@@ -400,12 +402,13 @@ namespace LogisticsManagement_Web.Controllers
             if (!string.IsNullOrEmpty(id))
             {
                 var customer = _customerLogic.GetSingleById(Convert.ToInt32(id));
-                return Json(JsonConvert.SerializeObject(customer));
+                if (customer != null)
+                {
+                    return Json(JsonConvert.SerializeObject(customer));
+                }
+
             }
-            else
-            {
-                return Json(string.Empty);
-            }
+            return Json(string.Empty);
 
         }
 
@@ -415,14 +418,14 @@ namespace LogisticsManagement_Web.Controllers
             {
                 _customerAddressLogic = new Lms_CustomerAddressMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerAddressMappingPoco>(_dbContext));
 
-                var customerDefaultShippingAddress = _customerAddressLogic.GetList().Where(c=>c.CustomerId == Convert.ToInt32(id) && c.AddressTypeId == 2 && c.IsDefault==true).FirstOrDefault();
-                return Json(JsonConvert.SerializeObject(customerDefaultShippingAddress.AddressId));
-            }
-            else
-            {
-                return Json(string.Empty);
+                var customerDefaultShippingAddress = _customerAddressLogic.GetList().Where(c => c.CustomerId == Convert.ToInt32(id) && c.AddressTypeId == 2 && c.IsDefault == true).FirstOrDefault();
+                if (customerDefaultShippingAddress != null)
+                {
+                    return Json(JsonConvert.SerializeObject(customerDefaultShippingAddress.AddressId));
+                }
             }
 
+            return Json(string.Empty);
         }
 
         public JsonResult GetCustomerDefaultBillingAddressById(string id)
@@ -432,12 +435,14 @@ namespace LogisticsManagement_Web.Controllers
                 _customerAddressLogic = new Lms_CustomerAddressMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerAddressMappingPoco>(_dbContext));
 
                 var customerDefaultBillingAddress = _customerAddressLogic.GetList().Where(c => c.CustomerId == Convert.ToInt32(id) && c.AddressTypeId == 1 && c.IsDefault == true).FirstOrDefault();
-                return Json(JsonConvert.SerializeObject(customerDefaultBillingAddress.AddressId));
+
+                if (customerDefaultBillingAddress != null)
+                {
+                    return Json(JsonConvert.SerializeObject(customerDefaultBillingAddress.AddressId));
+                }
             }
-            else
-            {
-                return Json(string.Empty);
-            }
+
+            return Json(string.Empty);
 
         }
 
