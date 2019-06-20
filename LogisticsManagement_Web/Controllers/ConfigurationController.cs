@@ -17,6 +17,8 @@ namespace LogisticsManagement_Web.Controllers
     public class ConfigurationController : Controller
     {
         private Lms_ConfigurationLogic _configurationLogic;
+        private Lms_UnitTypeLogic _unitTypeLogic;
+        private Lms_WeightScaleLogic _weightScaleLogic;
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
@@ -35,6 +37,11 @@ namespace LogisticsManagement_Web.Controllers
 
             ViewBag.TaxToCall = Enum.GetValues(typeof(Enum_TaxToCall)).Cast<Enum_TaxToCall>();
             var configuration = _configurationLogic.GetSingleById(1);
+            _unitTypeLogic = new Lms_UnitTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_UnitTypePoco>(_dbContext));
+            _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
+
+            ViewBag.UnitTypes = _unitTypeLogic.GetList();
+            ViewBag.WeightScales = _weightScaleLogic.GetList();
             return View(configuration);
         }
 

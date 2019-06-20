@@ -4,110 +4,270 @@
 @{
     ViewData["Title"] = "Configuration";
 }
+<h3>
+    @ViewData["Title"]
+</h3>
+<hr style="margin-bottom:40px" />
 
 
 <form id="frmConfigurationForm">
+
     <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header" style="background-color: #3b80a9;color: #fff;">
-                    <strong><i class="fa fa-sliders"></i> Configuration</strong>
-                </div>
-
-                <div class="card-body">
-                    <div class="row">
-                        <div class="form-group col-sm-1">
-
-
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input class="form-control" id="txtConfigId" type="number" name="txtConfigId" title="Configuration Id" value="@Model.Id" disabled>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <i class="fa fa-search"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="form-group col-sm-2">
-                            <input type="hidden" id="hfTaxToCall" value="@Model.TaxToCall" />
-                            <label for="ddlTaxToCall"> Tax to call </label>
-                            <select class="form-control" id="ddlTaxToCall" name="ddlTaxToCall">
-                                @foreach (var item in ViewBag.TaxToCall)
-                                {
-                                    var selected = false;
-                                    if ((int)item == 1)
-                                    {
-                                        selected = true;
-                                    }
-                                    <option value="@item" selected="@selected">@item</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="form-group col-sm-2">
-                            <label for="txtTaxAmount"> Tax amount</label>
-                            <input type="number" class="form-control" id="txtTaxAmount" value="@Model.TaxAmount" min="0" max="100" step=".01" placeholder="Tax amount (%)" />
-                        </div>
-                        <div class="form-group col-sm-2">
-                            <label for="txtDefaultFuelSurCharge"> Fuel surcharge</label>
-                            <input type="number" class="form-control" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" value="@Model.DefaultFuelSurcharge" min="0" max="100" step=".01"  placeholder="Default fuel surcharge" title="Default fuel surcharge" />
-                        </div>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="form-group col-sm-2">
-                            <label for="txtStorageWbNoStartsFrom"> Storage WB# starts from</label>
-                            <input type="number" class="form-control" id="txtStorageWbNoStartsFrom" name="txtStorageWbNoStartsFrom" value="@Model.StorageWBNoStartFrom" placeholder="Storage WB# starts from" title="Storage WB# starts from" />
-                        </div>
-                        <div class="form-group col-sm-2">
-                            <label for="txtDeliveryWbNoStartsFrom"> Delivery WB# starts from</label>
-                            <input type="number" class="form-control" id="txtDeliveryWbNoStartsFrom" name="txtDeliveryWbNoStartsFrom" value="@Model.DeliveryWBNoStartFrom" placeholder="Delivery WB# starts from" title="Delivery WB# starts from" />
-                        </div>
-                        <div class="form-group col-sm-2">
-                            <label for="txtMiscWbNoStartsFrom"> Misc. WB# starts from</label>
-                            <input type="number" class="form-control" id="txtMiscWbNoStartsFrom" name="txtMiscWbNoStartsFrom" value="@Model.MiscWBNoStartFrom" placeholder="Misc. WB# starts from" title="Misc. WB# starts from" />
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="form-group col-sm-2">
-                            <label for="txtWayBillPrefix"> W/B Prefix</label>
-                            <input type="text" class="form-control" id="txtWayBillPrefix" name="txtWayBillPrefix" value="@Model.WayBillPrefix" placeholder="Invoice no. starts from" title="Invoice no. starts from" />
-                        </div>
-                        <div class="form-group col-sm-2">
-                            <label for="txtInvoiceNoStartsFrom"> Invoice# starts from</label>
-                            <input type="number" class="form-control" id="txtInvoiceNoStartsFrom" name="txtInvoiceNoStartsFrom" value="@Model.InvoiceNumberStartFrom" placeholder="Invoice no. starts from" />
-                        </div>
-                        <div class="form-group col-sm-2">
-                            <label for="ddlSignInRequired"> Sign-in required to dispatch?</label>
-                            <select class="form-control" id="ddlSignInRequired" name="ddlSignInRequired">
-                                @{
-                                    var isRequired = false;
-                                    if (Model.IsSignInRequiredForDispatch == true)
-                                    {
-                                        isRequired = true;
-                                    }
-
-                                }
-                                <option value="0" selected="@isRequired">No</option>
-                                <option value="1" selected="@isRequired">Yes</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <hr />
-                    <button type="submit" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
-                    <button type="reset" class="btn btn-secondary" id="btnClear"><i class="fa fa-refresh"></i> Clear</button>
-
-                </div>
-            </div>
+        <div class="col-sm-12 form-group">
+            <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Config id" style="font-family:Arial, FontAwesome" id="txtConfigId" type="number" min="1" name="txtConfigId" title="Configuration Id" value="@Model.Id" disabled readonly>
         </div>
     </div>
+    <div class="row">
+        <div class="form-group col-sm-2">
+            <input type="hidden" id="hfTaxToCall" value="@Model.TaxToCall" />
+            <small>
+                <b>
+                    <label for="ddlTaxToCall"> Tax to call </label>
+                </b>
+            </small>
+            <select class="form-control form-control-sm" id="ddlTaxToCall" name="ddlTaxToCall">
+                @foreach (var item in ViewBag.TaxToCall)
+                {
+                    var selected = false;
+                    if ((int)item == 1)
+                    {
+                        selected = true;
+                    }
+                    <option value="@item" selected="@selected">@item</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtTaxAmount"> Tax amount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtTaxAmount" value="@Model.TaxAmount" min="0" max="100" step=".01" placeholder="Tax amount (%)" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtDefaultFuelSurCharge"> Fuel surcharge</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" value="@Model.DefaultFuelSurcharge" min="0" max="100" step=".01" placeholder="Default fuel surcharge" title="Default fuel surcharge" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtStorageWbNoStartsFrom"> Storage WB# starts from</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtStorageWbNoStartsFrom" name="txtStorageWbNoStartsFrom" value="@Model.StorageWBNoStartFrom" placeholder="Storage WB# starts from" title="Storage WB# starts from" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtDeliveryWbNoStartsFrom"> Delivery WB# starts from</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDeliveryWbNoStartsFrom" name="txtDeliveryWbNoStartsFrom" value="@Model.DeliveryWBNoStartFrom" placeholder="Delivery WB# starts from" title="Delivery WB# starts from" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtMiscWbNoStartsFrom"> Misc. WB# starts from</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtMiscWbNoStartsFrom" name="txtMiscWbNoStartsFrom" value="@Model.MiscWBNoStartFrom" placeholder="Misc. WB# starts from" title="Misc. WB# starts from" />
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtWayBillPrefix"> W/B Prefix</label>
+                </b>
+            </small>
+            <input type="text" class="form-control form-control-sm" id="txtWayBillPrefix" name="txtWayBillPrefix" value="@Model.WayBillPrefix" placeholder="Invoice no. starts from" title="Invoice no. starts from" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtInvoiceNoStartsFrom"> Invoice# starts from</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtInvoiceNoStartsFrom" name="txtInvoiceNoStartsFrom" value="@Model.InvoiceNumberStartFrom" placeholder="Invoice no. starts from" />
+        </div>
+        <div class="form-group col-sm-3">
+            <small>
+                <b>
+                    <label for="ddlSignInRequired"> Sign-in required to dispatch?</label>
+                </b>
+            </small>
+            <select class="form-control form-control-sm" id="ddlSignInRequired" name="ddlSignInRequired">
+                @{
+                    var isRequired = false;
+                    if (Model.IsSignInRequiredForDispatch == true)
+                    {
+                        isRequired = true;
+                    }
+
+                }
+                <option value="0" selected="@isRequired">No</option>
+                <option value="1" selected="@isRequired">Yes</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtDefaultFuelSurCharge"> Default fuel surcharge</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtDefaultWeightScaleId"> Default weight scale</label>
+                </b>
+            </small>
+            <select id="ddlDefaultWeightScaleId" class="form-control form-control-sm">
+                @foreach (var item in ViewBag.WeightScales)
+                {
+                    <option value="@item.Id">(@item.ShortCode) - @item.ScaleName</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtMiscWbNoStartsFrom"> Default unit</label>
+                </b>
+            </small>
+            <select id="ddlDefaultWeightScaleId" class="form-control form-control-sm">
+                @foreach (var item in ViewBag.UnitTypes)
+                {
+                    <option value="@item.Id">(@item.ShortCode) - @item.TypeName</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <small>
+                <b>
+                    <label id="" for="">GL Account Mapping</label>
+                </b>
+            </small>
+            <hr style="margin-top:-5px;margin-bottom:10px" />
+        </div>
+
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtDefaultFuelSurCharge"> ParentGLForCustomerAccount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtDefaultWeightScaleId"> ParentGLForEmployeeAccount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtMiscWbNoStartsFrom"> SalesTaxPayableAccount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtDefaultFuelSurCharge"> SalesIncomeAccount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtDefaultWeightScaleId"> SalaryExpenseAccount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtMiscWbNoStartsFrom"> BonusExpenseAccount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtDefaultFuelSurCharge"> OtherReceivableAccount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtDefaultWeightScaleId"> OtherPayableAccount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+    </div>
+
+    <div class="row">
+       
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtMiscWbNoStartsFrom"> OtherIncomeAccount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+        <div class="form-group col-sm-2">
+            <small>
+                <b>
+                    <label for="txtMiscWbNoStartsFrom"> OtherExpenseAccount</label>
+                </b>
+            </small>
+            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" placeholder="Default fuel surCharge" title="Default fuel surCharge" />
+        </div>
+    </div>
+
+
+
+
+
+
+    <hr />
+    <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save record</button>
+    <button type="reset" class="btn btn-sm btn-secondary" id="btnClear"><i class="fa fa-refresh"></i> Clear</button>
+
 </form>
 <script>
     $('#ddlTaxToCall').val($('#hfTaxToCall').val());
@@ -121,7 +281,7 @@
     });
 
     $('#frmConfigurationForm').unbind('submit').submit(function (event) {
-        
+
         var data = {
             id: $('#txtConfigId').val(),
             taxToCall: $('#ddlTaxToCall').val(),
@@ -141,7 +301,7 @@
         }
 
         event.preventDefault();
-      
+
     });
 
 
