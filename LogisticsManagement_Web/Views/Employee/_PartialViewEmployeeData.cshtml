@@ -4,24 +4,29 @@
 
 <script>
     $(document).ready(function () {
-
         if ($.fn.dataTable.isDataTable('#employee-list')) {
-            $('#employee-list').DataTable().destroy();
+            $('#customer-list').DataTable().destroy();
         }
         $('#employee-list').DataTable({
-            "order": [[0, "desc"]]
+            "order": [[0, "desc"]],
+            "paging": false,
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+
+            }
         });
     });
 </script>
 
 <div class="row">
     <div class="col-sm-12">
-        <table id="employee-list" class="table table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%">
+        <table id="employee-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
             <thead>
                 <tr>
                     <th>Number</th>
-                    <th>FirstName</th>
-                    <th>LastName</th>
+                    <th>First name</th>
+                    <th>Last name</th>
                     <th>License#</th>
                     <th>Phone</th>
                     <th>Email</th>

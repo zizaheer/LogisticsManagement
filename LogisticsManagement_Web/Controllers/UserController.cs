@@ -46,7 +46,7 @@ namespace LogisticsManagement_Web.Controllers
             ViewBag.Provinces = _provinceLogic.GetList().Select(c => new App_ProvincePoco { Id = c.Id, ShortCode = c.ShortCode, IsDefault = c.IsDefault }).ToList();
             ViewBag.Countries = _countryLogic.GetList().Select(c => new App_CountryPoco { Id = c.Id, CountryName = c.CountryName, IsDefault = c.IsDefault }).ToList();
 
-            return View();
+            return View(GetUserData());
 
         }
 
