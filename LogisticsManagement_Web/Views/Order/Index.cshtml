@@ -77,12 +77,13 @@
 
                     </div>
                     <hr />
-                    <div class="row">
+                    <div class="row" style="margin-bottom:80px">
                         <div class="col-sm-6">
                             <button type="button" class="btn btn-sm btn-success" id="btnSavePickup"><i class="fa fa-save"></i> Save pickup</button>
                             <button type="button" class="btn btn-sm btn-danger" id="btnRemovePickup"><i class="fa fa-trash"></i> Delete pickup </button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -170,7 +171,7 @@
                     </div>
 
                     <hr />
-                    <div class="row">
+                    <div class="row" style="margin-bottom:80px">
                         <div class="col-sm-6">
                             <button type="button" class="btn btn-sm btn-success" id="btnSavePassOn"><i class="fa fa-save"></i> Save pass-on</button>
                             <button type="button" class="btn btn-sm btn-danger" id="btnRemovePassOn"><i class="fa fa-trash"></i> Delete pass-on </button>
@@ -268,7 +269,7 @@
                     </div>
 
                     <hr />
-                    <div class="row">
+                    <div class="row" style="margin-bottom:80px">
                         <div class="col-sm-6">
                             <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
                             <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Delete delivery </button>
@@ -291,14 +292,21 @@
 
 <div class="row">
     <div class="col-sm-9 input-group">
-        <select class="col-3 form-control form-control-sm" id="ddlEmployeeId">
-            <option value="0"> Select employee </option>
+        <input type="search" id="txtEmployeeName" name="txtEmployeeName" class="form-control form-control-sm txtEmployeeName" placeholder="Employee name" list="dlEmployees" />
+        <datalist id="dlEmployees">
             @foreach (var employee in Model.Employees)
             {
-                <option value="@employee.Id">(@employee.Id) @employee.FirstName</option>
+                <option data-employeeid="@employee.Id" value="(@employee.Id) @employee.FirstName"></option>
             }
-        </select>
-        <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Find" style="font-family:Arial, FontAwesome" id="txtDispatchToEmployeeNumber" type="number" min="1" name="txtDispatchToEmployeeNumber">
+        </datalist>
+        <input class="col-2 form-control form-control-sm" placeholder="Vehicle ref #" id="txtVehicleName" type="search" name="txtVehicleName" list="dlVehicles" style="display:none">
+        <datalist id="dlVehicles">
+            @*@foreach (var item in Model.Vehicles)
+                {
+                    <option data-vehicleid="@item.Id" value="(@item.Id) @item.VehicleTagLine"></option>
+                }*@
+        </datalist>
+
         <input class="col-4 form-control form-control-sm" id="txtDispatchDatetimeForNewOrders" type="datetime-local" min="1" name="txtDispatchDatetimeForNewOrders">
 
         <span class="col-1 form-control form-control-sm ">
@@ -354,7 +362,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalCenterTitle">New Order</h5>
 
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" id="btnCloseModal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -384,6 +392,7 @@
                                         <label style="margin-top:5px" id="lblBillTo" for="txtBillToCustomerName"><b>Biller</b></label>
                                     </small>
                                     <div class="col-sm-3">
+                                        <input type="hidden" id="hfBillerCustomerId"/>
                                         <input class="form-control form-control-sm" id="txtBillToCustomerName" name="txtBillToCustomerName" placeholder="Bill to" list="dlBillers" type="search" style="width:272px" />
                                         <datalist id="dlBillers">
                                             @foreach (var item in Model.Customers)
@@ -454,7 +463,7 @@
                                         <div class="row mb-1">
 
                                             <div class="form-group col-md-12 input-group">
-                                                <input list="dlShipperCustomers" class="form-control form-control-sm" placeholder="Shipper name" id="txtShipperCustomerName" type="search" />
+                                                <input list="dlShipperCustomers" class="form-control form-control-sm" placeholder="Shipper name" id="txtShipperCustomerName" name="txtShipperCustomerName" type="search" />
                                                 <datalist id="dlShipperCustomers">
                                                     @foreach (var item in Model.Customers)
                                                     {
@@ -465,7 +474,7 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="col-12 input-group">
-                                                <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtShipperAddressline" name="txtShipperAddressline" list="dlShipperAddressLines" type="search" />
+                                                <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtShipperAddressLine" name="txtShipperAddressLine" list="dlShipperAddressLines" type="search" />
                                                 <datalist id="dlShipperAddressLines"></datalist>
                                                 <input type="text" class="col-3 form-control form-control-sm" placeholder="Unit" id="txtShipperUnitNo" name="txtShipperUnitNo">
                                             </div>
@@ -496,7 +505,7 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="form-group col-md-12 input-group">
-                                                <input list="dlConsigneeCustomers" class="form-control form-control-sm" placeholder="Consignee name" id="txtConsigneeCustomerName" type="search" />
+                                                <input list="dlConsigneeCustomers" class="form-control form-control-sm" placeholder="Consignee name" id="txtConsigneeCustomerName" name="txtConsigneeCustomerName" type="search" />
                                                 <datalist id="dlConsigneeCustomers">
                                                     @foreach (var item in Model.Customers)
                                                     {
@@ -507,7 +516,7 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="col-12 input-group">
-                                                <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtConsigneeAddressline" name="txtConsigneeAddressline" list="dlConsigneeAddressLines" type="search" />
+                                                <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtConsigneeAddressLine" name="txtConsigneeAddressLine" list="dlConsigneeAddressLines" type="search" />
                                                 <datalist id="dlConsigneeAddressLines"></datalist>
                                                 <input type="text" class="col-3 form-control form-control-sm" placeholder="Unit" id="txtConsigneeUnitNo" name="txtConsigneeUnitNo">
                                             </div>
@@ -541,7 +550,7 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="form-group col-md-4 input-group">
-                                                <select class="form-control form-control-sm" id="ddlVehicleTypeId">
+                                                <select class="form-control form-control-sm" id="ddlVehicleTypeId" name="ddlVehicleTypeId">
                                                     <option value="1">Truck</option>
                                                     <option value="2">Car</option>
                                                     <option value="3">Van</option>
@@ -562,7 +571,7 @@
                                                     }
                                                 </select>
                                                 <input class="col-2 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
-                                                <input class="col-2 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity">
+                                                <input class="col-2 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity" style="background-color:#b3ffc3">
                                                 <input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces">
                                                 &nbsp;
                                                 <input class="col-2 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
@@ -598,7 +607,7 @@
                                                         <small>
                                                             <b>
                                                                 @*<label style="margin-top:5px; " id="lblDeliveryOptionId" for="ddlDeliveryOptionId"><b>Disc.</b></label>*@
-                                                                <input type="checkbox" class="form-check-inline form-check-input" id="chkIsGstApplicable" />
+                                                                <input type="checkbox" class="form-check-inline form-check-input" id="chkIsGstApplicable" name="chkIsGstApplicable" />
                                                                 Apply @Model.Configuration.TaxToCall-<label class="form-check-inline form-check-label" id="lblGstAmount">@Model.Configuration.TaxAmount</label>%
                                                             </b>
                                                         </small>
@@ -628,15 +637,14 @@
                                                     </tr>
                                                     <tr>
                                                         <td colspan="6">
-                                                            <hr style="width:100%; margin-top:5px; margin-bottom:0px"/>
+                                                            <hr style="width:100%; margin-top:5px; margin-bottom:0px" />
                                                         </td>
                                                     </tr>
                                                 </thead>
                                             </table>
-                                            
+
                                             <table id="service-list" class="service-list">
-                                                <tbody>
-                                                </tbody>
+                                                
                                             </table>
                                         </div>
 
@@ -644,29 +652,34 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <div style="margin-bottom:10px">
-                                            <small class="text-muted mt-0"><input type="checkbox" id="chkIsPrintOnWayBill" name="chkIsPrintOnWayBill"> <b>Print comments on W/B</b></small>
+                                            <small class="text-muted mt-0">
+                                                <div class="form-check-inline">
+                                                    <input type="checkbox" id="chkIsPrintOnWayBill" name="chkIsPrintOnWayBill" class="form-check-input" />
+                                                    <label id="lblIsPrintOnWayBill" for="chkIsPrintOnWayBill" class="form-check-label"><b>Print comments on W/B</b></label>
+                                                </div>
+
+                                            </small>
                                             <div class="row">
                                                 <div class="col-12 input-group">
-                                                    <textarea class="form-control form-control-sm" id="txtCommentsForWayBill" rows="2" cols="45"></textarea>
+                                                    <textarea class="form-control form-control-sm" id="txtCommentsForWayBill" name="txtCommentsForWayBill" rows="2" cols="45"></textarea>
                                                 </div>
                                             </div>
                                         </div>
                                         <div>
-                                            <small class="text-muted mt-0"><input type="checkbox" id="chkIsPrintOnInvoice" name="chkIsPrintOnInvoice"> <b>Print comments on Invoice</b></small>
+                                            <small class="text-muted mt-0">
+                                                <div class="form-check-inline">
+                                                    <input type="checkbox" id="chkIsPrintOnInvoice" name="chkIsPrintOnInvoice" class="form-check-input" />
+                                                    <label id="lblIsPrintOnInvoice" for="chkIsPrintOnInvoice" class="form-check-label"><b>Print comments on Invoice</b></label>
+                                                </div>
+                                            </small>
                                             <div class="row">
                                                 <div class="col-12 input-group">
-                                                    <textarea class="form-control form-control-sm" id="txtCommentsForInvoice" rows="2" cols="45"></textarea>
+                                                    <textarea class="form-control form-control-sm" id="txtCommentsForInvoice" name="txtCommentsForInvoice" rows="2" cols="45"></textarea>
                                                 </div>
                                             </div>
                                         </div>
                                         <div style="margin-top:30px; font-size:.5em">
-                                            @*<button type="button" class="btn btn-sm btn-primary"><i class="fa fa-cart-plus"></i> Add services</button>*@
-                                            @*<span class="form-check form-check-inline">
-                                                <input class="form-check-input" id="rdoCalculateBySkid" type="radio" name="rdoCalculateBy" />
-                                                <label class="form-check-label" id="lblCalculateBySkid" for="rdoCalculateBySkid">By SKID</label>
-                                                <input class="form-check-input" id="rdoCalculateByUnit" type="radio" name="rdoCalculateBy" />
-                                                <label class="form-check-label" id="lblCalculateByUnit" for="rdoCalculateByUnit">By Unit</label>
-                                            </span>*@
+
                                             <input type="checkbox" id="chkIsCalculateByUnit" style="font-size:.5em" name="chkIsCalculateByUnit" title="Calculate by unit/skid" data-toggle="toggle" data-on="<i class='fa fa-balance-scale'></i> By unit" data-off="<i class='fa fa-stack-overflow'></i> By skid" data-onstyle="primary" data-offstyle="success" data-size="mini" data-width="106" data-height="28">
                                             <span style="padding-right:4px; padding-left:4px"> | </span>
                                             <input type="checkbox" id="chkIsReturnOrder" style="font-size:.5em" name="chkIsReturnOrder" title="Turn it on if you want to place a return order" data-toggle="toggle" data-on="<i class='fa fa-mail-forward'></i> Single order" data-off="<i class='fa fa-mail-reply'></i> Return order" data-onstyle="danger" data-offstyle="secondary" data-size="mini" data-width="118" data-height="28">

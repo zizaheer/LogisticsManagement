@@ -12,18 +12,30 @@
 
         <div class="col-4" style="margin-bottom:20px">
             <div style="overflow-y:scroll; overflow-x:scroll; display:block; height:115px;margin:5px;border:1px solid #9fecfd;background-color:#fff">
-                <table class="table-striped" style="width:450px; ">
+                <table class="table-striped" style="width:450px; margin-left:3px">
                     <thead>
                         <tr style="color:#1052f1; height:22px">
-                            <th colspan="7">(@orders.First().DispatchedToEmployeeId) @orders.First().DispatchedToEmployeeName - @orders.First().DispatchedToEmployeePhone </th>
-
+                            <th colspan="3">
+                                <button class="btn-primary btnPickup" title="Pick up" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-toggle="modal" >
+                                    <i class="fa fa-arrow-circle-up"></i>
+                                </button>
+                                <button class="btn-warning btnPasson" title="Pass on" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-toggle="modal" data-target="#orderPassOn">
+                                    <i class="fa fa-arrow-circle-right"></i>
+                                </button>
+                                <button class="btn-success btnDeliver" title="Deliver" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-toggle="modal" data-target="#orderDeliver">
+                                    <i class="fa fa-check-circle"></i>
+                                </button>
+                                <button class="btn-danger btnRemoveDispatch" title="Remove this dispatch" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </th>
+                            <th colspan="5">(@orders.First().DispatchedToEmployeeId) @orders.First().DispatchedToEmployeeName  @orders.First().DispatchedToEmployeePhone</th>
                         </tr>
                         <tr style="background-color:#e3f4f8">
-                            <th style="width:110px; text-align:center">Action</th>
-                            <th>W/B</th>
-                            <th>Type</th>
-                            <th>SVC</th>
-                            <th>Unit</th>
+                            <th style="text-align:center; width:60px">W/B #</th>
+                            <th style="text-align:center; width:30px">Type</th>
+                            <th style="text-align:center; width:30px">SVC</th>
+                            <th style="text-align:center; width:50px">Unit</th>
                             <th>Shipper</th>
                             <th>Consignee</th>
                             <th>Status</th>
@@ -33,24 +45,15 @@
                         @foreach (var item in orders)
                         {
                             <tr style="background-color:@item.RowColorCode">
-                                <td style="text-align:center">
-                                    <button class="btn-primary btnPickup" title="Pick up" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber" data-toggle="modal" data-target="#orderPickup">
-                                        <i class="fa fa-arrow-circle-up"></i>
-                                    </button>
-                                    <button class="btn-warning btnPasson" title="Pass on" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber" data-toggle="modal" data-target="#orderPassOn">
-                                        <i class="fa fa-arrow-circle-right"></i>
-                                    </button>
-                                    <button class="btn-success btnDeliver" title="Deliver" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber" data-toggle="modal" data-target="#orderDeliver">
-                                        <i class="fa fa-check-circle"></i>
-                                    </button>
-                                    <button class="btn-danger btnRemoveDispatch" title="Remove this dispatch" style="padding:0px; width:22px; height:16px; border:1px solid transparent; text-align:center;" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                <td style="text-align:center; width:60px">
+                                    <div class="form-check-inline">
+                                        <input class="form-check-input" type="radio" name="rdoWaybillNo" id="chkWayBillNumber" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber" />
+                                        <label class="form-check-label" for="chkWayBillNumber">@item.WayBillNumber</label>
+                                    </div>
                                 </td>
-                                <td>@item.WayBillNumber</td>
-                                <td><span title="S: Single Order; R: Return Order">@item.OrderTypeFlag</span></td>
-                                <td>@item.DeliveryOptionCode</td>
-                                <td>@item.UnitQuantity (@item.UnitTypeName)</td>
+                                <td style="text-align:center; width:30px"><span title="S: Single Order; R: Return Order">@item.OrderTypeFlag</span></td>
+                                <td style="text-align:center; width:30px">@item.DeliveryOptionCode</td>
+                                <td style="text-align:center; width:50px">@item.UnitQuantity (@item.UnitTypeName)</td>
                                 <td title="@item.ShipperCustomerName">
                                     @{
                                         if (item.ShipperCustomerName.Length > 15)

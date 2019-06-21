@@ -32,10 +32,16 @@ $('.btnPickup').unbind().on('click', function () {
     //console.log('teste');
     ClearModal();
 
-    var orderId = $(this).data('orderid');
+    var orderId = $("input[name='rdoWaybillNo']:checked").data('orderid');
+    var wayBillNumber = $("input[name='rdoWaybillNo']:checked").data('waybillnumber');
+
     $('#txtOrderIdForPickupModal').val(orderId);
-    var wayBillNumber = $(this).data('waybillnumber');
     $('#txtWayBillNoForPickupModal').val(wayBillNumber);
+
+    if (orderId < 1 || orderId === undefined) {
+        bootbox.alert('Please select an order.');
+        return;
+    }
 
     var orderInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
 
@@ -54,11 +60,17 @@ $('.btnPickup').unbind().on('click', function () {
         }
 
         $('#txtPickupWaitTime').val(orderInfo.PickupWaitTimeHour);
-    }
-    ////$('#orderPickup').toggle('modal');
-    //$('#orderPickup').modal('show');
-    ////$('#orderPickup').show();
 
+        $('#orderPickup').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+
+        $('#orderPickup').modal('show');
+    }
+    else {
+        bootbox.alert('Please select way bill number to pickup');
+    }
 });
 $('#btnSavePickup').unbind().on('click', function () {
     var waitTime = $('#txtPickupWaitTime').val();
@@ -95,9 +107,10 @@ $('.btnPasson').unbind().on('click', function () {
 
     ClearModal();
 
-    var orderId = $(this).data('orderid');
+    var orderId = $("input[name='rdoWaybillNo']:checked").data('orderid');
+    var wayBillNumber = $("input[name='rdoWaybillNo']:checked").data('waybillnumber');
+
     $('#txtOrderIdForPassOnModal').val(orderId);
-    var wayBillNumber = $(this).data('waybillnumber');
     $('#txtWayBillNoForPassOnModal').val(wayBillNumber);
 
     var orderInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));

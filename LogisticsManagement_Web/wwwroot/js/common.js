@@ -111,6 +111,33 @@ function GetSingleObjectById(actionUrl, id) {
     return returnObject;
 }
 
+function PerformPostAction(actionUrl) {
+    var returnObject = '';
+
+    $.ajax({
+        'async': false,
+        url: actionUrl,
+        type: 'POST',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            if (result.length > 0) {
+                returnObject = result;
+            }
+            else {
+                bootbox.alert('Failed! An error occurred. Please check and try again.');
+            }
+
+        },
+        error: function (result) {
+
+        }
+    });
+
+    return returnObject;
+}
+
+
 function AddEntry(actionUrl, dataArray) {
     var returnObject = null;
 

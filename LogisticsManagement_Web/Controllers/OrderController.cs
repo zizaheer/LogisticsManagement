@@ -102,7 +102,10 @@ namespace LogisticsManagement_Web.Controllers
                     var shipperPostcode = orderAddressData.SelectToken("shipperPostcode").ToString();
                     var shipperAddressInfo = addressList.Where(c => c.Id == orderPoco.ShipperAddressId).FirstOrDefault();
                     if (shipperAddressInfo != null) {
-                        if (shipperAddressline.Trim().ToUpper() == shipperAddressInfo.AddressLine.Trim().ToUpper() && shipperUnitNo.Trim().ToUpper() == Convert.ToString(shipperAddressInfo.UnitNumber).Trim().ToUpper() && Convert.ToInt16(shipperCityId) == shipperAddressInfo.CityId)
+
+                        shipperAddressInfo.UnitNumber = !string.IsNullOrEmpty(shipperAddressInfo.UnitNumber) ? Convert.ToString(shipperAddressInfo.UnitNumber).Trim().ToUpper() : "" ;
+
+                        if (shipperAddressline.Trim().ToUpper() == shipperAddressInfo.AddressLine.Trim().ToUpper() && shipperUnitNo.Trim().ToUpper() == shipperAddressInfo.UnitNumber && Convert.ToInt16(shipperCityId) == shipperAddressInfo.CityId)
                         {
                             if (Convert.ToInt16(shipperProvinceId) != shipperAddressInfo.ProvinceId || shipperPostcode != shipperAddressInfo.PostCode)
                             {
@@ -133,7 +136,9 @@ namespace LogisticsManagement_Web.Controllers
                     var consigneeAddressInfo = addressList.Where(c => c.Id == orderPoco.ConsigneeAddressId).FirstOrDefault();
                     if (consigneeAddressInfo != null)
                     {
-                        if (consigneeAddressline.Trim().ToUpper() == consigneeAddressInfo.AddressLine.Trim().ToUpper() && consigneeUnitNo.Trim().ToUpper() == Convert.ToString(consigneeAddressInfo.UnitNumber).Trim().ToUpper() && Convert.ToInt16(consigneeCityId) == consigneeAddressInfo.CityId)
+                        consigneeAddressInfo.UnitNumber = !string.IsNullOrEmpty(consigneeAddressInfo.UnitNumber) ? Convert.ToString(consigneeAddressInfo.UnitNumber).Trim().ToUpper() : "";
+
+                        if (consigneeAddressline.Trim().ToUpper() == consigneeAddressInfo.AddressLine.Trim().ToUpper() && consigneeUnitNo.Trim().ToUpper() == consigneeAddressInfo.UnitNumber && Convert.ToInt16(consigneeCityId) == consigneeAddressInfo.CityId)
                         {
                             if (Convert.ToInt16(consigneeProvinceId) != consigneeAddressInfo.ProvinceId || consigneePostcode != consigneeAddressInfo.PostCode)
                             {
@@ -250,6 +255,7 @@ namespace LogisticsManagement_Web.Controllers
                             {
                                 if (item.AdditionalServiceId > 0)
                                 {
+                                    item.OrderId = existingOrder.Id;
                                     _orderAdditionalServiceLogic.Add(item);
                                 }
                             }

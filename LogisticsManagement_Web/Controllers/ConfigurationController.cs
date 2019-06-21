@@ -28,7 +28,7 @@ namespace LogisticsManagement_Web.Controllers
             _cache = cache;
             _dbContext = dbContext;
             _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
-            
+
         }
 
         public IActionResult Index()
@@ -70,7 +70,7 @@ namespace LogisticsManagement_Web.Controllers
                         existingConfigData.StorageWBNoStartFrom = configData.StorageWBNoStartFrom;
                         existingConfigData.InvoiceNumberStartFrom = configData.InvoiceNumberStartFrom;
                         existingConfigData.DefaultFuelSurcharge = configData.DefaultFuelSurcharge;
-                       // existingConfigData.DefaultWeightScaleId = null;
+                        // existingConfigData.DefaultWeightScaleId = null;
 
                         _configurationLogic.Update(existingConfigData);
 
@@ -85,6 +85,50 @@ namespace LogisticsManagement_Web.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public IActionResult ClearCache()
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                _cache.Remove(App_CacheKeys.Cities);
+                _cache.Remove(App_CacheKeys.Countries);
+                _cache.Remove(App_CacheKeys.Provinces);
+                _cache.Remove(App_CacheKeys.Tariffs);
+                _cache.Remove(App_CacheKeys.Addresses);
+                _cache.Remove(App_CacheKeys.Customers);
+                _cache.Remove(App_CacheKeys.Employees);
+                _cache.Remove(App_CacheKeys.Orders);
+                _cache.Remove(App_CacheKeys.OrderAdditionalServices);
+                _cache.Remove(App_CacheKeys.OrderStatuses);
+                _cache.Remove(App_CacheKeys.AccountBalances);
+                _cache.Remove(App_CacheKeys.AdditionalServices);
+                _cache.Remove(App_CacheKeys.Accounts);
+                _cache.Remove(App_CacheKeys.EmployeePayrolls);
+                _cache.Remove(App_CacheKeys.EmployeePayrollDetails);
+                _cache.Remove(App_CacheKeys.Invoices);
+                _cache.Remove(App_CacheKeys.InvoiceWayBillMappings);
+                _cache.Remove(App_CacheKeys.City);
+                _cache.Remove(App_CacheKeys.Country);
+                _cache.Remove(App_CacheKeys.Province);
+                _cache.Remove(App_CacheKeys.Tariff);
+                _cache.Remove(App_CacheKeys.Address);
+                _cache.Remove(App_CacheKeys.Customer);
+                _cache.Remove(App_CacheKeys.Employee);
+
+                result = "Success";
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
 
         private void ValidateSession()
         {
