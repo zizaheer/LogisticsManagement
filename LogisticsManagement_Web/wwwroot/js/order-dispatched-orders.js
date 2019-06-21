@@ -27,6 +27,8 @@ $(document).ready(function () {
 
 //#region Events 
 
+var passOnEmployeeId = 0;
+
 $('.btnPickup').unbind().on('click', function () {
 
     //console.log('teste');
@@ -43,23 +45,25 @@ $('.btnPickup').unbind().on('click', function () {
         return;
     }
 
-    var orderInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
+    var orderStatusInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
 
-    if (orderInfo !== null) {
-        $('#txtDispatchDateTimeForPickupModal').val(orderInfo.DispatchedDatetime);
+    if (orderStatusInfo !== null) {
+        $('#txtDispatchDateTimeForPickupModal').val(orderStatusInfo.DispatchedDatetime);
 
-        $('#ddlEmployeeId').val(orderInfo.DispatchedToEmployeeId);
-        $('#txtDispatchEmployeeNameForPickupModal').val($("#ddlEmployeeId option:selected").text());
-        $('#ddlEmployeeId').val(0); // reset <select>
+        var empInfo = JSON.parse(GetSingleObjectById('Employee/GetEmployeeById', orderStatusInfo.DispatchedToEmployeeId));
+        if (empInfo.LastName == null) {
+            empInfo.LastName = '';
+        }
+        $('#txtDispatchEmployeeNameForPickupModal').val(empInfo.FirstName + ' ' + empInfo.LastName);
 
-        if (orderInfo.PickupDatetime !== null) {
-            $('#txtPickupDateTime').val(orderInfo.PickupDatetime);
+        if (orderStatusInfo.PickupDatetime !== null) {
+            $('#txtPickupDateTime').val(orderStatusInfo.PickupDatetime);
         }
         else {
             $('#txtPickupDateTime').val(ConvertDatetimeToUSDatetime(new Date));
         }
 
-        $('#txtPickupWaitTime').val(orderInfo.PickupWaitTimeHour);
+        $('#txtPickupWaitTime').val(orderStatusInfo.PickupWaitTimeHour);
 
         $('#orderPickup').modal({
             backdrop: 'static',
@@ -69,7 +73,8 @@ $('.btnPickup').unbind().on('click', function () {
         $('#orderPickup').modal('show');
     }
     else {
-        bootbox.alert('Please select way bill number to pickup');
+        bootbox.alert('Order information was not found.');
+        return;
     }
 });
 $('#btnSavePickup').unbind().on('click', function () {
@@ -113,45 +118,78 @@ $('.btnPasson').unbind().on('click', function () {
     $('#txtOrderIdForPassOnModal').val(orderId);
     $('#txtWayBillNoForPassOnModal').val(wayBillNumber);
 
-    var orderInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
+    if (orderId < 1 || orderId === undefined) {
+        bootbox.alert('Please select an order.');
+        return;
+    }
 
-    if (orderInfo !== null) {
-        $('#txtDispatchDateTimeForPassOnModal').val(orderInfo.DispatchedDatetime);
+    var orderStatusInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
 
-        $('#ddlEmployeeId').val(orderInfo.DispatchedToEmployeeId);
-        $('#txtDispatchEmployeeNameForPassOnModal').val($("#ddlEmployeeId option:selected").text());
-        $('#ddlEmployeeId').val(0); // reset <select>
+    if (orderStatusInfo.PickupDatetime === null) {
+        bootbox.alert('The order is not picked-up yet.');
+        return;
+    }
+    
 
-        if (orderInfo.PassOffDatetime !== null) {
-            $('#txtPassOnDateTime').val(orderInfo.PassOffDatetime);
+    if (orderStatusInfo !== null) {
+        $('#txtDispatchDateTimeForPassOnModal').val(orderStatusInfo.DispatchedDatetime);
+
+        var empInfo = JSON.parse(GetSingleObjectById('Employee/GetEmployeeById', orderStatusInfo.DispatchedToEmployeeId));
+        if (empInfo.LastName == null) {
+            empInfo.LastName = '';
+        }
+        $('#txtDispatchEmployeeNameForPassOnModal').val(empInfo.FirstName + ' ' + empInfo.LastName);
+
+        if (orderStatusInfo.PassOffDatetime !== null) {
+            $('#txtPassOnDateTime').val(orderStatusInfo.PassOffDatetime);
         }
         else {
             $('#txtPassOnDateTime').val(ConvertDatetimeToUSDatetime(new Date));
         }
-        $('#txtPickupDateTimeForPassOnModal').val(orderInfo.PickupDatetime);
-        if (orderInfo.PassedOffToEmployeeId > 0) {
-            $('#ddlPassOnEmployeeId').val(orderInfo.PassedOffToEmployeeId);
+        $('#txtPickupDateTimeForPassOnModal').val(orderStatusInfo.PickupDatetime);
+
+        if (orderStatusInfo.PassedOffToEmployeeId > 0) {
+
+            var passOnEmp = JSON.parse(GetSingleObjectById('Employee/GetEmployeeById', orderStatusInfo.PassedOffToEmployeeId));
+            if (passOnEmp.LastName == null) {
+                passOnEmp.LastName = '';
+            }
+            $('#txtPassOnEmployeeName').val(passOnEmp.FirstName + ' ' + passOnEmp.LastName);
+
         } else {
-            $('#ddlPassOnEmployeeId').val(0);
+            $('#txtPassOnEmployeeName').val('');
         }
 
-        $('#txtPassOnEmployeeNumber').val($('#ddlPassOnEmployeeId').val());
-        $('#txtPassOnWaitTime').val(orderInfo.PassOffWaitTimeHour);
+        $('#txtPassOnWaitTime').val(orderStatusInfo.PassOffWaitTimeHour);
+
+        $('#orderPassOn').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+
+        $('#orderPassOn').modal('show');
+    }
+    else {
+        bootbox.alert('Order information was not found.');
+        return;
     }
 });
-$('#txtPassOnEmployeeNumber').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
 
-        $('#ddlPassOnEmployeeId').val($('#txtPassOnEmployeeNumber').val());
-    }
+$('#txtPassOnEmployeeName').on('input', function (event) {
+    event.preventDefault();
+    var valueSelected = $('#txtPassOnEmployeeName').val();
+    passOnEmployeeId = $('#dlPassOnEmployees option').filter(function () {
+        return this.value === valueSelected;
+    }).data('employeeid');
 
 });
+
+
+
 $('#btnSavePassOn').unbind().on('click', function () {
     var waitTime = $('#txtPassOnWaitTime').val();
     var pickupDate = $('#txtPickupDateTimeForPassOnModal').val();
     var passOnDate = $('#txtPassOnDateTime').val();
-    var passOnEmployeeId = $('#ddlPassOnEmployeeId').val();
     var orderId = $('#txtOrderIdForPassOnModal').val();
     var wayBillNumber = $('#txtWayBillNoForPassOnModal').val();
 
@@ -183,38 +221,78 @@ $('.btnDeliver').unbind().on('click', function () {
 
     ClearModal();
 
-    var orderId = $(this).data('orderid');
+    var orderId = $("input[name='rdoWaybillNo']:checked").data('orderid');
+    var wayBillNumber = $("input[name='rdoWaybillNo']:checked").data('waybillnumber');
+
     $('#txtOrderIdForDeliverModal').val(orderId);
-    var wayBillNumber = $(this).data('waybillnumber');
     $('#txtWayBillNoForDeliverModal').val(wayBillNumber);
 
-    var orderInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
+    if (orderId < 1 || orderId === undefined) {
+        bootbox.alert('Please select an order.');
+        return;
+    }
 
-    if (orderInfo !== null) {
-        $('#txtDispatchDateTimeForDeliverModal').val(orderInfo.DispatchedDatetime);
+    var orderStatusInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
+    var orderInfo = JSON.parse(GetSingleObjectById('Order/GetOrderInfoByOrderId', orderId));
+    var shipperInfo = JSON.parse(GetSingleObjectById('Customer/GetCustomerById', orderInfo.ShipperCustomerId));
+    var consigneeInfo = JSON.parse(GetSingleObjectById('Customer/GetCustomerById', orderInfo.ConsigneeCustomerId));
+
+    var shipperAddInfo = JSON.parse(GetSingleObjectById('Address/GetAddressById', orderInfo.ShipperAddressId));
+    var consigneeAddInfo = JSON.parse(GetSingleObjectById('Address/GetAddressById', orderInfo.ConsigneeAddressId));
 
 
-        $('#ddlEmployeeId').val(orderInfo.DispatchedToEmployeeId);
-        $('#txtDispatchEmployeeNameForDeliverModal').val($("#ddlEmployeeId option:selected").text());
-        //$('#ddlEmployeeId').val(0); // reset <select>
+    $('#txtShipperInfo').val(shipperInfo.CustomerName + '\n' + shipperAddInfo.AddressLine );
+    $('#txtConsigneeInfo').val(consigneeInfo.CustomerName + '\n' + consigneeAddInfo.AddressLine );
 
-        $('#ddlEmployeeId').val(orderInfo.PassedOffToEmployeeId);
-        $('#txtPassOnEmployeeNameForDeliverModal').val($("#ddlEmployeeId option:selected").text());
-        $('#ddlEmployeeId').val(0); // reset <select>
+    if (orderStatusInfo.PickupDatetime === null) {
+        bootbox.alert('The order is not picked-up yet.');
+        return;
+    }
 
-        $('#txtPickupDateTimeForDeliverModal').val(orderInfo.PickupDatetime);
-        if (orderInfo.DeliveredDatetime !== null) {
-            $('#txtDeliveryDateTime').val(orderInfo.DeliveredDatetime);
+    if (orderStatusInfo !== null) {
+        $('#txtDispatchDateTimeForDeliverModal').val(orderStatusInfo.DispatchedDatetime);
+
+        var empInfo = JSON.parse(GetSingleObjectById('Employee/GetEmployeeById', orderStatusInfo.DispatchedToEmployeeId));
+        if (empInfo.LastName == null) {
+            empInfo.LastName = '';
+        }
+        $('#txtDispatchEmployeeNameForDeliverModal').val(empInfo.FirstName + ' ' + empInfo.LastName);
+
+        if (orderStatusInfo.PassedOffToEmployeeId > 0) {
+            var passOnEmp = JSON.parse(GetSingleObjectById('Employee/GetEmployeeById', orderStatusInfo.PassedOffToEmployeeId));
+            if (passOnEmp.LastName == null) {
+                passOnEmp.LastName = '';
+            }
+            $('#txtPassOnEmployeeNameForDeliverModal').val(passOnEmp.FirstName + ' ' + passOnEmp.LastName);
+            $('#txtDispatchEmployeeNameForDeliverModal').val(passOnEmp.FirstName + ' ' + passOnEmp.LastName);
+
+        } else {
+            $('#txtPassOnEmployeeNameForDeliverModal').val('');
+        }
+
+        $('#txtPickupDateTimeForDeliverModal').val(orderStatusInfo.PickupDatetime);
+        if (orderStatusInfo.DeliveredDatetime !== null) {
+            $('#txtDeliveryDateTime').val(orderStatusInfo.DeliveredDatetime);
         }
         else {
             $('#txtDeliveryDateTime').val(ConvertDatetimeToUSDatetime(new Date));
         }
 
-        $('#txtDeliveryWaitTime').val(orderInfo.DeliveryWaitTimeHour);
-        $('#txtReceivedByName').val(orderInfo.ReceivedByName);
-        $('#txtDeliveryNote').val(orderInfo.ProofOfDeliveryNote);
-        DrawSignatureImage(orderInfo.ReceivedBySignature);
+        $('#txtDeliveryWaitTime').val(orderStatusInfo.DeliveryWaitTimeHour);
+        $('#txtReceivedByName').val(orderStatusInfo.ReceivedByName);
+        $('#txtDeliveryNote').val(orderStatusInfo.ProofOfDeliveryNote);
+        DrawSignatureImage(orderStatusInfo.ReceivedBySignature);
 
+        $('#orderDeliver').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+
+        $('#orderDeliver').modal('show');
+    }
+    else {
+        bootbox.alert('Order information was not found.');
+        return;
     }
 });
 $('#btnSaveDeliver').unbind().on('click', function () {

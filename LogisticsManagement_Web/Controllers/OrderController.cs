@@ -817,6 +817,22 @@ namespace LogisticsManagement_Web.Controllers
             }
         }
 
+        public JsonResult GetOrderInfoByOrderId(string id)
+        {
+            ValidateSession();
+
+            try
+            {
+                var orderInfo = _orderLogic.GetList().Where(c => c.Id == Convert.ToInt32(id)).FirstOrDefault();
+
+                return Json(JsonConvert.SerializeObject(orderInfo));
+            }
+            catch (Exception ex)
+            {
+                return Json("");
+            }
+        }
+
         public JsonResult GetOrderStatusByOrderId(string id)
         {
             ValidateSession();

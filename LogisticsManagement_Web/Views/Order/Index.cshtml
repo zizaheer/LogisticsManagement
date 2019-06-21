@@ -42,36 +42,49 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-sm-5 form-group">
-                            <label for="txtWayBillNoForPickupModal">W/B number</label>
-                            <div class="row mb-1 ">
-                                <div class="col-sm-12 input-group">
-                                    <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPickupModal" type="number" name="txtWayBillNoForPickupModal">
-                                    <input type="hidden" id="hfOrderIdForPickupModal" />
-                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForPickupModal" style="display:none; font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
-                                </div>
-                            </div>
+                        <div class="col-sm-6 form-group">
+                            <small>
+                                <b>
+                                    <label for="txtWayBillNoForPickupModal">W/B number</label>
+                                </b>
+                            </small>
+                            <input class="col-5 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPickupModal" type="number" name="txtWayBillNoForPickupModal" readonly>
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="col-sm-5 form-group">
-                            <label for="txtDispatchDateTimeForPickupModal">Dispatch date and time</label>
+                            <small>
+                                <b>
+                                    <label for="txtDispatchDateTimeForPickupModal">Dispatch date and time</label>
+                                </b>
+                            </small>
                             <input type="datetime-local" id="txtDispatchDateTimeForPickupModal" class="form-control form-control-sm txtDispatchDateTimeForPickupModal" readonly />
                         </div>
                         <div class="col-sm-7 form-group">
-                            <label for="txtDispatchEmployeeNameForPickupModal">Dispatched to</label>
+                            <small>
+                                <b>
+                                    <label for="txtDispatchEmployeeNameForPickupModal">Dispatched to</label>
+                                </b>
+                            </small>
                             <input type="text" id="txtDispatchEmployeeNameForPickupModal" class="form-control form-control-sm txtDispatchEmployeeNameForPickupModal" readonly />
 
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-5 form-group">
-                            <label for="txtPickupDateTime">Pickup date and time</label>
+                            <small>
+                                <b>
+                                    <label for="txtPickupDateTime">Pickup date and time</label>
+                                </b>
+                            </small>
                             <input type="datetime-local" id="txtPickupDateTime" class="form-control form-control-sm txtPickupDateTime" />
                         </div>
                         <div class="col-sm-3 form-group">
-                            <label for="txtPickupWaitTime">Wait time (hour)</label>
+                            <small>
+                                <b>
+                                    <label for="txtPickupWaitTime">Wait time (hour)</label>
+                                </b>
+                            </small>
                             <input type="number" id="txtPickupWaitTime" class="form-control form-control-sm txtPickupWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
                         </div>
 
@@ -108,30 +121,39 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-sm-5 form-group">
-                            <label for="txtWayBillNoForPassOnModal">W/B number</label>
-                            <div class="row mb-1 ">
-                                <div class="col-sm-12 input-group">
-                                    <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPassOnModal" type="number" name="txtWayBillNoForPassOnModal">
-                                    <input type="hidden" id="hfOrderIdForPassOnModal" />
-                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForPassOnModal" style="display:none; font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
-                                </div>
-                            </div>
+                        <div class="col-sm-6 form-group">
+                            <small>
+                                <b>
+                                    <label for="txtWayBillNoForPassOnModal">W/B number</label>
+                                </b>
+                            </small>
+                            <input class="col-5 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPassOnModal" type="number" name="txtWayBillNoForPassOnModal" readonly>
                         </div>
-
                     </div>
 
                     <div class="row">
                         <div class="col-sm-4 form-group">
-                            <label for="txtDispatchDateTimeForPassOnModal">Dispatch date and time</label>
+                            <small>
+                                <b>
+                                    <label for="txtDispatchDateTimeForPassOnModal">Dispatch date and time</label>
+                                </b>
+                            </small>
                             <input type="datetime-local" id="txtDispatchDateTimeForPassOnModal" class="form-control form-control-sm txtDispatchDateTimeForPassOnModal" readonly />
                         </div>
                         <div class="col-sm-4 form-group">
-                            <label for="txtPickupDateTimeForPassOnModal">Pickup date and time</label>
+                            <small>
+                                <b>
+                                    <label for="txtPickupDateTimeForPassOnModal">Pickup date and time</label>
+                                </b>
+                            </small>
                             <input type="datetime-local" id="txtPickupDateTimeForPassOnModal" class="form-control form-control-sm txtPickupDateTimeForPassOnModal" readonly />
                         </div>
                         <div class="col-sm-4 form-group">
-                            <label for="txtDispatchEmployeeNameForPassOnModal">Dispatched to</label>
+                            <small>
+                                <b>
+                                    <label for="txtDispatchEmployeeNameForPassOnModal">Dispatched to</label>
+                                </b>
+                            </small>
                             <input type="text" id="txtDispatchEmployeeNameForPassOnModal" class="form-control form-control-sm txtDispatchEmployeeNameForPassOnModal" readonly />
                         </div>
 
@@ -139,31 +161,42 @@
                     <div class="row">
 
                         <div class="col-sm-4 form-group">
-                            <label for="txtPassOnDateTime">Pass-on date</label>
+                            <small>
+                                <b>
+                                    <label for="txtPassOnDateTime">Pass-on date</label>
+                                </b>
+                            </small>
                             <input type="datetime-local" id="txtPassOnDateTime" class="form-control form-control-sm txtPassOnDateTime" />
 
                         </div>
 
 
                         <div class="col-sm-4">
-                            <label for="ddlPassOnEmployeeId">Pass-on to</label>
+                            <small>
+                                <b>
+                                    <label for="txtPassOnEmployeeName">Pass-on to</label>
+                                </b>
+                            </small>
                             <div class="row mb-1 ">
                                 <div class="col-sm-12 input-group">
-                                    <select class="col-8 form-control form-control-sm" id="ddlPassOnEmployeeId">
-                                        <option value="0"> Employee/driver </option>
+                                    <input type="search" id="txtPassOnEmployeeName" name="txtPassOnEmployeeName" class="form-control form-control-sm txtPassOnEmployeeName" placeholder="Employee name" list="dlPassOnEmployees" />
+                                    <datalist id="dlPassOnEmployees">
                                         @foreach (var employee in Model.Employees)
                                         {
-                                            <option value="@employee.Id">@employee.FirstName @employee.LastName (@employee.Id)</option>
+                                            <option data-employeeid="@employee.Id" value="@employee.FirstName"></option>
                                         }
-                                    </select>
-                                    <input class="col-4 form-control form-control-sm" placeholder="&#xF002; Find" style="font-family:Arial, FontAwesome" id="txtPassOnEmployeeNumber" type="number" min="1" name="txtPassOnEmployeeNumber">
+                                    </datalist>
                                 </div>
                             </div>
                         </div>
 
 
                         <div class="col-sm-3 form-group">
-                            <label for="txtPassOnWaitTime">Wait time (hour)</label>
+                            <small>
+                                <b>
+                                    <label for="txtPassOnWaitTime">Wait time (hour)</label>
+                                </b>
+                            </small>
                             <input type="number" id="txtPassOnWaitTime" class="form-control form-control-sm txtPassOnWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
                         </div>
 
@@ -197,53 +230,89 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-4 form-group">
-                            <label for="txtWayBillNoForDeliverModal">W/B number</label>
-                            <div class="row mb-1 ">
-                                <div class="col-sm-12 input-group">
-                                    <input class="col-9 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForDeliverModal" type="number" name="txtWayBillNoForDeliverModal">
-                                    <input type="hidden" id="hfOrderIdForDeliverModal" />
-                                    <input type="text" class="col-3 form-control form-control-sm" id="txtOrderIdForDeliverModal" style="display:none; font-style:italic;font-variant-position:super; text-align:right; font-size:.8em; padding-right:5px" disabled readonly />
-                                </div>
-                            </div>
+                            <small>
+                                <b>
+                                    <label for="txtWayBillNoForDeliverModal">W/B number</label>
+                                </b>
+                            </small>
+                            <input class="form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForDeliverModal" type="number" name="txtWayBillNoForDeliverModal" readonly>
                         </div>
-
-
+                        <div class="col-sm-4 form-group">
+                            <small>
+                                <b>
+                                    <label for="txtWayBillNoForDeliverModal">Shipper</label>
+                                </b>
+                            </small>
+                            <textarea id="txtShipperInfo" class="form-control form-control-sm" style="font-size:.8em" rows="3" readonly></textarea>
+                        </div>
+                        <div class="col-sm-4 form-group">
+                            <small>
+                                <b>
+                                    <label for="txtWayBillNoForDeliverModal">Consignee</label>
+                                </b>
+                            </small>
+                            <textarea id="txtConsigneeInfo" class="form-control form-control-sm" style="font-size:.8em" rows="3" readonly></textarea>
+                        </div>
                     </div>
-
+                    <hr />
                     <div class="row">
                         <div class="col-sm-4 form-group">
-                            <label for="txtDispatchDateTimeForDeliverModal">Dispatch date and time</label>
+                            <small>
+                                <b>
+                                    <label for="txtDispatchDateTimeForDeliverModal">Dispatch date and time</label>
+                                </b>
+                            </small>
                             <input type="datetime-local" id="txtDispatchDateTimeForDeliverModal" class="form-control form-control-sm txtDispatchDateTimeForDeliverModal" readonly />
                         </div>
                         <div class="col-sm-4 form-group">
-                            <label for="txtPickupDateTimeForDeliverModal">Pickup date and time</label>
+                            <small>
+                                <b>
+                                    <label for="txtPickupDateTimeForDeliverModal">Pickup date and time</label>
+                                </b>
+                            </small>
                             <input type="datetime-local" id="txtPickupDateTimeForDeliverModal" class="form-control form-control-sm txtPickupDateTimeForDeliverModal" readonly />
                         </div>
-                        <div class="col-sm-2 form-group">
-                            <label for="txtDispatchEmployeeNameForDeliverModal">Dispatched to</label>
+                        <div class="col-sm-4 form-group">
+                            <small>
+                                <b>
+                                    <label for="txtDispatchEmployeeNameForDeliverModal">Dispatched to</label>
+                                </b>
+                            </small>
                             <input type="text" id="txtDispatchEmployeeNameForDeliverModal" class="form-control form-control-sm txtDispatchEmployeeNameForDeliverModal" readonly />
                         </div>
-                        <div class="col-sm-2 form-group">
-                            <label for="txtPassOnEmployeeNameForDeliverModal">Pass-on to</label>
-                            <input type="text" id="txtPassOnEmployeeNameForDeliverModal" class="form-control form-control-sm txtPassOnEmployeeNameForDeliverModal" readonly />
-                        </div>
+                        @*<div class="col-sm-2 form-group">
+                                <label for="txtPassOnEmployeeNameForDeliverModal">Pass-on to</label>
+                                <input type="text" id="txtPassOnEmployeeNameForDeliverModal" class="form-control form-control-sm txtPassOnEmployeeNameForDeliverModal" readonly />
+                            </div>*@
 
                     </div>
                     <div class="row">
 
                         <div class="col-sm-4 form-group">
-                            <label for="txtDeliveryDateTime">Delivery Date</label>
+                            <small>
+                                <b>
+                                    <label for="txtDeliveryDateTime">Delivery Date</label>
+                                </b>
+                            </small>
                             <input type="datetime-local" id="txtDeliveryDateTime" class="form-control form-control-sm txtDeliveryDateTime" />
 
                         </div>
                         <div class="col-sm-3 form-group">
-                            <label for="txtDeliveryWaitTime">Wait time (hour)</label>
+                            <small>
+                                <b>
+                                    <label for="txtDeliveryWaitTime">Wait time (hour)</label>
+                                </b>
+                            </small>
                             <input type="number" id="txtDeliveryWaitTime" class="form-control form-control-sm txtDeliveryWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
 
                         </div>
 
                         <div class="col-sm-5 form-group">
-                            <label for="txtReceivedByName">Received By </label>
+                            <small>
+                                <b>
+                                    <label for="txtReceivedByName">Received By </label>
+                                </b>
+                            </small>
                             <input type="text" id="txtReceivedByName" class="form-control form-control-sm txtReceivedByName" placeholder="Received by (Name)" title="Received by (Name)" />
                         </div>
 
@@ -253,12 +322,20 @@
                     <div class="row">
 
                         <div class="col-sm-4 form-group">
-                            <label for="txtDeliveryNote">Notes</label>
+                            <small>
+                                <b>
+                                    <label for="txtDeliveryNote">Notes</label>
+                                </b>
+                            </small>
                             <textarea id="txtDeliveryNote" class="form-control form-control-sm txtDeliveryNote" placeholder="Delivery note" title="Delivery note"></textarea>
                         </div>
 
                         <div class="col-sm-8">
-                            <label for="txtReceivedBySign">Signature </label>
+                            <small>
+                                <b>
+                                    <label for="txtReceivedBySign">Signature </label>
+                                </b>
+                            </small>
                             <canvas id="signatureCanvas" class="card"></canvas>
                             <span style="float:left">
                                 <button type="button" class="btn btn-sm btn-secondary" id="btnOk"><i class="fa fa-check"></i> Ok </button>
@@ -392,7 +469,7 @@
                                         <label style="margin-top:5px" id="lblBillTo" for="txtBillToCustomerName"><b>Biller</b></label>
                                     </small>
                                     <div class="col-sm-3">
-                                        <input type="hidden" id="hfBillerCustomerId"/>
+                                        <input type="hidden" id="hfBillerCustomerId" />
                                         <input class="form-control form-control-sm" id="txtBillToCustomerName" name="txtBillToCustomerName" placeholder="Bill to" list="dlBillers" type="search" style="width:272px" />
                                         <datalist id="dlBillers">
                                             @foreach (var item in Model.Customers)
@@ -643,9 +720,7 @@
                                                 </thead>
                                             </table>
 
-                                            <table id="service-list" class="service-list">
-                                                
-                                            </table>
+                                            <table id="service-list" class="service-list"></table>
                                         </div>
 
 
