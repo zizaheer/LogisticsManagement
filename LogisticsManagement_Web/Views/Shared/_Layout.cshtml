@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -36,9 +39,83 @@
         // Bootstrap ID
         gtag('config', 'UA-118965717-5');
     </script>
+    
+    <script>
+        var sessionData = '@HttpContextAccessor.HttpContext.Session.GetString("SessionData")';
+        console.log(sessionData);
+        document.getElementById('txtEmployeeId').value = sessionData.EmployeeId;
+    </script>
+
 </head>
 
 <body class="app sidebar-minimized aside-menu-fixed sidebar-lg-show">
+
+
+    <!-- Modal for clock-in -->
+    <div class="modal fade bd-example-modal-xl" id="employeeClockIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content bg-light">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/alarm-clock.png" style="height:25px; padding-left:28px; padding-right:10px" />Employee clock-in</h4>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-12 offset-4 form-group">
+                                <h4>
+                                    <b>  <label id="lblCurrentTime" style="color:#ff0000"></label></b>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <small>
+                                    <b>
+                                        <label for="txtEmployeeId">Employee ID</label>
+                                    </b>
+                                </small>
+                                <input class="col-5 form-control form-control-sm" placeholder="Employee Id" id="txtEmployeeId" type="number" name="txtEmployeeId" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <small>
+                                    <b>
+                                        <label for="txtClockInTime">Clock-in Time</label>
+                                    </b>
+                                </small>
+                                <input type="datetime-local" id="txtClockInTime" class="form-control form-control-sm txtClockInTime" readonly />
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <small>
+                                    <b>
+                                        <label for="txtClockOutTime">Clock-out Time</label>
+                                    </b>
+                                </small>
+                                <input type="datetime-local" id="txtClockOutTime" class="form-control form-control-sm txtClockOutTime" readonly />
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="row" style="margin-bottom:80px">
+                            <div class="col-sm-12">
+                                <button type="button" class="col-3 btn btn-sm btn-success" id="btnClockIn"><i class="fa fa-sign-in"></i> Clock-in</button>
+                                <button type="button" class="col-3 btn btn-sm btn-danger" id="btnClockOut" style="float:right"><i class="fa fa-sign-out"></i> Clock-out </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for clock-in -->
+
+
     <div style="width:1150px !important; margin:0 auto">
         <header class="app-header navbar">
             <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
@@ -53,8 +130,8 @@
             <ul class="nav navbar-nav d-md-down-none"></ul>
             <ul class="nav navbar-nav ml-auto" style="padding-right:20px">
                 <li class="nav-item px-1">
-                    <a class="nav-link" href="#">
-                        <img src="~/images/flaticons-64x64/employee-signin.png" style="width:25px; height:25px" />
+                    <a class="nav-link" href="#" id="lnkEmployeeClockIn" data-toggle="modal">
+                        <img src="~/images/flaticons-64x64/alarm-clock.png" style="width:20px; height:20px" />
                     </a>
                 </li>
                 <li class="nav-item d-md-down-none px-5">
@@ -65,7 +142,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                        <img src="~/images/fatcow-icons-32x32/user-3.png" style="border:1px solid #097cb0; border-radius:50%; padding:2px; width:23px; height:23px;background-color:#a9f7e1" />
+                        <img src="~/images/flaticons-64x64/boss.png" style="border:1px solid #808080; border-radius:50%; padding:2px; width:30px; height:30px;" />
 
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
@@ -251,32 +328,32 @@
 
         </div>
 
-        <footer class="app-footer"  >
+        <footer class="app-footer">
             <div class="ml-auto" style="height:100px">
                 <span style="font-size:.8em;">Developed by <a href="https://www.retoll.com/" target="_blank"> <img src="~/lib/img/retoll-logo.png" width="15" height="15" /> Retoll inc.</a> Third party <a asp-area="" asp-controller="Credits" asp-action="Index">credits</a></span>
             </div>
         </footer>
     </div>
-        @*@RenderSection("scripts", true)*@
+    @*@RenderSection("scripts", true)*@
 
-        <script src="~/lib/vendors/jquery-ui/jquery-ui.js"></script>
-        <script src="~/lib/vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/lib/vendors/jquery-ui/jquery-ui.js"></script>
+    <script src="~/lib/vendors/bootstrap/js/bootstrap.min.js"></script>
 
 
-        <!-- CoreUI and necessary plugins-->
-        @*<script src="~/lib/vendors/popper.js/js/popper.min.js"></script>*@
-        <script src="~/lib/vendors/pace-progress/js/pace.min.js"></script>
-        <script src="~/lib/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js"></script>
-        <script src="~/lib/vendors/from-coreui/coreui/js/coreui.min.js"></script>
-        <!-- Plugins and scripts required by this view-->
-        @*<script src="~/lib/vendors/chart.js/js/Chart.min.js"></script>*@
-        @*<script src="~/lib/vendors/from-coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js"></script>*@
-        @*<script src="~/lib/js/main.js"></script>*@
+    <!-- CoreUI and necessary plugins-->
+    @*<script src="~/lib/vendors/popper.js/js/popper.min.js"></script>*@
+    <script src="~/lib/vendors/pace-progress/js/pace.min.js"></script>
+    <script src="~/lib/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js"></script>
+    <script src="~/lib/vendors/from-coreui/coreui/js/coreui.min.js"></script>
+    <!-- Plugins and scripts required by this view-->
+    @*<script src="~/lib/vendors/chart.js/js/Chart.min.js"></script>*@
+    @*<script src="~/lib/vendors/from-coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js"></script>*@
+    @*<script src="~/lib/js/main.js"></script>*@
 
-        <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-datatables/datatables.min.css" />
-        <script type="text/javascript" src="~/lib/bootstrap-datatables/datatables.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
-        <script src="~/lib/js/bootbox.all.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-datatables/datatables.min.css" />
+    <script type="text/javascript" src="~/lib/bootstrap-datatables/datatables.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+    <script src="~/lib/js/bootbox.all.min.js"></script>
 </body>
 
 </html>

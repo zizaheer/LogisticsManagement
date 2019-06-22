@@ -26,11 +26,13 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
+            
             sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
             if (sessionData == null)
             {
                 return RedirectToAction("Index", "Login");
             }
+            ViewBag.UserId = sessionData.UserId;
             return View();
             
         }

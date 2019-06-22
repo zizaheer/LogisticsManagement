@@ -122,8 +122,8 @@ $('.btnDelete').unbind().on('click', function () {
 function GetFormData() {
 
     var userData = {
-
         id: $('#txtUserId').val() === "" ? "0" : $('#txtUserId').val(),
+        employeeId: $('#ddlEmployeeId').val(),
         userName: $('#txtUserName').val(),
         password: $('#txtPassword').val(),
         //confirmPassword: $('#txtConfirmPassword').val(),
@@ -153,6 +153,7 @@ function FillUserInfo(userInfo) {
     $('#txtConfirmPassword').prop('disabled', true);
 
     $('#txtUserId').val(userInfo.Id);
+    $('#ddlEmployeeId').val(userInfo.EmployeeId);
     $('#txtUserName').val(userInfo.UserName);
     $('#txtPassword').val('**********');
     $('#txtConfirmPassword').val('**********');

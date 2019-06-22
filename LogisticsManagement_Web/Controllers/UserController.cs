@@ -21,6 +21,7 @@ namespace LogisticsManagement_Web.Controllers
         private App_ProvinceLogic _provinceLogic;
         private App_CountryLogic _countryLogic;
         private App_UserGroupLogic _userGroupLogic;
+        private Lms_EmployeeLogic _employeeLogic;
 
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
@@ -40,11 +41,13 @@ namespace LogisticsManagement_Web.Controllers
             _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
             _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
             _countryLogic = new App_CountryLogic(_cache, new EntityFrameworkGenericRepository<App_CountryPoco>(_dbContext));
+            _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
 
             ViewBag.UserGroups = Enum.GetValues(typeof(Enum_UserGroup)).Cast<Enum_UserGroup>();
             ViewBag.Cities = _cityLogic.GetList().Select(c => new App_CityPoco { Id = c.Id, CityName = c.CityName }).ToList();
             ViewBag.Provinces = _provinceLogic.GetList().Select(c => new App_ProvincePoco { Id = c.Id, ShortCode = c.ShortCode, IsDefault = c.IsDefault }).ToList();
             ViewBag.Countries = _countryLogic.GetList().Select(c => new App_CountryPoco { Id = c.Id, CountryName = c.CountryName, IsDefault = c.IsDefault }).ToList();
+            ViewBag.Employees = _employeeLogic.GetList().Select(c => new Lms_EmployeePoco { Id = c.Id, FirstName = c.FirstName, LastName = c.LastName, EmailAddress = c.EmailAddress }).ToList();
 
             return View(GetUserData());
 
@@ -63,6 +66,7 @@ namespace LogisticsManagement_Web.Controllers
             {
                 Id = c.Id,
                 UserName = c.UserName,
+                EmployeeId = c.EmployeeId,
                 FirstName = c.FirstName,
                 LastName = c.LastName,
                 EmailAddress = c.EmailAddress,
@@ -138,6 +142,7 @@ namespace LogisticsManagement_Web.Controllers
                     {
                         var user = _userLogic.GetSingleById(userPoco.Id);
 
+                        user.EmployeeId = userPoco.EmployeeId;
                         user.FirstName = userPoco.FirstName;
                         user.LastName = userPoco.LastName;
                         user.GroupId = userPoco.GroupId;

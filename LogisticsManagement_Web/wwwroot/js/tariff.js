@@ -74,15 +74,35 @@ $('#frmTariffForm').on('keyup keypress', function (e) {
 });
 
 $('#frmTariffForm').unbind('submit').submit(function (event) {
+    event.preventDefault();
+
     var data = GetFormData();
-    
+
+    if (data.cityId < 1) {
+        bootbox.alert('Please select city to add tariff');
+        return;
+    }
+
+    if (data.firstUnitPrice == null || data.firstUnitPrice === '' || data.firstUnitPrice <= 0) {
+        bootbox.alert('Please enter first unit price');
+        return;
+    }
+
+    if (data.perUnitPrice == null || data.perUnitPrice == '' || data.perUnitPrice <= 0) {
+        bootbox.alert('Please enter per unit price');
+        return;
+    }
+
     if (data.id > 0) {
         UpdateEntry('Tariff/Update', data);
     }
     else {
-        AddEntry('Tariff/Add', data);
+        var result = AddEntry('Tariff/Add', data);
+        if (result.length > 0) {
+            $('#txtTariffId').val(result);
+        }
     }
-    event.preventDefault();
+   
     $('#loadTariffDataTable').load('Tariff/PartialViewDataTable');
 });
 

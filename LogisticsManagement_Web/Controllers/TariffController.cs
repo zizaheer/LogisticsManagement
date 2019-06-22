@@ -75,9 +75,7 @@ namespace LogisticsManagement_Web.Controllers
                     if (poco.Id < 1)
                     {
                         poco.CreatedBy = sessionData.UserId;
-                        _tariffLogic.Add(poco);
-
-                        result = "Success";
+                        result = _tariffLogic.Add(poco).Id.ToString();
                     }
                 }
             }

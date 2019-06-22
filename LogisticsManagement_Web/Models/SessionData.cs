@@ -22,5 +22,7 @@ namespace LogisticsManagement_Web.Models
         public string PostCode { get; set; }
         public string PhoneNumber { get; set; }
         public byte[] ProfilePicture { get; set; }
+
+        public int? LoggedInEmployeeId { get; set; } 
     }
 }

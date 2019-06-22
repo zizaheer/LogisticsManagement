@@ -55,7 +55,7 @@
             </div>
 
             <div class="row">
-                <div class="form-group col-sm-3">
+                <div class="form-group col-sm-2">
                     <small>
                         <b>
                             <label for="txtUserName">User name</label>
@@ -63,7 +63,7 @@
                     </small>
                     <input class="form-control form-control-sm" id="txtUserName" placeholder="User name" name="txtUserName" type="text" maxlength="20" title="User name" required />
                 </div>
-                <div class="form-group col-sm-4">
+                <div class="form-group col-sm-3">
                     <small>
                         <b>
                             <label for="txtPassword">Password</label>
@@ -71,13 +71,27 @@
                     </small>
                     <input class="form-control form-control-sm" id="txtPassword" placeholder="Password" name="txtPassword" type="password" maxlength="20" title="Password" required />
                 </div>
-                <div class="form-group col-sm-4">
+                <div class="form-group col-sm-3">
                     <small>
                         <b>
                             <label for="txtConfirmPassword">Confirm password</label>
                         </b>
                     </small>
                     <input class="form-control form-control-sm" id="txtConfirmPassword" placeholder="Confirm password" name="txtConfirmPassword" type="password" maxlength="20" required title="Confirm password" />
+                </div>
+                <div class="form-group col-sm-3">
+                    <small>
+                        <b>
+                            <label for="ddlEmployeeId">Employee</label>
+                        </b>
+                    </small>
+                    <select class="form-control form-control-sm" id="ddlEmployeeId">
+                        <option value="0" selected>-Select-</option>
+                        @foreach (var item in ViewBag.Employees)
+                        {
+                            <option value="@item.Id">@item.FirstName  @item.LastName</option>
+                        }
+                    </select>
                 </div>
             </div>
 
