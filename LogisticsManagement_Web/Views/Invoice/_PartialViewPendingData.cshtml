@@ -34,7 +34,10 @@
         {
             <tr>
                 <td>
-                    <input type="checkbox" id="chkOrderSelected" name="chkOrderSelected" class="chkOrderSelected" data-waybillnumber='@item.WayBillNumber' /> <a asp-controller="Order" asp-action="">@item.WayBillNumber</a>
+                    <div class="form-check-inline">
+                        <input type="checkbox" id="chkOrderSelected" name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
+                    </div>
+                     <a asp-controller="Order" asp-action="">@item.WayBillNumber</a>
                 </td>
 
                 <td>

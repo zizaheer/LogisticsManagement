@@ -13,6 +13,12 @@
         $('#orderdispatch-list').DataTable({
             "order": [[0, "desc"]]
         });
+
+        var currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - 60);
+        $('#txtStartDate').val(ConvertDateToUSFormat(currentDate));
+        $('#txtToDate').val(ConvertDateToUSFormat(new Date));
+
     });
 </script>
 
@@ -24,9 +30,27 @@
 
 
 <div class="row">
-    <div class="col-12">
-        <button id="btnPrintPreview" class="btn btn-sm btn-danger" style="float:right; margin-bottom:15px"><i class="fa fa-print"></i> Print preview </button>
+
+    <div class="col-sm-2 form-group">
+        <small> <b><label for="txtStartDate">From date</label></b></small>
+        <input type="date" id="txtStartDate" class="form-control form-control-sm txtStartDate" />
     </div>
+    <div class="col-sm-2 form-group">
+        <small> <b><label for="txtToDate">To date</label></b></small><input type="date" id="txtToDate" class="form-control form-control-sm txtToDate" />
+    </div>
+    <div class="col-sm-2 form-group">
+        <small> <b><label for="ddlCustomerId">Customer</label></b></small>
+        <select class="form-control form-control-sm" id="ddlCustomerId" style="background-color:#c8fde4; font-weight:bold">
+            <option value="0">- All -</option>
+
+
+        </select>
+    </div>
+    <div class="col-sm-2 form-group" style="margin-top:28px">
+        <small> <b><label for="btnFilter"></label></b></small><button id="btnFilter" class="btn btn-sm btn-secondary"> Filter</button>
+    </div>
+
+
 </div>
 
 
@@ -44,6 +68,10 @@
         <div class="col-sm-10">
             <button type="submit" class="btn btn-sm btn-primary" id="btnSave"><i class="fa fa-save"></i> Generate invoice/s</button>
         </div>
+        <div class="col-2 form-group">
+            <button id="btnPrintPreview" class="btn btn-sm btn-danger" style="float:right; margin-bottom:15px"><i class="fa fa-print"></i> Print preview </button>
+        </div>
+
     </div>
 </form>
 
