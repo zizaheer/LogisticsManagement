@@ -26,11 +26,15 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
-            if (sessionData == null)
-            {
-                return RedirectToAction("Index", "Login");
+            var currentData = HttpContext.Session.GetString("SessionData");
+            if (currentData != null) {
+                sessionData = JsonConvert.DeserializeObject<SessionData>(currentData);
+                if (sessionData == null)
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
+            
             return View();
             
         }
