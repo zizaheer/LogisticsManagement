@@ -14,9 +14,10 @@ namespace LogisticsManagement_Poco
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int EmployeeId { get; set; }
-        public int LoanAmount { get; set; }
-        public int LoanTakenOn { get; set; }
-        public int Remarks { get; set; }
+        public decimal LoanAmount { get; set; }
+        public DateTime LoanTakenOn { get; set; }
+        public decimal? PaidAmount { get; set; }
+        public string Remarks { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
     }
