@@ -60,6 +60,38 @@ namespace LogisticsManagement_Web.Controllers
             return PartialView("_PartialViewUserData", GetUserData());
         }
 
+        [HttpGet]
+        public IActionResult ValidateCurrentUserByPassword(string id)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (id != null)
+                {
+                    var currentUserName = sessionData.UserName;
+                    var userData = new App_UserPoco();
+                    var isUserValid = _userLogic.IsCredentialsValid(currentUserName, id, out userData);
+                    if (isUserValid)
+                    {
+                        result = "true";
+                    }
+                    else
+                    {
+                        result = "";
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
         private List<App_UserPoco> GetUserData()
         {
             var filteredUsers = _userLogic.GetList().Select(c => new App_UserPoco
@@ -182,24 +214,33 @@ namespace LogisticsManagement_Web.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdatePassword([FromBody]dynamic userData)
+        public IActionResult UpdatePassword([FromBody]dynamic passwordData)
         {
             ValidateSession();
             var result = "";
 
             try
             {
-                if (userData != null)
+                if (passwordData != null)
                 {
-                    App_UserPoco userPoco = JsonConvert.DeserializeObject<App_UserPoco>(JsonConvert.SerializeObject(userData));
+                    var passData = JsonConvert.SerializeObject(passwordData[0]);
+                    var newPass = (JObject.Parse(passData)["newPass"]).ToString();
+                    var currentPass = (JObject.Parse(passData)["currentPass"]).ToString();
 
-                    if (userPoco.Id > 0 && userPoco.UserName.Trim() != string.Empty)
-                    {
-                        var user = _userLogic.GetSingleById(userPoco.Id);
-                        user.Password = userPoco.Password;
+                    if (currentPass.ToString() != null) {
+                        var userData = new App_UserPoco();
+                        var isUserValid = _userLogic.IsCredentialsValid(sessionData.UserName, currentPass, out userData);
+                        if (isUserValid)
+                        {
+                            userData.Password = newPass;
+                            _userLogic.UpdatePassword(userData);
 
-                        var poco = _userLogic.UpdatePassword(user);
-                        result = poco.Id.ToString();
+                            result = "true";
+                        }
+                        else
+                        {
+                            result = "";
+                        }
                     }
                 }
             }

@@ -1074,6 +1074,8 @@ namespace LogisticsManagement_Web.Controllers
                 data.UnitTypeId = item.order.UnitTypeId;
                 data.UnitTypeName = deliveryOrderViewModel.UnitTypes.Where(c => c.Id == data.UnitTypeId).FirstOrDefault().ShortCode;
                 data.UnitQuantity = item.order.UnitQuantity;
+                data.SkidQuantity = item.order.SkidQuantity;
+                data.TotalPiece = item.order.TotalPiece;
                 data.SpcIns = "";
                 data.ShipperCustomerId = (int)item.order.ShipperCustomerId;
                 data.ShipperCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ShipperCustomerId).FirstOrDefault().CustomerName;

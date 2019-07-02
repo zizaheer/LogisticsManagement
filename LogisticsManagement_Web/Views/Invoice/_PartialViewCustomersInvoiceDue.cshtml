@@ -1,0 +1,70 @@
+﻿@using LogisticsManagement_Web.Models;
+@model List<ViewModel_CustomerWithPendingInvoice>
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.dataTable.isDataTable('#customerdues-list')) {
+            $('#customerdues-list').DataTable().destroy();
+        }
+        $('#customerdues-list').DataTable({
+            "order": [[1, "asc"]],
+            "paging": false,
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+            },
+            "info": false
+        });
+    });
+</script>
+
+
+<table id="customerdues-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
+    <thead>
+        <tr style="background-color:#ebffad">
+            <th>Collect</th>
+            <th>Customer Id</th>
+            <th>Customer name</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Number of invoices due</th>
+            <th>Total Due</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a data-toggle="modal" id="btnCollectPayment" class="lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#" >Collect payment</a>
+                </td>
+                <td>
+                    @item.CustomerId
+                </td>
+                <td>
+                    @item.CustomerName
+                </td>
+                <td>
+                    @item.CustomerAdress
+                </td>
+
+                <td>
+                    @item.CustomerPhone
+                </td>
+
+                <td>
+                    @item.NumberOfInvoices
+                </td>
+
+                <td>
+                    @item.TotalDue
+                </td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<script src="~/js/invoice.js"></script>

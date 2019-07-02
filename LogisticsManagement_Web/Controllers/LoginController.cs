@@ -49,7 +49,7 @@ namespace LogisticsManagement_Web.Controllers
                     sessionData.CountryId = outUserData.CountryId;
                     sessionData.PostCode = outUserData.PostCode;
                     sessionData.PhoneNumber = outUserData.PhoneNumber;
-                    sessionData.ProfilePicture = outUserData.ProfilePicture;
+                    //sessionData.ProfilePicture = outUserData.ProfilePicture;
                     sessionData.LoggedInEmployeeId = outUserData.EmployeeId;
 
                     HttpContext.Session.SetString("SessionData", JsonConvert.SerializeObject(sessionData));

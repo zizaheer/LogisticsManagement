@@ -24,6 +24,17 @@ $(document).ready(function () {
     $(document).ajaxComplete(function () {
         $("#addressSpinnerLoadingDataTable").css("display", "none");
     });
+
+    var addressLinesForAutoComplete = GetListObject('Address/GetAddressForAutoComplete');
+    if (addressLinesForAutoComplete !== null) {
+        var addressLines = JSON.parse(addressLinesForAutoComplete);
+
+        $.each(addressLines, function (i, item) {
+            $('#addresses').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
+            //$('#addresses').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
+        });
+    }
+
 });
 
 $('#txtCustomerId').unbind('keypress').keypress(function (event) {
@@ -123,6 +134,12 @@ $('.btnDelete').unbind().on('click', function () {
 $('#btnAddAddress').unbind().on('click', function (event) {
     event.preventDefault();
     $('#hfAddressId').val(0);
+    ClearAddressForm();
+
+    $('#addAddress').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
 
     var customerId = $('#txtCustomerId').val();
     var customerName = $('#txtCustomerName').val();
@@ -130,7 +147,7 @@ $('#btnAddAddress').unbind().on('click', function (event) {
     $('#txtCustomerNameForAddress').val(customerName);
 
     if (customerId === '' || customerId === undefined) {
-        $('#addAddress').modal('hide');
+        //$('#addAddress').modal('hide');
         bootbox.alert('Please select a customer to add/view address');
         return;
     }
@@ -139,17 +156,6 @@ $('#btnAddAddress').unbind().on('click', function (event) {
     }
 
     $('#loadAddressDataTable').load('Customer/LoadCustomerAddressData/' + customerId);
-
-    var addressLinesForAutoComplete = GetListObject('Address/GetAddressForAutoComplete');
-
-    if (addressLinesForAutoComplete !== null) {
-        var addressLines = JSON.parse(addressLinesForAutoComplete);
-
-        $.each(addressLines, function (i, item) {
-            $('#addresses').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
-        });
-    }
-
 });
 
 $('#btnNewAddress').unbind().on('click', function (event) {
@@ -157,7 +163,7 @@ $('#btnNewAddress').unbind().on('click', function (event) {
     ClearAddressForm();
 });
 
-$(document).unbind('change').on('change', 'input', function (event) {
+$('#txtAddressLine').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $('#txtAddressLine').val();
     var addressId = $('#addresses option').filter(function () {

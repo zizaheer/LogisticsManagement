@@ -13,7 +13,7 @@ namespace LogisticsManagement_Poco
         [Column("OrderAdditionalServiceId")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int OrderId { get; set; }
+        public int? OrderId { get; set; }
         public int AdditionalServiceId { get; set; }
         public decimal AdditionalServiceFee { get; set; }
         public decimal? DriverPercentageOnAddService { get; set; }

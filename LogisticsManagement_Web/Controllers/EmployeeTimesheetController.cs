@@ -31,11 +31,33 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            
+            ValidateSession();
             var employeeSignInList = _employeeTimesheetLogic.GetList().Where(c => c.SignInDatetime >= DateTime.Today.Date);
             return View(employeeSignInList);
         }
 
+
+        [HttpGet]
+        public IActionResult GetEmployeeClockInInfo(string id)
+        {
+            var result = "";
+            ValidateSession();
+
+            try
+            {
+                var currentEmployeeTimesheet = _employeeTimesheetLogic.GetList().Where(c => c.EmployeeId == sessionData.LoggedInEmployeeId).FirstOrDefault();
+                if (currentEmployeeTimesheet != null)
+                {
+                    return Json(JsonConvert.SerializeObject(currentEmployeeTimesheet));
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
 
         [HttpPost]
         public IActionResult Add([FromBody]dynamic clockInData)
@@ -47,23 +69,41 @@ namespace LogisticsManagement_Web.Controllers
             {
                 if (clockInData != null)
                 {
-                    var data = (JObject)JsonConvert.SerializeObject(clockInData[0]);
+                    var data = JsonConvert.SerializeObject(clockInData[0]);
+                    //var clockInTime = JObject.Parse(data)["clockInTime"].ToString();
+                    //var clockOutTime = JObject.Parse(data)["clockOutTime"].ToString();
+                    var remarks = JObject.Parse(data)["remarks"].ToString();
+                    var breakTime = JObject.Parse(data)["breakTime"].ToString();
 
-                    var empId = data.SelectToken("empId");
+                    var empId = sessionData.LoggedInEmployeeId;
 
                     var currentDate = DateTime.Now.ToString("dd-MMM-yyyy");
 
                     using (var scope = new TransactionScope())
                     {
-                        Lms_EmployeeTimesheetPoco timesheetPoco = new Lms_EmployeeTimesheetPoco();
+                        var todaysTimeSheetInfo = _employeeTimesheetLogic.GetList().Where(c => c.DateWorked.ToString("dd-MMM-yyyy") == currentDate && c.EmployeeId == empId).FirstOrDefault();
 
-                        timesheetPoco.CreateDate = DateTime.Now;
-                        timesheetPoco.CreatedBy = sessionData.UserId;
+                        if (todaysTimeSheetInfo != null)
+                        {
+                            result = "";
+                        }
+                        else
+                        {
+                            Lms_EmployeeTimesheetPoco timesheetPoco = new Lms_EmployeeTimesheetPoco();
 
-                        var addedAcc = _employeeTimesheetLogic.Add(timesheetPoco);
+                            timesheetPoco.EmployeeId = (int)empId;
+                            timesheetPoco.SignInDatetime = DateTime.Now;
+                            timesheetPoco.DateWorked = Convert.ToDateTime(currentDate);
+                            timesheetPoco.Remarks = remarks;
+                            timesheetPoco.CreateDate = DateTime.Now;
+                            timesheetPoco.CreatedBy = sessionData.UserId;
+
+                            _employeeTimesheetLogic.Add(timesheetPoco);
+
+                            result = "Success";
+                        }
 
                         scope.Complete();
-
                     }
                 }
             }
@@ -85,20 +125,34 @@ namespace LogisticsManagement_Web.Controllers
             {
                 if (clockInData != null)
                 {
-                    var data = (JObject)JsonConvert.SerializeObject(clockInData);
+                    var data = JsonConvert.SerializeObject(clockInData[0]);
+                    //var clockInTime = JObject.Parse(data)["clockInTime"].ToString();
+                    //var clockOutTime = JObject.Parse(data)["clockOutTime"].ToString();
+                    var remarks = JObject.Parse(data)["remarks"].ToString();
+                    var breakTime = JObject.Parse(data)["breakTime"].ToString();
 
+                    var empId = sessionData.LoggedInEmployeeId;
+                    var currentDate = DateTime.Now.ToString("dd-MMM-yyyy");
 
                     using (var scope = new TransactionScope())
                     {
-                        Lms_EmployeeTimesheetPoco timesheetPoco = new Lms_EmployeeTimesheetPoco();
+                        var todaysTimeSheetInfo = _employeeTimesheetLogic.GetList().Where(c => c.DateWorked.ToString("dd-MMM-yyyy") == currentDate && c.EmployeeId == empId).FirstOrDefault();
 
-                        timesheetPoco.CreateDate = DateTime.Now;
-                        timesheetPoco.CreatedBy = sessionData.UserId;
+                        if (todaysTimeSheetInfo != null)
+                        {
+                            todaysTimeSheetInfo.SignOutDatetime = DateTime.Now;
+                            todaysTimeSheetInfo.Remarks = remarks;
+                            todaysTimeSheetInfo.BreakTime = !string.IsNullOrEmpty(breakTime.ToString()) ? Convert.ToDecimal(breakTime) : 0;
 
-                        var addedAcc = _employeeTimesheetLogic.Add(timesheetPoco);
+                            _employeeTimesheetLogic.Update(todaysTimeSheetInfo);
 
+                            result = "Success";
+                        }
+                        else
+                        {
+                            result = "";
+                        }
                         scope.Complete();
-
                     }
                 }
             }
@@ -109,7 +163,6 @@ namespace LogisticsManagement_Web.Controllers
 
             return Json(result);
         }
-
 
         private void ValidateSession()
         {

@@ -7,6 +7,7 @@ namespace LogisticsManagement_Poco
 {
     public class Lms_StoredProcedureResult
     {
+        //[NotMapped]
         public string ReturnedValue { get; set; }
     }
 }

@@ -15,6 +15,9 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public int CustomerId { get; set; }
         public int AddressId { get; set; }
+        /// <summary>
+        /// 1-Billing; 2-Shipping; 3-Residential, 4-Warehouse address
+        /// </summary>
         public byte AddressTypeId { get; set; }
         public bool IsDefault { get; set; }
     }

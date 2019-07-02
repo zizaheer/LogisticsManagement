@@ -1,5 +1,5 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model ViewModel_DeliveryOrder 
+@model ViewModel_DeliveryOrder
 
 <script>
     $(document).ready(function () {
@@ -33,13 +33,13 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.DispatchedOrders.Where(c=>c.OrderStatus=="0" && c.OrderTypeId==1).ToList().OrderByDescending(c => c.WayBillNumber))
+        @foreach (var item in Model.DispatchedOrders.Where(c => c.OrderStatus == "0" && c.OrderTypeId == 1).ToList().OrderByDescending(c => c.WayBillNumber))
         {
-            <tr >
+            <tr>
                 <td>
                     <div class="form-check-inline">
                         <input type="checkbox" id="chkDispatchToEmployee" class="form-check-input chkDispatchToEmployee" name="chkDispatchToEmployee" data-waybillnumber="@item.WayBillNumber">
-                        <a class="btnEdit" href="#" data-waybillnumber='@item.WayBillNumber' data-toggle="modal" > <label class="form-check-label" for="chkDispatchToEmployee">@item.WayBillNumber</label></a>
+                        <a class="btnEdit" href="#" data-waybillnumber='@item.WayBillNumber' data-toggle="modal"> <label class="form-check-label" for="chkDispatchToEmployee">@item.WayBillNumber</label></a>
                     </div>
                 </td>
                 <td>
@@ -52,7 +52,17 @@
                     @item.CustomerRefNumber
                 </td>
                 <td>
-                    @item.UnitQuantity (@item.UnitTypeName)
+                    @{
+                        if (item.UnitTypeId == 2)
+                        {
+                            @item.SkidQuantity;
+                        }
+                        else
+                        {
+                            @item.UnitQuantity;
+                        }
+                    }
+                    (@item.UnitTypeName)
                 </td>
                 <td>
                     @item.SpcIns

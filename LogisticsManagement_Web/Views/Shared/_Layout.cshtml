@@ -39,12 +39,6 @@
         // Bootstrap ID
         gtag('config', 'UA-118965717-5');
     </script>
-    
-    <script>
-        var sessionData = '@HttpContextAccessor.HttpContext.Session.GetString("SessionData")';
-        console.log(sessionData);
-        document.getElementById('txtEmployeeId').value = sessionData.EmployeeId;
-    </script>
 
 </head>
 
@@ -78,11 +72,11 @@
                                         <label for="txtEmployeeId">Employee ID</label>
                                     </b>
                                 </small>
-                                <input class="col-5 form-control form-control-sm" placeholder="Employee Id" id="txtEmployeeId" type="number" name="txtEmployeeId" readonly>
+                                <input class="col-5 form-control form-control-sm" placeholder="Employee Id" id="txtEmployeeId" type="text" name="txtEmployeeId">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6 form-group">
+                            <div class="col-sm-4 form-group">
                                 <small>
                                     <b>
                                         <label for="txtClockInTime">Clock-in Time</label>
@@ -90,7 +84,7 @@
                                 </small>
                                 <input type="datetime-local" id="txtClockInTime" class="form-control form-control-sm txtClockInTime" readonly />
                             </div>
-                            <div class="col-sm-6 form-group">
+                            <div class="col-sm-4 form-group">
                                 <small>
                                     <b>
                                         <label for="txtClockOutTime">Clock-out Time</label>
@@ -99,6 +93,26 @@
                                 <input type="datetime-local" id="txtClockOutTime" class="form-control form-control-sm txtClockOutTime" readonly />
                             </div>
                         </div>
+
+                        <div class="row" style="display:none">
+                            <div class="col-sm-4 form-group">
+                                <small>
+                                    <b>
+                                        <label for="txtBreakTime">Break time</label>
+                                    </b>
+                                </small>
+                                <input type="number" id="txtBreakTime" class="form-control form-control-sm txtBreakTime"  />
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <small>
+                                    <b>
+                                        <label for="txtRemarks">Remarks</label>
+                                    </b>
+                                </small>
+                                <input type="text" id="txtRemarks" class="form-control form-control-sm txtRemarks"  />
+                            </div>
+                        </div>
+
 
                         <hr />
                         <div class="row" style="margin-bottom:80px">
@@ -115,6 +129,62 @@
     </div>
     <!-- Modal for clock-in -->
 
+    <!-- Modal for change password -->
+    <div class="modal fade bd-example-modal-xl" id="changePassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content bg-light">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/website.png" style="height:30px; padding-left:13px; padding-right:10px" />Change password</h4>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <small>
+                                    <b>
+                                        <label for="txtCurrentPassword">Current password</label>
+                                    </b>
+                                </small>
+                                <input class="col-5 form-control form-control-sm" placeholder="Current password" id="txtCurrentPassword" type="password" name="txtCurrentPassword">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <small>
+                                    <b>
+                                        <label for="txtNewPassword">New password</label>
+                                    </b>
+                                </small>
+                                <input type="password" maxlength="20" id="txtNewPassword" placeholder="New password" class="col-9 form-control form-control-sm txtNewPassword" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <small>
+                                    <b>
+                                        <label for="txtConfirmNewPassword">Confirm new password</label>
+                                    </b>
+                                </small>
+                                <input type="password" id="txtConfirmNewPassword" placeholder="Confirm new password" class="col-9 form-control form-control-sm txtConfirmNewPassword" />
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="row" style="margin-bottom:80px">
+                            <div class="col-sm-12">
+                                <button type="button" class="col-2 btn btn-sm btn-success" id="btnSavePassword"><i class="fa fa-save"></i> Save password</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for clock-in -->
 
     <div style="width:1150px !important; margin:0 auto">
         <header class="app-header navbar">
@@ -149,11 +219,11 @@
                         <div class="dropdown-header text-center">
                             <strong>Account</strong>
                         </div>
-                        <a class="dropdown-item" href="#">
+                        @*<a class="dropdown-item" href="#">
                             <i class="fa fa-user"></i> Profile
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <i class="fa fa-wrench"></i> Settings
+                        </a>*@
+                        <a class="dropdown-item" data-toggle="modal" id="lnkChangePassword" href="#">
+                            <i class="fa fa-key"></i> Change password
                         </a>
 
                         <a class="dropdown-item" asp-controller="Login" asp-action="Logout">
@@ -336,6 +406,13 @@
     </div>
     @*@RenderSection("scripts", true)*@
 
+    <script>
+        function SetSessionData(sessionDataParsed) {
+            document.getElementById('txtEmployeeId').val = sessionDataParsed.LoggedInEmployeeId;
+            console.log("sd emp: " + sessionDataParsed.LoggedInEmployeeId);
+        }
+    </script>
+
     <script src="~/lib/vendors/jquery-ui/jquery-ui.js"></script>
     <script src="~/lib/vendors/bootstrap/js/bootstrap.min.js"></script>
 
@@ -354,6 +431,9 @@
     <script type="text/javascript" src="~/lib/bootstrap-datatables/datatables.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
     <script src="~/lib/js/bootbox.all.min.js"></script>
+
+
+
 </body>
 
 </html>

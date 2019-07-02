@@ -202,6 +202,84 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-sm-8" id="divAddress0">
+            <div class="row m-0 input-group">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBothForMain" value="0" checked/>
+                    <label class="form-check-label" for="rdoBothForMain">Billing/Shipping same</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBillingForMain" value="1"  />
+                    <label class="form-check-label" for="rdoBillingForMain">Billing only</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoShippingForMain" value="2" />
+                    <label class="form-check-label" for="rdoShippingForMain">Shipping only</label>
+                </div>
+
+                <br /><br /><br />
+            </div>
+            <div class="row m-0 input-group">
+                <input type="hidden" id="hfAddressIdForMain" />
+                <input class="col-8 form-control form-control-sm" id="txtAddressLineForMain" name="txtAddressLineForMain" placeholder="Address Line" list="addresses" type="search" />
+                <datalist id="addresses">
+                    @*<option data-addressid="@item.AddressId" value="@item.AddressLine"></option>*@
+                </datalist>
+                <input class="col-4 form-control form-control-sm addressBox" id="txtAddressUnitForMain" type="text" name="txtAddressUnitForMain" placeholder="Unit " />
+            </div>
+            <div class="row m-0 input-group">
+                <select class="col-5 form-control form-control-sm" id="ddlCityIdForMain" name="ddlCityIdForMain">
+                    <option value="0">City </option>
+                    @foreach (var city in ViewBag.Cities)
+                    {
+                        var selected = false;
+                        if (city.Id == 335)
+                        {
+                            selected = true;
+                        }
+                        <option value="@city.Id" selected="@selected">@city.CityName</option>
+                    }
+                </select>
+                <select class="col-2 form-control form-control-sm addressBox" id="ddlProvinceIdForMain" name="ddlProvinceIdForMain">
+                    <option value="0">Province</option>
+                    @foreach (var province in ViewBag.Provinces)
+                    {
+                        var selected = false;
+                        if (province.Id == 7)
+                        {
+                            selected = true;
+                        }
+                        <option value="@province.Id" selected="@selected">@province.ShortCode</option>
+                    }
+                </select>
+                <select class="col-3 form-control form-control-sm addressBox" id="ddlCountryIdForMain" name="ddlCountryIdForMain">
+                    <option value="0">Country</option>
+                    @foreach (var country in ViewBag.Countries)
+                    {
+                        var selected = false;
+                        if (country.Id == 41)
+                        {
+                            selected = true;
+                        }
+                        <option value="@country.Id" selected="@selected">@country.CountryName</option>
+                    }
+                </select>
+                <input class="col-2 form-control form-control-sm addressBox" id="txtPostCodeForMain" name="txtPostCodeForMain" placeholder="Postcode" />
+            </div>
+
+            <div class="row m-0 input-group">
+                <input class="col-6 form-control form-control-sm " id="txtContactPersonForMain" type="text" name="txtContactPersonForMain" placeholder="Contact person" />
+                <input class="col-6 form-control form-control-sm addressBox" id="txtEmailAddressForMain" type="email" name="txtEmailAddressForMain" placeholder="Email address" />
+            </div>
+            <div class="row m-0 input-group">
+                <input class="col-6 form-control form-control-sm " id="txtPrimaryPhoneNumberForMain" type="tel" name="txtPrimaryPhoneNumberForMain" placeholder="Phone" />
+                <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumberForMain" type="tel" name="txtFaxNumberForMain" placeholder="Fax" />
+            </div>
+           
+        </div>
+    </div>
+
     <hr />
     <button type="reset" class="col-1 btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
     <button type="submit" class="col-1 btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>

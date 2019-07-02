@@ -95,8 +95,8 @@ $('#btnNewOrder').unbind().on('click', function () {
 
 });
 
-$('#btnCloseModal').on('click', function () {
-
+$('#btnCloseModal').on('click', function (event) {
+    event.preventDefault();
     var shipperCity = $('#ddlShipperCityId').val();
     var consigneeCity = $('#ddlConsigneeCityId').val();
     var unitQty = $('#txtUnitQuantity').val();
@@ -118,7 +118,6 @@ $('#btnCloseModal').on('click', function () {
     }
 });
 
-
 $('input[type=radio][name=rdoPaidBy]').change(function () {
     paidByValue = this.value;
 
@@ -128,14 +127,13 @@ $('input[name=chkIsCalculateByUnit]').change(function () {
 
     var isChecked = $(this).is(':checked');
     if (isChecked === true) {
-        $('#txtUnitQuantity').css('background-color', '#d6f4ff');
+        $('#txtUnitQuantity').css('background-color', '#b3ffc3');
         $('#txtSkidQuantity').css('background-color', '');
     } else {
         $('#txtUnitQuantity').css('background-color', '');
         $('#txtSkidQuantity').css('background-color', '#b3ffc3');
     }
 });
-
 
 $('input[name=chkIsReturnOrder]').change(function () {
 
@@ -396,6 +394,15 @@ function FillCustomerInfo() {
     }
 }
 
+$('#ddlUnitTypeId').on('change', function () {
+    var selectedValue = parseInt($('#ddlUnitTypeId').val());
+    if (selectedValue > 0 && selectedValue !== 2) {
+        $('#txtUnitQuantity').removeAttr('disabled');
+    } else {
+        $('#txtUnitQuantity').attr('disabled', true);
+    }
+});
+
 $('#txtUnitQuantity').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
@@ -413,7 +420,15 @@ $('#txtSkidQuantity').keypress(function (event) {
     }
 });
 $('#txtSkidQuantity').on('change', function (event) {
-    CalculateOrderBaseCost();
+
+    var skidQty = $('#txtSkidQuantity').val();
+    if (skidQty !== '' && skidQty > 0) {
+        $('#txtTotalPieces').removeAttr('disabled');
+        CalculateOrderBaseCost();
+    } else {
+        $('#txtTotalPieces').attr('disabled', true);
+    }
+
 });
 
 $('#txtFuelSurchargePercent').keypress(function (event) {
@@ -581,7 +596,7 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
     var parseData;
 
     if (dataArray[0].unitQuantity < 1 && dataArray[0].skidQuantity < 1 && dataArray[0].totalPieces < 1) {
-        bootbox.alert('Quantity required either for Unit/Skid/Piece!');
+        bootbox.alert('Quantity required either for Unit or Skid!');
         event.preventDefault();
         return;
     }
@@ -622,6 +637,27 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
         }
     }
 
+    var calculateByUnit = $('#chkIsCalculateByUnit').is(':checked');
+    if (calculateByUnit === false) {
+        if ($('#txtSkidQuantity').val() === '' || $('#txtSkidQuantity').val() <= 0) {
+            bootbox.alert('You selected the tariff to be calculated by skids; please enter Skid quantity in "Skids" field');
+            event.preventDefault();
+            return;
+        }
+    }
+
+    if (dataArray[0].unitTypeId == 0) {
+        bootbox.alert('Unit type is required. For example: if your calculation method is on Skid, select SKD as unit type.');
+        event.preventDefault();
+        return;
+    }
+
+    if (dataArray[0].totalOrderCost <= 0) {
+        bootbox.alert('Total order cost must be greater than zero. Please check your entry and try again.');
+        event.preventDefault();
+        return;
+    }
+
     if (dataArray[0].wayBillNumber > 0) {
         UpdateEntry('Order/Update', dataArray);
     }
@@ -636,6 +672,12 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
     selectedAdditionalServiceArray = null;
     $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
     $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+
+   
+    ClearForm();
+    $('#frmOrderForm').trigger('reset');
+
+    $('#newOrder').modal('hide');
 
 });
 
@@ -889,6 +931,9 @@ function GetTariffInfo() {
     } else {
         unitTypeId = 2;
         unitQuantity = $('#txtSkidQuantity').val();
+        if (unitQuantity === '' || unitQuantity <= 0) {
+            return;
+        }
     }
 
     weightScaleId = $('#ddlWeightScaleId').val();
@@ -1310,8 +1355,8 @@ function GetFormData() {
         fuelSurchargePercentage: $('#txtFuelSurchargePercent').val() === "" ? null : $('#txtFuelSurchargePercent').val(),
         discountPercentOnOrderCost: $('#txtDiscountPercent').val() === "" ? null : $('#txtDiscountPercent').val(),
         applicableGstPercent: taxPercentage <= 0 ? null : taxPercentage,
-        totalOrderCost: $('#lblGrandTotalOrderCost').text(),
-        totalAdditionalServiceCost: $('#lblGrandAddServiceAmount').text(),
+        totalOrderCost: parseFloat($('#lblGrandTotalOrderCost').text()),
+        totalAdditionalServiceCost: parseFloat($('#lblGrandAddServiceAmount').text()),
         orderedBy: $('#txtOrderedBy').val() === "" ? null : $('#txtOrderedBy').val(),
         departmentName: null,
         contactName: $('#txtOrderedBy').val() === "" ? null : $('#txtOrderedBy').val(),

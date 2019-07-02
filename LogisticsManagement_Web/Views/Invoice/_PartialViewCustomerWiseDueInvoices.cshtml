@@ -1,0 +1,61 @@
+﻿@using LogisticsManagement_Poco;
+@model List<Lms_InvoicePoco>
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.dataTable.isDataTable('#customer-wise-due-invoices')) {
+            $('#customer-wise-due-invoices').DataTable().destroy();
+        }
+        $('#customer-wise-due-invoices').DataTable({
+            "order": [[0, "asc"]],
+            "paging": false,
+            "info": false,
+            "searching": false
+        });
+    });
+</script>
+
+
+<table id="customer-wise-due-invoices" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
+    <thead>
+        <tr style="background-color:#ebffad">
+            <th>Invoice #</th>
+            <th>Invoice Date</th>
+            <th>Invoice amount</th>
+            <th>Paid amount</th>
+            <th>Due amount</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @*@foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                <div class="form-check-inline">
+                    <a id="lnkDisplayInvoice" data-invoiceid="@item.Id">@item.Id</a>
+                </div>
+            </td>
+            <td>
+                @item.CreateDate.ToString("dd-MMM-yyyy")
+            </td>
+            <td>
+                @item.TotalInvoiceAmount
+            </td>
+            <td>
+                @item.PaidAmount
+            </td>
+            <td>
+                @{
+                    var dues = item.TotalInvoiceAmount - item.PaidAmount;
+                    @dues;
+                }
+            </td>
+        </tr>
+        }*@
+
+    </tbody>
+
+</table>
+
+@*<script src="~/js/invoice.js"></script>*@

@@ -18,8 +18,8 @@ namespace LogisticsManagement_Poco
         public string WaybillNumbers { get; set; }
         public decimal? TotalInvoiceAmount { get; set; }
         public decimal? PaidAmount { get; set; }
-        public int TransactionId { get; set; }
-        public int PrintCount { get; set; }
+        public int? TransactionId { get; set; }
+        public int? PrintCount { get; set; }
         public string Remarks { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }

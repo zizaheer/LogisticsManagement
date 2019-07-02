@@ -136,7 +136,84 @@ function PerformPostAction(actionUrl) {
 
     return returnObject;
 }
+function PerformPostActionWithParam(actionUrl, dataArray) {
+    var returnObject = '';
 
+    $.ajax({
+        'async': false,
+        url: actionUrl,
+        type: 'POST',
+        data: JSON.stringify(dataArray),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            if (result.length > 0) {
+                returnObject = result;
+            }
+            else {
+                bootbox.alert('Failed! An error occurred. Please check and try again.');
+            }
+
+        },
+        error: function (result) {
+
+        }
+    });
+
+    return returnObject;
+}
+
+function PerformGetAction(actionUrl) {
+    var returnObject = '';
+
+    $.ajax({
+        'async': false,
+        url: actionUrl,
+        type: 'GET',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            if (result.length > 0) {
+                returnObject = result;
+            }
+            else {
+                bootbox.alert('Failed! An error occurred. Please check and try again.');
+            }
+
+        },
+        error: function (result) {
+
+        }
+    });
+
+    return returnObject;
+}
+function PerformGetActionWithParam(actionUrl, dataArray) {
+    var returnObject = '';
+
+    $.ajax({
+        'async': false,
+        url: actionUrl,
+        type: 'GET',
+        data: JSON.stringify(dataArray),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            if (result.length > 0) {
+                returnObject = result;
+            }
+            else {
+                bootbox.alert('Failed! An error occurred. Please check and try again.');
+            }
+
+        },
+        error: function (result) {
+
+        }
+    });
+
+    return returnObject;
+}
 
 function AddEntry(actionUrl, dataArray) {
     var returnObject = null;

@@ -10,8 +10,10 @@ namespace LogisticsManagement_BusinessLogic
     public class Lms_TransactionLogic : BaseLogic<Lms_TransactionPoco>
     {
         IMemoryCache _cache;
-        public Lms_TransactionLogic(IMemoryCache cash, IDataRepository<Lms_TransactionPoco> repository) : base(repository)
+
+        public Lms_TransactionLogic(IMemoryCache cache, IDataRepository<Lms_TransactionPoco> repository) : base(repository)
         {
+            _cache = cache;
         }
 
         #region Get Methods
@@ -64,7 +66,7 @@ namespace LogisticsManagement_BusinessLogic
         {
             base.Remove(pocos);
         }
-
+      
         #endregion
 
 

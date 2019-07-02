@@ -19,9 +19,10 @@ namespace LogisticsManagement_Poco
         public decimal TotalWayBillAmount { get; set; }
         public decimal? PaidAmount { get; set; }
         public decimal? WaivedAmount { get; set; }
+        public decimal? DiscountAmount { get; set; }
         public int? PaymentMethodId { get; set; }
         public DateTime? PaymentDate { get; set; }
-        public int TransactionId { get; set; }
+        public int? TransactionId { get; set; }
         public decimal? CashAmount { get; set; }
         public decimal? ChequeAmount { get; set; }
         public string ChequeNo { get; set; }

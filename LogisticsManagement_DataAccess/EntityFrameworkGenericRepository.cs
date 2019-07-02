@@ -28,15 +28,22 @@ namespace LogisticsManagement_DataAccess
 
         public IList<T> GetList(params Expression<Func<T, object>>[] navigationProperties)
         {
-            IQueryable<T> dbQuery = _context.Set<T>().AsNoTracking();
-
-            foreach (var navProp in navigationProperties)
+            try
             {
-                dbQuery = dbQuery.Include<T, object>(navProp);
-            }
+                IQueryable<T> dbQuery = _context.Set<T>().AsNoTracking();
 
-            var listData = dbQuery.ToList<T>();
-            return listData;
+                foreach (var navProp in navigationProperties)
+                {
+                    dbQuery = dbQuery.Include<T, object>(navProp);
+                }
+
+                var listData = dbQuery.ToList<T>();
+                return listData;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public IList<T> GetList(Func<T, bool> where, params Expression<Func<T, object>>[] navigationProperties)
@@ -118,7 +125,7 @@ namespace LogisticsManagement_DataAccess
 
         public string CallStoredProcedure(string query, params object[] parameters)
         {
-            var type = _context.Query<Lms_StoredProcedureResult>().FromSql(query, parameters).ToList();
+            var type = _context.returnedValueString.FromSql(query, parameters).ToList();
             return JsonConvert.SerializeObject(type[0]);
         }
     }

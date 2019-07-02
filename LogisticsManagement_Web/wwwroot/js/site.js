@@ -13,6 +13,16 @@ $('#lnkEmployeeClockIn').on('click', function () {
     displayClock();
     setInterval(displayClock, 1000);
 
+    var employeeId = '00';
+
+    var userClockInInfo = GetSingleObjectById('EmployeeTimesheet/GetEmployeeClockInInfo', employeeId);
+    if (userClockInInfo !== '' && userClockInInfo != null) {
+        var parsedData = JSON.parse(userClockInInfo);
+        $('#txtEmployeeId').val(parsedData.EmployeeId);
+        $('#txtClockInTime').val(parsedData.SignInDatetime);
+        $('#txtClockOutTime').val(parsedData.SignOutDatetime);
+
+    }
     $('#employeeClockIn').modal({
         backdrop: 'static',
         keyboard: false
@@ -24,11 +34,98 @@ function displayClock() {
     document.getElementById('lblCurrentTime').innerHTML = currentDate.toLocaleString();
 }
 
-$('#btnClockIn').on('click', function () {
 
+$('#btnClockIn').on('click', function (event) {
+    event.preventDefault();
+    var data = GetClockInData();
+    console.log(data);
+
+    if (data.clockInTime != null && data.clockInTime.length > 0) {
+        bootbox.alert('You have already clocked-in. To change existing timing please contact admin');
+        return;
+    }
+    else {
+        var result = AddEntry('EmployeeTimesheet/Add', [data]);
+        if (result.length > 0) {
+            bootbox.alert('You have successfully clocked-in. ');
+        }
+    }
+});
+
+$('#btnClockOut').on('click', function (event) {
+    event.preventDefault();
+
+    var data = GetClockInData();
+
+    if (data.clockInTime.length < 1) {
+        bootbox.alert('Please clock-in first. ');
+        return;
+    }
+    else {
+        var result = UpdateEntry('EmployeeTimesheet/Update', [data]);
+        if (result.length > 0) {
+            bootbox.alert('You have successfully clocked-out. ');
+        }
+    }
+});
+
+function GetClockInData() {
     var empId = $('#txtEmployeeId').val();
+    var clockInTime = $('#txtClockInTime').val();
+    var clockOutTime = $('#txtClockOutTime').val();
+    var remarks = ""; //$('#txtRemarks').val();
+    var breakTime = ""; //$('#txtBreaKTime').val();
 
-    var result = AddEntry('EmployeeTimesheet/Add', [empId]);
+    var clockInData = {
+        empId: empId,
+        clockInTime: clockInTime,
+        clockOutTime: clockOutTime,
+        remarks: remarks,
+        breakTime: breakTime
+    };
 
+    return clockInData;
+}
+
+
+$('#lnkChangePassword').on('click', function (event) {
+    event.preventDefault();
+    $('#changePassword').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#changePassword').modal('show');
+});
+$('#btnSavePassword').on('click', function (event) {
+    event.preventDefault();
+
+    var newPass = $('#txtNewPassword').val();
+    var confirmNewPass = $('#txtConfirmNewPassword').val();
+
+    if (newPass !== confirmNewPass) {
+        bootbox.alert('New password must match with Confirm new password. Please check and try again');
+        return;
+    }
+
+    var currentPass = $('#txtCurrentPassword').val();
+    var isCurrentPasswordValid = GetSingleObjectById('User/ValidateCurrentUserByPassword', currentPass);
+    if (isCurrentPasswordValid == null || isCurrentPasswordValid.length < 1) {
+        bootbox.alert('Your current password is invalid');
+        return;
+    }
+
+    var data = {
+        newPass: newPass,
+        currentPass: currentPass
+    };
+
+    var updateStatus = PerformPostActionWithParam('User/UpdatePassword', [data]);
+    if (updateStatus.length > 0) {
+        bootbox.alert('Your password has been changed successfully');
+    }
+    else {
+        bootbox.alert('Failed! Something went wrong. Please try again later.');
+        return;
+    }
 
 });

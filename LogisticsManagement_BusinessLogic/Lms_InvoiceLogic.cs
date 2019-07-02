@@ -145,19 +145,21 @@ namespace LogisticsManagement_BusinessLogic
 
                 SqlParameter[] sqlParameters = {
                 new SqlParameter("@BillerCustomerId", SqlDbType.Int) { Value = billerCustomerId },
-                new SqlParameter("@BillerDepartment", SqlDbType.VarChar, 100) { Value = billerDepartment },
+                new SqlParameter("@BillerDepartment", SqlDbType.VarChar, 100) { Value = (object)billerDepartment ?? DBNull.Value },
                 new SqlParameter("@wbNumbers", SqlDbType.VarChar, 100) { Value = wbNumbers },
                 new SqlParameter("@CreatedBy", SqlDbType.Int) { Value = createdBy },
                 new SqlParameter("@WayBillNumberList", SqlDbType.Structured) { TypeName = "dbo.WayBillNumbers", Value = wayBillNumberList }
             };
 
                 StringBuilder query = new StringBuilder();
-                query.Append("EXEC GenerateInvoice @BillerCustomerId, @BillerDepartment, @wbNumbers, @CreatedBy, @WayBillNumberList ");
+                query.Append("EXEC GenerateInvoice @BillerCustomerId, @BillerDepartment, @wbNumbers, @CreatedBy, @WayBillNumberList");
 
                 var outPut = base.CallStoredProcedure(query.ToString(), sqlParameters);
 
                 _cache.Remove(App_CacheKeys.Invoices);
                 _cache.Remove(App_CacheKeys.InvoiceWayBillMappings);
+                _cache.Remove(App_CacheKeys.Orders);
+
                 return outPut;
             }
             catch (Exception ex)
