@@ -10,7 +10,7 @@ namespace LogisticsManagement_BusinessLogic
     public class Lms_BankLogic : BaseLogic<Lms_BankPoco>
     {
         IMemoryCache _cache;
-        public Lms_BankLogic(IMemoryCache cash, IDataRepository<Lms_BankPoco> repository) : base(repository)
+        public Lms_BankLogic(IMemoryCache cache, IDataRepository<Lms_BankPoco> repository) : base(repository)
         {
         }
 

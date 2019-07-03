@@ -70,6 +70,20 @@ namespace LogisticsManagement_Web.Controllers
                         existingConfigData.StorageWBNoStartFrom = configData.StorageWBNoStartFrom;
                         existingConfigData.InvoiceNumberStartFrom = configData.InvoiceNumberStartFrom;
                         existingConfigData.DefaultFuelSurcharge = configData.DefaultFuelSurcharge;
+
+                        existingConfigData.ParentGLForCustomerAccount = configData.ParentGLForCustomerAccount;
+                        existingConfigData.ParentGLForEmployeeAccount = configData.ParentGLForEmployeeAccount;
+                        existingConfigData.SalesTaxPayableAccount = configData.SalesTaxPayableAccount;
+                        existingConfigData.SalesIncomeAccount = configData.SalesIncomeAccount;
+                        existingConfigData.SalaryExpenseAccount = configData.SalaryExpenseAccount;
+                        existingConfigData.BonusExpenseAccount = configData.BonusExpenseAccount;
+                        existingConfigData.OtherReceivableAccount = configData.OtherReceivableAccount;
+                        existingConfigData.OtherPayableAccount = configData.OtherPayableAccount;
+                        existingConfigData.OtherIncomeAccount = configData.OtherIncomeAccount;
+                        existingConfigData.OtherExpenseAccount = configData.OtherExpenseAccount;
+                        existingConfigData.BankAccount = configData.BankAccount;
+                        existingConfigData.CashAccount = configData.CashAccount;
+
                         // existingConfigData.DefaultWeightScaleId = null;
 
                         _configurationLogic.Update(existingConfigData);

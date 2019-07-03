@@ -55,7 +55,8 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult InvoicePayment()
         {
             ValidateSession();
-
+            Lms_BankLogic lms_BankLogic = new Lms_BankLogic(_cache, new EntityFrameworkGenericRepository<Lms_BankPoco>(_dbContext));
+            ViewBag.Banks = lms_BankLogic.GetList();
             return View(GetCustomersWtihPendingInvoice());
         }
 
@@ -282,7 +283,8 @@ namespace LogisticsManagement_Web.Controllers
                         foreach (var item in orders.ToArray())
                         {
 
-                            if (customerWiseOrders.Find(c => c.Id == item.Id) != null) {
+                            if (customerWiseOrders.Find(c => c.Id == item.Id) != null)
+                            {
                                 continue;
                             }
 
@@ -421,10 +423,102 @@ namespace LogisticsManagement_Web.Controllers
         }
 
 
+
+
+        // Invoice payments
+        [HttpPost]
+        public IActionResult MakePayment([FromBody]dynamic paymentData)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (paymentData != null)
+                {
+                    var payInfo = (JObject)paymentData[0];
+                    var invoiceNo = payInfo.SelectToken("invoiceNo");
+                    var billerCustomerId = payInfo.SelectToken("billerCustomerId");
+                    var paidAmnt = payInfo.SelectToken("paymentAmount");
+                    var bankId = payInfo.SelectToken("ddlBankId");
+                    var chqNo = payInfo.SelectToken("chequeNo");
+                    var chqDate = payInfo.SelectToken("chequeDate");
+                    var chqAmnt = payInfo.SelectToken("chequeAmount");
+                    var cashAmnt = payInfo.SelectToken("cashAmount");
+                    var remarks = payInfo.SelectToken("paymentRemarks");
+
+                    var wbInfo = (JArray)paymentData[1];
+                    List<string> wbNumbers = new List<string>();
+
+                    foreach (var item in wbInfo)
+                    {
+                        wbNumbers.Add(item.SelectToken("wbillNumber").ToString());
+                    }
+
+                    using (var scope = new TransactionScope())
+                    {
+                        var mappingList = _invoiceWayBillMappingLogic.GetList();
+                        _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+                        var _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+
+                        var billerAccountNo = _customerLogic.GetSingleById(Convert.ToInt32(billerCustomerId)).AccountId; // Credit Account
+                        var cashAccount = _configurationLogic.GetSingleById(1).CashAccount; // Debit account 
+                        var bankAccount = _configurationLogic.GetSingleById(1).BankAccount; // Debit Account
+
+                        if(chqAmnt>0)
+                        int[] debitAccounts = new int[2];
+                        debitAccounts[0] = (int)bankAccount;
+                        debitAccounts[1] = (int)cashAccount;
+
+                        int[] creditAccounts = new int[1];
+                        creditAccounts[0] = billerAccountNo;
+
+                        var transactionId = MakeTransaction
+
+
+                        foreach (var item in wbNumbers)
+                        {
+                            var waybillToUpdate = mappingList.Where(c => c.InvoiceId == Convert.ToInt32(invoiceNo) && c.WayBillNumber == item).FirstOrDefault();
+
+                            if (bankId.ToString() != "")
+                                waybillToUpdate.BankId = Convert.ToInt16(bankId);
+
+                            if (cashAmnt.ToString() != "")
+                                waybillToUpdate.CashAmount = Convert.ToDecimal(cashAmnt);
+
+                            if (chqAmnt.ToString() != "")
+                                waybillToUpdate.ChequeAmount = Convert.ToDecimal(chqAmnt);
+
+                            if (chqDate.ToString() != "")
+                                waybillToUpdate.ChequeDate = Convert.ToDateTime(chqDate);
+
+                            waybillToUpdate.ChequeNo = chqNo.ToString();
+                            waybillToUpdate.PaidAmount = waybillToUpdate.TotalWayBillAmount;
+                            waybillToUpdate.PaymentDate = DateTime.Today;
+                            waybillToUpdate.Remarks = remarks.ToString();
+
+                            _invoiceWayBillMappingLogic.Update(waybillToUpdate);
+
+                        }
+
+                        scope.Complete();
+                        result = "Success";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
         [HttpGet]
         public IActionResult FillPartialViewCustomerWiseDueInvoices(string id)
         {
             ValidateSession();
+
             return PartialView("_PartialViewCustomerWiseDueInvoices", GetDueInvoicesByCustomerId(id));
         }
 
@@ -506,6 +600,103 @@ namespace LogisticsManagement_Web.Controllers
             {
                 return null;
             }
+        }
+
+
+        /// <summary>
+        /// Should be able to make single debit, multiple credit and single credit multiple debit entries. Therefore debit and credit account are arrays
+        /// </summary>
+        /// <param name="debitAccountNo"></param>
+        /// <param name="creditAccountNo"></param>
+        /// <param name="transactionAmount"></param>
+        /// <param name="transactionDate"></param>
+        /// <param name="valueDate"></param>
+        /// <param name="transactionRemarks"></param>
+        /// <returns></returns>
+        private int MakeTransaction(int[] debitAccountNumbers, int[] creditAccountNumbers, decimal transactionAmount, DateTime transactionDate, DateTime valueDate, string transactionRemarks)
+        {
+
+            Lms_TransactionDetailLogic _transactionDetailLogic = new Lms_TransactionDetailLogic(_cache, new EntityFrameworkGenericRepository<Lms_TransactionDetailPoco>(_dbContext));
+            var transactionId = _transactionDetailLogic.GetMaxId() + 1;
+            Lms_TransactionDetailPoco txnDetail = new Lms_TransactionDetailPoco();
+            txnDetail.Id = transactionId;
+            txnDetail.TotalTransactionAmount = transactionAmount;
+            txnDetail.TransactionDate = transactionDate;
+            txnDetail.ValueDate = valueDate;
+            txnDetail.Remarks = transactionRemarks;
+            _transactionDetailLogic.Add(txnDetail);
+
+            Lms_TransactionLogic _transactionLogic = new Lms_TransactionLogic(_cache, new EntityFrameworkGenericRepository<Lms_TransactionPoco>(_dbContext));
+            Lms_ChartOfAccountLogic _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
+
+            Lms_TransactionPoco _transactionPoco = new Lms_TransactionPoco();
+
+            if (debitAccountNumbers.Length == 1)
+            {
+                //Add Debit side
+                _transactionPoco = new Lms_TransactionPoco();
+                _transactionPoco.Id = transactionId;
+                _transactionPoco.SerialNo = 1;
+                _transactionPoco.AccountId = debitAccountNumbers[0];
+                _transactionPoco.TransactionAmount = transactionAmount;
+                _transactionPoco.Remarks = transactionRemarks;
+                _transactionLogic.Add(_transactionPoco);
+                var debitAccountInfo = _chartOfAccountLogic.GetSingleById(debitAccountNumbers[0]);
+                debitAccountInfo.CurrentBalance = debitAccountInfo.CurrentBalance + transactionAmount;
+                _chartOfAccountLogic.Update(debitAccountInfo);
+
+                //Add Credit side
+                var serialNo = 2;
+                for (int i = 0; i < creditAccountNumbers.Length; i++) {
+                    _transactionPoco = new Lms_TransactionPoco();
+                    _transactionPoco.Id = transactionId;
+                    _transactionPoco.SerialNo = serialNo + i;
+                    _transactionPoco.AccountId = creditAccountNumbers[i];
+                    _transactionPoco.TransactionAmount = (-1) * transactionAmount;
+                    _transactionPoco.Remarks = transactionRemarks;
+                    _transactionLogic.Add(_transactionPoco);
+
+                    var creditAccountInfo = _chartOfAccountLogic.GetSingleById(creditAccountNumbers[i]);
+                    creditAccountInfo.CurrentBalance = creditAccountInfo.CurrentBalance + (-1) * transactionAmount;
+                    _chartOfAccountLogic.Update(creditAccountInfo);
+
+                }
+            }
+
+            else if (creditAccountNumbers.Length == 1)
+            {
+                //Add Credit side
+                _transactionPoco = new Lms_TransactionPoco();
+                _transactionPoco.Id = transactionId;
+                _transactionPoco.SerialNo = 1;
+                _transactionPoco.AccountId = creditAccountNumbers[0];
+                _transactionPoco.TransactionAmount = (-1) * transactionAmount;
+                _transactionPoco.Remarks = transactionRemarks;
+                _transactionLogic.Add(_transactionPoco);
+
+                var creditAccountInfo = _chartOfAccountLogic.GetSingleById(creditAccountNumbers[0]);
+                creditAccountInfo.CurrentBalance = creditAccountInfo.CurrentBalance + (-1) * transactionAmount;
+                _chartOfAccountLogic.Update(creditAccountInfo);
+
+                //Add Debit side
+                var serialNo = 2;
+                for (int i = 0; i < debitAccountNumbers.Length; i++)
+                {
+                    _transactionPoco = new Lms_TransactionPoco();
+                    _transactionPoco.Id = transactionId;
+                    _transactionPoco.SerialNo = serialNo + i;
+                    _transactionPoco.AccountId = debitAccountNumbers[i];
+                    _transactionPoco.TransactionAmount = transactionAmount;
+                    _transactionPoco.Remarks = transactionRemarks;
+                    _transactionLogic.Add(_transactionPoco);
+
+                    var debitAccountInfo = _chartOfAccountLogic.GetSingleById(debitAccountNumbers[i]);
+                    debitAccountInfo.CurrentBalance = debitAccountInfo.CurrentBalance + transactionAmount;
+                    _chartOfAccountLogic.Update(debitAccountInfo);
+                }
+            }
+
+            return transactionId;
         }
 
 

@@ -132,19 +132,6 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-        public JsonResult GetEmployeeById(string id)
-        {
-            if (!string.IsNullOrEmpty(id))
-            {
-                var employee = _employeeLogic.GetSingleById(Convert.ToInt32(id));
-                return Json(JsonConvert.SerializeObject(employee));
-            }
-            else
-            {
-                return Json(string.Empty);
-            }
-        }
-
         private void ValidateSession()
         {
             if (HttpContext.Session.GetString("SessionData") != null)

@@ -33,6 +33,8 @@ namespace LogisticsManagement_Poco
         public int? OtherPayableAccount { get; set; }
         public int? OtherIncomeAccount { get; set; }
         public int? OtherExpenseAccount { get; set; }
+        public int? BankAccount { get; set; }
+        public int? CashAccount { get; set; }
 
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
