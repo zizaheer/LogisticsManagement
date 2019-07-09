@@ -139,12 +139,12 @@ namespace LogisticsManagement_Web.Controllers
                 sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
                 if (sessionData == null)
                 {
-                    Response.Redirect("~/Login/Index");
+                    Response.Redirect("Login/Index");
                 }
             }
             else
             {
-                Response.Redirect("~/Login/InvalidLocation");
+                Response.Redirect("Login/InvalidLocation");
             }
         }
     }

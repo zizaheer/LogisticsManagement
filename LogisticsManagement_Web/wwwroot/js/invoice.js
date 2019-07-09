@@ -98,7 +98,31 @@ $('#btnFilter').on('click', function (event) {
     // doesnt work for some reason. check it later
 });
 
+$('#btnPrintPreview').on('click', function (event) {
+    event.preventDefault();
+    if (wayBillNumberArray.length < 1) {
+        bootbox.alert('Please select waybill for Print preview');
+        return false;
+    }
 
+    $.ajax({
+        'async': false,
+        url: "Invoice/PrintInvoice",
+        type: 'POST',
+        data: JSON.stringify([wayBillNumberArray]),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            if (result.length > 0) {
+                window.open(result, "_blank");
+            }
+        },
+        error: function (result) {
+            bootbox.alert('Error occurred: ' + result);
+        }
+    });
+
+});
 
 //Payment Colelction
 $('#customerdues-list').on('click', '.lnkCollectPayment', function (event) {

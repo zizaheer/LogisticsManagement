@@ -13,6 +13,7 @@ namespace LogisticsManagement_Web.Models
         public string CustomerRefNo { get; set; }
         public string CargoCtlNo { get; set; }
         public string AwbContainerNo { get; set; }
+        public string PickupRefNo { get; set; }
         public string BillerCustomerName { get; set; }
         public string OrderedByName { get; set; }
         public string DeliveryOptionShortCode { get; set; }
