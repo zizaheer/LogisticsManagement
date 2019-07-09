@@ -27,7 +27,7 @@ $('#txtEmployeeId').unbind('keypress').keypress(function (event) {
         event.preventDefault();
 
         var employeeId = $('#txtEmployeeId').val();
-        var employeeInfo = GetSingleObjectById('Employee/GetEmployeeById', employeeId);
+        var employeeInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
         if (employeeInfo !== "" && employeeInfo !== null)
         {
             employeeInfo = JSON.parse(employeeInfo);
@@ -99,7 +99,7 @@ $('#employee-list').on('click', '.btnEdit', function () {
     $('#txtEmployeeId').prop('readonly', true);
 
     var employeeId = $(this).data('employeeid');
-    var employeeInfo = GetSingleObjectById('Employee/GetEmployeeById', employeeId);
+    var employeeInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
     
     if (employeeInfo !== "") {
         employeeInfo = JSON.parse(employeeInfo);
@@ -131,10 +131,10 @@ $('#frmEmployeeForm').unbind('submit').submit(function (event) {
     var dataArray = GetFormData();
     console.log(dataArray[0].id);
     if (dataArray[0].id > 0) {
-        UpdateEntry('Employee/Update', dataArray);
+        PerformPostActionWithObject('Employee/Update', dataArray);
     }
     else {
-        AddEntry('Employee/Add', dataArray);
+        PerformPostActionWithObject('Employee/Add', dataArray);
     }
     event.preventDefault();
     $('#loadDataTable').load('Employee/PartialViewDataTable');
@@ -142,7 +142,7 @@ $('#frmEmployeeForm').unbind('submit').submit(function (event) {
 
 $('.btnDelete').unbind().on('click', function () {
     employeeId = $(this).data('employeeid');
-    RemoveEntry('Employee/Remove', employeeId);
+    PerformPostActionWithId('Employee/Remove', employeeId);
     $('#loadDataTable').load('Employee/PartialViewDataTable');
 
 });

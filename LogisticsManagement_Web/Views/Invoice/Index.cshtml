@@ -29,8 +29,18 @@
             }
         </select>
     </div>
+    <div class="col-sm-3 form-group" style="margin-top:28px; padding-left:15px">
+        <small>
+            <div class="form-control form-control-sm form-check-inline align-content-center">
+                <input type="radio" id="rdoDeliveryOrder" name="orderType" class="form-check-input" value="1" style="margin-left:15px" checked />
+                <label id="rdoDeliveryOrder" class="form-check-label">Delivery orders</label> &nbsp;&nbsp;&nbsp;
+                <input type="radio" id="rdoMiscOrder" name="orderType" class="form-check-input" value="3" />
+                <label id="rdoMiscOrder" class="form-check-label">Misc. orders</label>
+            </div>
+        </small>
+    </div>
     <div class="col-sm-2 form-group" style="margin-top:28px">
-        <small> <b><label for="btnFilter"></label></b></small><button id="btnFilter" class="btn btn-sm btn-secondary"> Filter</button>
+        <small> <b><label for="btnFilter"></label></b></small><button id="btnFilter" class="btn btn-sm btn-dark"> Load invoices</button>
     </div>
 
 
@@ -61,15 +71,15 @@
 <br /><br />
 
 @*<h3>Available invoices</h3>
-<hr />
+    <hr />
 
-<div class="row">
-    <div class="col-md-12">
-        <div style="display:block; max-height:200px; min-height:75px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadInvoicedDataTable">
-            <partial name="_PartialViewInvoicedData" />
+    <div class="row">
+        <div class="col-md-12">
+            <div style="display:block; max-height:200px; min-height:75px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadInvoicedDataTable">
+                <partial name="_PartialViewInvoicedData" />
+            </div>
         </div>
-    </div>
-</div>*@
+    </div>*@
 
 
 <script src="~/js/invoice.js"></script>

@@ -15,7 +15,7 @@ $('#lnkEmployeeClockIn').on('click', function () {
 
     var employeeId = '00';
 
-    var userClockInInfo = GetSingleObjectById('EmployeeTimesheet/GetEmployeeClockInInfo', employeeId);
+    var userClockInInfo = GetSingleById('EmployeeTimesheet/GetEmployeeClockInInfo', employeeId);
     if (userClockInInfo !== '' && userClockInInfo != null) {
         var parsedData = JSON.parse(userClockInInfo);
         $('#txtEmployeeId').val(parsedData.EmployeeId);
@@ -45,7 +45,7 @@ $('#btnClockIn').on('click', function (event) {
         return;
     }
     else {
-        var result = AddEntry('EmployeeTimesheet/Add', [data]);
+        var result = PerformPostActionWithObject('EmployeeTimesheet/Add', [data]);
         if (result.length > 0) {
             bootbox.alert('You have successfully clocked-in. ');
         }
@@ -62,7 +62,7 @@ $('#btnClockOut').on('click', function (event) {
         return;
     }
     else {
-        var result = UpdateEntry('EmployeeTimesheet/Update', [data]);
+        var result = PerformPostActionWithObject('EmployeeTimesheet/Update', [data]);
         if (result.length > 0) {
             bootbox.alert('You have successfully clocked-out. ');
         }
@@ -108,7 +108,7 @@ $('#btnSavePassword').on('click', function (event) {
     }
 
     var currentPass = $('#txtCurrentPassword').val();
-    var isCurrentPasswordValid = GetSingleObjectById('User/ValidateCurrentUserByPassword', currentPass);
+    var isCurrentPasswordValid = GetSingleById('User/ValidateCurrentUserByPassword', currentPass);
     if (isCurrentPasswordValid == null || isCurrentPasswordValid.length < 1) {
         bootbox.alert('Your current password is invalid');
         return;
@@ -119,7 +119,7 @@ $('#btnSavePassword').on('click', function (event) {
         currentPass: currentPass
     };
 
-    var updateStatus = PerformPostActionWithParam('User/UpdatePassword', [data]);
+    var updateStatus = PerformPostActionWithObject('User/UpdatePassword', [data]);
     if (updateStatus.length > 0) {
         bootbox.alert('Your password has been changed successfully');
     }

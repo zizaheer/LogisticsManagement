@@ -14,7 +14,7 @@ namespace LogisticsManagement_Poco
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public decimal TotalTransactionAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
         public DateTime TransactionDate { get; set; }
         public DateTime ValueDate { get; set; }
         public string Remarks { get; set; }

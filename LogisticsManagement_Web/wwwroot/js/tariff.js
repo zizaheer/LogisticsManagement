@@ -24,7 +24,7 @@ $('#txtTariffId').unbind('keypress').keypress(function (event) {
         event.preventDefault();
 
         var tariffId = $('#txtTariffId').val();
-        var tariffInfo = GetSingleObjectById('Tariff/GetTariffById', tariffId);
+        var tariffInfo = GetSingleById('Tariff/GetTariffById', tariffId);
         if (tariffInfo !== "" && tariffInfo !== null) {
             tariffInfo = JSON.parse(tariffInfo);
         }
@@ -45,7 +45,7 @@ $('#tariff-list').on('click', '.btnEdit', function () {
     $('#txtTariffId').prop('readonly', true);
 
     var tariffId = $(this).data('tariffid');
-    var tariffInfo = GetSingleObjectById('Tariff/GetTariffById', tariffId);
+    var tariffInfo = GetSingleById('Tariff/GetTariffById', tariffId);
     console.log(tariffInfo);
     if (tariffInfo !== "") {
         tariffInfo = JSON.parse(tariffInfo);
@@ -94,10 +94,10 @@ $('#frmTariffForm').unbind('submit').submit(function (event) {
     }
 
     if (data.id > 0) {
-        UpdateEntry('Tariff/Update', data);
+        PerformPostActionWithObject('Tariff/Update', data);
     }
     else {
-        var result = AddEntry('Tariff/Add', data);
+        var result = PerformPostActionWithObject('Tariff/Add', data);
         if (result.length > 0) {
             $('#txtTariffId').val(result);
         }
@@ -108,7 +108,7 @@ $('#frmTariffForm').unbind('submit').submit(function (event) {
 
 $('.btnDelete').unbind().on('click', function () {
     tariffId = $(this).data('tariffid');
-    RemoveEntry('Tariff/Remove', tariffId);
+    PerformPostActionWithId('Tariff/Remove', tariffId);
     $('#loadTariffDataTable').load('Tariff/PartialViewDataTable');
 
 });

@@ -24,6 +24,8 @@ namespace LogisticsManagement_Poco
         public int? ConsigneeCustomerId { get; set; }
         public int? ConsigneeAddressId { get; set; }
         public int BillToCustomerId { get; set; }
+        public int? ServiceProviderEmployeeId { get; set; }
+
         public DateTime? ScheduledPickupDate { get; set; }
         public DateTime? ExpectedDeliveryDate { get; set; }
         public int? CityId { get; set; }

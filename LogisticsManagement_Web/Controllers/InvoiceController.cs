@@ -34,6 +34,7 @@ namespace LogisticsManagement_Web.Controllers
 
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
+        int orderTypeToLoad = 0;
 
         public InvoiceController(IMemoryCache cache, LogisticsContext dbContext)
         {
@@ -48,7 +49,7 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
-
+            orderTypeToLoad = 1;
             return View(GetPendingWaybillsForInvoice());
         }
 
@@ -131,7 +132,6 @@ namespace LogisticsManagement_Web.Controllers
 
         private List<ViewModel_OrderReadyForInvoice> GetPendingWaybillsForInvoice()
         {
-
             List<ViewModel_OrderReadyForInvoice> pendingInvoices = new List<ViewModel_OrderReadyForInvoice>();
             //var combineOrdersForInvoice = new List<ViewModel_OrderReadyForInvoice>();
 
@@ -147,12 +147,19 @@ namespace LogisticsManagement_Web.Controllers
                 var orderList = _orderLogic.GetList();
                 var orderStatusList = _orderStatusLogic.GetList();
 
-                var orders = from order in orderList
-                             join status in orderStatusList on order.Id equals status.OrderId
-                             where status.IsDelivered == true && order.IsInvoiced == false
-                             select order;
+                var orders = new List<Lms_OrderPoco>();
 
-                //var ordersStatus = _orderStatusLogic.GetList();
+                if (orderTypeToLoad == 1)
+                {
+                    orders = (from order in orderList
+                              join status in orderStatusList on order.Id equals status.OrderId
+                              where status.IsDelivered == true && order.IsInvoiced == false
+                              select order).ToList();
+                }
+                else if (orderTypeToLoad == 3)
+                {
+                    orders = orderList.Where(c => c.IsInvoiced == false && c.OrderTypeId == 3).ToList();
+                }
 
                 foreach (var order in orders)
                 {
@@ -166,8 +173,11 @@ namespace LogisticsManagement_Web.Controllers
                     pendingInvoice.WaybillDate = order.CreateDate;
                     pendingInvoice.ShipperId = (int)order.ShipperCustomerId;
                     pendingInvoice.ShipperName = customers.Where(c => c.Id == pendingInvoice.ShipperId).FirstOrDefault().CustomerName;
-                    pendingInvoice.ConsigneeId = (int)order.ConsigneeCustomerId;
-                    pendingInvoice.ConsigneeName = customers.Where(c => c.Id == pendingInvoice.ConsigneeId).FirstOrDefault().CustomerName;
+                    if (order.ConsigneeCustomerId != null)
+                    {
+                        pendingInvoice.ConsigneeId = (int)order.ConsigneeCustomerId;
+                        pendingInvoice.ConsigneeName = customers.Where(c => c.Id == pendingInvoice.ConsigneeId).FirstOrDefault().CustomerName;
+                    }
                     pendingInvoice.UnitTypeId = order.UnitTypeId;
                     pendingInvoice.UnitTypeName = unitTypes.Where(c => c.Id == pendingInvoice.UnitTypeId).FirstOrDefault().TypeName;
                     pendingInvoice.UnitQty = order.UnitQuantity;
@@ -189,8 +199,6 @@ namespace LogisticsManagement_Web.Controllers
                     pendingInvoices.Add(pendingInvoice);
 
                 }
-
-
             }
             catch (Exception e)
             {
@@ -207,28 +215,41 @@ namespace LogisticsManagement_Web.Controllers
             return PartialView("_PartialViewInvoicedData", GetInvoicedOrders());
         }
 
-        [HttpPost]
-        public IActionResult FilterPendingInvoiceDataTable([FromBody] dynamic filterData)
+        [HttpGet]
+        public IActionResult FilterPendingInvoiceDataTable(string filterData)
         {
             try
             {
                 ValidateSession();
 
-                var dynamicData = (JObject)filterData[0];
-                var startDate = dynamicData.SelectToken("startDate").ToString();
-                var toDate = dynamicData.SelectToken("toDate").ToString();
-                var selectedCustomer = dynamicData.SelectToken("selectedCustomer").ToString();
+                var desrializedObject = (JObject)(JsonConvert.DeserializeObject(filterData));
+                var startDate = desrializedObject.SelectToken("startDate").ToString();
+                var toDate = desrializedObject.SelectToken("toDate").ToString();
+                var selectedCustomer = desrializedObject.SelectToken("selectedCustomer").ToString();
+                var orderType = desrializedObject.SelectToken("orderType").ToString();
+
+                if (orderType != "")
+                {
+                    orderTypeToLoad = Convert.ToInt16(orderType);
+                }
+                else
+                {
+                    orderTypeToLoad = 1;
+                }
 
                 var pendingInvoiceData = GetPendingWaybillsForInvoice();
-                pendingInvoiceData = pendingInvoiceData.Where(c => c.WaybillDate.Date >= Convert.ToDateTime(startDate).Date && c.WaybillDate.Date.AddDays(1).Date <= Convert.ToDateTime(toDate).Date).ToList();
+                pendingInvoiceData = pendingInvoiceData.Where(c => c.WaybillDate.Date >= Convert.ToDateTime(startDate).Date && c.WaybillDate.Date <= Convert.ToDateTime(toDate).Date.AddDays(1)).ToList();
 
-                if (Convert.ToInt32(selectedCustomer) > 0)
+                int outCustomerId = 0;
+                if (int.TryParse(selectedCustomer, out outCustomerId))
                 {
-                    pendingInvoiceData.Where(c => c.BillToCustomerId == Convert.ToInt32(selectedCustomer)).ToList();
+                    if (outCustomerId > 0)
+                    {
+                        pendingInvoiceData = pendingInvoiceData.Where(c => c.BillToCustomerId == outCustomerId).ToList();
+                    }
                 }
 
                 return PartialView("_PartialViewPendingData", pendingInvoiceData);
-
             }
             catch (Exception ex)
             {
@@ -437,15 +458,15 @@ namespace LogisticsManagement_Web.Controllers
                 if (paymentData != null)
                 {
                     var payInfo = (JObject)paymentData[0];
-                    var invoiceNo = payInfo.SelectToken("invoiceNo");
-                    var billerCustomerId = payInfo.SelectToken("billerCustomerId");
-                    var paidAmnt = payInfo.SelectToken("paymentAmount");
-                    var bankId = payInfo.SelectToken("ddlBankId");
-                    var chqNo = payInfo.SelectToken("chequeNo");
-                    var chqDate = payInfo.SelectToken("chequeDate");
-                    var chqAmnt = payInfo.SelectToken("chequeAmount");
-                    var cashAmnt = payInfo.SelectToken("cashAmount");
-                    var remarks = payInfo.SelectToken("paymentRemarks");
+                    var invoiceNo = payInfo.SelectToken("invoiceNo").ToString();
+                    var billerCustomerId = payInfo.SelectToken("billerCustomerId").ToString();
+                    var paidAmnt = payInfo.SelectToken("paymentAmount").ToString();
+                    var bankId = payInfo.SelectToken("ddlBankId").ToString();
+                    var chqNo = payInfo.SelectToken("chequeNo").ToString();
+                    var chqDate = payInfo.SelectToken("chequeDate").ToString();
+                    var chqAmnt = payInfo.SelectToken("chequeAmount").ToString();
+                    var cashAmnt = payInfo.SelectToken("cashAmount").ToString();
+                    var remarks = payInfo.SelectToken("paymentRemarks").ToString();
 
                     var wbInfo = (JArray)paymentData[1];
                     List<string> wbNumbers = new List<string>();
@@ -457,6 +478,8 @@ namespace LogisticsManagement_Web.Controllers
 
                     using (var scope = new TransactionScope())
                     {
+                        var transactionId = 0;
+
                         var mappingList = _invoiceWayBillMappingLogic.GetList();
                         _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
                         var _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
@@ -465,16 +488,41 @@ namespace LogisticsManagement_Web.Controllers
                         var cashAccount = _configurationLogic.GetSingleById(1).CashAccount; // Debit account 
                         var bankAccount = _configurationLogic.GetSingleById(1).BankAccount; // Debit Account
 
-                        if(chqAmnt>0)
-                        int[] debitAccounts = new int[2];
-                        debitAccounts[0] = (int)bankAccount;
-                        debitAccounts[1] = (int)cashAccount;
 
-                        int[] creditAccounts = new int[1];
-                        creditAccounts[0] = billerAccountNo;
+                        var creditTxnInfoList = new List<TransactionModel>();
+                        var creditTxnInfo = new TransactionModel();
+                        creditTxnInfo.AccountId = billerAccountNo;
+                        creditTxnInfo.TxnAmount = Convert.ToDecimal(paidAmnt);
+                        creditTxnInfoList.Add(creditTxnInfo);
 
-                        var transactionId = MakeTransaction
+                        var debitTxnInfoList = new List<TransactionModel>();
+                        if (!string.IsNullOrEmpty(chqAmnt) && !string.IsNullOrEmpty(cashAmnt))
+                        {
+                            var debitTxnInfo = new TransactionModel();
+                            debitTxnInfo.AccountId = (int)bankAccount;
+                            debitTxnInfo.TxnAmount = Convert.ToDecimal(chqAmnt);
+                            debitTxnInfoList.Add(debitTxnInfo);
+                            debitTxnInfo = new TransactionModel();
+                            debitTxnInfo.AccountId = (int)cashAccount;
+                            debitTxnInfo.TxnAmount = Convert.ToDecimal(cashAmnt);
+                            debitTxnInfoList.Add(debitTxnInfo);
+                        }
+                        else if (!string.IsNullOrEmpty(chqAmnt) && string.IsNullOrEmpty(cashAmnt))
+                        {
+                            var debitTxnInfo = new TransactionModel();
+                            debitTxnInfo.AccountId = (int)bankAccount;
+                            debitTxnInfo.TxnAmount = Convert.ToDecimal(chqAmnt);
+                            debitTxnInfoList.Add(debitTxnInfo);
+                        }
+                        else if (string.IsNullOrEmpty(chqAmnt) && !string.IsNullOrEmpty(cashAmnt))
+                        {
+                            var debitTxnInfo = new TransactionModel();
+                            debitTxnInfo.AccountId = (int)cashAccount;
+                            debitTxnInfo.TxnAmount = Convert.ToDecimal(cashAmnt);
+                            debitTxnInfoList.Add(debitTxnInfo);
+                        }
 
+                        transactionId = MakeTransaction(debitTxnInfoList, creditTxnInfoList, Convert.ToDecimal(paidAmnt), DateTime.Today, DateTime.Today, remarks);
 
                         foreach (var item in wbNumbers)
                         {
@@ -492,6 +540,7 @@ namespace LogisticsManagement_Web.Controllers
                             if (chqDate.ToString() != "")
                                 waybillToUpdate.ChequeDate = Convert.ToDateTime(chqDate);
 
+                            waybillToUpdate.TransactionId = transactionId;
                             waybillToUpdate.ChequeNo = chqNo.ToString();
                             waybillToUpdate.PaidAmount = waybillToUpdate.TotalWayBillAmount;
                             waybillToUpdate.PaymentDate = DateTime.Today;
@@ -501,7 +550,12 @@ namespace LogisticsManagement_Web.Controllers
 
                         }
 
+                        var invoiceInfo = _invoiceLogic.GetSingleById(Convert.ToInt32(invoiceNo));
+                        invoiceInfo.PaidAmount = invoiceInfo.PaidAmount == null ? 0 + Convert.ToDecimal(paidAmnt) : invoiceInfo.PaidAmount + Convert.ToDecimal(paidAmnt);
+                        _invoiceLogic.Update(invoiceInfo);
+
                         scope.Complete();
+
                         result = "Success";
                     }
                 }
@@ -561,8 +615,18 @@ namespace LogisticsManagement_Web.Controllers
                         var wayBillInfo = orderList.Where(c => c.WayBillNumber == item.WayBillNumber).FirstOrDefault();
                         var wayBillStatusInfo = orderStatusList.Where(c => c.OrderId == wayBillInfo.Id).FirstOrDefault();
 
-                        viewModel_InvoiceWiseWayBill.PickupDate = (DateTime)wayBillStatusInfo.PickupDatetime;
-                        viewModel_InvoiceWiseWayBill.DeliveryDate = (DateTime)wayBillStatusInfo.DeliveredDatetime;
+
+                        if (wayBillStatusInfo != null)
+                        {
+                            if (wayBillStatusInfo.PickupDatetime != null)
+                            {
+                                viewModel_InvoiceWiseWayBill.PickupDate = (DateTime)wayBillStatusInfo.PickupDatetime;
+                            }
+                            if (wayBillStatusInfo.DeliveredDatetime != null)
+                            {
+                                viewModel_InvoiceWiseWayBill.DeliveryDate = (DateTime)wayBillStatusInfo.DeliveredDatetime;
+                            }
+                        }
 
                         viewModel_InvoiceWiseWayBill.TotalWaybillAmount = item.TotalWayBillAmount;
                         if (wayBillInfo.ApplicableGstPercent != null && wayBillInfo.ApplicableGstPercent > 0)
@@ -604,23 +668,23 @@ namespace LogisticsManagement_Web.Controllers
 
 
         /// <summary>
-        /// Should be able to make single debit, multiple credit and single credit multiple debit entries. Therefore debit and credit account are arrays
+        ///  Should be able to make single debit, multiple credit and single credit multiple debit entries. Therefore debit and credit info are passed as objects
         /// </summary>
-        /// <param name="debitAccountNo"></param>
-        /// <param name="creditAccountNo"></param>
+        /// <param name="debitAccountInfo"></param>
+        /// <param name="creditAccountInfo"></param>
         /// <param name="transactionAmount"></param>
         /// <param name="transactionDate"></param>
         /// <param name="valueDate"></param>
         /// <param name="transactionRemarks"></param>
         /// <returns></returns>
-        private int MakeTransaction(int[] debitAccountNumbers, int[] creditAccountNumbers, decimal transactionAmount, DateTime transactionDate, DateTime valueDate, string transactionRemarks)
+        private int MakeTransaction(List<TransactionModel> debitAccountInfo, List<TransactionModel> creditAccountInfo, decimal transactionAmount, DateTime transactionDate, DateTime valueDate, string transactionRemarks)
         {
 
             Lms_TransactionDetailLogic _transactionDetailLogic = new Lms_TransactionDetailLogic(_cache, new EntityFrameworkGenericRepository<Lms_TransactionDetailPoco>(_dbContext));
             var transactionId = _transactionDetailLogic.GetMaxId() + 1;
             Lms_TransactionDetailPoco txnDetail = new Lms_TransactionDetailPoco();
             txnDetail.Id = transactionId;
-            txnDetail.TotalTransactionAmount = transactionAmount;
+            txnDetail.TransactionAmount = transactionAmount;
             txnDetail.TransactionDate = transactionDate;
             txnDetail.ValueDate = valueDate;
             txnDetail.Remarks = transactionRemarks;
@@ -631,68 +695,69 @@ namespace LogisticsManagement_Web.Controllers
 
             Lms_TransactionPoco _transactionPoco = new Lms_TransactionPoco();
 
-            if (debitAccountNumbers.Length == 1)
+            if (debitAccountInfo.Count == 1)
             {
                 //Add Debit side
                 _transactionPoco = new Lms_TransactionPoco();
                 _transactionPoco.Id = transactionId;
                 _transactionPoco.SerialNo = 1;
-                _transactionPoco.AccountId = debitAccountNumbers[0];
-                _transactionPoco.TransactionAmount = transactionAmount;
+                _transactionPoco.AccountId = debitAccountInfo.FirstOrDefault().AccountId;
+                _transactionPoco.TransactionAmount = debitAccountInfo.FirstOrDefault().TxnAmount;
                 _transactionPoco.Remarks = transactionRemarks;
                 _transactionLogic.Add(_transactionPoco);
-                var debitAccountInfo = _chartOfAccountLogic.GetSingleById(debitAccountNumbers[0]);
-                debitAccountInfo.CurrentBalance = debitAccountInfo.CurrentBalance + transactionAmount;
-                _chartOfAccountLogic.Update(debitAccountInfo);
+                var debitAccount = _chartOfAccountLogic.GetSingleById(_transactionPoco.AccountId);
+                debitAccount.CurrentBalance = debitAccount.CurrentBalance + _transactionPoco.TransactionAmount;
+                _chartOfAccountLogic.Update(debitAccount);
 
                 //Add Credit side
                 var serialNo = 2;
-                for (int i = 0; i < creditAccountNumbers.Length; i++) {
-                    _transactionPoco = new Lms_TransactionPoco();
-                    _transactionPoco.Id = transactionId;
-                    _transactionPoco.SerialNo = serialNo + i;
-                    _transactionPoco.AccountId = creditAccountNumbers[i];
-                    _transactionPoco.TransactionAmount = (-1) * transactionAmount;
-                    _transactionPoco.Remarks = transactionRemarks;
-                    _transactionLogic.Add(_transactionPoco);
-
-                    var creditAccountInfo = _chartOfAccountLogic.GetSingleById(creditAccountNumbers[i]);
-                    creditAccountInfo.CurrentBalance = creditAccountInfo.CurrentBalance + (-1) * transactionAmount;
-                    _chartOfAccountLogic.Update(creditAccountInfo);
-
-                }
-            }
-
-            else if (creditAccountNumbers.Length == 1)
-            {
-                //Add Credit side
-                _transactionPoco = new Lms_TransactionPoco();
-                _transactionPoco.Id = transactionId;
-                _transactionPoco.SerialNo = 1;
-                _transactionPoco.AccountId = creditAccountNumbers[0];
-                _transactionPoco.TransactionAmount = (-1) * transactionAmount;
-                _transactionPoco.Remarks = transactionRemarks;
-                _transactionLogic.Add(_transactionPoco);
-
-                var creditAccountInfo = _chartOfAccountLogic.GetSingleById(creditAccountNumbers[0]);
-                creditAccountInfo.CurrentBalance = creditAccountInfo.CurrentBalance + (-1) * transactionAmount;
-                _chartOfAccountLogic.Update(creditAccountInfo);
-
-                //Add Debit side
-                var serialNo = 2;
-                for (int i = 0; i < debitAccountNumbers.Length; i++)
+                for (int i = 0; i < creditAccountInfo.Count; i++)
                 {
                     _transactionPoco = new Lms_TransactionPoco();
                     _transactionPoco.Id = transactionId;
                     _transactionPoco.SerialNo = serialNo + i;
-                    _transactionPoco.AccountId = debitAccountNumbers[i];
-                    _transactionPoco.TransactionAmount = transactionAmount;
+                    _transactionPoco.AccountId = creditAccountInfo[i].AccountId;
+                    _transactionPoco.TransactionAmount = (-1) * creditAccountInfo[i].TxnAmount;
                     _transactionPoco.Remarks = transactionRemarks;
                     _transactionLogic.Add(_transactionPoco);
 
-                    var debitAccountInfo = _chartOfAccountLogic.GetSingleById(debitAccountNumbers[i]);
-                    debitAccountInfo.CurrentBalance = debitAccountInfo.CurrentBalance + transactionAmount;
-                    _chartOfAccountLogic.Update(debitAccountInfo);
+                    var creditAccount = _chartOfAccountLogic.GetSingleById(_transactionPoco.AccountId);
+                    creditAccount.CurrentBalance = creditAccount.CurrentBalance + _transactionPoco.TransactionAmount;
+                    _chartOfAccountLogic.Update(creditAccount);
+
+                }
+            }
+
+            else if (creditAccountInfo.Count == 1)
+            {
+                //Add Credit side
+                _transactionPoco = new Lms_TransactionPoco();
+                _transactionPoco.Id = transactionId;
+                _transactionPoco.SerialNo = 1;
+                _transactionPoco.AccountId = creditAccountInfo.FirstOrDefault().AccountId;
+                _transactionPoco.TransactionAmount = (-1) * creditAccountInfo.FirstOrDefault().TxnAmount;
+                _transactionPoco.Remarks = transactionRemarks;
+                _transactionLogic.Add(_transactionPoco);
+
+                var creditAccount = _chartOfAccountLogic.GetSingleById(_transactionPoco.AccountId);
+                creditAccount.CurrentBalance = creditAccount.CurrentBalance + _transactionPoco.TransactionAmount;
+                _chartOfAccountLogic.Update(creditAccount);
+
+                //Add Debit side
+                var serialNo = 2;
+                for (int i = 0; i < debitAccountInfo.Count; i++)
+                {
+                    _transactionPoco = new Lms_TransactionPoco();
+                    _transactionPoco.Id = transactionId;
+                    _transactionPoco.SerialNo = serialNo + i;
+                    _transactionPoco.AccountId = debitAccountInfo[i].AccountId;
+                    _transactionPoco.TransactionAmount = debitAccountInfo[i].TxnAmount;
+                    _transactionPoco.Remarks = transactionRemarks;
+                    _transactionLogic.Add(_transactionPoco);
+
+                    var debitAccount = _chartOfAccountLogic.GetSingleById(_transactionPoco.AccountId);
+                    debitAccount.CurrentBalance = debitAccount.CurrentBalance + _transactionPoco.TransactionAmount;
+                    _chartOfAccountLogic.Update(debitAccount);
                 }
             }
 
@@ -732,12 +797,12 @@ namespace LogisticsManagement_Web.Controllers
                 sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
                 if (sessionData == null)
                 {
-                    Response.Redirect("~/Login/Index");
+                    Response.Redirect(Request.Host + "Login/Index");
                 }
             }
             else
             {
-                Response.Redirect("~/Login/InvalidLocation");
+                Response.Redirect("Login/InvalidLocation");
             }
         }
 

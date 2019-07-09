@@ -37,7 +37,7 @@ $('#txtUserId').unbind('keypress').keypress(function (event) {
         event.preventDefault();
 
         var userId = $('#txtUserId').val();
-        var userInfo = GetSingleObjectById('User/GetUserById', userId);
+        var userInfo = GetSingleById('User/GetUserById', userId);
         if (userInfo !== "" && userInfo !== null) {
             userInfo = JSON.parse(userInfo);
         }
@@ -57,7 +57,7 @@ $('#user-list').on('click', '.btnEdit', function () {
     $('#txtUserId').prop('readonly', true);
 
     var userId = $(this).data('userid');
-    var userInfo = GetSingleObjectById('User/GetUserById', userId);
+    var userInfo = GetSingleById('User/GetUserById', userId);
 
     if (userInfo !== "") {
         userInfo = JSON.parse(userInfo);
@@ -96,7 +96,7 @@ $('#frmUserForm').unbind('submit').submit(function (event) {
     var dataArray = GetFormData();
     console.log(dataArray);
     if (dataArray[0].id > 0) {
-        UpdateEntry('User/Update', dataArray);
+        PerformPostActionWithObject('User/Update', dataArray);
     }
     else {
 
@@ -106,7 +106,7 @@ $('#frmUserForm').unbind('submit').submit(function (event) {
             return;
         }
 
-        AddEntry('User/Add', dataArray);
+        PerformPostActionWithObject('User/Add', dataArray);
     }
     event.preventDefault();
     $('#loadUserDataTable').load('User/PartialViewDataTable');
@@ -114,7 +114,7 @@ $('#frmUserForm').unbind('submit').submit(function (event) {
 
 $('.btnDelete').unbind().on('click', function () {
     userId = $(this).data('userid');
-    RemoveEntry('User/Remove', userId);
+    PerformPostActionWithId('User/Remove', userId);
     $('#loadUserDataTable').load('User/PartialViewDataTable');
 
 });

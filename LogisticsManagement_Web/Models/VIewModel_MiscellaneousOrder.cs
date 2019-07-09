@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogisticsManagement_Web.Models
 {
-    public class VIewModel_MiscellaneousOrder
+    public class ViewModel_MiscellaneousOrder
     {
         public Lms_ConfigurationPoco Configuration { get; set; }
         public List<Lms_OrderAdditionalServicePoco> OrderAdditionalServices { get; set; }
@@ -20,6 +20,6 @@ namespace LogisticsManagement_Web.Models
         public List<App_CityPoco> Cities { get; set; }
         public List<App_ProvincePoco> Provinces { get; set; }
 
-        public List<ViewModel_OrderDispatched> DispatchedOrders { get; set; }
+        public List<ViewModel_OrderDispatched> MiscellaneousOrders { get; set; }
     }
 }

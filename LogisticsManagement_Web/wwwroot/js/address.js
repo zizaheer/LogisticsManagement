@@ -33,7 +33,7 @@ $('#txtAddressId').unbind('keypress').keypress(function (event) {
 $('#txtAddressId').on('change', function (event) {
 
     var addressId = $('#txtAddressId').val();
-    var addressInfo = GetSingleObjectById('Address/GetAddressById', addressId);
+    var addressInfo = GetSingleById('Address/GetAddressById', addressId);
     if (addressInfo !== "" && addressInfo !== null) {
         addressInfo = JSON.parse(addressInfo);
     }
@@ -54,7 +54,7 @@ $('#address-list').on('click', '.btnEdit', function () {
     $('#txtAddressId').prop('readonly', true);
 
     var addressId = $(this).data('addressid');
-    var addressInfo = GetSingleObjectById('Address/GetAddressById', addressId);
+    var addressInfo = GetSingleById('Address/GetAddressById', addressId);
 
     if (addressInfo !== "") {
         addressInfo = JSON.parse(addressInfo);
@@ -86,10 +86,10 @@ $('#frmAddressForm').unbind('submit').submit(function (event) {
     var data = GetFormData();
     
     if (data.id > 0) {
-        UpdateEntry('Address/Update', data);
+        PerformPostActionWithObject('Address/Update', data);
     }
     else {
-        AddEntry('Address/Add', data);
+        PerformPostActionWithObject('Address/Add', data);
     }
     event.preventDefault();
     //$('#loadAddressDataTable').load('Address/PartialViewDataTable');
@@ -97,7 +97,7 @@ $('#frmAddressForm').unbind('submit').submit(function (event) {
 
 $('.btnDelete').unbind().on('click', function () {
     addressId = $(this).data('addressid');
-    RemoveEntry('Address/Remove', addressId);
+    PerformPostActionWithId('Address/Remove', addressId);
     $('#loadAddressDataTable').load('Address/PartialViewDataTable');
 
 });

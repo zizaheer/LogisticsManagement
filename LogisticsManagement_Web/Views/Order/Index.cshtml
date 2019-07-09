@@ -3,7 +3,7 @@
 
 
 @{
-    ViewData["Title"] = "Dispatch board";
+    ViewData["Title"] = "Delivery - dispatch board";
 }
 
 <style>
@@ -28,6 +28,7 @@
     .toggleButtonByUnit {
         float: left;
     }
+
     .toggleButtonReturnOrder {
         float: right;
     }
@@ -101,7 +102,7 @@
                     <div class="row" style="margin-bottom:80px">
                         <div class="col-sm-6">
                             <button type="button" class="btn btn-sm btn-success" id="btnSavePickup"><i class="fa fa-save"></i> Save pickup</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePickup"><i class="fa fa-trash"></i> Delete pickup </button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePickup"><i class="fa fa-trash"></i> Undo pickup </button>
                         </div>
                     </div>
 
@@ -215,7 +216,7 @@
                     <div class="row" style="margin-bottom:80px">
                         <div class="col-sm-6">
                             <button type="button" class="btn btn-sm btn-success" id="btnSavePassOn"><i class="fa fa-save"></i> Save pass-on</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePassOn"><i class="fa fa-trash"></i> Delete pass-on </button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePassOn"><i class="fa fa-trash"></i> Undo pass-on </button>
                         </div>
                     </div>
                 </div>
@@ -357,7 +358,7 @@
                     <div class="row" style="margin-bottom:80px">
                         <div class="col-sm-6">
                             <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Delete delivery </button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Undo delivery </button>
                         </div>
                     </div>
                 </div>
@@ -375,6 +376,15 @@
 
 
 
+
+<div class="row">
+    <div class="col-md-12">
+        <div style="display:block; max-height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadOrdersToBeDispatched">
+            <partial name="_PartialViewOrderData" />
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-sm-9 input-group">
         <input type="search" id="txtEmployeeName" name="txtEmployeeName" class="form-control form-control-sm txtEmployeeName" placeholder="Employee name" list="dlEmployees" />
@@ -385,9 +395,7 @@
             }
         </datalist>
         <input class="col-2 form-control form-control-sm" placeholder="Vehicle ref #" id="txtVehicleName" type="search" name="txtVehicleName" list="dlVehicles" style="display:none">
-        <datalist id="dlVehicles">
-           
-        </datalist>
+        <datalist id="dlVehicles"></datalist>
 
         <input class="col-4 form-control form-control-sm" id="txtDispatchDatetimeForNewOrders" type="datetime-local" min="1" name="txtDispatchDatetimeForNewOrders">
 
@@ -397,23 +405,14 @@
             </span>
         </span>
         <button id="btnDispatch" type="button" class="col-2 btn btn-sm btn-primary form-control" title="Dispatch to employee"><i class="fa fa-arrow-circle-right"></i> Dispatch</button>
-        <span style="padding-left:20px;" title="Print waybills"><button class="btn btn-sm btn-secondary" id="btnPrintWaybill"> <i class="fa fa-print"></i></button></span>
+        <span style="padding-left:20px;" title="Print waybills"><button class="btn btn-sm btn-danger" id="btnPrintWaybill"> <i class="fa fa-print"></i> Print preview</button></span>
     </div>
     <div class="col-sm-3">
-        <div class="col-7" style="float:right;padding-bottom:20px">
-            <button id="btnNewOrder" type="button" class="btn btn-sm btn-danger form-control" title="Create a new order" data-toggle="modal" data-target="#newOrder"><i class="fa fa-plus-circle"></i> New order</button>
+        <div style="float:right">
+            <button id="btnNewOrder" type="button" class="btn btn-sm btn-success form-control" title="Create a new order" data-toggle="modal"><i class="fa fa-plus-circle"></i> New Order </button>
         </div>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div style="display:block; max-height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadOrdersToBeDispatched">
-            <partial name="_PartialViewOrderData" />
-        </div>
-    </div>
-</div>
-
 <div class="row">
     <div class="col-md-12" style="margin-top:40px">
         <h3>Already dispatched orders</h3>
@@ -684,7 +683,7 @@
                                                     <div class="col-sm-5" style="padding-left:30px; padding-right:0px">
                                                         <small>
                                                             <b>
-                                                                @*<label style="margin-top:5px; " id="lblDeliveryOptionId" for="ddlDeliveryOptionId"><b>Disc.</b></label>*@
+                                                               
                                                                 <input type="checkbox" class="form-check-inline form-check-input" id="chkIsGstApplicable" name="chkIsGstApplicable" />
                                                                 Apply @Model.Configuration.TaxToCall-<label class="form-check-inline form-check-label" id="lblGstAmount">@Model.Configuration.TaxAmount</label>%
                                                             </b>
@@ -721,7 +720,10 @@
                                                 </thead>
                                             </table>
 
-                                            <table id="service-list" class="service-list"></table>
+                                            <table id="service-list" class="service-list">
+                                                <thead></thead>
+                                                <tbody class="addServiceTableBody"></tbody>
+                                            </table>
                                         </div>
 
 

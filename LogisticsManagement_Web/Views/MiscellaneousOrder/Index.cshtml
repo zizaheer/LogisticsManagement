@@ -1,9 +1,9 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model ViewModel_DeliveryOrder
+@model ViewModel_MiscellaneousOrder
 
 
 @{
-    ViewData["Title"] = "Dispatch board";
+    ViewData["Title"] = "Miscellaneous order";
 }
 
 <style>
@@ -28,417 +28,40 @@
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
 
 
-<!-- Modal - Pickup Order -->
-<div class="modal fade bd-example-modal-xl" id="orderPickup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content bg-light">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/trolley.png" style="height:25px; padding-left:28px; padding-right:10px" />Pickup Order</h5>
-
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-6 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtWayBillNoForPickupModal">W/B number</label>
-                                </b>
-                            </small>
-                            <input type="hidden" id="hfOrderIdForOrderStatusUpdate" />
-                            <input class="col-5 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPickupModal" type="number" name="txtWayBillNoForPickupModal" readonly>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-5 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDispatchDateTimeForPickupModal">Dispatch date and time</label>
-                                </b>
-                            </small>
-                            <input type="datetime-local" id="txtDispatchDateTimeForPickupModal" class="form-control form-control-sm txtDispatchDateTimeForPickupModal" readonly />
-                        </div>
-                        <div class="col-sm-7 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDispatchEmployeeNameForPickupModal">Dispatched to</label>
-                                </b>
-                            </small>
-                            <input type="text" id="txtDispatchEmployeeNameForPickupModal" class="form-control form-control-sm txtDispatchEmployeeNameForPickupModal" readonly />
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-5 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtPickupDateTime">Pickup date and time</label>
-                                </b>
-                            </small>
-                            <input type="datetime-local" id="txtPickupDateTime" class="form-control form-control-sm txtPickupDateTime" />
-                        </div>
-                        <div class="col-sm-3 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtPickupWaitTime">Wait time (hour)</label>
-                                </b>
-                            </small>
-                            <input type="number" id="txtPickupWaitTime" class="form-control form-control-sm txtPickupWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
-                        </div>
-
-                    </div>
-                    <hr />
-                    <div class="row" style="margin-bottom:80px">
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-sm btn-success" id="btnSavePickup"><i class="fa fa-save"></i> Save pickup</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePickup"><i class="fa fa-trash"></i> Delete pickup </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal - Pickup Order -->
-<!-- Modal - Pass-on Order -->
-<div class="modal fade bd-example-modal-xl" id="orderPassOn" tabindex="-2" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content bg-light">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">
-
-                    <img src="~/images/flaticons-64x64/shipping-and-delivery.png" style="height:25px; padding-left:28px; padding-right:5px" />
-                    Pass-On Order
-                </h5>
-
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-6 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtWayBillNoForPassOnModal">W/B number</label>
-                                </b>
-                            </small>
-                            <input class="col-5 form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForPassOnModal" type="number" name="txtWayBillNoForPassOnModal" readonly>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDispatchDateTimeForPassOnModal">Dispatch date and time</label>
-                                </b>
-                            </small>
-                            <input type="datetime-local" id="txtDispatchDateTimeForPassOnModal" class="form-control form-control-sm txtDispatchDateTimeForPassOnModal" readonly />
-                        </div>
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtPickupDateTimeForPassOnModal">Pickup date and time</label>
-                                </b>
-                            </small>
-                            <input type="datetime-local" id="txtPickupDateTimeForPassOnModal" class="form-control form-control-sm txtPickupDateTimeForPassOnModal" readonly />
-                        </div>
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDispatchEmployeeNameForPassOnModal">Dispatched to</label>
-                                </b>
-                            </small>
-                            <input type="text" id="txtDispatchEmployeeNameForPassOnModal" class="form-control form-control-sm txtDispatchEmployeeNameForPassOnModal" readonly />
-                        </div>
-
-                    </div>
-                    <div class="row">
-
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtPassOnDateTime">Pass-on date</label>
-                                </b>
-                            </small>
-                            <input type="datetime-local" id="txtPassOnDateTime" class="form-control form-control-sm txtPassOnDateTime" />
-
-                        </div>
-
-
-                        <div class="col-sm-4">
-                            <small>
-                                <b>
-                                    <label for="txtPassOnEmployeeName">Pass-on to</label>
-                                </b>
-                            </small>
-                            <div class="row mb-1 ">
-                                <div class="col-sm-12 input-group">
-                                    <input type="search" id="txtPassOnEmployeeName" name="txtPassOnEmployeeName" class="form-control form-control-sm txtPassOnEmployeeName" placeholder="Employee name" list="dlPassOnEmployees" />
-                                    <datalist id="dlPassOnEmployees">
-                                        @foreach (var employee in Model.Employees)
-                                        {
-                                            <option data-employeeid="@employee.Id" value="@employee.FirstName"></option>
-                                        }
-                                    </datalist>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-sm-3 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtPassOnWaitTime">Wait time (hour)</label>
-                                </b>
-                            </small>
-                            <input type="number" id="txtPassOnWaitTime" class="form-control form-control-sm txtPassOnWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
-                        </div>
-
-
-                    </div>
-
-                    <hr />
-                    <div class="row" style="margin-bottom:80px">
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-sm btn-success" id="btnSavePassOn"><i class="fa fa-save"></i> Save pass-on</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemovePassOn"><i class="fa fa-trash"></i> Delete pass-on </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal - Pass-on Order -->
-<!-- Modal - Deliver Order -->
-<div class="modal fade bd-example-modal-xl" id="orderDeliver" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content bg-light">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/delivery-truck.png" style="height:25px; padding-left:28px; padding-right:10px" />Deliver Order</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtWayBillNoForDeliverModal">W/B number</label>
-                                </b>
-                            </small>
-                            <input class="form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForDeliverModal" type="number" name="txtWayBillNoForDeliverModal" readonly>
-                        </div>
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtWayBillNoForDeliverModal">Shipper</label>
-                                </b>
-                            </small>
-                            <textarea id="txtShipperInfo" class="form-control form-control-sm" style="font-size:.8em" rows="3" readonly></textarea>
-                        </div>
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtWayBillNoForDeliverModal">Consignee</label>
-                                </b>
-                            </small>
-                            <textarea id="txtConsigneeInfo" class="form-control form-control-sm" style="font-size:.8em" rows="3" readonly></textarea>
-                        </div>
-                    </div>
-                    <hr />
-                    <div class="row">
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDispatchDateTimeForDeliverModal">Dispatch date and time</label>
-                                </b>
-                            </small>
-                            <input type="datetime-local" id="txtDispatchDateTimeForDeliverModal" class="form-control form-control-sm txtDispatchDateTimeForDeliverModal" readonly />
-                        </div>
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtPickupDateTimeForDeliverModal">Pickup date and time</label>
-                                </b>
-                            </small>
-                            <input type="datetime-local" id="txtPickupDateTimeForDeliverModal" class="form-control form-control-sm txtPickupDateTimeForDeliverModal" readonly />
-                        </div>
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDispatchEmployeeNameForDeliverModal">Dispatched to</label>
-                                </b>
-                            </small>
-                            <input type="text" id="txtDispatchEmployeeNameForDeliverModal" class="form-control form-control-sm txtDispatchEmployeeNameForDeliverModal" readonly />
-                        </div>
-                        @*<div class="col-sm-2 form-group">
-                                <label for="txtPassOnEmployeeNameForDeliverModal">Pass-on to</label>
-                                <input type="text" id="txtPassOnEmployeeNameForDeliverModal" class="form-control form-control-sm txtPassOnEmployeeNameForDeliverModal" readonly />
-                            </div>*@
-
-                    </div>
-                    <div class="row">
-
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDeliveryDateTime">Delivery Date</label>
-                                </b>
-                            </small>
-                            <input type="datetime-local" id="txtDeliveryDateTime" class="form-control form-control-sm txtDeliveryDateTime" />
-
-                        </div>
-                        <div class="col-sm-3 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDeliveryWaitTime">Wait time (hour)</label>
-                                </b>
-                            </small>
-                            <input type="number" id="txtDeliveryWaitTime" class="form-control form-control-sm txtDeliveryWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
-
-                        </div>
-
-                        <div class="col-sm-5 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtReceivedByName">Received By </label>
-                                </b>
-                            </small>
-                            <input type="text" id="txtReceivedByName" class="form-control form-control-sm txtReceivedByName" placeholder="Received by (Name)" title="Received by (Name)" />
-                        </div>
-
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDeliveryNote">Notes</label>
-                                </b>
-                            </small>
-                            <textarea id="txtDeliveryNote" class="form-control form-control-sm txtDeliveryNote" placeholder="Delivery note" title="Delivery note"></textarea>
-                        </div>
-
-                        <div class="col-sm-8">
-                            <small>
-                                <b>
-                                    <label for="txtReceivedBySign">Signature </label>
-                                </b>
-                            </small>
-                            <canvas id="signatureCanvas" class="card"></canvas>
-                            <span style="float:left">
-                                <button type="button" class="btn btn-sm btn-secondary" id="btnOk"><i class="fa fa-check"></i> Ok </button>
-                                <button type="button" class="btn btn-sm btn-secondary" id="btnCancel"><i class="fa fa-times"></i> Cancel</button>
-                                <input type="hidden" id="imgSignature" />
-                            </span>
-                        </div>
-                    </div>
-
-                    <hr />
-                    <div class="row" style="margin-bottom:80px">
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Delete delivery </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal - Deliver Order -->
-
-
 <h3>
     @ViewData["Title"]
 </h3>
 <hr style="margin-bottom:40px" />
 
 
-
-<div class="row">
-    <div class="col-sm-9 input-group">
-        <input type="search" id="txtEmployeeName" name="txtEmployeeName" class="form-control form-control-sm txtEmployeeName" placeholder="Employee name" list="dlEmployees" />
-        <datalist id="dlEmployees">
-            @foreach (var employee in Model.Employees)
-            {
-                <option data-employeeid="@employee.Id" value="(@employee.Id) @employee.FirstName"></option>
-            }
-        </datalist>
-        <input class="col-2 form-control form-control-sm" placeholder="Vehicle ref #" id="txtVehicleName" type="search" name="txtVehicleName" list="dlVehicles" style="display:none">
-        <datalist id="dlVehicles">
-            @*@foreach (var item in Model.Vehicles)
-                {
-                    <option data-vehicleid="@item.Id" value="(@item.Id) @item.VehicleTagLine"></option>
-                }*@
-        </datalist>
-
-        <input class="col-4 form-control form-control-sm" id="txtDispatchDatetimeForNewOrders" type="datetime-local" min="1" name="txtDispatchDatetimeForNewOrders">
-
-        <span class="col-1 form-control form-control-sm ">
-            <span class="form-check-inline" title="Send email to the employee">
-                <input type="checkbox" id="chkSendEmail" /> <i style="padding-left:5px"></i>Email
-            </span>
-        </span>
-        <button id="btnDispatch" type="button" class="col-2 btn btn-sm btn-primary form-control" title="Dispatch to employee"><i class="fa fa-arrow-circle-right"></i> Dispatch</button>
-        <span style="padding-left:20px;" title="Print waybills"><button class="btn btn-sm btn-secondary" id="btnPrintWaybill"> <i class="fa fa-print"></i></button></span>
-        @*<div class="col-sm-3" id="spinnerLoadingDataTable" style="display:none">
-                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
-                <span style="margin-right:20px">Loading...</span>
-            </div>*@
-    </div>
-    <div class="col-sm-3">
-        <div class="col-7" style="float:right;padding-bottom:20px">
-            <button id="btnNewOrder" type="button" class="btn btn-sm btn-danger form-control" title="Create a new order" data-toggle="modal" data-target="#newOrder"><i class="fa fa-plus-circle"></i> New order</button>
-        </div>
-    </div>
-</div>
-
 <div class="row">
     <div class="col-md-12">
-        <div style="display:block; max-height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadOrdersToBeDispatched">
-            <partial name="_PartialViewOrderData" />
+        <div style="display:block; max-height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadMiscellaneousOrders">
+            <partial name="_PartialViewLoadMiscOrders" />
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-12" style="margin-top:40px">
-        <h3>Already dispatched orders</h3>
+    <div class="col-sm-12">
+        <div style="float:right">
+
+            <button class="btn btn-sm btn-danger" id="btnPrintWaybill"> <i class="fa fa-print"></i> Print preview</button>
+            <button id="btnNewMiscOrder" type="button" class="btn btn-sm btn-success" title="New misc. order" data-toggle="modal"><i class="fa fa-plus-circle"></i> New misc. order </button>
+        </div>
     </div>
 </div>
-
 
 <hr />
 
-<div class="row">
-    <div class="col-md-12">
-        <div style="display:block; height:285px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; font-size:.7em; margin-bottom:50px; background-color:#022f67" id="loadDispatchedOrders">
-            <partial name="_PartialViewDispatchedOrders" />
-        </div>
-    </div>
-</div>
 
-
-<form id="frmOrderForm">
+<form id="frmMiscOrderForm">
     <!-- Modal - New Order -->
-    <div class="modal fade bd-example-modal-xl" id="newOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade bd-example-modal-xl" id="newMiscOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content bg-light">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">New Order</h5>
+                    <h5 class="modal-title" id="exampleModalCenterTitle">New Misc. Order</h5>
 
                     <button type="button" class="close" id="btnCloseModal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -450,28 +73,11 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <small>
-                                        <label style="margin-top:5px" id="lblPaidBy" for="rdoPaidBy"><b>Paid by</b></label>
+                                        <label style="margin-top:5px" id="lblBillTo" for="txtBillToCustomerName"><b>Bill to</b></label>
                                     </small>
-                                    <div class="col-sm-3" style="border:1px solid #43d1f1; padding:3px 0px 0px 6px; margin-left:14px; margin-right:8px; background-color:#cffbff">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="rdoPaidBy" id="rdoShipper" value="1" checked>
-                                            <small><label class="form-check-label" for="rdoShipper">Shipper</label></small>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="rdoPaidBy" id="rdoConsignee" value="2">
-                                            <small><label class="form-check-label" for="rdoConsignee">Consingee</label></small>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="rdoPaidBy" id="rdoThirdParty" value="3">
-                                            <small><label class="form-check-label" for="rdoThirdParty">3rd. Pty</label></small>
-                                        </div>
-                                    </div>
-                                    <small>
-                                        <label style="margin-top:5px" id="lblBillTo" for="txtBillToCustomerName"><b>Biller</b></label>
-                                    </small>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4" style="margin-right:50px">
                                         <input type="hidden" id="hfBillerCustomerId" />
-                                        <input class="form-control form-control-sm" id="txtBillToCustomerName" name="txtBillToCustomerName" placeholder="Bill to" list="dlBillers" type="search" style="width:272px" />
+                                        <input class="form-control form-control-sm" id="txtBillToCustomerName" name="txtBillToCustomerName" placeholder="Bill to" list="dlBillers" type="search" style="width:381px" />
                                         <datalist id="dlBillers">
                                             @foreach (var item in Model.Customers)
                                             {
@@ -480,36 +86,33 @@
                                         </datalist>
                                     </div>
                                     <small>
-                                        <label id="lblOrderedBy" for="txtOrderedBy" style="margin-left:27px; margin-top:5px"><b>Ordered by</b></label>
+                                        <label style="margin-top:5px" id="lblOrderDate" for="txtOrderDate"><b>Order date</b></label>
+                                    </small>
+                                    <div class="col-sm-2">
+                                        <input class="form-control form-control-sm" id="txtOrderDate" name="txtOrderDate" type="date" />
+                                    </div>
+                                    <small>
+                                        <label id="lblOrderedBy" for="txtOrderedBy" style="margin-top:5px"><b>Ordered by</b></label>
                                     </small>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control form-control-sm" placeholder="Ordered by" id="txtOrderedBy" name="txtOrderedBy" title="Ordered by">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblPickupRefNo" for="txtPickupRefNo"><b>Pkp. ref#</b></label>
+                                        <label style="margin-top:5px" id="lblPhoneNo" for="txtPhoneNo"><b>Phone #</b></label>
                                     </small>
                                     <div class="col-sm-1">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Pickup ref" id="txtPickupRefNo" name="txtPickupRefNo" title="Pickup ref #" style="width:107px">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Phone" id="txtPhoneNo" name="txtPhoneNo" title="Phone #" style="width:102px">
                                     </div>
                                 </div>
                                 <div class="row" style="margin-top:8px">
-                                    <small>
-                                        <label style="margin-top:5px" id="lblDeliveryOptionId" for="ddlDeliveryOptionId"><b>Service</b></label>
-                                    </small>
-                                    <div class="col-sm-2">
-                                        <select class="form-control form-control-sm" id="ddlDeliveryOptionId" name="ddlDeliveryOptionId">
-                                            @foreach (var deliveryOption in Model.DeliveryOptions)
-                                            {
-                                                <option value="@deliveryOption.Id">@deliveryOption.OptionName - (@deliveryOption.ShortCode) </option>
-                                            }
-                                        </select>
-                                    </div>
                                     <small>
                                         <label style="margin-top:5px" id="lblWayBillNo" for="txtWayBillNo"><b>W/B #</b></label>
                                     </small>
                                     <div class="col-sm-2">
                                         <input class="form-control form-control-sm" placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNo" type="number" name="txtWayBillNo" readonly>
                                     </div>
+
+
                                     <small>
                                         <label style="margin-top:5px" id="lblCustomerRefNo" for="txtCustomerRefNo"><b>Cust. ref#</b></label>
                                     </small>
@@ -523,10 +126,16 @@
                                         <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>Awb ctl#</b></label>
+                                        <label style="margin-top:5px; margin-right:13px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>Awb ctl#</b></label>
+                                    </small>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Awb Ctl#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No">
+                                    </div>
+                                    <small>
+                                        <label style="margin-top:5px; margin-right:15px" id="lblDepartment" for="txtDepartment"><b>Dept.</b></label>
                                     </small>
                                     <div class="col-sm-1">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Awb Ctl#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Dept." id="txtDepartment" name="txtDepartment" title="Department" style="width:102px">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -534,15 +143,15 @@
                                 </div>
                                 <div class="row" style="margin-top:8px">
 
-                                    <div class="col-4" style="padding-left:0px">
+                                    <div class="col-8" style="padding-left:0px">
                                         <div class="row mb-1">
-                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Shipper Acc#: <label style="margin-bottom:0px" id="lblShipperAccountNo"></label></small>
+                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Customer Acc#: <label style="margin-bottom:0px" id="lblCustomerAccountNo" for="txtCustomerName"></label></small>
                                         </div>
                                         <div class="row mb-1">
 
                                             <div class="form-group col-md-12 input-group">
-                                                <input list="dlShipperCustomers" class="form-control form-control-sm" placeholder="Shipper name" id="txtShipperCustomerName" name="txtShipperCustomerName" type="search" />
-                                                <datalist id="dlShipperCustomers">
+                                                <input list="dlCustomers" class="form-control form-control-sm" placeholder="Customer name" id="txtCustomerName" name="txtCustomerName" type="search" />
+                                                <datalist id="dlCustomers">
                                                     @foreach (var item in Model.Customers)
                                                     {
                                                         <option data-customerid="@item.Id" value="(@item.Id) - @item.CustomerName"></option>
@@ -552,90 +161,47 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="col-12 input-group">
-                                                <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtShipperAddressLine" name="txtShipperAddressLine" list="dlShipperAddressLines" type="search" />
-                                                <datalist id="dlShipperAddressLines"></datalist>
-                                                <input type="text" class="col-3 form-control form-control-sm" placeholder="Unit" id="txtShipperUnitNo" name="txtShipperUnitNo">
+                                                <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtCustomerAddressLine" name="txtCustomerAddressLine" list="dlCustomerAddressLines" type="search" />
+                                                <datalist id="dlCustomerAddressLines"></datalist>
+                                                <input type="text" class="col-3 form-control form-control-sm" placeholder="Unit" id="txtCustomerUnitNo" name="txtCustomerUnitNo">
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 input-group">
-                                                <select class="col-6 form-control form-control-sm" id="ddlShipperCityId" name="ddlShipperCityId" style="-webkit-appearance: none;">
+                                                <select class="col-6 form-control form-control-sm" id="ddlCustomerCityId" name="ddlCustomerCityId" style="-webkit-appearance: none;">
                                                     <option value="0"> City  </option>
                                                     @foreach (var item in Model.Cities)
                                                     {
                                                         <option value="@item.Id">@item.CityName</option>
                                                     }
                                                 </select>
-                                                <select class="col-3 form-control form-control-sm" id="ddlShipperProvinceId" name="ddlShipperProvinceId" style="-webkit-appearance: none;">
+                                                <select class="col-3 form-control form-control-sm" id="ddlCustomerProvinceId" name="ddlCustomerProvinceId" style="-webkit-appearance: none;">
                                                     <option value="0"> Province </option>
                                                     @foreach (var item in Model.Provinces)
                                                     {
                                                         <option value="@item.Id">@item.ShortCode</option>
                                                     }
                                                 </select>
-                                                <input type="text" class="col-3 form-control form-control-sm" placeholder="Postcode" id="txtShipperPostcode" name="txtShipperPostcode">
+                                                <input type="text" class="col-3 form-control form-control-sm" placeholder="Postcode" id="txtCustomerPostcode" name="txtCustomerPostcode">
                                             </div>
                                         </div>
                                     </div>
+
+
+
                                     <div class="col-4">
                                         <div class="row mb-1">
-                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Consignee Acc#: <label style="margin-bottom:0px" id="lblConsigneeAccountNo"></label></small>
+                                            <small class="col-sm-8" style="color:#000; font-weight:bold">Service provided by</small>
                                         </div>
                                         <div class="row mb-1">
                                             <div class="form-group col-md-12 input-group">
-                                                <input list="dlConsigneeCustomers" class="form-control form-control-sm" placeholder="Consignee name" id="txtConsigneeCustomerName" name="txtConsigneeCustomerName" type="search" />
-                                                <datalist id="dlConsigneeCustomers">
-                                                    @foreach (var item in Model.Customers)
+                                                <input class="form-control form-control-sm" id="txtEmployeeName" type="text" placeholder="Service provided by" title="Service provided by" name="txtEmployeeName" list="dlEmployees">
+                                                <datalist id="dlEmployees">
+                                                    @foreach (var item in Model.Employees)
                                                     {
-                                                        <option data-customerid="@item.Id" value="(@item.Id) - @item.CustomerName"></option>
+                                                        <option data-employeeid="@item.Id" data-employeename="@item.FirstName" value="(@item.Id) - @item.FirstName"></option>
                                                     }
                                                 </datalist>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-1">
-                                            <div class="col-12 input-group">
-                                                <input class="col-9 form-control form-control-sm" placeholder="Address" id="txtConsigneeAddressLine" name="txtConsigneeAddressLine" list="dlConsigneeAddressLines" type="search" />
-                                                <datalist id="dlConsigneeAddressLines"></datalist>
-                                                <input type="text" class="col-3 form-control form-control-sm" placeholder="Unit" id="txtConsigneeUnitNo" name="txtConsigneeUnitNo">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12 input-group">
-                                                <select class="col-6 form-control form-control-sm" id="ddlConsigneeCityId" name="ddlConsigneeCityId" style="-webkit-appearance: none;">
-                                                    <option value="0"> City  </option>
-                                                    @foreach (var item in Model.Cities)
-                                                    {
-                                                        <option value="@item.Id">@item.CityName</option>
-                                                    }
-                                                </select>
-                                                <select class="col-3 form-control form-control-sm" id="ddlConsigneeProvinceId" name="ddlConsigneeProvinceId" style="-webkit-appearance: none;">
-                                                    <option value="0"> Province </option>
-                                                    @foreach (var item in Model.Provinces)
-                                                    {
-                                                        <option value="@item.Id">@item.ShortCode</option>
-                                                    }
-                                                </select>
-                                                <input type="text" class="col-3 form-control form-control-sm" placeholder="Postcode" id="txtConsigneePostcode" name="txtConsigneePostcode">
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-4">
-                                        <div class="row mb-1">
-                                            <small class="col-sm-4" style="color:#000; font-weight:bold">Transport</small>
-                                            <small class="col-sm-8" style="color:#000; font-weight:bold">Scheduled pickup date</small>
-                                        </div>
-                                        <div class="row mb-1">
-                                            <div class="form-group col-md-4 input-group">
-                                                <select class="form-control form-control-sm" id="ddlVehicleTypeId" name="ddlVehicleTypeId">
-                                                    <option value="1">Truck</option>
-                                                    <option value="2">Car</option>
-                                                    <option value="3">Van</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-md-8 input-group">
-                                                <input class="form-control form-control-sm" id="txtSchedulePickupDate" type="datetime-local" title="Schedule pickup date" name="txtSchedulePickupDate">
                                             </div>
                                         </div>
                                         <div class="row mb-1">
@@ -649,7 +215,7 @@
                                                     }
                                                 </select>
                                                 <input class="col-2 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
-                                                <input class="col-2 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity" style="background-color:#b3ffc3">
+                                                <input class="col-2 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity">
                                                 <input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces">
                                                 &nbsp;
                                                 <input class="col-2 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
@@ -665,28 +231,20 @@
                                         <div class="row">
                                             <div class="col-12 ">
                                                 <div class="row" style="border: 1px solid #92dcff;background-color: #e0f9ff;">
-                                                    <div class="col-sm-1">
+
+                                                    <div class="col-sm-2">
                                                         <small>
-                                                            <label style="margin-top:5px" id="lblFuelSurcharge" for="txtFuelSurchargePercent"><b>Fuel</b></label>
+                                                            <label style="margin-top:5px;" id="lblDiscountPercent" for="txtDiscountPercent"><b>Discount</b></label>
                                                         </small>
                                                     </div>
-                                                    <div class="col-sm-2" style="padding-left: 14px;">
-                                                        <input class="form-control form-control-sm" style="width:60px; height:25px; margin-bottom:2px; margin-top:2px" placeholder="Sur." id="txtFuelSurchargePercent" type="number" name="txtFuelSurchargePercent">
+                                                    <div class="col-sm-5">
+                                                        <input class="form-control form-control-sm" style="height:25px; margin-bottom:2px; margin-top:2px" placeholder="Disc." id="txtDiscountPercent" type="number" name="txtDiscountPercent">
                                                     </div>
-                                                    <div class="col-sm-1" style="padding-left:25px">
-                                                        <small>
-                                                            <label style="margin-top:5px;" id="lblDiscountPercent" for="txtDiscountPercent"><b>Disc.</b></label>
-                                                        </small>
-                                                    </div>
-                                                    <div class="col-sm-2" style="padding-left:15px; margin-right:15px">
-                                                        <input class="form-control form-control-sm" style="width:60px; height:25px; margin-bottom:2px; margin-top:2px" placeholder="Disc." id="txtDiscountPercent" type="number" name="txtDiscountPercent">
-                                                    </div>
-                                                    <div class="col-sm-5" style="padding-left:30px; padding-right:0px">
+                                                    <div class="col-sm-5">
                                                         <small>
                                                             <b>
-                                                                @*<label style="margin-top:5px; " id="lblDeliveryOptionId" for="ddlDeliveryOptionId"><b>Disc.</b></label>*@
                                                                 <input type="checkbox" class="form-check-inline form-check-input" id="chkIsGstApplicable" name="chkIsGstApplicable" />
-                                                                Apply @Model.Configuration.TaxToCall-<label class="form-check-inline form-check-label" id="lblGstAmount">@Model.Configuration.TaxAmount</label>%
+                                                                <label for="chkIsGstApplicable"> Apply @Model.Configuration.TaxToCall - <label class="form-check-inline form-check-label" id="lblGstAmount">@Model.Configuration.TaxAmount</label>%</label>
                                                             </b>
                                                         </small>
                                                     </div>
@@ -706,11 +264,9 @@
                                             <table style="margin-bottom:10px">
                                                 <thead>
                                                     <tr>
-                                                        <th style="width:220px">Additional service</th>
-                                                        <th style="width:100px; text-align:center">Pay Driver</th>
-                                                        <th style="width:110px; padding-right:5px">Srv. Charge</th>
-                                                        <th style="width:110px;">Driver %</th>
-                                                        <th style="width:100px; text-align:center">Apply GST</th>
+                                                        <th style="width:300px">Additional service</th>
+                                                        <th style="width:190px; padding-right:5px">Srv. Charge</th>
+                                                        <th style="width:160px; text-align:center">Apply GST</th>
                                                         <th style="width:100px; text-align:center; margin-bottom:10px"><button class="btn btn-sm btn-dark additionalServiceControl" id="btnAddAddtionalServiceRow"> <i class="fa fa-eyedropper"></i> Add service</button></th>
                                                     </tr>
                                                     <tr>
@@ -728,13 +284,15 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <div style="margin-bottom:10px">
-                                            <small class="text-muted mt-0">
-                                                <div class="form-check-inline">
-                                                    <input type="checkbox" id="chkIsPrintOnWayBill" name="chkIsPrintOnWayBill" class="form-check-input" />
-                                                    <label id="lblIsPrintOnWayBill" for="chkIsPrintOnWayBill" class="form-check-label"><b>Print comments on W/B</b></label>
-                                                </div>
 
-                                            </small>
+                                            <div class="form-check-inline">
+                                                <input type="checkbox" id="chkIsPrintOnWayBill" name="chkIsPrintOnWayBill" class="form-check-input" />
+                                                <small class="text-muted mt-0">
+                                                    <label id="lblIsPrintOnWayBill" for="chkIsPrintOnWayBill" class="form-check-label">Print comments on W/B</label>
+                                                </small>
+                                            </div>
+
+
                                             <div class="row">
                                                 <div class="col-12 input-group">
                                                     <textarea class="form-control form-control-sm" id="txtCommentsForWayBill" name="txtCommentsForWayBill" rows="2" cols="45"></textarea>
@@ -745,7 +303,7 @@
                                             <small class="text-muted mt-0">
                                                 <div class="form-check-inline">
                                                     <input type="checkbox" id="chkIsPrintOnInvoice" name="chkIsPrintOnInvoice" class="form-check-input" />
-                                                    <label id="lblIsPrintOnInvoice" for="chkIsPrintOnInvoice" class="form-check-label"><b>Print comments on Invoice</b></label>
+                                                    <label id="lblIsPrintOnInvoice" for="chkIsPrintOnInvoice" class="form-check-label">Print comments on Invoice</label>
                                                 </div>
                                             </small>
                                             <div class="row">
@@ -754,11 +312,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style="margin-top:30px; font-size:.5em">
-
-                                            <input type="checkbox" id="chkIsCalculateByUnit" style="font-size:.5em" name="chkIsCalculateByUnit" title="Calculate by unit/skid" data-toggle="toggle" data-on="<i class='fa fa-balance-scale'></i> By unit" data-off="<i class='fa fa-stack-overflow'></i> By skid" data-onstyle="primary" data-offstyle="success" data-size="mini" data-width="106" data-height="28">
-                                            <span style="padding-right:4px; padding-left:4px"> | </span>
-                                            <input type="checkbox" id="chkIsReturnOrder" style="font-size:.5em" name="chkIsReturnOrder" title="Turn it on if you want to place a return order" data-toggle="toggle" data-on="<i class='fa fa-mail-forward'></i> Single order" data-off="<i class='fa fa-mail-reply'></i> Return order" data-onstyle="danger" data-offstyle="secondary" data-size="mini" data-width="118" data-height="28">
+                                        <div style="margin-top:5px">
+                                            <small>
+                                                <label id="lblOrderTotal" for="txtOrderTotal"><b><i class="fa fa-money"></i> ORDER TOTAL</b></label>
+                                            </small>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <input type="number" class="form-control form-control-sm" id="txtOrderTotal" name="txtOrderTotal" style="background-color:#b3ffc3; font-weight:bolder" />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -769,86 +331,52 @@
                                 </div>
 
                                 <div class="row" style="margin-top:0px">
-
-                                    <div class="col-sm-4" style="padding-left:0px">
-                                        <div>
-                                            <small class="mt-0" style="color:#000; font-weight:bold">System Order Cost</small>
-                                            <div class="row">
-                                                <div class="col-12 input-group">
-                                                    <input class="col-4 form-control form-control-sm" placeholder="Order Cost" id="txtBaseOrderCost" type="number" min="0" name="txtBaseOrderCost" title="Order cost" required readonly>
-                                                    <input class="col-4 form-control form-control-sm" placeholder="Surcharge" id="txtBaseOrderSurcharge" type="number" min="0" name="txtBaseOrderSurcharge" title="Order surcharge" readonly>
-                                                    <input class="col-4 form-control form-control-sm" placeholder="GST" id="txtBaseOrderGST" type="number" min="0" name="txtBaseOrderGST" title="Order GST amount" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <small class="mt-0" style="color:#000; font-weight:bold">Override Cost</small>
-                                            <div class="row">
-                                                <div class="col-12 input-group">
-                                                    <input class="col-4 form-control form-control-sm" placeholder="Order Cost" id="txtOverriddenOrderCost" type="number" min="0" name="txtOverriddenOrderCost" title="Overriden order cost">
-                                                    <input class="col-4 form-control form-control-sm" placeholder="Surcharge" id="txtOverriddenOrderSurcharge" type="number" min="0" name="txtOverriddenOrderSurcharge" title="Overriden/final surcharge" readonly>
-                                                    <input class="col-4 form-control form-control-sm" placeholder="GST" id="txtOverriddenOrderGST" type="number" min="0" name="txtOverriddenOrderGST" title="Overriden/final GST amount" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
+                                    <div class="card bg-success mr-auto" style="width:100%">
+                                        <table class="table table-sm table-striped table-dark mb-1 text-center">
+                                            <thead>
+                                                <tr>
+                                                    <td scope="col"><small>Basic Cost</small></td>
+                                                    <td scope="col"><small>Sp. Discount</small></td>
+                                                    <td scope="col"><small>GST</small></td>
+                                                    <td scope="col"><small>Total Cost</small></td>
+                                                    <td scope="col"><small>Add. Charges</small></td>
+                                                    <th scope="col">Grand Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="height:40px">
+                                                    <td scope="row">
+                                                        <label id="lblGrandBasicCost" name="lblGrandBasicCost" title="Basic total">0.00</label>
+                                                    </td>
+                                                    <td>
+                                                        <label id="lblGrandDiscountAmount" type="number" min="0" name="lblGrandDiscountAmount" title="Discount amount">0.00</label>
+                                                    </td>
+                                                    <td>
+                                                        <label id="lblGrandGstAmount" type="number" min="0" name="lblGrandGstAmount" title="GST amount">0.00</label>
+                                                    </td>
+                                                    <td><label id="lblGrandTotalOrderCost" type="number" min="0" name="lblGrandTotalOrderCost" title="Total order cost">0.00</label></td>
+                                                    <td><label id="lblGrandAddServiceAmount" type="number" min="0" name="lblGrandAddServiceAmount" title="Total additional service cost">0.00</label></td>
+                                                    <th class="bg-success">
+                                                        <label id="lblGrandTotalAmount" type="number" min="0" name="lblGrandTotalAmount" title="Grand total amount">0.00</label>
+                                                    </th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div class="col-sm-8" style="margin-top:20px">
-                                        <div class="card bg-success mr-auto">
-                                            <table class="table table-sm table-striped table-dark mb-1 text-center">
-                                                <thead>
-                                                    <tr>
-                                                        <td scope="col"><small>Basic Cost</small></td>
-                                                        <td scope="col"><small>Sp. Discount</small></td>
-                                                        <td scope="col"><small>GST</small></td>
-                                                        <td scope="col"><small>Fuel Surcharge</small></td>
-                                                        <td scope="col"><small>Total Cost</small></td>
-                                                        <td scope="col"><small>Add. Charges</small></td>
-                                                        <th scope="col">Grand Total</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr style="height:40px">
-                                                        <td scope="row">
-                                                            <label id="lblGrandBasicCost" name="lblGrandBasicCost" title="Basic total">0.00</label>
-                                                        </td>
-                                                        <td>
-                                                            <label id="lblGrandDiscountAmount" type="number" min="0" name="lblGrandDiscountAmount" title="Discount amount">0.00</label>
-                                                        </td>
-                                                        <td>
-                                                            <label id="lblGrandGstAmount" type="number" min="0" name="lblGrandGstAmount" title="GST amount">0.00</label>
-                                                        </td>
-                                                        <td>
-                                                            <label id="lblGrandFuelSurchargeAmount" name="lblGrandFuelSurchargeAmount" title="Fuel surcharge amount">0.00</label>
-                                                        </td>
-                                                        <td><label id="lblGrandTotalOrderCost" type="number" min="0" name="lblGrandTotalOrderCost" title="Total order cost">0.00</label></td>
-                                                        <td><label id="lblGrandAddServiceAmount" type="number" min="0" name="lblGrandAddServiceAmount" title="Total additional service cost">0.00</label></td>
-                                                        <th class="bg-success">
-                                                            <label id="lblGrandTotalAmount" type="number" min="0" name="lblGrandTotalAmount" title="Grand total amount">0.00</label>
-                                                        </th>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                    </div>
-
                                 </div>
 
                             </div>
                         </div>
-                        <div class="row" style="margin-left:-30px;">
-                            <div class="col-sm-12" style="padding-left:0px">
-                                <label style="margin-left:15px;font-size:.75em;color:#0577b9" id="lblOrderTypeText">This is a single order.</label>
-                                <hr style="border: .5px solid #c1c1c1; margin-top:-7px; margin-left:10px" />
-                            </div>
+                        <div class="row">
+                            <hr style="border-top:1px solid #cccccc; padding:0px; width:100%" />
                         </div>
+
                         <div class="row">
                             <div class="col-sm-6" style="padding-left:0px">
                                 <input type="hidden" id="hfOrderId" class="hfOrderId" name="hfOrderId" />
-                                <input type="hidden" id="hfShipperAddressId" class="hfShipperAddressId" name="hfShipperAddressId" />
-                                <input type="hidden" id="hfConsigneeAddressId" class="hfConsigneeAddressId" name="hfConsigneeAddressId" />
+                                <input type="hidden" id="hfCustomerAddressId" class="hfCustomerAddressId" name="hfCustomerAddressId" />
+                                <input type="hidden" id="hfTaxAmount" class="hfTaxAmount" name="hfTaxAmount" value="@Model.Configuration.TaxAmount" />
+                                <input type="hidden" id="hfEmployeeId" class="hfEmployeeId" name="hfEmployeeId"/>
 
                                 <button type="reset" class="btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
                                 <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save order</button>

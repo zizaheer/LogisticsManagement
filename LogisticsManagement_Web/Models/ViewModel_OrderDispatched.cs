@@ -29,7 +29,9 @@ namespace LogisticsManagement_Web.Models
         public int ConsigneeCustomerId { get; set; }
         public string ConsigneeCustomerName { get; set; }
         public string ConsigneeAddress { get; set; }
-       
+
+        public int? ServiceProviderEmployeeId { get; set; }
+        public string ServiceProviderEmployeeName { get; set; }
         public string TruckNo { get; set; }
         public string LicensePlateNo { get; set; }
 
@@ -41,7 +43,10 @@ namespace LogisticsManagement_Web.Models
         public int? UnitQuantity { get; set; }
         public int? SkidQuantity { get; set; }
         public int? TotalPiece { get; set; }
+        public int? WeightScaleId { get; set; }
+        public decimal? WeightTotal { get; set; }
         public string SpcIns { get; set; }
+        public bool IsInvoiced { get; set; }
 
         public bool? IsOrderDispatched { get; set; }
         public DateTime? DispatchDatetime { get; set; }

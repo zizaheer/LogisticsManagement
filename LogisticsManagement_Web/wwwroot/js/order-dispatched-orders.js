@@ -47,12 +47,12 @@ $('.btnPickup').unbind().on('click', function () {
 
     $('#hfOrderIdForOrderStatusUpdate').val(orderId);
 
-    var orderStatusInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
+    var orderStatusInfo = JSON.parse(GetSingleById('Order/GetOrderStatusByOrderId', orderId));
 
     if (orderStatusInfo !== null) {
         $('#txtDispatchDateTimeForPickupModal').val(orderStatusInfo.DispatchedDatetime);
 
-        var empInfo = JSON.parse(GetSingleObjectById('Employee/GetEmployeeById', orderStatusInfo.DispatchedToEmployeeId));
+        var empInfo = JSON.parse(GetSingleById('Employee/GetEmployeeById', orderStatusInfo.DispatchedToEmployeeId));
         if (empInfo.LastName == null) {
             empInfo.LastName = '';
         }
@@ -94,10 +94,15 @@ $('#btnSavePickup').unbind().on('click', function () {
 
     var dataArray = [wayBillNumber, waitTime, pickupDate, orderId];
 
-    UpdateEntry('Order/UpdatePickupStatus', dataArray);
+    var result = PerformPostActionWithObject('Order/UpdatePickupStatus', dataArray);
+    if (result.length > 0) {
+        event.preventDefault();
+        $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+        bootbox.alert('Pickup has been updated.');
+        $('#orderPickup').modal('hide');
+    }
+    
 
-    event.preventDefault();
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
 });
 $('#btnRemovePickup').unbind().on('click', function () {
 
@@ -105,9 +110,10 @@ $('#btnRemovePickup').unbind().on('click', function () {
 
     bootbox.confirm("Pickup information related to this order will be deleted. Are you sure to proceed?", function (result) {
         if (result === true) {
-            RemoveEntry('Order/RemovePickupStatus', orderId);
+            PerformPostActionWithId('Order/RemovePickupStatus', orderId);
             $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
             $('#orderPickup').modal('hide');
+            //bootbox.alert('Pickup has been removed.');
         }
     });
 });
@@ -128,7 +134,7 @@ $('.btnPasson').unbind().on('click', function () {
 
     $('#hfOrderIdForOrderStatusUpdate').val(orderId);
 
-    var orderStatusInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
+    var orderStatusInfo = JSON.parse(GetSingleById('Order/GetOrderStatusByOrderId', orderId));
 
     if (orderStatusInfo.PickupDatetime === null) {
         bootbox.alert('The order is not picked-up yet.');
@@ -139,7 +145,7 @@ $('.btnPasson').unbind().on('click', function () {
     if (orderStatusInfo !== null) {
         $('#txtDispatchDateTimeForPassOnModal').val(orderStatusInfo.DispatchedDatetime);
 
-        var empInfo = JSON.parse(GetSingleObjectById('Employee/GetEmployeeById', orderStatusInfo.DispatchedToEmployeeId));
+        var empInfo = JSON.parse(GetSingleById('Employee/GetEmployeeById', orderStatusInfo.DispatchedToEmployeeId));
         if (empInfo.LastName == null) {
             empInfo.LastName = '';
         }
@@ -155,7 +161,7 @@ $('.btnPasson').unbind().on('click', function () {
 
         if (orderStatusInfo.PassedOffToEmployeeId > 0) {
 
-            var passOnEmp = JSON.parse(GetSingleObjectById('Employee/GetEmployeeById', orderStatusInfo.PassedOffToEmployeeId));
+            var passOnEmp = JSON.parse(GetSingleById('Employee/GetEmployeeById', orderStatusInfo.PassedOffToEmployeeId));
             if (passOnEmp.LastName == null) {
                 passOnEmp.LastName = '';
             }
@@ -192,8 +198,6 @@ $('#txtPassOnEmployeeName').on('input', function (event) {
 
 });
 
-
-
 $('#btnSavePassOn').unbind().on('click', function () {
     var waitTime = $('#txtPassOnWaitTime').val();
     var pickupDate = $('#txtPickupDateTimeForPassOnModal').val();
@@ -210,10 +214,14 @@ $('#btnSavePassOn').unbind().on('click', function () {
 
     var dataArray = [wayBillNumber, waitTime, passOnEmployeeId, passOnDate, orderId];
 
-    UpdateEntry('Order/UpdatePassonStatus', dataArray);
-
-    event.preventDefault();
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+    var result = PerformPostActionWithObject('Order/UpdatePassonStatus', dataArray);
+    if (result.length > 0) {
+        event.preventDefault();
+        $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+        bootbox.alert('Pass-on has been updated.');
+        $('#orderPassOn').modal('hide');
+    }
+   
 });
 $('#btnRemovePassOn').unbind().on('click', function () {
 
@@ -221,9 +229,10 @@ $('#btnRemovePassOn').unbind().on('click', function () {
 
     bootbox.confirm("Pass-on information related to this order will be deleted. Are you sure to proceed?", function (result) {
         if (result === true) {
-            RemoveEntry('Order/RemovePassonStatus', orderId);
+            PerformPostActionWithId('Order/RemovePassonStatus', orderId);
             $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
             $('#orderPassOn').modal('hide');
+            //bootbox.alert('Pass-on has been removed.');
         }
     });
 
@@ -245,13 +254,13 @@ $('.btnDeliver').unbind().on('click', function () {
 
     $('#hfOrderIdForOrderStatusUpdate').val(orderId);
 
-    var orderStatusInfo = JSON.parse(GetSingleObjectById('Order/GetOrderStatusByOrderId', orderId));
-    var orderInfo = JSON.parse(GetSingleObjectById('Order/GetOrderInfoByOrderId', orderId));
-    var shipperInfo = JSON.parse(GetSingleObjectById('Customer/GetCustomerById', orderInfo.ShipperCustomerId));
-    var consigneeInfo = JSON.parse(GetSingleObjectById('Customer/GetCustomerById', orderInfo.ConsigneeCustomerId));
+    var orderStatusInfo = JSON.parse(GetSingleById('Order/GetOrderStatusByOrderId', orderId));
+    var orderInfo = JSON.parse(GetSingleById('Order/GetOrderInfoByOrderId', orderId));
+    var shipperInfo = JSON.parse(GetSingleById('Customer/GetCustomerById', orderInfo.ShipperCustomerId));
+    var consigneeInfo = JSON.parse(GetSingleById('Customer/GetCustomerById', orderInfo.ConsigneeCustomerId));
 
-    var shipperAddInfo = JSON.parse(GetSingleObjectById('Address/GetAddressById', orderInfo.ShipperAddressId));
-    var consigneeAddInfo = JSON.parse(GetSingleObjectById('Address/GetAddressById', orderInfo.ConsigneeAddressId));
+    var shipperAddInfo = JSON.parse(GetSingleById('Address/GetAddressById', orderInfo.ShipperAddressId));
+    var consigneeAddInfo = JSON.parse(GetSingleById('Address/GetAddressById', orderInfo.ConsigneeAddressId));
 
 
     $('#txtShipperInfo').val(shipperInfo.CustomerName + '\n' + shipperAddInfo.AddressLine );
@@ -265,14 +274,14 @@ $('.btnDeliver').unbind().on('click', function () {
     if (orderStatusInfo !== null) {
         $('#txtDispatchDateTimeForDeliverModal').val(orderStatusInfo.DispatchedDatetime);
 
-        var empInfo = JSON.parse(GetSingleObjectById('Employee/GetEmployeeById', orderStatusInfo.DispatchedToEmployeeId));
+        var empInfo = JSON.parse(GetSingleById('Employee/GetEmployeeById', orderStatusInfo.DispatchedToEmployeeId));
         if (empInfo.LastName == null) {
             empInfo.LastName = '';
         }
         $('#txtDispatchEmployeeNameForDeliverModal').val(empInfo.FirstName + ' ' + empInfo.LastName);
 
         if (orderStatusInfo.PassedOffToEmployeeId > 0) {
-            var passOnEmp = JSON.parse(GetSingleObjectById('Employee/GetEmployeeById', orderStatusInfo.PassedOffToEmployeeId));
+            var passOnEmp = JSON.parse(GetSingleById('Employee/GetEmployeeById', orderStatusInfo.PassedOffToEmployeeId));
             if (passOnEmp.LastName == null) {
                 passOnEmp.LastName = '';
             }
@@ -326,10 +335,15 @@ $('#btnSaveDeliver').unbind().on('click', function () {
 
     var dataArray = [wayBillNumber, waitTime, deliveryDate, deliveryNote, receivedByName, receivedBySign, orderId];
 
-    UpdateEntry('Order/UpdateDeliveryStatus', dataArray);
+    var result = PerformPostActionWithObject('Order/UpdateDeliveryStatus', dataArray);
 
-    event.preventDefault();
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+    if (result.length > 0) {
+        event.preventDefault();
+        $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+        bootbox.alert('Delivery information has been updated.');
+        $('#orderDeliver').modal('hide');
+    }
+    
 });
 $('#btnRemoveDeliver').unbind().on('click', function () {
 
@@ -337,9 +351,9 @@ $('#btnRemoveDeliver').unbind().on('click', function () {
 
     bootbox.confirm("Delivery information related to this order will be deleted. Are you sure to proceed?", function (result) {
         if (result === true) {
-            RemoveEntry('Order/RemoveDeliveryStatus', orderId);
+            PerformPostActionWithId('Order/RemoveDeliveryStatus', orderId);
             $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-
+            //bootbox.alert('Delivery information has been removed.');
             $('#orderDeliver').modal('hide');
         }
     });
@@ -358,7 +372,7 @@ $('.btnRemoveDispatch').unbind().on('click', function () {
 
     bootbox.confirm("This will also remove the pickup and delivery status. Are you sure you want to remove?", function (result) {
         if (result === true) {
-            RemoveEntry('Order/RemoveDispatchStatus', wayBillNumber);
+            PerformPostActionWithId('Order/RemoveDispatchStatus', wayBillNumber);
             $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
             $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
         }

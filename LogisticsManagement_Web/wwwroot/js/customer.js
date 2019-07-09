@@ -25,7 +25,7 @@ $(document).ready(function () {
         $("#addressSpinnerLoadingDataTable").css("display", "none");
     });
 
-    var addressLinesForAutoComplete = GetListObject('Address/GetAddressForAutoComplete');
+    var addressLinesForAutoComplete = GetList('Address/GetAddressForAutoComplete');
     if (addressLinesForAutoComplete !== null) {
         var addressLines = JSON.parse(addressLinesForAutoComplete);
 
@@ -45,7 +45,7 @@ $('#txtCustomerId').unbind('keypress').keypress(function (event) {
         customerId = $('#txtCustomerId').val();
 
         if (customerId !== '') {
-            var customerInfo = GetSingleObjectById('Customer/GetCustomerById', customerId);
+            var customerInfo = GetSingleById('Customer/GetCustomerById', customerId);
 
             if (customerInfo !== "" && customerInfo !== null && customerInfo !== undefined) {
                 FillCustomerInfo(JSON.parse(customerInfo));
@@ -86,10 +86,10 @@ $('#frmCustomerForm').unbind('submit').submit(function () {
 
     console.log(dataArray[0].id);
     if (dataArray[0].id > 0) {
-        UpdateEntry('Customer/Update', dataArray);
+        PerformPostActionWithObject('Customer/Update', dataArray);
     }
     else {
-        result = AddEntry('Customer/Add', dataArray);
+        result = PerformPostActionWithObject('Customer/Add', dataArray);
         $('#frmCustomerForm').trigger('reset');
     }
     event.preventDefault();
@@ -103,7 +103,7 @@ $('#customer-list').on('click', '.btnEdit', function () {
     var customerId = $(this).data('customerid');
 
     if (customerId !== '') {
-        var customerInfo = GetSingleObjectById('Customer/GetCustomerById', customerId);
+        var customerInfo = GetSingleById('Customer/GetCustomerById', customerId);
         if (customerInfo !== null && customerInfo !== undefined) {
             FillCustomerInformation(JSON.parse(customerInfo));
         }
@@ -122,7 +122,7 @@ $('.btnDelete').unbind().on('click', function () {
 
     bootbox.confirm("This customer will be deleted with all relavant data. Are you sure to proceed?", function (result) {
         if (result === true) {
-            RemoveEntry('Customer/Remove', customerId);
+            PerformPostActionWithId('Customer/Remove', customerId);
             $('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + defaultObjectLoadCount);
         }
     });
@@ -199,7 +199,7 @@ $('#txtCustomerIdForAddress ').unbind('keypress').keypress(function (event) {
         customerId = $('#txtCustomerIdForAddress').val();
 
         if (customerId !== '') {
-            var customerInfo = GetSingleObjectById('Customer/GetCustomerById', customerId);
+            var customerInfo = GetSingleById('Customer/GetCustomerById', customerId);
 
             if (customerInfo !== "" && customerInfo !== null && customerInfo !== undefined) {
                 var customer = JSON.parse(customerInfo);
@@ -238,7 +238,7 @@ $('#frmCustomerAddress').unbind('submit').submit(function () {
         return;
     }
 
-    result = AddEntry('Customer/AddAddress', dataArray);
+    result = PerformPostActionWithObject('Customer/AddAddress', dataArray);
     $('#frmCustomerAddress').trigger('reset');
 
     event.preventDefault();
@@ -292,7 +292,7 @@ $('.btnDeleteAddress').unbind().on('click', function () {
 
     bootbox.confirm("Selected address will be deleted from this customer. Are you sure to proceed?", function (result) {
         if (result === true) {
-            RemoveEntryWithParams('Customer/RemoveAddress', [custAddData]);
+            PerformPostActionWithObject('Customer/RemoveAddress', [custAddData]);
             $('#loadAddressDataTable').load('Customer/LoadCustomerAddressData/' + custId);
             ClearAddressForm();
         }
@@ -347,7 +347,7 @@ function FillCustomerInformation(customerInfo) {
 }
 
 function FillAddress(addressId) {
-    var addressInfo = GetSingleObjectById('Address/GetAddressById', addressId);
+    var addressInfo = GetSingleById('Address/GetAddressById', addressId);
 
     if (addressInfo !== null && addressInfo !== undefined) {
         var address = JSON.parse(addressInfo);

@@ -142,13 +142,9 @@ namespace LogisticsManagement_Web.Controllers
 
             try
             {
-
-
-
                 var addresses = _addressLogic.GetList();
                 foreach (var address in addresses)
                 {
-
                     ViewModel_AddressDetail filteredAddress = new ViewModel_AddressDetail();
                     filteredAddress.AddressId = address.Id;
                     filteredAddress.UnitNumber = address.UnitNumber;
@@ -229,14 +225,25 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetAddressById(string id)
         {
-            var address = _addressLogic.GetList().Where(c => c.Id == Convert.ToInt32(id)).FirstOrDefault();
-            return Json(JsonConvert.SerializeObject(address));
+            if (!string.IsNullOrEmpty(id) && id!="null")
+            {
+                var address = _addressLogic.GetList().Where(c => c.Id == Convert.ToInt32(id)).FirstOrDefault();
+                return Json(JsonConvert.SerializeObject(address));
+            }
+
+            return null;
         }
 
         public JsonResult GetAddressByAddressLine(string addressline)
         {
-            var address = _addressLogic.GetList().Where(c => c.AddressLine == (addressline.Trim()));
-            return Json(JsonConvert.SerializeObject(address));
+            if (!string.IsNullOrEmpty(addressline))
+            {
+                var address = _addressLogic.GetList().Where(c => c.AddressLine == (addressline.Trim()));
+                return Json(JsonConvert.SerializeObject(address));
+            }
+
+            return null;
+           
         }
 
         private void ValidateSession()

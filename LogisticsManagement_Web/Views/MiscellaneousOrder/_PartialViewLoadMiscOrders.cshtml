@@ -1,0 +1,66 @@
+﻿@using LogisticsManagement_Web.Models;
+@model ViewModel_MiscellaneousOrder
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.dataTable.isDataTable('#misc-order-list')) {
+            $('#misc-order-list').DataTable().destroy();
+        }
+        $('#misc-order-list').DataTable({
+            "order": [[0, "desc"]],
+            "lengthChange": false,
+            searching: false,
+            paging: false,
+            info: false
+        });
+    });
+</script>
+
+<table id="misc-order-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
+    <thead>
+        <tr>
+            <th>W/B #</th>
+            <th>Date</th>
+            <th>Ref #</th>
+            <th>Unit/Qty</th>
+            <th>Wght.</th>
+            <th>Biller</th>
+
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.MiscellaneousOrders.Where(c => c.OrderTypeId == 3 && c.IsInvoiced == false).ToList().OrderByDescending(c => c.WayBillNumber))
+        {
+            <tr>
+                <td>
+                    <div class="form-check-inline">
+                        <input type="checkbox" id="chkWaybillNumber" class="form-check-input chkWaybillNumber" name="chkWaybillNumber" data-waybillnumber="@item.WayBillNumber">
+                        <a class="btnEdit" href="#" data-waybillnumber='@item.WayBillNumber' data-toggle="modal" style="cursor:pointer"><label class="form-check-label" style="cursor:pointer">@item.WayBillNumber</label></a>
+                    </div>
+                </td>
+                <td>
+                    @item.OrderDateString
+                </td>
+                <td>
+                    @item.CustomerRefNumber
+                </td>
+                <td>
+                    @item.UnitQuantity (@item.UnitTypeName)
+                </td>
+                <td>
+                    @item.WeightTotal (@item.WeightScaleId)
+                </td>
+                <td>
+                    @item.BillerCustomerName (@item.BillerCustomerId)
+                </td>
+                <td>
+                    <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-primary btnEdit" type="button" title="Edit" data-toggle="modal"><i class="fa fa-edit"></i></button>
+                    <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-ghost-danger btnDelete" type="button" title="Delete"><i class="fa fa-trash"></i> </button>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+<script src="~/js/misc-order.js"></script>
