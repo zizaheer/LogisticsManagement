@@ -27,7 +27,6 @@ namespace LogisticsManagement_DataAccess
         public DbSet<Lms_AccountTypePoco> lmsAccountTypePocos { get; set; }
         public DbSet<Lms_AdditionalServicePoco> lmsAdditionalServicePocos { get; set; }
         public DbSet<Lms_AddressPoco> lmsAddressPocos { get; set; }
-        public DbSet<Lms_AddressMappingPoco> lmsAddressMappingPocos { get; set; }
         public DbSet<Lms_AddressTypePoco> lmsAddressTypePocos { get; set; }
         public DbSet<Lms_BankPoco> lmsBankPocos { get; set; }
         public DbSet<Lms_BillPaymentPoco> lmsBillPaymentPocos { get; set; }

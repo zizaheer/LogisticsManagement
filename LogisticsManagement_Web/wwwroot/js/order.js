@@ -584,7 +584,10 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
     }
 
     if (dataArray[0].wayBillNumber > 0) {
-        PerformPostActionWithObject('Order/Update', dataArray);
+        result = PerformPostActionWithObject('Order/Update', dataArray);
+        if (result.length > 0) {
+            bootbox.alert('The order has been updated successfully');
+        }
     }
     else {
         result = PerformPostActionWithObject('Order/Add', dataArray);
@@ -592,6 +595,8 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
             parseData = JSON.parse(result);
             $('#txtWayBillNo').val(parseData.WayBillNumber);
             $('#hfOrderId').val(parseData.OrderId);
+
+            bootbox.alert('The order has been created successfully');
         }
     }
     selectedAdditionalServiceArray = null;
@@ -795,7 +800,7 @@ $('#btnPrintWaybill').unbind().on('click', function (event) {
     event.preventDefault();
     $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
     $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-    selectedOrdersForDispatch = [];
+    //selectedOrdersForDispatch = [];
 
 });
 
@@ -815,7 +820,7 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, orderTypeId) {
         return item.OrderTypeId === orderTypeId;
     })[0];
 
-    if (orderData !== null && orderData !== undefined && orderData!='') {
+    if (orderData !== null && orderData !== undefined && orderData != '') {
         $('#hfOrderId').val(orderData.Id);
         $('#hfBillerCustomerId').val(orderData.BillToCustomerId);
 
@@ -1174,8 +1179,7 @@ function FillOrderDetails(orderRelatedData) {
             }
         }
 
-        if (orderRelatedData.ShipperCustomerId != null && orderRelatedData.BillToCustomerId != null && orderRelatedData.ConsigneeCustomerId != null)
-        {
+        if (orderRelatedData.ShipperCustomerId != null && orderRelatedData.BillToCustomerId != null && orderRelatedData.ConsigneeCustomerId != null) {
             if (orderRelatedData.ShipperCustomerId === orderRelatedData.BillToCustomerId) {
                 $('#rdoShipper').prop('checked', true);
             }
@@ -1327,7 +1331,7 @@ function FillOrderAdditionalServices(orderAdditionalServiceData) {
             selectedAdditionalServiceArray.push(serviceData);
 
             var additionalServiceInfo = JSON.parse(GetSingleById('AdditionalService/GetAdditionalServiceInfoById', serviceData.additionalServiceId));
-            if (additionalServiceInfo !== null && additionalServiceInfo !== undefined && additionalServiceInfo!== '') {
+            if (additionalServiceInfo !== null && additionalServiceInfo !== undefined && additionalServiceInfo !== '') {
                 //$('#btnAddAddtionalServiceRow').trigger('click');
 
 

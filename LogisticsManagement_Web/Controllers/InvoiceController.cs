@@ -32,7 +32,7 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_AddressLogic _addressLogic;
         private Lms_UnitTypeLogic _unitTypeLogic;
         private Lms_WeightScaleLogic _weightScaleLogic;
-       
+
         private Lms_EmployeeLogic _employeeLogic;
         private App_CityLogic _cityLogic;
         private App_ProvinceLogic _provinceLogic;
@@ -50,10 +50,14 @@ namespace LogisticsManagement_Web.Controllers
         private IHttpContextAccessor _httpContext;
         int orderTypeToLoad = 0;
 
-        public InvoiceController(IMemoryCache cache, LogisticsContext dbContext)
+        public InvoiceController(IMemoryCache cache, IEmailService emailService, IHostingEnvironment hostingEnvironment, IHttpContextAccessor httpContext, LogisticsContext dbContext)
         {
             _cache = cache;
             _dbContext = dbContext;
+            _emailService = emailService;
+            _hostingEnvironment = hostingEnvironment;
+            _httpContext = httpContext;
+
             _invoiceLogic = new Lms_InvoiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_InvoicePoco>(_dbContext));
             _invoiceWayBillMappingLogic = new Lms_InvoiceWayBillMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_InvoiceWayBillMappingPoco>(_dbContext));
             _orderLogic = new Lms_OrderLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderPoco>(_dbContext));
@@ -680,114 +684,188 @@ namespace LogisticsManagement_Web.Controllers
             }
         }
 
-        public JsonResult PrintInvoice([FromBody]dynamic orderData)
+        public JsonResult PrintInvoice([FromBody]dynamic invoiceData)
         {
+
+            ValidateSession();
+            var result = "";
+
+            var viewModelPrintInvoice = new ViewModel_PrintInvoice();
+
             try
             {
-                List<ViewModel_PrintWaybill> waybillPrintViewModels = new List<ViewModel_PrintWaybill>();
-                JArray wayBillNumberList = null;
-
-                var orderList = _orderLogic.GetList();
-
-                _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
-                var addresses = _addressLogic.GetList();
-
-                _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
-                var cities = _cityLogic.GetList();
-
-                _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
-                var provinces = _provinceLogic.GetList();
-
-                _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
-                var customers = _customerLogic.GetList();
-
-                _deliveryOptionLogic = new Lms_DeliveryOptionLogic(_cache, new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
-                var deliveryOptions = _deliveryOptionLogic.GetList();
-
-                _unitTypeLogic = new Lms_UnitTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_UnitTypePoco>(_dbContext));
-                var unitTypes = _unitTypeLogic.GetList();
-
-                _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
-                var weightScales = _weightScaleLogic.GetList();
-
-                if (orderData != null)
+                if (invoiceData != null)
                 {
-                    wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(orderData[0]));
-                }
+                    var wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(invoiceData[0]));
 
-                foreach (var item in wayBillNumberList)
-                {
-                    var wbNumber = item.ToString();
-                    var orderInfo = orderList.Where(c => c.WayBillNumber == wbNumber && c.OrderTypeId == 1).FirstOrDefault(); //consider only the single order; not the return order
-                    if (orderInfo != null)
+
+                    var orders = _orderLogic.GetList().Where(c => c.IsInvoiced == false).ToList();
+
+                    _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
+                    var addresses = _addressLogic.GetList();
+
+                    _customerAddressMappingLogic = new Lms_CustomerAddressMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerAddressMappingPoco>(_dbContext));
+                    var addressMappings = _customerAddressMappingLogic.GetList();
+
+                    _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
+                    var cities = _cityLogic.GetList();
+
+                    _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
+                    var provinces = _provinceLogic.GetList();
+
+                    _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+                    var customers = _customerLogic.GetList();
+
+                    _deliveryOptionLogic = new Lms_DeliveryOptionLogic(_cache, new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
+                    var deliveryOptions = _deliveryOptionLogic.GetList();
+
+                    _unitTypeLogic = new Lms_UnitTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_UnitTypePoco>(_dbContext));
+                    var unitTypes = _unitTypeLogic.GetList();
+
+                    _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
+                    var weightScales = _weightScaleLogic.GetList();
+
+
+                    var countArray = ((JArray)wayBillNumberList).Count;
+                    string[] wbNumbers = new string[countArray];
+
+
+                    List<ViewModel_GeneratedInvoice> invoiceViewModels = new List<ViewModel_GeneratedInvoice>();
+
+                    for (int i = 0; i < countArray; i++)
                     {
-                        ViewModel_PrintWaybill waybillPrintViewModel = new ViewModel_PrintWaybill();
+                        wbNumbers[i] = wayBillNumberList[i].SelectToken("wbillNumber").ToString();
+                        ViewModel_GeneratedInvoice invoiceViewModel = new ViewModel_GeneratedInvoice();
 
-                        waybillPrintViewModel.WaybillNumber = orderInfo.WayBillNumber;
-                        waybillPrintViewModel.WayBillDate = orderInfo.CreateDate.ToString("dd-MMM-yy");
-                        waybillPrintViewModel.BillerCustomerId = orderInfo.BillToCustomerId;
-                        waybillPrintViewModel.CustomerRefNo = orderInfo.ReferenceNumber;
-                        waybillPrintViewModel.CargoCtlNo = orderInfo.CargoCtlNumber;
-                        waybillPrintViewModel.AwbContainerNo = orderInfo.AwbCtnNumber;
-                        waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == orderInfo.BillToCustomerId).FirstOrDefault().CustomerName;
-                        waybillPrintViewModel.OrderedByName = orderInfo.OrderedBy;
-                        waybillPrintViewModel.DeliveryOptionShortCode = deliveryOptions.Where(c => c.Id == orderInfo.DeliveryOptionId).FirstOrDefault().ShortCode;
+                        invoiceViewModel.WayBillNumbers = wbNumbers[i];
+                        invoiceViewModels.Add(invoiceViewModel);
+                    }
 
-                        waybillPrintViewModel.OrderBasePrice = orderInfo.OrderBasicCost.ToString();
-                        if (orderInfo.BasicCostOverriden != null && orderInfo.BasicCostOverriden > 0)
+                    orders = (from order in orders
+                              join waybill in invoiceViewModels on order.WayBillNumber equals waybill.WayBillNumbers
+                              select order).ToList();
+
+                    using (var scope = new TransactionScope())
+                    {
+                        var customerWiseOrders = new List<Lms_OrderPoco>();
+
+                        var invoiceBillerList = new List<ViewModel_InvoiceBiller>();
+                        var invoiceWaybillList = new List<ViewModel_PrintWaybill>();
+
+                        var billerList = orders.Select(c => c.BillToCustomerId).Distinct();
+                        foreach (var item in billerList)
                         {
-                            waybillPrintViewModel.OrderBasePrice = orderInfo.BasicCostOverriden.ToString();
+                            ViewModel_InvoiceBiller invoiceBiller = new ViewModel_InvoiceBiller();
+
+                            var billerInfo = orders.Where(c => c.BillToCustomerId == item).FirstOrDefault();
+                            invoiceBiller.BillerCustomerId = billerInfo.BillToCustomerId;
+                            invoiceBiller.BillerDepartment = billerInfo.DepartmentName;
+                            invoiceBiller.BillerCustomerName = customers.Where(c => c.Id == item).FirstOrDefault().CustomerName;
+                            invoiceBiller.Term = customers.Where(c => c.Id == item).FirstOrDefault().InvoiceDueDays;
+
+                            var addressInfo = addressMappings.Where(c => c.AddressTypeId == 2 && c.CustomerId == item).FirstOrDefault(); // first checking whether there is a billing address
+                            if (addressInfo == null)
+                            {
+                                addressInfo = addressMappings.Where(c => c.AddressTypeId == 1 && c.CustomerId == item).FirstOrDefault(); // if not, second checking whether there is a shipping address
+                            }
+                            if (addressInfo == null)
+                            {
+                                addressInfo = addressMappings.Where(c => c.AddressTypeId == 4 && c.CustomerId == item).FirstOrDefault(); // if not, third checking whether there is a warehouse address
+                            }
+                            if (addressInfo != null)
+                            {
+                                var billerAddressInfo = addresses.Where(c => c.Id == addressInfo.AddressId).FirstOrDefault();
+                                invoiceBiller.BillerCustomerAddress = string.IsNullOrEmpty(billerAddressInfo.UnitNumber) ? billerAddressInfo.AddressLine : billerAddressInfo.UnitNumber + ", " + billerAddressInfo.AddressLine;
+                                invoiceBiller.BillerCustomerAddress += ", " + cities.Where(c => c.Id == billerAddressInfo.CityId).FirstOrDefault().CityName + ", ";
+                                invoiceBiller.BillerCustomerAddress += provinces.Where(c => c.Id == billerAddressInfo.ProvinceId).FirstOrDefault().ShortCode;
+                                invoiceBiller.BillerPostCode = billerAddressInfo.PostCode;
+                            }
+
+                            invoiceBillerList.Add(invoiceBiller);
                         }
 
-                        if (orderInfo.DiscountPercentOnOrderCost != null && orderInfo.DiscountPercentOnOrderCost > 0)
+                        foreach (var item in orders)
                         {
-                            waybillPrintViewModel.OrderBasePrice = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) - (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.DiscountPercentOnOrderCost / 100)).ToString();
+                            if (item != null)
+                            {
+                                ViewModel_PrintWaybill waybillPrintViewModel = new ViewModel_PrintWaybill();
+
+                                waybillPrintViewModel.WaybillNumber = item.WayBillNumber;
+                                waybillPrintViewModel.WayBillDate = item.CreateDate.ToString("dd-MMM-yy");
+                                waybillPrintViewModel.BillerCustomerId = item.BillToCustomerId;
+                                waybillPrintViewModel.CustomerRefNo = item.ReferenceNumber;
+                                waybillPrintViewModel.CargoCtlNo = item.CargoCtlNumber;
+                                waybillPrintViewModel.AwbContainerNo = item.AwbCtnNumber;
+                                waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == item.BillToCustomerId).FirstOrDefault().CustomerName;
+                                waybillPrintViewModel.OrderedByName = item.OrderedBy;
+                                waybillPrintViewModel.DeliveryOptionShortCode = deliveryOptions.Where(c => c.Id == item.DeliveryOptionId).FirstOrDefault().ShortCode;
+
+                                waybillPrintViewModel.OrderBasePrice = item.OrderBasicCost.ToString();
+                                if (item.BasicCostOverriden != null && item.BasicCostOverriden > 0)
+                                {
+                                    waybillPrintViewModel.OrderBasePrice = item.BasicCostOverriden.ToString();
+                                }
+
+                                if (item.DiscountPercentOnOrderCost != null && item.DiscountPercentOnOrderCost > 0)
+                                {
+                                    waybillPrintViewModel.OrderBasePrice = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) - (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * item.DiscountPercentOnOrderCost / 100)).ToString();
+                                }
+
+                                if (item.FuelSurchargePercentage != null && item.FuelSurchargePercentage > 0)
+                                {
+                                    waybillPrintViewModel.FuelSurcharge = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * item.FuelSurchargePercentage / 100).ToString();
+                                }
+
+                                waybillPrintViewModel.AdditionalServiceCost = item.TotalAdditionalServiceCost.ToString();
+
+                                if (item.ApplicableGstPercent != null && item.ApplicableGstPercent > 0)
+                                {
+                                    waybillPrintViewModel.OrderTaxAmount = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * item.ApplicableGstPercent / 100).ToString();
+                                }
+
+                                waybillPrintViewModel.TotalOrderCost = item.TotalOrderCost.ToString();
+                                waybillPrintViewModel.PickupFromCustomerName = customers.Where(c => c.Id == item.ShipperCustomerId).FirstOrDefault().CustomerName;
+
+                                var shippperAddress = addresses.Where(c => c.Id == item.ShipperAddressId).FirstOrDefault();
+
+                                waybillPrintViewModel.PickupFromCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber + ", " + shippperAddress.AddressLine : shippperAddress.AddressLine;
+                                waybillPrintViewModel.PickupFromCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + shippperAddress.PostCode;
+
+                                waybillPrintViewModel.DeliveredToCustomerName = customers.Where(c => c.Id == item.ConsigneeCustomerId).FirstOrDefault().CustomerName;
+
+                                var consigneeAddress = addresses.Where(c => c.Id == item.ConsigneeAddressId).FirstOrDefault();
+
+
+                                waybillPrintViewModel.DeliveredToCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
+                                waybillPrintViewModel.DeliveredToCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
+
+                                waybillPrintViewModel.TotalSkidPieces = 0;
+                                waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == item.UnitTypeId).FirstOrDefault().TypeName;
+                                waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == item.UnitTypeId).FirstOrDefault().ShortCode;
+                                waybillPrintViewModel.UnitQuantity = item.UnitQuantity;
+                                waybillPrintViewModel.WeightScaleShortCode = weightScales.Where(c => c.Id == item.WeightScaleId).FirstOrDefault().ShortCode;
+                                waybillPrintViewModel.WeightTotal = item.WeightTotal.ToString();
+                                waybillPrintViewModel.DeliveryDate = null;
+                                waybillPrintViewModel.DeliveryTime = null;
+                                waybillPrintViewModel.PUDriverName = "";
+                                waybillPrintViewModel.DeliveryDriverName = item.WayBillNumber;
+                                if (item.IsPrintedOnWayBill != null && item.IsPrintedOnWayBill == true)
+                                {
+                                    waybillPrintViewModel.WaybillComments = item.CommentsForWayBill;
+                                }
+
+                                invoiceWaybillList.Add(waybillPrintViewModel);
+
+                            }
                         }
 
-                        if (orderInfo.FuelSurchargePercentage != null && orderInfo.FuelSurchargePercentage > 0)
-                        {
-                            waybillPrintViewModel.FuelSurcharge = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.FuelSurchargePercentage / 100).ToString();
-                        }
-
-                        waybillPrintViewModel.AdditionalServiceCost = orderInfo.TotalAdditionalServiceCost.ToString();
-
-                        if (orderInfo.ApplicableGstPercent != null && orderInfo.ApplicableGstPercent > 0)
-                        {
-                            waybillPrintViewModel.OrderTaxAmount = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.ApplicableGstPercent / 100).ToString();
-                        }
-
-                        waybillPrintViewModel.TotalOrderCost = orderInfo.TotalOrderCost.ToString();
-                        waybillPrintViewModel.PickupFromCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName;
-
-                        var shippperAddress = addresses.Where(c => c.Id == orderInfo.ShipperAddressId).FirstOrDefault();
-
-                        waybillPrintViewModel.PickupFromCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber + ", " + shippperAddress.AddressLine : shippperAddress.AddressLine;
-                        waybillPrintViewModel.PickupFromCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + shippperAddress.PostCode;
-
-                        waybillPrintViewModel.DeliveredToCustomerName = customers.Where(c => c.Id == orderInfo.ConsigneeCustomerId).FirstOrDefault().CustomerName;
-
-                        var consigneeAddress = addresses.Where(c => c.Id == orderInfo.ConsigneeAddressId).FirstOrDefault();
+                        viewModelPrintInvoice.viewModelInvoiceBillers = invoiceBillerList;
+                        viewModelPrintInvoice.viewModelWaybills = invoiceWaybillList;
 
 
-                        waybillPrintViewModel.DeliveredToCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
-                        waybillPrintViewModel.DeliveredToCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
+                        scope.Complete();
 
-                        waybillPrintViewModel.TotalSkidPieces = 0;
-                        waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().TypeName;
-                        waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().ShortCode;
-                        waybillPrintViewModel.UnitQuantity = orderInfo.UnitQuantity;
-                        waybillPrintViewModel.WeightScaleShortCode = weightScales.Where(c => c.Id == orderInfo.WeightScaleId).FirstOrDefault().ShortCode;
-                        waybillPrintViewModel.WeightTotal = orderInfo.WeightTotal.ToString();
-                        waybillPrintViewModel.DeliveryDate = null;
-                        waybillPrintViewModel.DeliveryTime = null;
-                        waybillPrintViewModel.PUDriverName = "";
-                        waybillPrintViewModel.DeliveryDriverName = orderInfo.WayBillNumber;
-                        if (orderInfo.IsPrintedOnWayBill != null && orderInfo.IsPrintedOnWayBill == true)
-                        {
-                            waybillPrintViewModel.WaybillComments = orderInfo.CommentsForWayBill;
-                        }
-
-                        waybillPrintViewModels.Add(waybillPrintViewModel);
+                        result = "Success";
 
                     }
                 }
@@ -797,21 +875,22 @@ namespace LogisticsManagement_Web.Controllers
                 var path = "/contents/invoices/invoice_" + uniqueId + ".pdf";
                 var filePath = webrootPath + path;
 
-                var pdfReport = new ViewAsPdf("PrintInvoice", waybillPrintViewModels);
+                var pdfReport = new ViewAsPdf("PrintInvoice", viewModelPrintInvoice);
                 var file = pdfReport.BuildFile(ControllerContext).Result;
 
                 System.IO.File.WriteAllBytes(filePath, file);
 
                 //_emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content", path);
-
-
                 return Json(path);
+
             }
+
             catch (Exception ex)
             {
-                return null;
+
             }
-            //return View();
+
+            return Json(result);
         }
 
 
