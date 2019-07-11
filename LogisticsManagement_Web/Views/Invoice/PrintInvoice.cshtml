@@ -107,7 +107,7 @@
                             </span>
                         </b>
                         <br />
-                        <b><span>Term: @item.Term</span></b>
+                        <b><span>Term: @item.Term (days)</span></b>
                     </td>
                 </tr>
                 <tr>
@@ -150,38 +150,46 @@
                                 </tr>
                                 @{
                                     var wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId).ToList();
+                                    var serial = 0;
                                 }
 
+                                
                                 @foreach (var bill in wayBills)
                                 {
-                                    <tr>
+                                    <tr style="font-size:11px">
                                         <td class="tdStyle">
-                                            <span>1</span>
+                                            <span>@{ serial = serial + 1; @serial}</span>
                                         </td>
                                         <td class="tdStyle">
-                                            <span>1 21feb 2019</span><br />
-                                            <span>SMD</span>
+                                            <span>@bill.WayBillDate</span><br />
+                                            <span>@bill.DeliveryOptionShortCode</span>
                                         </td>
                                         <td class="tdStyle">
-                                            <span>30656</span><br />
-                                            <span>AMan</span>
+                                            <span>@bill.WaybillNumber</span><br />
+                                            <span>@bill.CustomerRefNo</span><br />
+                                            <span>@bill.OrderedByName</span>
+
                                         </td>
                                         <td class="tdStyle">
-                                            <span>Med sci</span><br />
-                                            <span>12 sdkfnsd</span><br />
-                                            <span>Bramton, On</span>
+                                            <span>@bill.ShipperCustomerName</span><br />
+                                            <span>@bill.ShipperCustomerAddressLine1</span><br />
+                                            <span>@bill.ShipperCustomerAddressLine2</span>
                                         </td>
-                                        <td class="tdStyle">&nbsp;</td>
                                         <td class="tdStyle">
-                                            <span>1 pc</span><br />
-                                            <span>77 lb</span>
+                                            <span>@bill.ConsigneeCustomerName</span><br />
+                                            <span>@bill.ConsigneeCustomerAddressLine1</span><br />
+                                            <span>@bill.ConsigneeCustomerAddressLine2</span>
                                         </td>
-                                        <td class="tdStyle">45</td>
                                         <td class="tdStyle">
-                                            <span>15.00</span><br />
-                                            <span>30.00</span>
+                                            <span>@bill.UnitQuantity (@bill.UnitTypeShortCode)</span><br />
+                                            <span>@bill.WeightTotal @bill.WeightScaleShortCode</span>
                                         </td>
-                                        <td class="tdStyle">90.00</td>
+                                        <td class="tdStyle">@bill.OrderBasePrice</td>
+                                        <td class="tdStyle">
+                                            <span>@bill.FuelSurcharge</span><br />
+                                            <span>@bill.AdditionalServiceCost</span>
+                                        </td>
+                                        <td class="tdStyle">@bill.GrandTotalOrderCost</td>
                                     </tr>
 
                                 }

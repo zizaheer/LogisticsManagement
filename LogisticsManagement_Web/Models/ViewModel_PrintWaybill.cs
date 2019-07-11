@@ -17,17 +17,22 @@ namespace LogisticsManagement_Web.Models
         public string BillerCustomerName { get; set; }
         public string OrderedByName { get; set; }
         public string DeliveryOptionShortCode { get; set; }
+
         public string OrderBasePrice { get; set; }
+        public string OrderDiscountAmount { get; set; }
         public string FuelSurcharge { get; set; }
-        public string AdditionalServiceCost { get; set; }
         public string OrderTaxAmount { get; set; }
-        public string TotalOrderCost { get; set; }
-        public string PickupFromCustomerName { get; set; }
-        public string PickupFromCustomerAddressLine1 { get; set; }
-        public string PickupFromCustomerAddressLine2 { get; set; }
-        public string DeliveredToCustomerName { get; set; }
-        public string DeliveredToCustomerAddressLine1 { get; set; }
-        public string DeliveredToCustomerAddressLine2 { get; set; }
+        //public string TotalOrderCost { get; set; }
+        //public string TotalOrderCostWithoutTaxAndFuel { get; set; }
+        public string AdditionalServiceCost { get; set; }
+        public string GrandTotalOrderCost { get; set; }
+
+        public string ShipperCustomerName { get; set; }
+        public string ShipperCustomerAddressLine1 { get; set; }
+        public string ShipperCustomerAddressLine2 { get; set; }
+        public string ConsigneeCustomerName { get; set; }
+        public string ConsigneeCustomerAddressLine1 { get; set; }
+        public string ConsigneeCustomerAddressLine2 { get; set; }
         public int TotalSkidPieces { get; set; }
         public string UnitTypeName { get; set; }
         public string UnitTypeShortCode { get; set; }

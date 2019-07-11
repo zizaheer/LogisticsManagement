@@ -478,36 +478,68 @@ namespace LogisticsManagement_Web.Controllers
 
                         if (orderInfo.DiscountPercentOnOrderCost != null && orderInfo.DiscountPercentOnOrderCost > 0)
                         {
-                            waybillPrintViewModel.OrderBasePrice = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) - (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.DiscountPercentOnOrderCost / 100)).ToString();
+                            var orderDiscount = Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) - (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.DiscountPercentOnOrderCost / 100);
+                            if (orderDiscount > 0)
+                            {
+                                waybillPrintViewModel.OrderDiscountAmount = orderDiscount.ToString();
+                                waybillPrintViewModel.OrderBasePrice = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) - (decimal)orderDiscount).ToString();
+                            }
+                            else
+                            {
+                                waybillPrintViewModel.OrderDiscountAmount = "0.00";
+                            }
                         }
 
                         if (orderInfo.FuelSurchargePercentage != null && orderInfo.FuelSurchargePercentage > 0)
                         {
-                            waybillPrintViewModel.FuelSurcharge = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.FuelSurchargePercentage / 100).ToString();
+                            var fuelAmnt = Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.FuelSurchargePercentage / 100;
+                            if (fuelAmnt > 0)
+                            {
+                                waybillPrintViewModel.FuelSurcharge = fuelAmnt.ToString();
+                            }
+                            else
+                            {
+                                waybillPrintViewModel.FuelSurcharge = "0.00";
+                            }
                         }
 
-                        waybillPrintViewModel.AdditionalServiceCost = orderInfo.TotalAdditionalServiceCost.ToString();
+                        if (orderInfo.TotalAdditionalServiceCost > 0)
+                        {
+                            waybillPrintViewModel.AdditionalServiceCost = orderInfo.TotalAdditionalServiceCost.ToString();
+                        }
+                        else
+                        {
+                            waybillPrintViewModel.AdditionalServiceCost = "0.00";
+                        }
 
                         if (orderInfo.ApplicableGstPercent != null && orderInfo.ApplicableGstPercent > 0)
                         {
-                            waybillPrintViewModel.OrderTaxAmount = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.ApplicableGstPercent / 100).ToString();
+                            var taxAmnt = Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.ApplicableGstPercent / 100;
+                            if (taxAmnt > 0)
+                            {
+                                waybillPrintViewModel.OrderTaxAmount = taxAmnt.ToString();
+                            }
+                            else
+                            {
+                                waybillPrintViewModel.OrderTaxAmount = "0.00";
+                            }
                         }
 
-                        waybillPrintViewModel.TotalOrderCost = orderInfo.TotalOrderCost.ToString();
-                        waybillPrintViewModel.PickupFromCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName;
+                        waybillPrintViewModel.GrandTotalOrderCost = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString();
+                        waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName;
 
                         var shippperAddress = addresses.Where(c => c.Id == orderInfo.ShipperAddressId).FirstOrDefault();
 
-                        waybillPrintViewModel.PickupFromCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber + ", " + shippperAddress.AddressLine : shippperAddress.AddressLine;
-                        waybillPrintViewModel.PickupFromCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + shippperAddress.PostCode;
+                        waybillPrintViewModel.ShipperCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber + ", " + shippperAddress.AddressLine : shippperAddress.AddressLine;
+                        waybillPrintViewModel.ShipperCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + shippperAddress.PostCode;
 
-                        waybillPrintViewModel.DeliveredToCustomerName = customers.Where(c => c.Id == orderInfo.ConsigneeCustomerId).FirstOrDefault().CustomerName;
+                        waybillPrintViewModel.ConsigneeCustomerName = customers.Where(c => c.Id == orderInfo.ConsigneeCustomerId).FirstOrDefault().CustomerName;
 
                         var consigneeAddress = addresses.Where(c => c.Id == orderInfo.ConsigneeAddressId).FirstOrDefault();
 
 
-                        waybillPrintViewModel.DeliveredToCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
-                        waybillPrintViewModel.DeliveredToCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
+                        waybillPrintViewModel.ConsigneeCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
+                        waybillPrintViewModel.ConsigneeCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
 
                         waybillPrintViewModel.TotalSkidPieces = 0;
                         waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().TypeName;
