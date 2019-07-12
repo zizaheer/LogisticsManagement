@@ -49,5 +49,8 @@ namespace LogisticsManagement_Web.Models
         public string WaybillComments { get; set; }
         public string InvoiceComments { get; set; }
         public string AdditionalServicesComments { get; set; }
+
+        public int NumberOfCopyOnEachPage { get; set; }
+        public int NumberOfCopyPerItem { get; set; }
     }
 }

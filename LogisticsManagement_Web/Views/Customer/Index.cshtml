@@ -206,11 +206,11 @@
         <div class="col-sm-8" id="divAddress0">
             <div class="row m-0 input-group">
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBothForMain" value="0" checked/>
+                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBothForMain" value="0" checked />
                     <label class="form-check-label" for="rdoBothForMain">Billing/Shipping same</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBillingForMain" value="1"  />
+                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBillingForMain" value="1" />
                     <label class="form-check-label" for="rdoBillingForMain">Billing only</label>
                 </div>
                 <div class="form-check form-check-inline">
@@ -276,14 +276,21 @@
                 <input class="col-6 form-control form-control-sm " id="txtPrimaryPhoneNumberForMain" type="tel" name="txtPrimaryPhoneNumberForMain" placeholder="Phone" />
                 <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumberForMain" type="tel" name="txtFaxNumberForMain" placeholder="Fax" />
             </div>
-           
+
+            <div class="row m-0 input-group" style="margin-bottom:10px !important; margin-left:15px !important; margin-top:20px !important">
+                <div class="form-check-inline">
+                    <input class="form-check-input" id="chkIsActive" type="checkbox" checked/>
+                    <label class="form-check-label" for="chkIsActive">Active customer?</label>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <hr />
     <button type="reset" class="col-1 btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
     <button type="submit" class="col-1 btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
-    <button style="float:right" data-toggle="modal" type="button" class="col-1 btn btn-sm btn-danger" id="btnAddAddress"><i class="fa fa-envelop"></i> Address</button>
+    <button style="float:right" type="button" class="col-1 btn btn-sm btn-danger" id="btnAddAddress"><i class="fa fa-envelope"></i> Address</button>
 
 </form>
 

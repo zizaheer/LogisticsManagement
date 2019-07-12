@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -101,9 +102,10 @@ namespace LogisticsManagement_Web.Controllers
                     var shipperProvinceId = orderAddressData.SelectToken("shipperProvinceId").ToString();
                     var shipperPostcode = orderAddressData.SelectToken("shipperPostcode").ToString();
                     var shipperAddressInfo = addressList.Where(c => c.Id == orderPoco.ShipperAddressId).FirstOrDefault();
-                    if (shipperAddressInfo != null) {
+                    if (shipperAddressInfo != null)
+                    {
 
-                        shipperAddressInfo.UnitNumber = !string.IsNullOrEmpty(shipperAddressInfo.UnitNumber) ? Convert.ToString(shipperAddressInfo.UnitNumber).Trim().ToUpper() : "" ;
+                        shipperAddressInfo.UnitNumber = !string.IsNullOrEmpty(shipperAddressInfo.UnitNumber) ? Convert.ToString(shipperAddressInfo.UnitNumber).Trim().ToUpper() : "";
 
                         if (shipperAddressline.Trim().ToUpper() == shipperAddressInfo.AddressLine.Trim().ToUpper() && shipperUnitNo.Trim().ToUpper() == shipperAddressInfo.UnitNumber && Convert.ToInt16(shipperCityId) == shipperAddressInfo.CityId)
                         {
@@ -124,7 +126,7 @@ namespace LogisticsManagement_Web.Controllers
                             newAddress.CountryId = 41; // default Canada
                             newAddress.PostCode = shipperPostcode;
                             newAddress.CreatedBy = sessionData.UserId;
-                            orderPoco.ShipperAddressId =  _addressLogic.Add(newAddress).Id;
+                            orderPoco.ShipperAddressId = _addressLogic.Add(newAddress).Id;
                         }
                     }
 
@@ -884,6 +886,10 @@ namespace LogisticsManagement_Web.Controllers
                     wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(orderData[0]));
                 }
 
+                var printOption = (JObject)orderData[1];
+                var numberOfCopyOnPage = printOption.SelectToken("numberOfcopyOnEachPage").ToString();
+                var numberOfCopyPerItem = printOption.SelectToken("numberOfcopyPerItem").ToString();
+
                 foreach (var item in wayBillNumberList)
                 {
                     var wbNumber = item.ToString();
@@ -901,6 +907,9 @@ namespace LogisticsManagement_Web.Controllers
                         waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == orderInfo.BillToCustomerId).FirstOrDefault().CustomerName;
                         waybillPrintViewModel.OrderedByName = orderInfo.OrderedBy;
                         waybillPrintViewModel.DeliveryOptionShortCode = deliveryOptions.Where(c => c.Id == orderInfo.DeliveryOptionId).FirstOrDefault().ShortCode;
+
+                        waybillPrintViewModel.NumberOfCopyOnEachPage = numberOfCopyOnPage == "" ? 0 : Convert.ToInt32(numberOfCopyOnPage);
+                        waybillPrintViewModel.NumberOfCopyPerItem = numberOfCopyPerItem == "" ? 0 : Convert.ToInt32(numberOfCopyPerItem);
 
                         waybillPrintViewModel.OrderBasePrice = orderInfo.OrderBasicCost.ToString();
                         if (orderInfo.BasicCostOverriden != null && orderInfo.BasicCostOverriden > 0)
@@ -995,18 +1004,26 @@ namespace LogisticsManagement_Web.Controllers
 
                 var webrootPath = _hostingEnvironment.WebRootPath;
                 var uniqueId = DateTime.Now.ToFileTime();
-                var path = "/contents/waybills/waybill_" + uniqueId + ".pdf";
-                var filePath = webrootPath + path;
+                var fileName = "waybill_" + uniqueId + ".pdf";
+                var directoryPath = webrootPath + "/contents/waybills/";
+                var filePath = directoryPath + fileName;
+
+                if (!System.IO.Directory.Exists(directoryPath))
+                {
+                    System.IO.Directory.CreateDirectory(directoryPath);
+                }
+
 
                 var pdfReport = new ViewAsPdf("PrintWaybill", waybillPrintViewModels);
                 var file = pdfReport.BuildFile(ControllerContext).Result;
 
                 System.IO.File.WriteAllBytes(filePath, file);
 
-                //_emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content", path);
+                string returnPath = "/contents/waybills/" + fileName;
 
+                //_emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content", returnPath);
 
-                return Json(path);
+                return Json(returnPath);
             }
             catch (Exception ex)
             {

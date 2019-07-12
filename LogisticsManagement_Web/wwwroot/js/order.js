@@ -534,13 +534,7 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
         }
     } else {
         if (isCustomerTaxApplicable === true) {
-            bootbox.confirm("This is a taxable customer. Are you sure you do not want to apply tax?", function (result) {
-                if (result === true) {
-                    isGstApplicable = false; // needs review and testing
-                } else {
-                    return;
-                }
-            });
+            bootbox.alert('You are not charging TAX for a taxable customer. If you made a mistake remove and add the service again.');
         }
     }
 
@@ -843,8 +837,11 @@ $('#btnPrintWaybill').unbind().on('click', function (event) {
         event.preventDefault();
         return;
     }
-
-    var dataArray = [selectedOrdersForDispatch];
+    var printOption = {
+        numberOfcopyOnEachPage: $('#ddlCopyOnPage').val(),
+        numberOfcopyPerItem: $('#ddlNumberOfCopies').val()
+    };
+    var dataArray = [selectedOrdersForDispatch, printOption];
 
     $.ajax({
         'async': false,

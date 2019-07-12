@@ -82,6 +82,8 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     Lms_CustomerPoco customerPoco = JsonConvert.DeserializeObject<Lms_CustomerPoco>(JsonConvert.SerializeObject(customerData[0]));
 
+                    CustomerAddressMapping customerAddress = JsonConvert.DeserializeObject<CustomerAddressMapping>(JsonConvert.SerializeObject(customerData[1]));
+
                     _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
                     _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
 
@@ -96,7 +98,7 @@ namespace LogisticsManagement_Web.Controllers
                         accountPoco.Id = newAccountId;
                         accountPoco.ParentGLCode = parentGLForCustomerAccount;
                         accountPoco.AccountName = customerPoco.CustomerName;
-                        accountPoco.BranchId = (int)sessionData.BranchId;
+                        accountPoco.BranchId = sessionData.BranchId == null ? 1 : (int)sessionData.BranchId;
                         accountPoco.CurrentBalance = 0;
                         accountPoco.IsActive = true;
                         accountPoco.Remarks = "Customer Account Receivable";
@@ -113,6 +115,75 @@ namespace LogisticsManagement_Web.Controllers
                             var customerId = _customerLogic.Add(customerPoco).Id;
 
                             result = customerId.ToString();
+                        }
+
+
+                        if (customerAddress != null)
+                        {
+                            _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
+                            var addressList = _addressLogic.GetList();
+
+                            _customerAddressLogic = new Lms_CustomerAddressMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerAddressMappingPoco>(_dbContext));
+                            var customerAddressList = _customerAddressLogic.GetList().Where(c => c.CustomerId == customerAddress.CustomerId);
+
+                            int addressId = 0;
+                            var existingAddress = addressList.Where(c => c.UnitNumber == customerAddress.UnitNumber && c.AddressLine == customerAddress.AddressLine && c.CityId == customerAddress.CityId).FirstOrDefault();
+                            if (existingAddress != null)
+                            {
+                                existingAddress.ProvinceId = customerAddress.ProvinceId;
+                                existingAddress.CountryId = customerAddress.CountryId;
+                                existingAddress.PostCode = customerAddress.PostCode;
+                                existingAddress.PrimaryPhoneNumber = customerAddress.PrimaryPhoneNumber;
+                                existingAddress.Fax = customerAddress.Fax;
+                                existingAddress.EmailAddress1 = customerAddress.EmailAddress1;
+                                existingAddress.EmailAddress2 = customerAddress.EmailAddress1;
+                                existingAddress.ContactPersonName = customerAddress.ContactPersonName;
+
+                                addressId = _addressLogic.Update(existingAddress).Id;
+                            }
+                            else
+                            {
+                                Lms_AddressPoco addressPoco = new Lms_AddressPoco();
+                                addressPoco.UnitNumber = customerAddress.UnitNumber;
+                                addressPoco.AddressLine = customerAddress.AddressLine;
+                                addressPoco.CityId = customerAddress.CityId;
+                                addressPoco.ProvinceId = customerAddress.ProvinceId;
+                                addressPoco.CountryId = customerAddress.CountryId;
+                                addressPoco.PostCode = customerAddress.PostCode;
+                                addressPoco.PrimaryPhoneNumber = customerAddress.PrimaryPhoneNumber;
+                                addressPoco.Fax = customerAddress.Fax;
+                                addressPoco.EmailAddress1 = customerAddress.EmailAddress1;
+                                addressPoco.EmailAddress2 = customerAddress.EmailAddress1;
+                                addressPoco.ContactPersonName = customerAddress.ContactPersonName;
+
+                                addressId = _addressLogic.Add(addressPoco).Id;
+                            }
+
+                            if (customerAddress.AddressTypeId == 0)
+                            {
+                                Lms_CustomerAddressMappingPoco customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
+                                customerAddressMappingPoco.CustomerId = customerAddress.CustomerId;
+                                customerAddressMappingPoco.AddressId = addressId;
+                                customerAddressMappingPoco.AddressTypeId = 1;
+                                customerAddressMappingPoco.IsDefault = true;
+                                _customerAddressLogic.Add(customerAddressMappingPoco);
+
+                                customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
+                                customerAddressMappingPoco.CustomerId = customerAddress.CustomerId;
+                                customerAddressMappingPoco.AddressId = addressId;
+                                customerAddressMappingPoco.AddressTypeId = 2;
+                                customerAddressMappingPoco.IsDefault = true;
+                                _customerAddressLogic.Add(customerAddressMappingPoco);
+                            }
+                            else {
+                                Lms_CustomerAddressMappingPoco customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
+                                customerAddressMappingPoco.CustomerId = customerAddress.CustomerId;
+                                customerAddressMappingPoco.AddressId = addressId;
+                                customerAddressMappingPoco.AddressTypeId = customerAddress.AddressTypeId;
+                                customerAddressMappingPoco.IsDefault = true;
+                                _customerAddressLogic.Add(customerAddressMappingPoco);
+                            }
+
                         }
 
                         scope.Complete();

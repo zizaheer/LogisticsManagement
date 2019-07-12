@@ -939,20 +939,28 @@ namespace LogisticsManagement_Web.Controllers
 
                 var webrootPath = _hostingEnvironment.WebRootPath;
                 var uniqueId = DateTime.Now.ToFileTime();
-                var path = "/contents/invoices/invoice_" + uniqueId + ".pdf";
-                var filePath = webrootPath + path;
+                var fileName = "invoice_" + uniqueId + ".pdf";
+                var directoryPath = webrootPath + "/contents/invoices/";
+                var filePath = directoryPath + fileName;
+
+                if (!System.IO.Directory.Exists(directoryPath))
+                {
+                    System.IO.Directory.CreateDirectory(directoryPath);
+                }
 
                 var pdfReport = new ViewAsPdf("PrintInvoice", viewModelPrintInvoice)
                 {
                     CustomSwitches = "--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8"
                 };
-                var file = pdfReport.BuildFile(ControllerContext).Result;
 
+                var file = pdfReport.BuildFile(ControllerContext).Result;
                 System.IO.File.WriteAllBytes(filePath, file);
 
-                //_emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content", path);
-                return Json(path);
+                string returnPath = "/contents/invoices/" + fileName;
 
+                //_emailService.SendEmail("zizaheer@yahoo.com", "test subject", "test body content", returnPath);
+
+                return Json(returnPath);
             }
 
             catch (Exception ex)

@@ -59,7 +59,6 @@ $('#txtCustomerId').unbind('keypress').keypress(function (event) {
     }
 });
 
-
 $('#btnLoadCustomerData').unbind().on('click', function (event) {
     event.preventDefault();
 
@@ -75,7 +74,7 @@ $('#frmCustomerForm').on('keyup keypress', function (e) {
     }
 });
 $('#frmCustomerForm').unbind('submit').submit(function () {
-
+    event.preventDefault();
     var dataArray = GetFormData();
 
     if (dataArray[0].customerName === '') {
@@ -84,16 +83,27 @@ $('#frmCustomerForm').unbind('submit').submit(function () {
         return;
     }
 
+    var result = '';
     console.log(dataArray[0].id);
     if (dataArray[0].id > 0) {
-        PerformPostActionWithObject('Customer/Update', dataArray);
+        result = PerformPostActionWithObject('Customer/Update', dataArray);
+        if (result.length > 0) {
+            bootbox.alert('Customer information updated successfully.');
+            $('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + defaultObjectLoadCount);
+        } else {
+            bootbox.alert('Failed! Something went wrong during adding the customer. Please check your data and try again.');
+        }
     }
     else {
         result = PerformPostActionWithObject('Customer/Add', dataArray);
-        $('#frmCustomerForm').trigger('reset');
+        if (result.length > 0) {
+            bootbox.alert('Customer information added successfully.');
+            $('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + defaultObjectLoadCount);
+            $('#frmCustomerForm').trigger('reset');
+        } else {
+            bootbox.alert('Failed! Something went wrong during adding the customer. Please check your data and try again.');
+        }
     }
-    event.preventDefault();
-    $('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + defaultObjectLoadCount);
 
 });
 
@@ -106,6 +116,7 @@ $('#customer-list').on('click', '.btnEdit', function () {
         var customerInfo = GetSingleById('Customer/GetCustomerById', customerId);
         if (customerInfo !== null && customerInfo !== undefined) {
             FillCustomerInformation(JSON.parse(customerInfo));
+            FillMainFormAddressByCustomer(customerId);
         }
         else {
             bootbox.alert('The employee was not found. Please check or select from the bottom list of employees.');
@@ -129,33 +140,27 @@ $('.btnDelete').unbind().on('click', function () {
 
 });
 
-
-
 $('#btnAddAddress').unbind().on('click', function (event) {
     event.preventDefault();
     $('#hfAddressId').val(0);
     ClearAddressForm();
-
-    $('#addAddress').modal({
-        backdrop: 'static',
-        keyboard: false
-    });
 
     var customerId = $('#txtCustomerId').val();
     var customerName = $('#txtCustomerName').val();
     $('#txtCustomerIdForAddress').val(customerId);
     $('#txtCustomerNameForAddress').val(customerName);
 
-    if (customerId === '' || customerId === undefined) {
-        //$('#addAddress').modal('hide');
+    if (customerId === '' || customerId === undefined || customerId == null) {
         bootbox.alert('Please select a customer to add/view address');
-        return;
     }
     else {
+        $('#addAddress').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
         $('#addAddress').modal('show');
+        $('#loadAddressDataTable').load('Customer/LoadCustomerAddressData/' + customerId);
     }
-
-    $('#loadAddressDataTable').load('Customer/LoadCustomerAddressData/' + customerId);
 });
 
 $('#btnNewAddress').unbind().on('click', function (event) {
@@ -187,6 +192,39 @@ $('input[name=rdoAddressType]').on('change', function () {
         $('#lblIsDefault').text('Default warehouse address');
     }
 
+
+});
+
+$('input[name=rdoAddressTypeForMain]').on('change', function () {
+
+    var selectedValue = parseInt($('input[name="rdoAddressTypeForMain"]:checked').val());
+    var customerId = $('#txtCustomerId').val();
+
+    var shippingAddressId = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
+    var billingAddressId = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
+
+    if (selectedValue === 1) {
+        if (billingAddressId !== '') {
+            FillMainFormAddress(billingAddressId);
+        } else {
+            ClearMainFormAddress();
+        }
+    } else if (selectedValue === 2) {
+        if (shippingAddressId !== '') {
+            FillMainFormAddress(shippingAddressId);
+        } else {
+            ClearMainFormAddress();
+        }
+    }
+    else if (selectedValue === 0) {
+        if (shippingAddressId !== '') {
+            FillMainFormAddress(shippingAddressId);
+        } else if (billingAddressId !== '') {
+            FillMainFormAddress(billingAddressId);
+        } else {
+            ClearMainFormAddress();
+        }
+    }
 
 });
 
@@ -311,8 +349,25 @@ function GetFormData() {
         isGstApplicable: $('#isGstApplicable').is(':checked') ? 1 : 0,
         isActive: $('#chkIsActive').is(':checked') === true ? 1 : 0
     };
+    var addressData = {
+        customerId: $('#txtCustomerId').val() === "" ? "0" : $('#txtCustomerId').val(),
+        addressTypeId: $('input[name="rdoAddressTypeForMain"]:checked').val(),
+        addressId: $('#hfAddressIdForMain').val() === '' ? 0 : parseInt($('#hfAddressIdForMain')),
 
-    return [customerData];
+        addressLine: $('#txtAddressLineForMain').val(),
+        unitNumber: $('#txtAddressUnitForMain').val(),
+        cityId: $('#ddlCityIdForMain').val(),
+        provinceId: $('#ddlProvinceIdForMain').val(),
+        countryId: $('#ddlCountryIdForMain').val(),
+        postCode: $('#txtPostCodeForMain').val(),
+        contactPersonName: $('#txtContactPersonForMain').val(),
+        emailAddress1: $('#txtEmailAddressForMain').val(),
+        primaryPhoneNumber: $('#txtPrimaryPhoneNumberForMain').val(),
+        fax: $('#txtFaxNumberForMain').val()
+    };
+
+
+    return [customerData, addressData];
 }
 
 function GetAddressData() {
@@ -363,6 +418,67 @@ function FillAddress(addressId) {
         $('#txtPrimaryPhoneNumber').val(address.PrimaryPhoneNumber);
         $('#txtEmailAddress').val(address.EmailAddress1);
     }
+}
+
+function FillMainFormAddressByCustomer(customerId) {
+
+    var addressType = parseInt($('input[name="rdoAddressTypeForMain"]:checked').val());
+
+    var shippingAddressId = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
+    var billingAddressId = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
+
+    if (shippingAddressId === billingAddressId) {
+        $('#rdoBothForMain').prop('checked', true);
+        if (shippingAddressId !== '') {
+            FillMainFormAddress(shippingAddressId);
+        } else {
+            ClearMainFormAddress();
+        }
+    }
+    else if (billingAddressId !== '') {
+        $('#rdoBillingForMain').prop('checked', true);
+        FillMainFormAddress(billingAddressId);
+
+    } else if (shippingAddressId != '') {
+        $('#rdoShippingForMain').prop('checked', true);
+        FillMainFormAddress(shippingAddressId);
+    }
+
+
+}
+
+function FillMainFormAddress(addressId) {
+
+    var address = GetSingleById('Address/GetAddressById', addressId);
+
+    if (address != null && address !== '') {
+        var addressInfo = JSON.parse(address);
+        $('#hfAddressIdForMain').val(addressInfo.Id);
+        $('#txtAddressUnitForMain').val(addressInfo.UnitNumber);
+        $('#txtAddressLineForMain').val(addressInfo.AddressLine);
+        $('#ddlCityIdForMain').val(addressInfo.CityId);
+        $('#ddlProvinceIdForMain').val(addressInfo.ProvinceId);
+        $('#ddlCountryIdForMain').val(addressInfo.CountryId);
+        $('#txtPostCodeForMain').val(addressInfo.PostCode);
+        $('#txtContactPersonForMain').val(addressInfo.ContactPersonName);
+        $('#txtFaxNumberForMain').val(addressInfo.Fax);
+        $('#txtPrimaryPhoneNumberForMain').val(addressInfo.PrimaryPhoneNumber);
+        $('#txtEmailAddressForMain').val(addressInfo.EmailAddress1);
+    }
+}
+
+function ClearMainFormAddress() {
+    $('#hfAddressIdForMain').val('');
+    $('#txtAddressUnitForMain').val('');
+    $('#txtAddressLineForMain').val('');
+    $('#ddlCityIdForMain').val('335');
+    $('#ddlProvinceIdForMain').val('7');
+    $('#ddlCountryIdForMain').val('41');
+    $('#txtPostCodeForMain').val('');
+    $('#txtContactPersonForMain').val('');
+    $('#txtFaxNumberForMain').val('');
+    $('#txtPrimaryPhoneNumberForMain').val('');
+    $('#txtEmailAddressForMain').val('');
 }
 
 function ClearAddressForm() {
