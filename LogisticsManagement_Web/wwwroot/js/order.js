@@ -27,39 +27,13 @@ var employeeData;
 var paidByValue = '1';
 var employeeId = 0;
 
-var shipperCityId = 0;
-var consigneeCityId = 0;
-var deliveryOptionId = 0;
-var vehicleTypeId = 0;
-var unitTypeId = 0;
-var unitQuantity = 0;
-var weightScaleId = 0;
-var weightQuantity = 0;
-var fuelSurchargePercentage = 0.0;
-var discountPercentage = 0.0;
-
 // global tax amount
 var taxPercentage = 0.0;
 taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
 
-var baseOrderCost = 0.0;
-var baseFuelSurchargeAmount = 0.0;
-var baseDiscountAmount = 0.0;
-var baseTaxAmount = 0.0;
-
-var overriddenOrderCost = 0.0;
-var overriddenFuelSurchargeAmount = 0.0;
-var overriddenDiscountAmount = 0.0;
-var overriddenTaxAmount = 0.0;
-
-var finalOrderCost = 0.0;
-var finalFuelSurchargeAmount = 0.0;
-var finalDiscountAmount = 0.0;
-var finalTaxAmount = 0.0;
+var isCustomerTaxApplicable = false;
 
 var selectedAdditionalServiceArray = [];
-var totalAdditionalServiceCost = 0.0;
-
 var selectedOrdersForDispatch = [];
 
 //#endregion
@@ -230,6 +204,10 @@ $('#txtShipperCustomerName').on('input', function (event) {
             FillBillerInformation(shipperCustomerId);
         }
     }
+    else {
+        $('#txtShipperCustomerName').val('');
+        $('#lblShipperAccountNo').text('');
+    }
 
 });
 
@@ -259,6 +237,10 @@ $('#txtConsigneeCustomerName').on('input', function (event) {
             FillBillerInformation(consigneeCustomerId);
         }
     }
+    else {
+        $('#txtConsigneeCustomerName').val('');
+        $('#lblConsigneeAccountNo').text('');
+    }
 });
 
 function FillBillerInformation(customerId) {
@@ -275,6 +257,9 @@ function FillBillerInformation(customerId) {
                 $('#txtBillToCustomerName').val(billerCustomerInfo.CustomerName);
                 $('#txtDiscountPercent').val(billerCustomerInfo.DiscountPercentage);
                 $('#chkIsGstApplicable').prop('checked', billerCustomerInfo.IsGstApplicable);
+
+                isCustomerTaxApplicable = billerCustomerInfo.IsGstApplicable;
+
             }
         }
         else {
@@ -354,7 +339,7 @@ $('#txtShipperAddressLine').on('input', function (event) {
     var addressId = $('#dlShipperAddressLines option').filter(function () {
         return this.value === valueSelected;
     }).data('addressid');
-    if (addressId > 0 && addressId != '') {
+    if (addressId > 0 && addressId != '' && addressId != null) {
         FillShipperAddress(addressId);
     }
     else {
@@ -367,11 +352,11 @@ $('#txtConsigneeAddressLine').on('input', function (event) {
     var addressId = $('#dlConsigneeAddressLines option').filter(function () {
         return this.value === valueSelected;
     }).data('addressid');
-    if (addressId > 0 && addressId != '') {
+    if (addressId > 0 && addressId != '' && addressId != null) {
         FillConsigneeAddress(addressId);
     }
     else {
-        ClearShipperAddressArea();
+        ClearConsigneeAddressArea();
     }
 });
 
@@ -434,7 +419,39 @@ $('#txtDiscountPercent').on('change', function (event) {
 });
 
 $('#chkIsGstApplicable').on('change', function () {
-    $('#txtSkidQuantity').change();
+    var isChecked = $('#chkIsGstApplicable').is(':checked');
+    if (isChecked === true) {
+        if (isCustomerTaxApplicable === false) {
+            bootbox.confirm("You are applying tax on non-taxable customer. Are you sure you want to apply tax?", function (result) {
+                if (result === true) {
+                    $('#chkIsGstApplicable').prop('checked', true);
+                    $('#txtSkidQuantity').change();
+                } else {
+                    $('#chkIsGstApplicable').prop('checked', false);
+                    $('#txtSkidQuantity').change();
+                }
+            });
+        }
+        else {
+            $('#txtSkidQuantity').change();
+        }
+    } else {
+        if (isCustomerTaxApplicable === true) {
+            bootbox.confirm("This is a taxable customer. Are you sure you do not want to apply tax?", function (result) {
+                if (result === true) {
+                    $('#chkIsGstApplicable').prop('checked', false);
+                    $('#txtSkidQuantity').change();
+                } else {
+                    $('#chkIsGstApplicable').prop('checked', true);
+                    $('#txtSkidQuantity').change();
+                }
+            });
+        }
+        else {
+            $('#txtSkidQuantity').change();
+        }
+    }
+
 });
 
 $('#txtOverriddenOrderCost').keypress(function (event) {
@@ -461,6 +478,7 @@ $(document).on('input', '#service-list .txtAdditionalServiceName', function () {
     var serviceInfo = JSON.parse(GetSingleById('AdditionalService/GetAdditionalServiceInfoById', serviceId));
     currentRow.find('td:eq(1) .chkPayToDriver').prop('checked', serviceInfo.PayToDriver);
 
+    currentRow.find('td:eq(4) .chkIsGstApplicableForService').prop('checked', serviceInfo.IsTaxApplicable);
     currentRow.find('td:eq(5) .btnAddAdditionalService').attr('data-serviceid', serviceId);
     currentRow.find('td:eq(5) .btnDeleteAdditionalService').attr('data-serviceid', serviceId);
 });
@@ -508,6 +526,23 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
     var serviceFee = currentRow.find('td:eq(2) .txtServiceFee').val();
     var driverPercentage = currentRow.find('td:eq(3) .txtDriverPercentage').val();
     var isGstApplicable = currentRow.find('td:eq(4) .chkIsGstApplicableForService').is(':checked');
+
+    if (isGstApplicable === true) {
+        if (isCustomerTaxApplicable === false) {
+            bootbox.alert('You cannot apply tax on a non taxable customer');
+            return;
+        }
+    } else {
+        if (isCustomerTaxApplicable === true) {
+            bootbox.confirm("This is a taxable customer. Are you sure you do not want to apply tax?", function (result) {
+                if (result === true) {
+                    isGstApplicable = false;
+                } else {
+                    return;
+                }
+            });
+        }
+    }
 
     if (serviceId === undefined || serviceId === '' || serviceId === '0' || serviceId < 1) {
         bootbox.alert("Please select service before adding it to the order.");
@@ -963,10 +998,12 @@ function GetAddressInfo(addressId) {
 }
 
 function GetTariffInfo() {
-    shipperCityId = $('#ddlShipperCityId').val();
-    consigneeCityId = $('#ddlConsigneeCityId').val();
-    deliveryOptionId = $('#ddlDeliveryOptionId').val();
-    vehicleTypeId = $('#ddlVehicleTypeId').val();
+    var shipperCityId = $('#ddlShipperCityId').val();
+    var consigneeCityId = $('#ddlConsigneeCityId').val();
+    var deliveryOptionId = $('#ddlDeliveryOptionId').val();
+    var vehicleTypeId = $('#ddlVehicleTypeId').val();
+    var unitTypeId = 0;
+    var unitQuantity = 0;
 
     var calculateByUnit = $('#chkIsCalculateByUnit').is(':checked');
     if (calculateByUnit === true) {
@@ -980,8 +1017,8 @@ function GetTariffInfo() {
         }
     }
 
-    weightScaleId = $('#ddlWeightScaleId').val();
-    weightQuantity = $('#txtWeightTotal').val();
+    var weightScaleId = $('#ddlWeightScaleId').val();
+    var weightQuantity = $('#txtWeightTotal').val();
 
     var dataForTariff = {
         shipperCityId: shipperCityId,
@@ -999,7 +1036,7 @@ function GetTariffInfo() {
 }
 
 function CalculateAdditionalServiceCost() {
-    totalAdditionalServiceCost = 0.0;
+    var totalAdditionalServiceCost = 0.0;
     if (selectedAdditionalServiceArray.length > 0) {
         for (var i = 0; i < selectedAdditionalServiceArray.length; i++) {
             if (selectedAdditionalServiceArray[i].additionalServiceFee > 0) {
@@ -1022,17 +1059,19 @@ function CalculateAdditionalServiceCost() {
 
 function CalculateOrderBaseCost() {
 
-    fuelSurchargePercentage = $('#txtFuelSurchargePercent').val() !== "" ? parseFloat($('#txtFuelSurchargePercent').val()) : 0.0;
-    discountPercentage = $('#txtDiscountPercent').val() !== "" ? parseFloat($('#txtDiscountPercent').val()) : 0.0;
-    overriddenOrderCost = $('#txtOverriddenOrderCost').val() !== "" ? parseFloat($('#txtOverriddenOrderCost').val()) : 0.0;
+    var fuelSurchargePercentage = $('#txtFuelSurchargePercent').val() !== "" ? parseFloat($('#txtFuelSurchargePercent').val()) : 0.0;
+    var discountPercentage = $('#txtDiscountPercent').val() !== "" ? parseFloat($('#txtDiscountPercent').val()) : 0.0;
+    var overriddenOrderCost = $('#txtOverriddenOrderCost').val() !== "" ? parseFloat($('#txtOverriddenOrderCost').val()) : 0.0;
 
     var isGstApplicable = $('#chkIsGstApplicable').is(':checked');
-    taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
+    var taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
 
-    overriddenDiscountAmount = 0.0;
-    baseDiscountAmount = 0.0;
+    var overriddenDiscountAmount = 0.0;
+    var overriddenFuelSurchargeAmount = 0.0;
+    var baseDiscountAmount = 0.0;
+    var baseTaxAmount = 0.0;
 
-    baseOrderCost = parseFloat(GetTariffInfo());
+    var baseOrderCost = parseFloat(GetTariffInfo());
 
     $('#txtBaseOrderCost').val(baseOrderCost.toFixed(2));
     if (fuelSurchargePercentage > 0) {
@@ -1140,6 +1179,8 @@ function CalculateOrderBaseCost() {
     var grandTotal = overriddenOrderCost;
 
     CalculateAdditionalServiceCost();
+
+    var totalAdditionalServiceCost = $('#lblGrandAddServiceAmount').text() === "" ? 0.0 : parseFloat($('#lblGrandAddServiceAmount').text());
 
     if (totalAdditionalServiceCost > 0) {
         grandTotal = grandTotal + totalAdditionalServiceCost;
@@ -1422,7 +1463,7 @@ function GetFormData() {
 
         scheduledPickupDate: date,
         expectedDeliveryDate: $('#txtSchedulePickupDate').val(),
-        cityId: consigneeCityId,
+        cityId: $('#ddlConsigneeCityId').val() === "" ? 0 : parseInt($('#ddlConsigneeCityId').val()),
         deliveryOptionId: parseInt($('#ddlDeliveryOptionId').val()),
         vehicleTypeId: parseInt($("#ddlVehicleTypeId").val()),
         unitTypeId: parseInt($('#ddlUnitTypeId').val()),
@@ -1566,7 +1607,7 @@ function GenerateNewAdditionalServiceRow() {
     appendString += '</datalist>';
     appendString += '</td>';
     appendString += '<td style="width:100px; text-align:center">';
-    appendString += '<input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" disabled />';
+    appendString += '<input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" />';
     appendString += '</td>';
     appendString += '<td style="width:110px; padding-right:5px">';
     appendString += '<input type="number" class="form-control form-control-sm additionalServiceControl txtServiceFee " min="0" id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />';

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
 using LogisticsManagement_Web.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -22,11 +24,13 @@ namespace LogisticsManagement_Web.Controllers
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
+        private IHostingEnvironment _hostingEnvironment;
 
-        public ConfigurationController(IMemoryCache cache, LogisticsContext dbContext)
+        public ConfigurationController(IMemoryCache cache, IHostingEnvironment hostingEnvironment, LogisticsContext dbContext)
         {
             _cache = cache;
             _dbContext = dbContext;
+            _hostingEnvironment = hostingEnvironment;
             _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
 
         }
@@ -143,6 +147,33 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public IActionResult DeleteInvoiceWayBill()
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(_hostingEnvironment.WebRootPath + "/contents/invoices/");
+                foreach (FileInfo file in directoryInfo.GetFiles()) {
+                    file.Delete();
+                }
+
+                directoryInfo = new DirectoryInfo(_hostingEnvironment.WebRootPath + "/contents/waybills/");
+                foreach (FileInfo file in directoryInfo.GetFiles())
+                {
+                    file.Delete();
+                }
+                result = "Success";
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
 
         private void ValidateSession()
         {
