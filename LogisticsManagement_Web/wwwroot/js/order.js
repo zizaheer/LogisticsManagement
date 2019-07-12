@@ -536,7 +536,7 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
         if (isCustomerTaxApplicable === true) {
             bootbox.confirm("This is a taxable customer. Are you sure you do not want to apply tax?", function (result) {
                 if (result === true) {
-                    isGstApplicable = false;
+                    isGstApplicable = false; // needs review and testing
                 } else {
                     return;
                 }
