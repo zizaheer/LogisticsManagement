@@ -25,8 +25,8 @@ var wayBillNumberArrayForInvoicePayment = [];
 var employeeNumber;
 
 
-$('#pending-list').on('click', '.chkOrderSelected', function (event) {
-    //event.preventDefault();
+$('#pending-list').on('change', '.chkOrderSelected', function (event) {
+    event.preventDefault();
 
     var wbNumber =
     {
@@ -43,8 +43,29 @@ $('#pending-list').on('click', '.chkOrderSelected', function (event) {
     if (isChecked) {
         wayBillNumberArray.push(wbNumber);
     }
-
 });
+
+$('#pending-list').on('change', '#chkCheckAllOrders', function (event) {
+    event.preventDefault();
+
+    var isChecked = $(this).is(':checked');
+    if (isChecked === true) {
+        $('.chkOrderSelected').prop('checked', true);
+        var wbArrayString = $('#hfWaybillArray').val();
+        wayBillNumberArray = [];
+        var wbArray = wbArrayString.split(',');
+        $.each(wbArray, function (i, item) {
+            if (item !== '') {
+                wayBillNumberArray.push({ wbillNumber: parseInt(item) });
+            }
+        });
+    } else {
+        $('.chkOrderSelected').prop('checked', false);
+        wayBillNumberArray = [];
+    }
+});
+
+
 
 
 $('#frmInvoiceGenerationForm').on('keyup keypress', function (e) {
@@ -135,7 +156,7 @@ $('#customerdues-list').on('click', '.lnkCollectPayment', function (event) {
     $('#lblCustomerNo').text(customerId);
 
     LoadDueInvoicesByCustomer(customerId);
-   
+
 
     $('#collectPayment').modal({
         backdrop: 'static',
@@ -146,8 +167,7 @@ $('#customerdues-list').on('click', '.lnkCollectPayment', function (event) {
 
 });
 
-function LoadDueInvoicesByCustomer(customerId)
-{
+function LoadDueInvoicesByCustomer(customerId) {
     var customerWiseDueInvoices = GetListById('GetDueInvoicesByCustomerId', customerId);
 
     var invoices = JSON.parse(customerWiseDueInvoices);
@@ -296,7 +316,7 @@ $('#btnMakePayment').unbind().on('click', function (event) {
         return;
     }
 
-    if (data.ddlBankId > 0 || data.chequeNo !== '' || data.chequeDate !== '' || data.chequeAmount >0 ) {
+    if (data.ddlBankId > 0 || data.chequeNo !== '' || data.chequeDate !== '' || data.chequeAmount > 0) {
         if (data.ddlBankId < 1) {
             bootbox.alert('Please select bank information');
             return;
@@ -337,7 +357,7 @@ $('#btnMakePayment').unbind().on('click', function (event) {
         bootbox.alert('Failed! There was an error occurred while making the payment.');
         return;
     }
-    
+
 
     var isApplyToNextInvoice = $('#chkKeepBankingInformation').is(':checked');
     if (!isApplyToNextInvoice) {

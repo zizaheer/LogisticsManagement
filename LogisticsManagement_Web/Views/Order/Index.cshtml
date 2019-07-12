@@ -3,7 +3,7 @@
 
 
 @{
-    ViewData["Title"] = "Delivery - dispatch board";
+    ViewData["Title"] = "Already dispatched orders";
 }
 
 <style>
@@ -368,64 +368,108 @@
 </div>
 <!-- Modal - Deliver Order -->
 
+<div class="modal fade bd-example-modal-xl" id="dispatchOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content bg-light">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/trolley.png" style="height:25px; padding-left:28px; padding-right:10px" />Dispatch order</h5>
 
-<h3>
-    @ViewData["Title"]
-</h3>
-<hr style="margin-bottom:40px" />
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <small><b><label for="txtEmployeeName">Select employee/driver</label></b></small>
+                            <input type="search" id="txtEmployeeName" name="txtEmployeeName" class="form-control form-control-sm txtEmployeeName" placeholder="Select employee/driver" list="dlEmployees" />
+                            <datalist id="dlEmployees">
+                                @foreach (var employee in Model.Employees)
+                                {
+                                    <option data-employeeid="@employee.Id" value="(@employee.Id) @employee.FirstName"></option>
+                                }
+                            </datalist>
+                        </div>
+                        <div class="col-sm-5">
+                            <small>
+                                <b>
+                                    <label for="txtDispatchDatetimeForNewOrders">Dispatch date</label>
+                                </b>
+                            </small>
+                            <input class="form-control form-control-sm  form-group" id="txtDispatchDatetimeForNewOrders" type="datetime-local" min="1" name="txtDispatchDatetimeForNewOrders">
+                        </div>
+                    </div>
+                    <div class="row" style="display:none">
+                        <div class="col-sm-5">
+                            <small>
+                                <b>
+                                    <label for="txtVehicleName">Select vehicle</label>
+                                </b>
+                            </small>
+                            <input class="form-control form-control-sm" placeholder="Vehicle ref #" id="txtVehicleName" type="search" name="txtVehicleName" list="dlVehicles">
+                            <datalist id="dlVehicles"></datalist>
+                        </div>
+                    </div>
+                    <div style="margin-top:20px"></div>
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="form-check-inline">
+                                <input type="checkbox" id="chkSendEmail" class="form-check-input" />
+                                <small><b><label class="form-check-label"> Send email</label></b></small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <button id="btnDispatchToEmployee" type="button" class="btn btn-sm btn-primary form-control" title="Dispatch to employee"><i class="fa fa-arrow-circle-right"></i> Dispatch </button>
+                        </div>
+                    </div>
 
-
-
-
-<div class="row">
-    <div class="col-md-12">
-        <div style="display:block; max-height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadOrdersToBeDispatched">
-            <partial name="_PartialViewOrderData" />
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-sm-9 input-group">
-        <input type="search" id="txtEmployeeName" name="txtEmployeeName" class="form-control form-control-sm txtEmployeeName" placeholder="Employee name" list="dlEmployees" />
-        <datalist id="dlEmployees">
-            @foreach (var employee in Model.Employees)
-            {
-                <option data-employeeid="@employee.Id" value="(@employee.Id) @employee.FirstName"></option>
-            }
-        </datalist>
-        <input class="col-2 form-control form-control-sm" placeholder="Vehicle ref #" id="txtVehicleName" type="search" name="txtVehicleName" list="dlVehicles" style="display:none">
-        <datalist id="dlVehicles"></datalist>
-
-        <input class="col-4 form-control form-control-sm" id="txtDispatchDatetimeForNewOrders" type="datetime-local" min="1" name="txtDispatchDatetimeForNewOrders">
-
-        <span class="col-1 form-control form-control-sm ">
-            <span class="form-check-inline" title="Send email to the employee">
-                <input type="checkbox" id="chkSendEmail" /> <i style="padding-left:5px"></i>Email
-            </span>
-        </span>
-        <button id="btnDispatch" type="button" class="col-2 btn btn-sm btn-primary form-control" title="Dispatch to employee"><i class="fa fa-arrow-circle-right"></i> Dispatch</button>
-        <span style="padding-left:20px;" title="Print waybills"><button class="btn btn-sm btn-danger" id="btnPrintWaybill"> <i class="fa fa-print"></i> Print preview</button></span>
+    <div class="col-sm-10">
+        <h4>
+            @ViewData["Title"]
+        </h4>
     </div>
-    <div class="col-sm-3">
-        <div style="float:right">
-            <button id="btnNewOrder" type="button" class="btn btn-sm btn-success form-control" title="Create a new order" data-toggle="modal"><i class="fa fa-plus-circle"></i> New Order </button>
-        </div>
+    <div class="col-sm-2">
+        <button id="btnNewOrder" type="button" class="btn btn-sm btn-danger form-control" title="Create a new order" data-toggle="modal"><i class="fa fa-plus-circle"></i> New Order </button>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-12" style="margin-top:40px">
-        <h3>Already dispatched orders</h3>
-    </div>
-</div>
-
 
 <hr />
 
 <div class="row">
     <div class="col-md-12">
-        <div style="display:block; height:285px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; font-size:.7em; margin-bottom:50px; background-color:#022f67" id="loadDispatchedOrders">
+        <div style="display:block; height:272px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; font-size:.7em; background-color:#022f67" id="loadDispatchedOrders">
             <partial name="_PartialViewDispatchedOrders" />
+        </div>
+    </div>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-md-12" style="margin-top:20px">
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-10">
+        <button id="btnDispatch" type="button" class="col-2 btn btn-sm btn-primary" title="Dispatch" data-toggle="modal"><i class="fa fa-arrow-circle-right"></i> Dispatch</button>
+        <span style="padding-left:20px;" title="Print waybills"><button class="btn btn-sm btn-warning" id="btnPrintWaybill"> <i class="fa fa-print"></i> Print preview</button></span>
+    </div>
+</div>
+<div style="margin-bottom:20px;"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div style="display:block; max-height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadOrdersToBeDispatched">
+            <partial name="_PartialViewOrderData" />
         </div>
     </div>
 </div>
@@ -683,7 +727,7 @@
                                                     <div class="col-sm-5" style="padding-left:30px; padding-right:0px">
                                                         <small>
                                                             <b>
-                                                               
+
                                                                 <input type="checkbox" class="form-check-inline form-check-input" id="chkIsGstApplicable" name="chkIsGstApplicable" />
                                                                 Apply @Model.Configuration.TaxToCall-<label class="form-check-inline form-check-label" id="lblGstAmount">@Model.Configuration.TaxAmount</label>%
                                                             </b>

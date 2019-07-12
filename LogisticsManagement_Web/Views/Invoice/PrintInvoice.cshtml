@@ -16,7 +16,9 @@
 
         .tdStyle {
             padding: 4px;
-            vertical-align: top
+            vertical-align: top;
+            border-left: none;
+            border-right: none;
         }
 
         .pagebreak {
@@ -30,8 +32,9 @@
     @{ var count = 0; }
     @foreach (var item in Model.viewModelInvoiceBillers)
     {
+        count = count + 1;
 
-        <table style="height: 36px; border:1px solid black" width="900" border="1">
+        <table style="height: 36px; border:0px solid black" width="900" border="0">
             <tbody>
                 <tr>
                     <td style="width: 30%; vertical-align: top; text-align:right">
@@ -46,7 +49,7 @@
                                     <span>Tel: 905-7958686, Fax: 905-7958687, Email: accounts@milfrt.ca</span>
                                 </td>
                                 <td style="text-align: right; width:20%; vertical-align: top;">
-                                    <span> Pg. 1/2</span>
+                                    @*<span>Pg. [page] / [toPage]</span>*@
                                 </td>
                             </tr>
                         </table>
@@ -92,7 +95,8 @@
                 <tr>
                     <td style="width: 214px; vertical-align:top" colspan="2">
                         <span style="font-size:1.2em; font-weight:bold">@item.BillerCustomerName</span><br />
-                        <span>@item.BillerCustomerAddress</span><br />
+                        <span>@item.BillerCustomerAddressLine</span><br />
+                        <span>@item.BillerCustomerCityLine</span><br />
                         <span>@item.BillerPostCode</span><br />
                     </td>
                     <td style="width: 214px; vertical-align:top">&nbsp;</td>
@@ -119,8 +123,8 @@
                     <td style="width: 215px;"></td>
                 </tr>
                 <tr>
-                    <td colspan="4">
-                        <table style="border:1px solid red; width: 100%; border-collapse:collapse;" border="1" cellspacing="2" cellpadding="2">
+                    <td colspan="4" height="945" style="vertical-align:top">
+                        <table style="width:100%; border-left:none;border-right:none; border-collapse:collapse;" border="1" cellspacing="2" cellpadding="2">
                             <tbody>
                                 <tr style="background-color: #cccccc; font-family:Arial; font-weight:bold; font-size:.8em; border-top:8px">
                                     <td class="tdStyle">
@@ -151,9 +155,17 @@
                                 @{
                                     var wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId).ToList();
                                     var serial = 0;
+                                    var accumulatedBasicChg = 0.00;
+                                    var accumulatedDeliveryChg = 0.00;
+                                    var accumulatedFuelChg = 0.00;
+                                    var accumulatedAdditionalChg = 0.00;
+                                    var accumulatedTaxAmnt = 0.00;
+                                    var accumulatedCurrentTotal = 0.00;
+                                    var accumulatedSavings = 0.00;
+                                    var accumulatedTotalDue = 0.00;
                                 }
 
-                                
+
                                 @foreach (var bill in wayBills)
                                 {
                                     <tr style="font-size:11px">
@@ -192,100 +204,108 @@
                                         <td class="tdStyle">@bill.GrandTotalOrderCost</td>
                                     </tr>
 
+                                    if (bill.AdditionalServicesComments.Length > 0)
+                                    {
+                                        <tr style="font-size:10px">
+                                            <td class="tdStyle" colspan="9">
+                                                <span>@bill.AdditionalServicesComments</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                    if (bill.InvoiceComments.Length > 0)
+                                    {
+                                        <tr style="font-size:10px">
+                                            <td class="tdStyle" colspan="9">
+                                                <span>@bill.InvoiceComments</span>
+                                            </td>
+                                        </tr>
+                                                    }
+
+                                                    accumulatedBasicChg += Convert.ToDouble(bill.OrderBasePrice);
+                                                    accumulatedDeliveryChg = accumulatedBasicChg;
+                                                    accumulatedFuelChg += Convert.ToDouble(bill.FuelSurcharge);
+                                                    accumulatedAdditionalChg += Convert.ToDouble(bill.AdditionalServiceCost);
+                                                    //accumulatedTaxAmnt += Convert.ToDouble(bill.OrderTaxAmountOnBasePrice);
+                                                    accumulatedTaxAmnt += Convert.ToDouble(bill.OrderTaxAmountOnBaseFuelAdditionalPrice);
+
+                                                    accumulatedSavings += Convert.ToDouble(bill.OrderDiscountAmount);
+                                                }
+                                @{
+
+                                    accumulatedCurrentTotal = accumulatedBasicChg + accumulatedFuelChg + accumulatedAdditionalChg + accumulatedTaxAmnt;
+                                    accumulatedTotalDue = accumulatedCurrentTotal - accumulatedSavings;
                                 }
 
 
-                                <tr>
-                                    <td colspan="3">
-                                        <p>* sdsdsds = sdsd</p>
-                                        <p>Note: sdsdsdsds</p>
-                                    </td>
-                                    <td colspan="5">AWT/CTN: 3434343434</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">&nbsp;</td>
-                                    <td colspan="5">&nbsp;</td>
-                                </tr>
                             </tbody>
                         </table>
                     </td>
                 </tr>
-                <tr>
-                    <td style="width: 214px;" colspan="4">&nbsp;</td>
+
+                <tr style="font-family:Arial; font-weight:bold; font-size:9px;">
+                    <td class="tdStyle" colspan="4">
+                        <span>*HST Applicable</span>
+                    </td>
                 </tr>
-                <tr>
-                    <td style="width: 214px;" colspan="4">&nbsp;</td>
-                </tr>
-                <tr>
-                    <td style="width: 214px;" colspan="4">&nbsp;</td>
-                </tr>
-                <tr>
-                    <td style="width: 214px;" colspan="4">&nbsp;</td>
-                </tr>
-                <tr>
-                    <td style="width: 214px;" colspan="4">*HST Applicable</td>
-                </tr>
-                <tr>
-                    <td style="width: 214px;" colspan="4">
-                        <table style="width: 100%;">
+                <tr style="font-family:Arial; font-weight:bold; font-size:.8em;">
+                    <td class="tdStyle" colspan="4">
+                        <table style="width: 100%;border-collapse:collapse; border-left:none;border-bottom:none; border-right:none" border="1">
                             <tbody>
                                 <tr>
-                                    <td>
-                                        <p>Basic charge</p>
-                                        <p>2323</p>
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Basic chg:</span><br />
+                                        <span>@accumulatedBasicChg.ToString("0.00")</span>
                                     </td>
-                                    <td>
-                                        <p>Delivery charge</p>
-                                        <p>234234</p>
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Delivery chg:</span><br />
+                                        <span>@accumulatedDeliveryChg.ToString("0.00")</span>
                                     </td>
-                                    <td>
-                                        <p>Fuel surchrg</p>
-                                        <p>2323</p>
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Fuel surchg:</span><br />
+                                        <span>@accumulatedFuelChg.ToString("0.00")</span>
                                     </td>
-                                    <td>
-                                        <p>Add. chrg</p>
-                                        <p>30.00</p>
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Add. chg:</span><br />
+                                        <span>@accumulatedAdditionalChg.ToString("0.00")</span>
                                     </td>
-                                    <td>
-                                        <p>HST</p>
-                                        <p>0.00</p>
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>HST:</span><br />
+                                        <span>@accumulatedTaxAmnt.ToString("0.00")</span>
                                     </td>
-                                    <td>
-                                        <p>Current ttl</p>
-                                        <p>90</p>
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Current TTL:</span><br />
+                                        <span>@accumulatedCurrentTotal.ToString("0.00")</span>
                                     </td>
-                                    <td>
-                                        <p>Saving</p>
-                                        <p>0.00</p>
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Saving:</span><br />
+                                        <span>@accumulatedSavings.ToString("0.00")</span>
                                     </td>
-                                    <td>
-                                        <p>Total amnt due</p>
-                                        <p>90.00</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="8">
-                                        <p>ALL INVOICES ARE DUE WHEN RENDERED UNLESS AGREED OTHERWISE&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;HST: 886288521RT0001</p>
-                                        <p>INTEREST CHARGED ON OUTSTANDING BALANCE AT THE RATE OF 2% PER MONTH</p>
-                                        <p>&nbsp;</p>
-                                        <p>&nbsp;</p>
-                                        <p>&nbsp;</p>
-                                        <p>&nbsp;</p>
-                                        <p>&nbsp;</p>
-                                        <p>&nbsp;</p>
-                                        <p>&nbsp;</p>
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Total Amnt Due:</span><br />
+                                        <span>@accumulatedTotalDue.ToString("0.00")</span>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td colspan="8">&nbsp;</td>
+                                <tr style="font-size:9px">
+                                    <td colspan="7" style="border-right:none; border-bottom:none; border-left:none">
+                                        <span>ALL INVOICES ARE DUE WHEN RENDERED UNLESS AGREED OTHERWISE</span><br />
+                                        <span>INTEREST CHARGED ON OUTSTANDING BALANCE AT THE RATE OF 2% PER MONTH</span>
+                                    </td>
+                                    <td style="border-right:none; border-left:none;border-bottom:none; padding-top:10px">
+                                        <span>HST: 886288521RT0001</span>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                     </td>
                 </tr>
+
             </tbody>
         </table>
 
+        if (count < Model.viewModelInvoiceBillers.Count)
+        {
+            <p class="pagebreak"></p>
+        }
     }
 </body>
 </html>

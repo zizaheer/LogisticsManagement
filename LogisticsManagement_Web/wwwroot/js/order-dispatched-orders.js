@@ -101,7 +101,7 @@ $('#btnSavePickup').unbind().on('click', function () {
         bootbox.alert('Pickup has been updated.');
         $('#orderPickup').modal('hide');
     }
-    
+
 
 });
 $('#btnRemovePickup').unbind().on('click', function () {
@@ -110,10 +110,12 @@ $('#btnRemovePickup').unbind().on('click', function () {
 
     bootbox.confirm("Pickup information related to this order will be deleted. Are you sure to proceed?", function (result) {
         if (result === true) {
-            PerformPostActionWithId('Order/RemovePickupStatus', orderId);
-            $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-            $('#orderPickup').modal('hide');
-            //bootbox.alert('Pickup has been removed.');
+            var status = PerformPostActionWithId('Order/RemovePickupStatus', orderId);
+            if (status.length > 0) {
+                $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+                $('#orderPickup').modal('hide');
+                bootbox.alert('Pickup has been removed.');
+            }
         }
     });
 });
@@ -122,8 +124,8 @@ $('.btnPasson').unbind().on('click', function () {
 
     ClearModal();
 
-     orderId = $("input[name='rdoWaybillNo']:checked").data('orderid');
-     wayBillNumber = $("input[name='rdoWaybillNo']:checked").data('waybillnumber');
+    orderId = $("input[name='rdoWaybillNo']:checked").data('orderid');
+    wayBillNumber = $("input[name='rdoWaybillNo']:checked").data('waybillnumber');
 
     $('#txtWayBillNoForPassOnModal').val(wayBillNumber);
 
@@ -140,7 +142,7 @@ $('.btnPasson').unbind().on('click', function () {
         bootbox.alert('The order is not picked-up yet.');
         return;
     }
-    
+
 
     if (orderStatusInfo !== null) {
         $('#txtDispatchDateTimeForPassOnModal').val(orderStatusInfo.DispatchedDatetime);
@@ -186,7 +188,6 @@ $('.btnPasson').unbind().on('click', function () {
         return;
     }
 });
-
 $('#txtPassOnEmployeeName').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $('#txtPassOnEmployeeName').val();
@@ -195,7 +196,6 @@ $('#txtPassOnEmployeeName').on('input', function (event) {
     }).data('employeeid');
 
     $('#txtPassOnEmployeeName').attr('data-employeeid', passOnEmployeeId);
-
 });
 
 $('#btnSavePassOn').unbind().on('click', function () {
@@ -221,7 +221,7 @@ $('#btnSavePassOn').unbind().on('click', function () {
         bootbox.alert('Pass-on has been updated.');
         $('#orderPassOn').modal('hide');
     }
-   
+
 });
 $('#btnRemovePassOn').unbind().on('click', function () {
 
@@ -229,10 +229,12 @@ $('#btnRemovePassOn').unbind().on('click', function () {
 
     bootbox.confirm("Pass-on information related to this order will be deleted. Are you sure to proceed?", function (result) {
         if (result === true) {
-            PerformPostActionWithId('Order/RemovePassonStatus', orderId);
-            $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-            $('#orderPassOn').modal('hide');
-            //bootbox.alert('Pass-on has been removed.');
+            var status = PerformPostActionWithId('Order/RemovePassonStatus', orderId);
+            if (status.length > 0) {
+                $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+                $('#orderPassOn').modal('hide');
+                bootbox.alert('Pass-on has been removed.');
+            }
         }
     });
 
@@ -242,8 +244,8 @@ $('.btnDeliver').unbind().on('click', function () {
 
     ClearModal();
 
-     orderId = $("input[name='rdoWaybillNo']:checked").data('orderid');
-     wayBillNumber = $("input[name='rdoWaybillNo']:checked").data('waybillnumber');
+    orderId = $("input[name='rdoWaybillNo']:checked").data('orderid');
+    wayBillNumber = $("input[name='rdoWaybillNo']:checked").data('waybillnumber');
 
     $('#txtWayBillNoForDeliverModal').val(wayBillNumber);
 
@@ -263,8 +265,8 @@ $('.btnDeliver').unbind().on('click', function () {
     var consigneeAddInfo = JSON.parse(GetSingleById('Address/GetAddressById', orderInfo.ConsigneeAddressId));
 
 
-    $('#txtShipperInfo').val(shipperInfo.CustomerName + '\n' + shipperAddInfo.AddressLine );
-    $('#txtConsigneeInfo').val(consigneeInfo.CustomerName + '\n' + consigneeAddInfo.AddressLine );
+    $('#txtShipperInfo').val(shipperInfo.CustomerName + '\n' + shipperAddInfo.AddressLine);
+    $('#txtConsigneeInfo').val(consigneeInfo.CustomerName + '\n' + consigneeAddInfo.AddressLine);
 
     if (orderStatusInfo.PickupDatetime === null) {
         bootbox.alert('The order is not picked-up yet.');
@@ -343,7 +345,7 @@ $('#btnSaveDeliver').unbind().on('click', function () {
         bootbox.alert('Delivery information has been updated.');
         $('#orderDeliver').modal('hide');
     }
-    
+
 });
 $('#btnRemoveDeliver').unbind().on('click', function () {
 
@@ -351,14 +353,16 @@ $('#btnRemoveDeliver').unbind().on('click', function () {
 
     bootbox.confirm("Delivery information related to this order will be deleted. Are you sure to proceed?", function (result) {
         if (result === true) {
-            PerformPostActionWithId('Order/RemoveDeliveryStatus', orderId);
-            $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-            //bootbox.alert('Delivery information has been removed.');
-            $('#orderDeliver').modal('hide');
+            var status = PerformPostActionWithId('Order/RemoveDeliveryStatus', orderId);
+            if (status.length > 0) {
+                $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+                $('#orderDeliver').modal('hide');
+                bootbox.alert('Delivery information has been removed.');
+            }
         }
     });
 
-    
+
 });
 
 $('.btnRemoveDispatch').unbind().on('click', function () {

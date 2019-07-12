@@ -19,7 +19,8 @@ namespace LogisticsManagement_Web.Models
         public DateTime InvoiceDate { get; set; }
         public int BillerCustomerId { get; set; }
         public string BillerCustomerName { get; set; }
-        public string BillerCustomerAddress { get; set; }
+        public string BillerCustomerAddressLine { get; set; }
+        public string BillerCustomerCityLine { get; set; }
         public string BillerPostCode { get; set; }
         public string BillerDepartment { get; set; }
         public byte? Term { get; set; }

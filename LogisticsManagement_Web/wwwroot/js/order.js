@@ -701,6 +701,24 @@ function ValidateOrderForm(formData) {
 
 $('#btnDispatch').unbind().on('click', function (event) {
     event.preventDefault();
+
+    if (selectedOrdersForDispatch.length < 1) {
+        bootbox.alert('Please select order/s to be dispatched from the order list.');
+        return;
+    }
+
+    $('#dispatchOrder').modal({
+        backdrop: "static",
+        keyboard: false
+    });
+    $('#dispatchOrder').modal('show');
+
+    $('#txtEmployeeName').val('');
+});
+
+$('#btnDispatchToEmployee').unbind().on('click', function (event) {
+    event.preventDefault();
+
     var selectedEmployeeId = employeeId;
     var dispatchDate = $('#txtDispatchDatetimeForNewOrders').val();
     var vehicleId = 0; //Get vehicle Id feature
@@ -715,20 +733,16 @@ $('#btnDispatch').unbind().on('click', function (event) {
         return;
     }
 
-
-    if (selectedOrdersForDispatch.length < 1) {
-        bootbox.alert('Please select order/s to be dispatched from the order list.');
-        return;
-    }
-
     var dataArray = [selectedOrdersForDispatch, selectedEmployeeId, dispatchDate, vehicleId];
 
-    PerformPostActionWithObject('Order/UpdateDispatchStatus', dataArray);
+    var result = PerformPostActionWithObject('Order/UpdateDispatchStatus', dataArray);
+    if (result.length > 0) {
+        $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
+        $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+        selectedOrdersForDispatch = [];
 
-    //event.preventDefault();
-    $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-    selectedOrdersForDispatch = [];
+        $('#dispatchOrder').modal('hide');
+    }
 
 });
 $('#order-list .chkDispatchToEmployee').change(function (event) {
@@ -746,6 +760,8 @@ $('#order-list .chkDispatchToEmployee').change(function (event) {
         selectedOrdersForDispatch.push(orderId);
     }
 });
+
+
 $('#order-list').on('click', '.btnEdit', function (event) {
     event.preventDefault();
 
@@ -765,8 +781,25 @@ $('#order-list').on('click', '.btnEdit', function (event) {
 
 });
 
+$('#order-list').on('change', '#chkCheckAllOrders', function (event) {
+    event.preventDefault();
 
-
+    var isChecked = $(this).is(':checked');
+    if (isChecked === true) {
+        $('.chkDispatchToEmployee').prop('checked', true);
+        var wbArrayString = $('#hfWaybillArray').val();
+        selectedOrdersForDispatch = [];
+        var wbArray = wbArrayString.split(',');
+        $.each(wbArray, function (i, item) {
+            if (item !== '') {
+                selectedOrdersForDispatch.push(parseInt(item));
+            }
+        });
+    } else {
+        $('.chkDispatchToEmployee').prop('checked', false);
+        selectedOrdersForDispatch = [];
+    }
+});
 $('#btnPrintWaybill').unbind().on('click', function (event) {
     event.preventDefault();
 
@@ -791,16 +824,9 @@ $('#btnPrintWaybill').unbind().on('click', function (event) {
             }
         },
         error: function (result) {
-
+            bootbox.alert('Printing failed! There are some eror occurred while processing the printing.');
         }
     });
-
-    //parent.document.location.href = "Order/PrintWaybill";
-
-    event.preventDefault();
-    $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
-    $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-    //selectedOrdersForDispatch = [];
 
 });
 

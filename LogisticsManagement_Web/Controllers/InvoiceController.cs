@@ -701,6 +701,12 @@ namespace LogisticsManagement_Web.Controllers
 
                     var orders = _orderLogic.GetList().Where(c => c.IsInvoiced == false).ToList();
 
+                    _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+                    var orderAdditionalServices = _orderAdditionalServiceLogic.GetList();
+
+                    _additionalServiceLogic = new Lms_AdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_AdditionalServicePoco>(_dbContext));
+                    var additionalServices = _additionalServiceLogic.GetList();
+
                     _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
                     var addresses = _addressLogic.GetList();
 
@@ -775,9 +781,9 @@ namespace LogisticsManagement_Web.Controllers
                             if (addressInfo != null)
                             {
                                 var billerAddressInfo = addresses.Where(c => c.Id == addressInfo.AddressId).FirstOrDefault();
-                                invoiceBiller.BillerCustomerAddress = string.IsNullOrEmpty(billerAddressInfo.UnitNumber) ? billerAddressInfo.AddressLine : billerAddressInfo.UnitNumber + ", " + billerAddressInfo.AddressLine;
-                                invoiceBiller.BillerCustomerAddress += ", " + cities.Where(c => c.Id == billerAddressInfo.CityId).FirstOrDefault().CityName + ", ";
-                                invoiceBiller.BillerCustomerAddress += provinces.Where(c => c.Id == billerAddressInfo.ProvinceId).FirstOrDefault().ShortCode;
+                                invoiceBiller.BillerCustomerAddressLine = string.IsNullOrEmpty(billerAddressInfo.UnitNumber) ? billerAddressInfo.AddressLine : billerAddressInfo.UnitNumber + ", " + billerAddressInfo.AddressLine;
+                                invoiceBiller.BillerCustomerCityLine = cities.Where(c => c.Id == billerAddressInfo.CityId).FirstOrDefault().CityName + ", ";
+                                invoiceBiller.BillerCustomerCityLine += provinces.Where(c => c.Id == billerAddressInfo.ProvinceId).FirstOrDefault().ShortCode;
                                 invoiceBiller.BillerPostCode = billerAddressInfo.PostCode;
                             }
 
@@ -812,7 +818,7 @@ namespace LogisticsManagement_Web.Controllers
                                     if (orderDiscount > 0)
                                     {
                                         waybillPrintViewModel.OrderDiscountAmount = Convert.ToDecimal(orderDiscount).ToString();
-                                        waybillPrintViewModel.OrderBasePrice = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) - (decimal)orderDiscount).ToString("0.00");
+                                        //waybillPrintViewModel.OrderBasePrice = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) - (decimal)orderDiscount).ToString("0.00");
                                     }
                                 }
                                 else
@@ -833,29 +839,50 @@ namespace LogisticsManagement_Web.Controllers
                                     waybillPrintViewModel.FuelSurcharge = "0.00";
                                 }
 
+                                waybillPrintViewModel.AdditionalServicesComments = "";
+
                                 if (item.TotalAdditionalServiceCost > 0)
                                 {
                                     waybillPrintViewModel.AdditionalServiceCost = Convert.ToDecimal(item.TotalAdditionalServiceCost).ToString("0.00");
+                                    var addServices = orderAdditionalServices.Where(c => c.OrderId == item.Id).ToList();
+                                    if (addServices.Count > 0)
+                                    {
+                                        waybillPrintViewModel.AdditionalServicesComments = "* ";
+                                        foreach (var addservice in addServices)
+                                        {
+                                            var serviceCode = additionalServices.Where(c => c.Id == addservice.AdditionalServiceId).FirstOrDefault().ServiceCode;
+                                            var serviceCost = addservice.AdditionalServiceFee;
+                                            if (addservice.IsTaxAppliedOnAddionalService == true && addservice.TaxAmountOnAdditionalService > 0)
+                                            {
+                                                serviceCost = serviceCost + (serviceCost * (decimal)addservice.TaxAmountOnAdditionalService / 100);
+                                            }
+                                            waybillPrintViewModel.AdditionalServicesComments = waybillPrintViewModel.AdditionalServicesComments + (serviceCode + ": " + serviceCost.ToString("0.00") + "; ");
+                                        }
+                                    }
                                 }
                                 else
                                 {
                                     waybillPrintViewModel.AdditionalServiceCost = "0.00";
                                 }
 
+                               
+                                waybillPrintViewModel.GrandTotalOrderCost = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString("0.00");
                                 if (item.ApplicableGstPercent != null && item.ApplicableGstPercent > 0)
                                 {
                                     var taxAmnt = Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * item.ApplicableGstPercent / 100;
                                     if (taxAmnt > 0)
                                     {
-                                        waybillPrintViewModel.OrderTaxAmount = Convert.ToDecimal(taxAmnt).ToString("0.00");
+                                        waybillPrintViewModel.OrderTaxAmountOnBasePrice = Convert.ToDecimal(taxAmnt).ToString("0.00");
                                     }
+
+                                    waybillPrintViewModel.OrderTaxAmountOnBaseFuelAdditionalPrice = (Convert.ToDecimal(waybillPrintViewModel.GrandTotalOrderCost) * (decimal)item.ApplicableGstPercent / 100).ToString("0.00");
                                 }
                                 else
                                 {
-                                    waybillPrintViewModel.OrderTaxAmount = "0.00";
+                                    waybillPrintViewModel.OrderTaxAmountOnBasePrice = "0.00";
                                 }
 
-                                waybillPrintViewModel.GrandTotalOrderCost = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString("0.00");
+
                                 waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == item.ShipperCustomerId).FirstOrDefault().CustomerName;
 
                                 var shippperAddress = addresses.Where(c => c.Id == item.ShipperAddressId).FirstOrDefault();
@@ -881,9 +908,17 @@ namespace LogisticsManagement_Web.Controllers
                                 waybillPrintViewModel.DeliveryTime = null;
                                 waybillPrintViewModel.PUDriverName = "";
                                 waybillPrintViewModel.DeliveryDriverName = item.WayBillNumber;
+
+                                waybillPrintViewModel.WaybillComments = "";
+                                waybillPrintViewModel.InvoiceComments = "";
                                 if (item.IsPrintedOnWayBill != null && item.IsPrintedOnWayBill == true)
                                 {
                                     waybillPrintViewModel.WaybillComments = item.CommentsForWayBill;
+                                }
+
+                                if (item.IsPrintedOnInvoice != null && item.IsPrintedOnInvoice == true)
+                                {
+                                    waybillPrintViewModel.InvoiceComments = "Notes: " + item.CommentsForInvoice;
                                 }
 
                                 invoiceWaybillList.Add(waybillPrintViewModel);
@@ -907,7 +942,10 @@ namespace LogisticsManagement_Web.Controllers
                 var path = "/contents/invoices/invoice_" + uniqueId + ".pdf";
                 var filePath = webrootPath + path;
 
-                var pdfReport = new ViewAsPdf("PrintInvoice", viewModelPrintInvoice);
+                var pdfReport = new ViewAsPdf("PrintInvoice", viewModelPrintInvoice)
+                {
+                    CustomSwitches = "--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8"
+                };
                 var file = pdfReport.BuildFile(ControllerContext).Result;
 
                 System.IO.File.WriteAllBytes(filePath, file);

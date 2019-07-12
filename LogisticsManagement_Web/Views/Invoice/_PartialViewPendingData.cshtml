@@ -10,6 +10,7 @@
         $('#pending-list').DataTable({
             "order": [[0, "desc"]],
             "lengthChange": false,
+            "columns": [{ "orderable": false }, null, null, null, null, null, null, null, null, null, null,],
             searching: false,
             paging: false,
             info: false
@@ -21,7 +22,20 @@
 <table id="pending-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr style="background-color:#ebffad">
-            <th>W/B #</th>
+            <th>
+                <div class="form-check-inline">
+                    @{
+                        var wayBillArray = Model.Select(c => c.WayBillNumber).ToArray();
+                        string wayBillArrayString = "";
+                        foreach (var wb in wayBillArray) {
+                            wayBillArrayString += wb + ",";
+                        }
+                    }
+                    <input type="checkbox" class="form-check-inline" id="chkCheckAllOrders" />
+                    <input type="hidden" id="hfWaybillArray" value="@wayBillArrayString" />
+                    <label class="form-check-label">W/B #</label>
+                </div>
+            </th>
             <th>Date</th>
             <th>Customer ref #</th>
             <th>Shipper name</th>
@@ -41,6 +55,7 @@
             <tr>
                 <td>
                     <div class="form-check-inline">
+
                         <input type="checkbox" id="chkOrderSelected" name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
                         <label class="form-check-label">@item.WayBillNumber</label>
                     </div>

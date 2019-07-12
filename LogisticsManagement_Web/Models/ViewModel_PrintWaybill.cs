@@ -21,7 +21,8 @@ namespace LogisticsManagement_Web.Models
         public string OrderBasePrice { get; set; }
         public string OrderDiscountAmount { get; set; }
         public string FuelSurcharge { get; set; }
-        public string OrderTaxAmount { get; set; }
+        public string OrderTaxAmountOnBasePrice { get; set; }
+        public string OrderTaxAmountOnBaseFuelAdditionalPrice { get; set; }
         //public string TotalOrderCost { get; set; }
         //public string TotalOrderCostWithoutTaxAndFuel { get; set; }
         public string AdditionalServiceCost { get; set; }
@@ -46,5 +47,7 @@ namespace LogisticsManagement_Web.Models
         public string PUDriverName { get; set; }
         public string DeliveryDriverName { get; set; }
         public string WaybillComments { get; set; }
+        public string InvoiceComments { get; set; }
+        public string AdditionalServicesComments { get; set; }
     }
 }

@@ -8,6 +8,7 @@
         }
         $('#order-list').DataTable({
             "order": [[0, "desc"]],
+            "columns": [{ "orderable": false }, null, null, null, null, null, null, null, null, null],
             "lengthChange": false,
             searching: false,
             paging: false,
@@ -19,7 +20,22 @@
 <table id="order-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr>
-            <th>W/B #</th>
+            <th>
+                <div class="form-check-inline">
+                    @{
+                        var wayBillArray = Model.DispatchedOrders.Where(c => c.OrderStatus == "0" && c.OrderTypeId == 1).ToList().Select(c => c.WayBillNumber).Distinct().ToArray();
+                        string wayBillArrayString = "";
+                        foreach (var wb in wayBillArray)
+                        {
+                            wayBillArrayString += wb + ",";
+                        }
+                    }
+                    <input type="checkbox" class="form-check-inline" id="chkCheckAllOrders" />
+                    <input type="hidden" id="hfWaybillArray" value="@wayBillArrayString" />
+                    <label class="form-check-label">W/B #</label>
+                </div>
+            </th>
+
             <th>Date</th>
             <th>Svc.</th>
             <th>Ref #</th>

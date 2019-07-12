@@ -517,11 +517,11 @@ namespace LogisticsManagement_Web.Controllers
                             var taxAmnt = Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.ApplicableGstPercent / 100;
                             if (taxAmnt > 0)
                             {
-                                waybillPrintViewModel.OrderTaxAmount = taxAmnt.ToString();
+                                waybillPrintViewModel.OrderTaxAmountOnBasePrice = taxAmnt.ToString();
                             }
                             else
                             {
-                                waybillPrintViewModel.OrderTaxAmount = "0.00";
+                                waybillPrintViewModel.OrderTaxAmountOnBasePrice = "0.00";
                             }
                         }
 
