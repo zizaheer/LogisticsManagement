@@ -571,10 +571,10 @@
                                         <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>Awb ctl#</b></label>
+                                        <label style="margin-top:5px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>Awb ctn#</b></label>
                                     </small>
                                     <div class="col-sm-1">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Awb Ctl#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Awb Ctn#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -689,11 +689,13 @@
                                         <div class="row mb-1">
                                             <div class="col-md-12 input-group">
                                                 <select class="col-3 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId">
-                                                    <option value="0"> Unit </option>
+                                                    <option value="0" selected> Unit </option>
                                                     @foreach (var item in Model.UnitTypes)
                                                     {
-                                                        var selected = item.IsDefault;
-                                                        <option value="@item.Id" selected="@item.IsDefault">@item.ShortCode</option>
+                                                        if (item.Id == 2) {
+                                                            continue;
+                                                        }
+                                                        <option value="@item.Id">@item.ShortCode</option>
                                                     }
                                                 </select>
                                                 <input class="col-2 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity" disabled>

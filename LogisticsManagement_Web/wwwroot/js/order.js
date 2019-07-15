@@ -415,10 +415,11 @@ $('#txtSkidQuantity').on('change', function (event) {
     var skidQty = $('#txtSkidQuantity').val();
     if (skidQty !== '' && skidQty > 0) {
         $('#txtTotalPieces').removeAttr('disabled');
-        CalculateOrderBaseCost();
     } else {
         $('#txtTotalPieces').attr('disabled', true);
     }
+
+    CalculateOrderBaseCost();
 
 });
 
@@ -624,17 +625,69 @@ $('#frmOrderForm').on('keyup keypress', function (e) {
     }
 });
 $('#frmOrderForm').unbind('submit').submit(function (event) {
-
     event.preventDefault();
-
     var dataArray = GetFormData();
-    var result;
-    var parseData;
-
     var isValid = ValidateOrderForm(dataArray[0]);
     if (isValid === false) {
         return;
     }
+    if (dataArray[0].cargoCtlNumber !== '' || dataArray[0].awbCtnNumber !== '' || dataArray[0].referenceNumber !== '') {
+        var countCtl = PerformPostActionWithObject('Order/GetCargoCtlNumberCount', { cargoCtl: dataArray[0].cargoCtlNumber, wayBill: dataArray[0].wayBillNumber });
+        var countAwb = PerformPostActionWithObject('Order/GetAwbCtnNumberCount', { awbCtn: dataArray[0].awbCtnNumber, wayBill: dataArray[0].wayBillNumber });
+        var countRef = PerformPostActionWithObject('Order/GetCustomerReferenceNumberCount', { custRef: dataArray[0].referenceNumber, wayBill: dataArray[0].wayBillNumber });
+
+        if (countRef > 0 && countAwb > 0 && countCtl > 0) {
+            bootbox.confirm("The Customer ref#, Cargo ctl# and Awb/ctn# are already exist. Do you want to use them for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countRef > 0 && countAwb > 0) {
+            bootbox.confirm("The Customer ref# and Awb/ctn# are already exist. Do you want to use them for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countRef > 0 && countCtl > 0) {
+            bootbox.confirm("The Customer ref# and Cargo ctl# are already exist. Do you want to use them for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countRef > 0) {
+            bootbox.confirm("The Customer ref# already exist. Do you want to use the same for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countAwb > 0 && countCtl > 0) {
+            bootbox.confirm("The Cargo ctl# and Awb/ctn# already exist. Do you want to use them for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countAwb > 0) {
+            bootbox.confirm("The Awb/ctn# already exist. Do you want to use it for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countCtl > 0) {
+            bootbox.confirm("The Cargo ctl# already exist. Do you want to use it for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else {
+            SubmitOrderForm(dataArray);
+        }
+    }
+});
+
+function SubmitOrderForm(dataArray) {
+
+    var result;
+    var parseData;
 
     if (dataArray[0].wayBillNumber > 0) {
         result = PerformPostActionWithObject('Order/Update', dataArray);
@@ -662,8 +715,7 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
     $('#frmOrderForm').trigger('reset');
 
     $('#newOrder').modal('hide');
-
-});
+}
 
 function ValidateOrderForm(formData) {
     if (formData.unitQuantity < 1 && formData.skidQuantity < 1 && formData.totalPieces < 1) {
@@ -737,11 +789,6 @@ function ValidateOrderForm(formData) {
             bootbox.alert('You selected the tariff to be calculated by skids; please enter Skid quantity in "Skids" field');
             return false;
         }
-    }
-
-    if (formData.unitTypeId == 0) {
-        bootbox.alert('Unit type is required. For example: if your calculation method is on Skid, select SKD as unit type.');
-        return false;
     }
 
     if (formData.totalOrderCost <= 0) {
@@ -1108,7 +1155,7 @@ function CalculateOrderBaseCost() {
         baseDiscountAmount = discountPercentage * baseOrderCost / 100;
         baseOrderCost = baseOrderCost - baseDiscountAmount;
     }
-    if (taxPercentage > 0 && isGstApplicable) {
+    if (taxPercentage > 0 && isGstApplicable === true) {
         baseTaxAmount = taxPercentage * baseOrderCost / 100;
         baseOrderCost = baseOrderCost + baseTaxAmount;
         $('#txtBaseOrderGST').val(baseTaxAmount.toFixed(2));

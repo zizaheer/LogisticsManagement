@@ -631,6 +631,17 @@ namespace LogisticsManagement_Web.Controllers
                             orderStatus.IsPickedup = null;
                             orderStatus.PickupWaitTimeHour = null;
                             orderStatus.PickupDatetime = null;
+                            orderStatus.IsDelivered = null;
+                            orderStatus.DeliveredDatetime = null;
+                            orderStatus.DeliveryWaitTimeHour = null;
+                            orderStatus.ReceivedByName = null;
+                            orderStatus.ReceivedBySignature = null;
+                            orderStatus.ProofOfDeliveryNote = null;
+                            orderStatus.IsPassedOff = null;
+                            orderStatus.PassOffWaitTimeHour = null;
+                            orderStatus.PassOffDatetime = null;
+                            orderStatus.PassedOffToEmployeeId = null;
+
                             orderStatus.StatusLastUpdatedOn = DateTime.Now;
 
                             _orderStatusLogic.Update(orderStatus);
@@ -850,6 +861,91 @@ namespace LogisticsManagement_Web.Controllers
                 return Json("");
             }
         }
+
+        [HttpPost]
+        public JsonResult GetCustomerReferenceNumberCount([FromBody]dynamic customerRefData)
+        {
+            ValidateSession();
+            var result = 0;
+            try
+            {
+                if (customerRefData != null)
+                {
+                    var custRefObject = (JObject)customerRefData;
+                    var custRefNumber = custRefObject.SelectToken("custRef").ToString();
+                    var wayBill = custRefObject.SelectToken("wayBill").ToString();
+
+                    var refCount = _orderLogic.GetList().Where(c => c.ReferenceNumber == Convert.ToString(custRefNumber) && c.WayBillNumber != wayBill).ToList();
+                    if (refCount != null && refCount.Count > 0)
+                    {
+                        result = refCount.Count;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAwbCtnNumberCount([FromBody]dynamic awbCtnData)
+        {
+            ValidateSession();
+            var result = 0;
+            try
+            {
+                if (awbCtnData != null)
+                {
+                    var awbObject = (JObject)awbCtnData;
+                    var awbCtnNumber = awbObject.SelectToken("awbCtn").ToString();
+                    var wayBill = awbObject.SelectToken("wayBill").ToString();
+
+                    var awbCtnCount = _orderLogic.GetList().Where(c => c.AwbCtnNumber == Convert.ToString(awbCtnNumber) && c.WayBillNumber != wayBill).ToList();
+                    if (awbCtnCount != null && awbCtnCount.Count > 0)
+                    {
+                        result = awbCtnCount.Count;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCargoCtlNumberCount([FromBody]dynamic cargoCtlData)
+        {
+            ValidateSession();
+            var result = 0;
+            try
+            {
+                if (cargoCtlData != null)
+                {
+                    var cargoObject = (JObject)cargoCtlData;
+                    var cargoCtlNumber = cargoObject.SelectToken("cargoCtl").ToString();
+                    var wayBill = cargoObject.SelectToken("wayBill").ToString();
+
+                    var cargoCtlCount = _orderLogic.GetList().Where(c => c.CargoCtlNumber == Convert.ToString(cargoCtlNumber) && c.WayBillNumber != wayBill).ToList();
+                    if (cargoCtlCount != null && cargoCtlCount.Count > 0)
+                    {
+                        result = cargoCtlCount.Count;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
 
         public JsonResult PrintWaybill([FromBody]dynamic orderData)
         {
@@ -1105,6 +1201,7 @@ namespace LogisticsManagement_Web.Controllers
 
             var filteredOrdersForDispatchBoard = (from order in orders
                                                   join status in ordersStatus on order.Id equals status.OrderId
+                                                  where status.IsDelivered != true
                                                   select new { order, status }).ToList();
 
             foreach (var item in filteredOrdersForDispatchBoard)
@@ -1121,7 +1218,10 @@ namespace LogisticsManagement_Web.Controllers
 
                 data.CustomerRefNumber = item.order.ReferenceNumber;
                 data.UnitTypeId = item.order.UnitTypeId;
-                data.UnitTypeName = deliveryOrderViewModel.UnitTypes.Where(c => c.Id == data.UnitTypeId).FirstOrDefault().ShortCode;
+                if (data.UnitTypeId > 0) {
+                    data.UnitTypeName = deliveryOrderViewModel.UnitTypes.Where(c => c.Id == data.UnitTypeId).FirstOrDefault().ShortCode;
+                }
+                
                 data.UnitQuantity = item.order.UnitQuantity;
                 data.SkidQuantity = item.order.SkidQuantity;
                 data.TotalPiece = item.order.TotalPiece;

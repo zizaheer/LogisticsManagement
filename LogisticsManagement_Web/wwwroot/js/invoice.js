@@ -109,17 +109,14 @@ $('#btnFilter').on('click', function (event) {
         orderType: parseInt(orderType)
     };
 
-
-    //var data1 = PerformPostActionWithObject('Invoice/FilterPendingInvoiceDataTable', new { filterData =[filterData]});
-    //var data2 = 'Order/LoadDispatchedOrdersForDispatchBoard'
-    //$('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-    //var data = GetList('Invoice/PartialPendingInvoiceDataTable');
-
     $('#loadPendingInvoiceDataTable').load('Invoice/FilterPendingInvoiceDataTable?filterData=' + JSON.stringify(filterData));
     // doesnt work for some reason. check it later
+
+    event.preventDefault();
+
 });
 
-$('#btnPrintPreview').on('click', function (event) {
+$('#btnPrintPreview').unbind().on('click', function (event) {
     event.preventDefault();
     if (wayBillNumberArray.length < 1) {
         bootbox.alert('Please select waybill for Print preview');

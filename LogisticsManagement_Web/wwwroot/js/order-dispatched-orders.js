@@ -383,6 +383,25 @@ $('.btnRemoveDispatch').unbind().on('click', function () {
     });
 });
 
+$('.btnEdit').on('click', function (event) {
+    event.preventDefault();
+
+    ClearForm();
+    $('#frmOrderForm').trigger('reset');
+
+    var wbNumber = $(this).data('waybillnumber');
+    if (wbNumber > 0) {
+        GetAndFillOrderDetailsByWayBillNumber(wbNumber, 1);
+    }
+
+    $('#newOrder').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#newOrder').modal('show');
+
+});
+
 //#endregion
 
 
