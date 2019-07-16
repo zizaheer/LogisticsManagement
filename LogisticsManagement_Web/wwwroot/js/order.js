@@ -67,7 +67,7 @@ $('#btnNewOrder').unbind().on('click', function () {
 
 });
 
-$('#btnCloseModal').on('click', function (event) {
+$('#btnCloseModal').unbind().on('click', function (event) {
     event.preventDefault();
     var shipperCity = $('#ddlShipperCityId').val();
     var consigneeCity = $('#ddlConsigneeCityId').val();

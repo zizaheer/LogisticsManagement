@@ -197,12 +197,21 @@ namespace LogisticsManagement_Web.Controllers
                         pendingInvoice.ConsigneeName = customers.Where(c => c.Id == pendingInvoice.ConsigneeId).FirstOrDefault().CustomerName;
                     }
                     pendingInvoice.UnitTypeId = order.UnitTypeId;
-                    pendingInvoice.UnitTypeName = unitTypes.Where(c => c.Id == pendingInvoice.UnitTypeId).FirstOrDefault().TypeName;
-                    pendingInvoice.UnitQty = order.UnitQuantity;
+                    if (pendingInvoice.UnitTypeId > 0) {
+                        pendingInvoice.UnitTypeName = unitTypes.Where(c => c.Id == pendingInvoice.UnitTypeId).FirstOrDefault().TypeName;
+                        pendingInvoice.UnitQty = order.UnitQuantity;
+                    }
+                    
                     pendingInvoice.SkidQty = order.SkidQuantity;
                     pendingInvoice.WeightScaleId = order.WeightScaleId;
-                    pendingInvoice.WeightShortName = weightScales.Where(c => c.Id == pendingInvoice.WeightScaleId).FirstOrDefault().ShortCode;
-                    pendingInvoice.WeightTotal = order.WeightTotal;
+                    if (order.WeightTotal > 0) {
+                        if (pendingInvoice.WeightScaleId > 0)
+                        {
+                            pendingInvoice.WeightShortName = weightScales.Where(c => c.Id == pendingInvoice.WeightScaleId).FirstOrDefault().ShortCode;
+                            pendingInvoice.WeightTotal = order.WeightTotal;
+                        }
+                    }
+                    
                     pendingInvoice.BillToCustomerId = order.BillToCustomerId;
                     pendingInvoice.BillerName = customers.Where(c => c.Id == pendingInvoice.BillToCustomerId).FirstOrDefault().CustomerName;
                     //pendingInvoice.BillerEmail = customers.Where(c => c.Id == pendingInvoice.BillToCustomerId).FirstOrDefault().EmailAddress;
@@ -898,16 +907,32 @@ namespace LogisticsManagement_Web.Controllers
                                 waybillPrintViewModel.ConsigneeCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
                                 waybillPrintViewModel.ConsigneeCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
 
-                                waybillPrintViewModel.TotalSkidPieces = 0;
-                                waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == item.UnitTypeId).FirstOrDefault().TypeName;
-                                waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == item.UnitTypeId).FirstOrDefault().ShortCode;
-                                waybillPrintViewModel.UnitQuantity = item.UnitQuantity;
-                                waybillPrintViewModel.WeightScaleShortCode = weightScales.Where(c => c.Id == item.WeightScaleId).FirstOrDefault().ShortCode;
-                                waybillPrintViewModel.WeightTotal = item.WeightTotal.ToString();
-                                waybillPrintViewModel.DeliveryDate = null;
-                                waybillPrintViewModel.DeliveryTime = null;
-                                waybillPrintViewModel.PUDriverName = "";
-                                waybillPrintViewModel.DeliveryDriverName = item.WayBillNumber;
+
+                                waybillPrintViewModel.SkidQuantity = item.SkidQuantity;
+                                waybillPrintViewModel.TotalSkidPieces = item.TotalPiece;
+
+                                if (item.UnitTypeId > 0)
+                                {
+                                    waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == item.UnitTypeId).FirstOrDefault().TypeName;
+                                    waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == item.UnitTypeId).FirstOrDefault().ShortCode;
+                                }
+                                if (item.UnitQuantity > 0)
+                                {
+                                    waybillPrintViewModel.UnitQuantity = item.UnitQuantity;
+                                }
+                                
+                                if (item.WeightTotal > 0)
+                                {
+                                    waybillPrintViewModel.WeightTotal = item.WeightTotal.ToString();
+                                    if (item.WeightScaleId > 0)
+                                    {
+                                        waybillPrintViewModel.WeightScaleShortCode = weightScales.Where(c => c.Id == item.WeightScaleId).FirstOrDefault().ShortCode;
+                                    }
+                                }
+
+                                //waybillPrintViewModel.DeliveryDate = null;
+                                //waybillPrintViewModel.DeliveryTime = null;
+
 
                                 waybillPrintViewModel.WaybillComments = "";
                                 waybillPrintViewModel.InvoiceComments = "";

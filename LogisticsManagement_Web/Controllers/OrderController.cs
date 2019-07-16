@@ -955,6 +955,7 @@ namespace LogisticsManagement_Web.Controllers
                 JArray wayBillNumberList = null;
 
                 var orderList = _orderLogic.GetList();
+                var orderStatusList = _orderStatusLogic.GetList();
 
                 _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
                 var addresses = _addressLogic.GetList();
@@ -976,6 +977,9 @@ namespace LogisticsManagement_Web.Controllers
 
                 _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
                 var weightScales = _weightScaleLogic.GetList();
+
+                _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
+                var employeeList = _employeeLogic.GetList();
 
                 if (orderData != null)
                 {
@@ -1078,16 +1082,38 @@ namespace LogisticsManagement_Web.Controllers
                         waybillPrintViewModel.ConsigneeCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
                         waybillPrintViewModel.ConsigneeCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
 
-                        waybillPrintViewModel.TotalSkidPieces = 0;
-                        waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().TypeName;
-                        waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().ShortCode;
-                        waybillPrintViewModel.UnitQuantity = orderInfo.UnitQuantity;
-                        waybillPrintViewModel.WeightScaleShortCode = weightScales.Where(c => c.Id == orderInfo.WeightScaleId).FirstOrDefault().ShortCode;
-                        waybillPrintViewModel.WeightTotal = orderInfo.WeightTotal.ToString();
+                        waybillPrintViewModel.SkidQuantity = orderInfo.SkidQuantity;
+                        waybillPrintViewModel.TotalSkidPieces = orderInfo.TotalPiece;
+
+                        if (orderInfo.UnitTypeId > 0) {
+                            waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().TypeName;
+                            waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().ShortCode;
+                        }
+                        if (orderInfo.UnitQuantity > 0) {
+                            waybillPrintViewModel.UnitQuantity = orderInfo.UnitQuantity;
+                        }
+
+                        if (orderInfo.WeightScaleId > 0) {
+                            waybillPrintViewModel.WeightScaleShortCode = weightScales.Where(c => c.Id == orderInfo.WeightScaleId).FirstOrDefault().ShortCode;
+                        }
+                        if (orderInfo.WeightTotal > 0) {
+                            waybillPrintViewModel.WeightTotal = orderInfo.WeightTotal.ToString();
+                        }
+                        
                         waybillPrintViewModel.DeliveryDate = null;
                         waybillPrintViewModel.DeliveryTime = null;
                         waybillPrintViewModel.PUDriverName = "";
-                        waybillPrintViewModel.DeliveryDriverName = orderInfo.WayBillNumber;
+
+                        var orderStatus = orderStatusList.Where(c => c.OrderId == orderInfo.Id).FirstOrDefault();
+                        if (orderStatus != null) {
+                            if (orderStatus.PassedOffToEmployeeId != null && orderStatus.PassedOffToEmployeeId > 0)
+                            {
+                                waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.PassedOffToEmployeeId).FirstOrDefault().FirstName;
+                            }
+                            else if(orderStatus.DispatchedToEmployeeId != null && orderStatus.DispatchedToEmployeeId > 0) {
+                                waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.DispatchedToEmployeeId).FirstOrDefault().FirstName;
+                            }
+                        }
                         if (orderInfo.IsPrintedOnWayBill != null && orderInfo.IsPrintedOnWayBill == true)
                         {
                             waybillPrintViewModel.WaybillComments = orderInfo.CommentsForWayBill;

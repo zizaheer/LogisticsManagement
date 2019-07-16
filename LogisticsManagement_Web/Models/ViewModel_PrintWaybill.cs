@@ -34,7 +34,7 @@ namespace LogisticsManagement_Web.Models
         public string ConsigneeCustomerName { get; set; }
         public string ConsigneeCustomerAddressLine1 { get; set; }
         public string ConsigneeCustomerAddressLine2 { get; set; }
-        public int TotalSkidPieces { get; set; }
+        public int? TotalSkidPieces { get; set; }
         public string UnitTypeName { get; set; }
         public string UnitTypeShortCode { get; set; }
         public int? UnitQuantity { get; set; }

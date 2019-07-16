@@ -193,7 +193,9 @@
                                             <span>@bill.ConsigneeCustomerAddressLine2</span>
                                         </td>
                                         <td class="tdStyle">
-                                            <span>@bill.UnitQuantity (@bill.UnitTypeShortCode)</span><br />
+                                            <span>@bill.UnitQuantity @bill.UnitTypeShortCode</span><br />
+                                            <span>@bill.SkidQuantity SKD</span><br />
+
                                             <span>@bill.WeightTotal @bill.WeightScaleShortCode</span>
                                         </td>
                                         <td class="tdStyle">@bill.OrderBasePrice</td>
