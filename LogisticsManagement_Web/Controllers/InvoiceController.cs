@@ -197,21 +197,23 @@ namespace LogisticsManagement_Web.Controllers
                         pendingInvoice.ConsigneeName = customers.Where(c => c.Id == pendingInvoice.ConsigneeId).FirstOrDefault().CustomerName;
                     }
                     pendingInvoice.UnitTypeId = order.UnitTypeId;
-                    if (pendingInvoice.UnitTypeId > 0) {
+                    if (pendingInvoice.UnitTypeId > 0)
+                    {
                         pendingInvoice.UnitTypeName = unitTypes.Where(c => c.Id == pendingInvoice.UnitTypeId).FirstOrDefault().TypeName;
                         pendingInvoice.UnitQty = order.UnitQuantity;
                     }
-                    
+
                     pendingInvoice.SkidQty = order.SkidQuantity;
                     pendingInvoice.WeightScaleId = order.WeightScaleId;
-                    if (order.WeightTotal > 0) {
+                    if (order.WeightTotal > 0)
+                    {
                         if (pendingInvoice.WeightScaleId > 0)
                         {
                             pendingInvoice.WeightShortName = weightScales.Where(c => c.Id == pendingInvoice.WeightScaleId).FirstOrDefault().ShortCode;
                             pendingInvoice.WeightTotal = order.WeightTotal;
                         }
                     }
-                    
+
                     pendingInvoice.BillToCustomerId = order.BillToCustomerId;
                     pendingInvoice.BillerName = customers.Where(c => c.Id == pendingInvoice.BillToCustomerId).FirstOrDefault().CustomerName;
                     //pendingInvoice.BillerEmail = customers.Where(c => c.Id == pendingInvoice.BillToCustomerId).FirstOrDefault().EmailAddress;
@@ -445,21 +447,44 @@ namespace LogisticsManagement_Web.Controllers
             var result = "";
             try
             {
-                var invoiceWbMappingList = _invoiceWayBillMappingLogic.GetList().Where(c => c.InvoiceId == Convert.ToInt32(id));
-                var invoiceToDelete = _invoiceLogic.GetSingleById(Convert.ToInt32(id));
-
-                using (var scope = new TransactionScope())
+                if (id != "")
                 {
-                    foreach (var item in invoiceWbMappingList)
+                    var invoiceInfo = _invoiceLogic.GetSingleById(Convert.ToInt32(id));
+                    var invoiceWbMappingList = _invoiceWayBillMappingLogic.GetList().Where(c => c.InvoiceId == Convert.ToInt32(id));
+
+                    var paidAmount = invoiceInfo.PaidAmount;
+
+                    using (var scope = new TransactionScope())
                     {
-                        _invoiceWayBillMappingLogic.Remove(item);
+                        foreach (var item in invoiceWbMappingList)
+                        {
+                            item.TotalWayBillAmount = 0;
+                            item.PaidAmount = null;
+                            item.WaivedAmount = null;
+                            item.DiscountAmount = null;
+                            item.PaymentMethodId = null;
+                            item.PaymentDate = null;
+                            item.TransactionId = null;
+                            item.CashAmount = null;
+                            item.ChequeAmount = null;
+                            item.ChequeDate = null;
+                            item.ChequeNo = null;
+                            item.BankId = null;
+                            item.Remarks = null;
+
+                            _invoiceWayBillMappingLogic.Update(item);
+                        }
+
+                        if (paidAmount!=null && paidAmount > 0) {
+
+                        }
+
+                        _invoiceLogic.Remove(invoiceInfo);
+
+                        scope.Complete();
+
+                        result = "Success";
                     }
-
-                    _invoiceLogic.Remove(invoiceToDelete);
-
-                    scope.Complete();
-
-                    result = "Success";
                 }
             }
             catch (Exception ex)
@@ -874,7 +899,7 @@ namespace LogisticsManagement_Web.Controllers
                                     waybillPrintViewModel.AdditionalServiceCost = "0.00";
                                 }
 
-                               
+
                                 waybillPrintViewModel.GrandTotalOrderCost = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString("0.00");
                                 if (item.ApplicableGstPercent != null && item.ApplicableGstPercent > 0)
                                 {
@@ -920,7 +945,7 @@ namespace LogisticsManagement_Web.Controllers
                                 {
                                     waybillPrintViewModel.UnitQuantity = item.UnitQuantity;
                                 }
-                                
+
                                 if (item.WeightTotal > 0)
                                 {
                                     waybillPrintViewModel.WeightTotal = item.WeightTotal.ToString();

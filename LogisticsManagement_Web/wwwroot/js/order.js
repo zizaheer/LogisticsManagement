@@ -551,6 +551,7 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
     var serviceFee = currentRow.find('td:eq(2) .txtServiceFee').val();
     var driverPercentage = currentRow.find('td:eq(3) .txtDriverPercentage').val();
     var isGstApplicable = currentRow.find('td:eq(4) .chkIsGstApplicableForService').is(':checked');
+    var taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
 
     if (isGstApplicable === true) {
         if (isCustomerTaxApplicable === false) {
@@ -1109,8 +1110,8 @@ function CalculateAdditionalServiceCost() {
         for (var i = 0; i < selectedAdditionalServiceArray.length; i++) {
             if (selectedAdditionalServiceArray[i].additionalServiceFee > 0) {
                 totalAdditionalServiceCost = totalAdditionalServiceCost + selectedAdditionalServiceArray[i].additionalServiceFee;
-                if (selectedAdditionalServiceArray[i].isTaxAppliedOnAddionalService && taxPercentage > 0) {
-                    var addServiceTax = taxPercentage * selectedAdditionalServiceArray[i].additionalServiceFee / 100;
+                if (selectedAdditionalServiceArray[i].isTaxAppliedOnAddionalService && selectedAdditionalServiceArray[i].taxAmountOnAdditionalService > 0) {
+                    var addServiceTax = selectedAdditionalServiceArray[i].taxAmountOnAdditionalService * selectedAdditionalServiceArray[i].additionalServiceFee / 100;
                     totalAdditionalServiceCost = totalAdditionalServiceCost + addServiceTax;
                 }
 
@@ -1345,8 +1346,10 @@ function FillOrderDetails(orderRelatedData) {
         if (orderRelatedData.ApplicableGstPercent > 0) {
             taxPercentage = orderRelatedData.applicableGstPercent;
             $('#chkIsGstApplicable').prop('checked', true);
+            isCustomerTaxApplicable = true;
         } else {
             $('#chkIsGstApplicable').prop('checked', false);
+            isCustomerTaxApplicable = false;
         }
         $('#lblGstAmount').text(orderRelatedData.applicableGstPercent);
 

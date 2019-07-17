@@ -2,8 +2,83 @@
 @model List<ViewModel_OrderReadyForInvoice>
 
 @{
-    ViewData["Title"] = "Prepare invoice ";
+    ViewData["Title"] = "Generate invoice ";
 }
+
+
+<div class="modal fade bd-example-modal-xl" id="modifyInvoice" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content bg-light">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/invoice.png" style="height:25px; padding-left:28px; padding-right:10px" />Modify Invoice</h5>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-2 form-group">
+                            <small>
+                                <b>
+                                    <label for="txtInvoiceNumberToModify">Invoice number</label>
+                                </b>
+                            </small>
+                            <input class="form-control form-control-sm " placeholder="&#xF002; Invoice No." style="font-family:Arial, FontAwesome" id="txtInvoiceNumberToModify" type="number" name="txtInvoiceNumberToModify" readonly>
+                        </div>
+                        <div class="col-sm-10 form-group">
+                            <small>
+                                <b>
+                                    <label for="txtBillerCustomerName">Biller</label>
+                                </b>
+                            </small>
+                            <input type="text" id="txtBillerCustomerName" class="form-control form-control-sm txtBillerCustomerName" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 form-group">
+                            <small>
+                                <b>
+                                    <label for="txtWaybillNumbers">Waybill #</label>
+                                </b>
+                            </small>
+                            <input type="text" id="txtWaybillNumbers" class="form-control form-control-sm txtWaybillNumbers" readonly />
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 form-group">
+                            <small>
+                                <b>
+                                    <label for="txtTotalInvoiceAmount">Total invoice amount</label>
+                                </b>
+                            </small>
+                            <input type="text" id="txtTotalInvoiceAmount" class="form-control form-control-sm txtTotalInvoiceAmount" readonly />
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row" style="margin-bottom:30px">
+                        <div class="col-sm-9">
+                            <button type="button" class="btn btn-sm btn-danger" id="btnUndoInvoice"><i class="fa fa-undo"></i> Undo invoicing</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <button style="float:right" type="button" class="btn btn-sm btn-secondary" id="btnDeleteInvoice"><i class="fa fa-trash"></i> Delete invoice </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" style="font-size:.8em">
+                            * Undo invoicing removes all relevant transactions but keep the invoice number for regeneration<br />
+                            * Delete invoice removes all relevant transactions along with the invoice number form the system. New invoice number will be issued
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <h3>
     @ViewData["Title"]
@@ -70,16 +145,28 @@
 
 <br /><br />
 
-@*<h3>Available invoices</h3>
-    <hr />
 
-    <div class="row">
-        <div class="col-md-12">
-            <div style="display:block; max-height:200px; min-height:75px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadInvoicedDataTable">
-                <partial name="_PartialViewInvoicedData" />
-            </div>
+<div class="row">
+    <div class="col-md-12 input-group" style="margin-top:40px">
+        <h3>View generated invoices</h3>
+        <button style="margin-left:10px;margin-right:15px; margin-top:4px;height:27px" class="btn btn-sm btn-danger" id="btnDownloadData"><i class="fa fa-download"></i> View </button>
+        <div style="margin-top:5px">
+            <span id="spinnerLoadingDataTable" style="display:none">
+                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                <span style="margin-right:20px">Loading...</span>
+            </span>
         </div>
-    </div>*@
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-sm-12">
+        <div style="display: block; max-height: 240px; min-height: 80px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadInvoicedDataTable">
+            @*<partial name="_PartialViewInvoicedData" />*@
+        </div>
+    </div>
+</div>
 
 
 <script src="~/js/invoice.js"></script>

@@ -65,8 +65,69 @@ $('#pending-list').on('change', '#chkCheckAllOrders', function (event) {
     }
 });
 
+$('#btnDownloadData').unbind().on('click', function (event) {
+    event.preventDefault();
+    $('#loadInvoicedDataTable').load('Invoice/PartialViewDataTable');
+
+});
+
+$('#invoiced-list').unbind().on('click', '.btnEdit', function () {
+    $('#txtInvoiceNumberToModify').val('');
+    $('#txtBillerCustomerName').val('');
+    $('#txtWaybillNumbers').val('');
+    $('#txtTotalInvoiceAmount').val('');
+
+    var invoiceId = $(this).data('invoiceid');
+    var billerName = $(this).data('billername');
+    var waybillNumbers = $(this).data('waybills');
+    var totalAmount = $(this).data('totalamount');
+
+    $('#txtInvoiceNumberToModify').val(invoiceId);
+    $('#txtBillerCustomerName').val(billerName);
+    $('#txtWaybillNumbers').val(waybillNumbers);
+    $('#txtTotalInvoiceAmount').val(totalAmount);
+
+    $('#modifyInvoice').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+
+    $('#modifyInvoice').modal('show');
 
 
+});
+
+$('#btnUndoInvoice').unbind().on('click', function () {
+    var invoiceId = $('#txtInvoiceNumberToModify').val();
+    if (invoiceId !== '') {
+        bootbox.confirm("This will remove all associated transactions from the system to allow you to modify order/s. Are you sure you want to continue?", function (result) {
+            if (result === true) {
+                var resultObject = PerformPostActionWithId('Invoice/UndoInvoicing', invoiceId);
+                if (resultObject.length > 0) {
+                    bootbox.alert('All relevant transactions have been removed for this invoice. Please regenerate invoice for associated orders.');
+                } else {
+                    bootbox.alert('Failed! There was an error occurred during this operation. Please check and try again.');
+                }
+            }
+        });
+    }
+});
+
+$('#btnDeleteInvoice').unbind().on('click', function () {
+    var invoiceId = $('#txtInvoiceNumberToModify').val();
+    if (invoiceId !== '') {
+        bootbox.confirm("This will remove the invoice number along with all associated transactions. This process cannot be undone. Are you sure you want to continue?", function (result) {
+            if (result === true) {
+                var resultObject = PerformPostActionWithId('Invoice/Remove', invoiceId);
+                if (resultObject.length > 0) {
+                    bootbox.alert('The invoice number has been removed from the system. Please generate invoice for associated orders.');
+                } else {
+                    bootbox.alert('Failed! There was an error occurred during this operation. Please check and try again.');
+                }
+            }
+        });
+    }
+});
 
 $('#frmInvoiceGenerationForm').on('keyup keypress', function (e) {
     var keyCode = e.keyCode || e.which;

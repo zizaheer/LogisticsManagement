@@ -17,54 +17,39 @@
     });
 </script>
 
-<div class="row" style="max-height:230px; overflow-y:scroll;">
-    <div class="col-sm-12">
-        <table id="invoiced-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
-            <thead>
-                <tr>
-                    <th>W/B #</th>
-                    <th>Dispatched to</th>
-                    <th>Delivery date</th>
-                    <th>Received by</th>
-                    <th>Delivery note</th>
-                    <th>Consignee address</th>
-
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @*@foreach (var item in Model.OrderByDescending(c => c.PickupDatetime))
-                {
-                    <tr>
-                        <td>
-                            @item.WayBillNumber
-                        </td>
-                        <td>
-                            @item.DispatchedToEmployeeName (@item.DispatchedToEmployeeId)
-                        </td>
-                        <td>
-                            @item.DeliverDatetime
-                        </td>
-                        <td>
-                            @item.ReceivedByName
-                        </td>
-                        <td>
-                            @item.ProofOfDeliveryNote
-                        </td>
-                        <td>
-                            @item.ConsigneeAddress
-                        </td>
-
-                        <td>
-                            <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
-                            <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn btn-sm btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                        </td>
-                    </tr>
-                }*@
+<table id="invoiced-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
+    <thead>
+        <tr>
+            <th style="width:100px">Invoice #</th>
+            <th style="width:200px">Biller</th>
+            <th>W/B numbers</th>
+            <th style="width:100px">Total amnt.</th>
+            <th style="width:100px">Edit/Modify</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderByDescending(c => c.InvoiceId))
+        {
+            <tr>
+                <td>
+                    @item.InvoiceId
+                </td>
+                <td>
+                    @item.BillerName
+                </td>
+                <td>
+                    @item.WayBillNumbers
+                </td>
+                <td>
+                    @item.TotalInvoiceAmnt
+                </td>
+                <td>
+                    <button id="btnEdit" data-invoiceid='@item.InvoiceId' data-billername="@item.BillerName" data-waybills="@item.WayBillNumbers" data-totalamount="@item.TotalInvoiceAmnt" class="btn btn-sm btn-ghost-primary btnEdit" type="button"><i class="fa fa-edit"></i> </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 
-            </tbody>
-        </table>
-    </div>
-</div>
 <script src="~/js/invoice.js"></script>

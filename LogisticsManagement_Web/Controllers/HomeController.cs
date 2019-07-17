@@ -16,12 +16,20 @@ namespace LogisticsManagement_Web.Controllers
 {
     public class HomeController : Controller
     {
+
+        private Lms_OrderLogic _orderLogic;
+        private Lms_OrderStatusLogic _orderStatusLogic;
+
+        private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
-
-        public HomeController(IMemoryCache cache)
+        
+        public HomeController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _cache = cache;
+            _dbContext = dbContext;
+            _orderLogic = new Lms_OrderLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderPoco>(_dbContext));
+            _orderStatusLogic = new Lms_OrderStatusLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderStatusPoco>(_dbContext));
         }
 
         public IActionResult Index()
@@ -34,7 +42,18 @@ namespace LogisticsManagement_Web.Controllers
                     return RedirectToAction("Index", "Login");
                 }
 
+                var orderList = _orderLogic.GetList();
+                var orderStatusList = _orderStatusLogic.GetList();
+
+                var orders = (from order in orderList
+                              join status in orderStatusList on order.Id equals status.OrderId
+                              where status.IsPickedup != true
+                              select order).ToList();
+
+                ViewBag.OrderCount = orders.Count;
+
                 ViewBag.UserId = sessionData.UserId;
+                ViewBag.FirstName = sessionData.FirstName;
             }
           
             return View();

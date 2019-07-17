@@ -204,12 +204,12 @@
                         <img src="~/images/flaticons-64x64/alarm-clock.png" style="width:20px; height:20px" />
                     </a>
                 </li>
-                <li class="nav-item d-md-down-none px-5">
+                @*<li class="nav-item d-md-down-none px-5">
                     <a class="nav-link" href="#">
                         <i class="icon-bell"></i>
                         <span class="badge badge-pill badge-danger">5</span>
                     </a>
-                </li>
+                </li>*@
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                         <img src="~/images/flaticons-64x64/boss.png" style="border:1px solid #808080; border-radius:50%; padding:2px; width:30px; height:30px;" />
@@ -256,18 +256,23 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Miscellaneous">
+                                    <a class="nav-link" asp-area="" asp-controller="MiscellaneousOrder" asp-action="Index">
                                         <span style="padding-left:10px"></span><i class="nav-icon icon-puzzle"></i> Misc. Order
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Storage">
+                                    <a class="nav-link" asp-area="" asp-controller="StorageOrder" asp-action="Index">
                                         <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Storage Order
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Invoice" asp-action="Index">
                                         <span style="padding-left:10px"></span><i class="nav-icon icon-book-open"></i> Invoice
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Invoice" asp-action="InvoicePayment">
+                                        <span style="padding-left:10px"></span><i class="nav-icon fa fa-money"></i> Invoice Payment
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -305,7 +310,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Payee">
+                                    <a class="nav-link" asp-area="" asp-controller="Payee" asp-action="Index">
                                         <span style="padding-left:10px"></span><i class="nav-icon fa fa-institution"></i> Payee
                                     </a>
                                 </li>

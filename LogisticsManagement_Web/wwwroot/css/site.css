@@ -14,9 +14,10 @@ for details on configuring this project to bundle and minify static web assets. 
 .dashboard-task-button {
     font-size: .8em;
     display: block;
-    border: 1px solid #d8d8d8;
+    border: 0px solid #d8d8d8;
     text-align: center;
 }
+
 
     .dashboard-task-button img {
         height: 55px;
