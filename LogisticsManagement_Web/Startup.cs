@@ -41,7 +41,7 @@ namespace LogisticsManagement_Web
 
             services.AddTransient<IEmailService, EmailService>();
             services.AddDistributedMemoryCache();
-            services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(20));
+            services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(60));
 
             services.AddMemoryCache();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

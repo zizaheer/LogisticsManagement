@@ -77,30 +77,48 @@ $('#btnCloseModal').on('click', function () {
 $('#txtBillToCustomerName').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
-
+        $('#hfBillerCustomerId').val('');
         var billerCustomerId = $('#txtBillToCustomerName').val();
         if (billerCustomerId > 0) {
-            FillBillerCustomerInfo(billerCustomerId);
-        }
-        else {
-            bootbox.alert('Bill to customer was not found. Please try again.');
+            var billerInfo = GetCustomerInfo(billerCustomerId);
+            if (billerInfo != null && billerInfo !== '') {
+                billerCustomerInfo = JSON.parse(billerInfo);
+                if (billerCustomerInfo !== '') {
+                    $('#hfBillerCustomerId').val(billerCustomerId);
+                    $('#txtBillToCustomerName').val(billerCustomerInfo.CustomerName);
+                }
+            } else {
+                bootbox.alert('Customer not found with provided number.');
+            }
+        } else {
+            bootbox.alert('Please enter a valid customer number.');
         }
     }
 });
 $('#txtBillToCustomerName').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $(this).val();
+    $('#hfBillerCustomerId').val('');
 
     var billerCustomerId = $('#dlBillers option').filter(function () {
         return this.value === valueSelected;
     }).data('customerid');
 
     if (billerCustomerId > 0) {
-        FillBillerCustomerInfo(billerCustomerId);
+        var billerInfo = GetCustomerInfo(billerCustomerId);
+        if (billerInfo != null && billerInfo !== '') {
+            billerCustomerInfo = JSON.parse(billerInfo);
+            if (billerCustomerInfo !== '') {
+                $('#hfBillerCustomerId').val(billerCustomerId);
+                $('#txtBillToCustomerName').val(billerCustomerInfo.CustomerName);
+            }
+        } else {
+            bootbox.alert('Customer not found with provided number.');
+        }
+    } else {
+        bootbox.alert('Please enter a valid customer number.');
     }
-    else {
-        $('#hfBillerCustomerId').val('');
-    }
+
 
 });
 
@@ -111,6 +129,8 @@ $('#txtCustomerName').keypress(function (event) {
         var customerId = $('#txtCustomerName').val();
         if (customerId > 0) {
             FillCustomerInfoAndAddressInfo(customerId);
+        } else {
+            bootbox.alert('Please enter a valid customer number.');
         }
     }
 });
@@ -123,6 +143,8 @@ $('#txtCustomerName').on('input', function (event) {
 
     if (customerId > 0) {
         FillCustomerInfoAndAddressInfo(customerId);
+    } else {
+        bootbox.alert('Please enter a valid customer number.');
     }
 });
 
@@ -154,6 +176,18 @@ $('#txtEmployeeName').on('input', function (event) {
 
 });
 
+
+$('#txtCustomerAddressLine').keypress(function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        var addressId = $('#txtCustomerAddressLine').val();
+        if (addressId > 0) {
+            FillCustomerAddress(addressId);
+        } else {
+            bootbox.alert('Please enter a valid address id.');
+        }
+    }
+});
 $('#txtCustomerAddressLine').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $(this).val();
@@ -162,27 +196,11 @@ $('#txtCustomerAddressLine').on('input', function (event) {
     }).data('addressid');
     if (addressId > 0) {
         FillCustomerAddress(addressId);
-    }
-    else {
-        ClearCustomerAddressArea();
+    } else {
+        bootbox.alert('Please enter a valid address id.');
     }
 });
 
-function FillBillerCustomerInfo(customerId) {
-    var billerCustomerInfo = null;
-
-    if (customerId > 0) {
-
-        var billerInfo = GetCustomerInfo(customerId);
-        if (billerInfo != null && billerInfo != '') {
-            billerCustomerInfo = JSON.parse(billerInfo);
-            if (billerCustomerInfo !== '') {
-                $('#hfBillerCustomerId').val(customerId);
-                $('#txtBillToCustomerName').val(billerCustomerInfo.CustomerName);
-            }
-        }
-    }
-}
 
 function FillCustomerInfoAndAddressInfo(customerId) {
     var customerInfo = null;
@@ -191,22 +209,25 @@ function FillCustomerInfoAndAddressInfo(customerId) {
         var customer = GetCustomerInfo(customerId);
         if (customer != null && customer != '') {
             customerInfo = JSON.parse(customer);
-            if (customerInfo !== '') {
+            if (customerInfo !== null) {
                 $('#txtCustomerName').val(customerInfo.CustomerName);
-                $('#lblCustomerAccountNo').text(customerId);
-            }
-        }
+                $('#hfCustomerId').val(customerId);
 
-        var addressId = 0;
-        addressId = GetCustomerDefaultShippingAddress(customerId);
-        if (addressId < 1) {
-            addressId = GetCustomerDefaultBillingAddress(customerId);
-        }
-        if (addressId > 0) {
-            FillCustomerAddress(addressId);
-        }
-        else {
-            ClearCustomerAddressArea();
+                var addressId = 0;
+                addressId = GetCustomerDefaultShippingAddress(customerId);
+                if (addressId < 1) {
+                    addressId = GetCustomerDefaultBillingAddress(customerId);
+                }
+                if (addressId > 0) {
+                    FillCustomerAddress(addressId);
+                }
+                else {
+                    ClearCustomerAddressArea();
+                }
+            }
+        } else {
+            bootbox.alert('Customer not found with provided number.');
+            return;
         }
     }
 }
@@ -220,21 +241,6 @@ $('#txtDiscountPercent').keypress(function (event) {
 $('#txtDiscountPercent').on('change', function (event) {
     CalculateOrderCost();
 });
-
-$('#chkIsGstApplicable').on('change', function () {
-    CalculateOrderCost();
-});
-
-$('#txtOrderTotal').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-        $('#txtOrderTotal').change();
-    }
-});
-$('#txtOrderTotal').on('change', function (event) {
-    CalculateOrderCost();
-});
-
 
 $(document).on('input', '#service-list .txtAdditionalServiceName', function () {
     var valueSelected = $(this).val();
@@ -250,7 +256,7 @@ $(document).on('input', '#service-list .txtAdditionalServiceName', function () {
         var addServiceInfo = GetSingleById('AdditionalService/GetAdditionalServiceInfoById', serviceId);
         if (addServiceInfo != null && addServiceInfo != '' && addServiceInfo !== 'null') {
             var serviceInfo = JSON.parse(addServiceInfo);
-            currentRow.find('td:eq(2) .chkIsGstApplicableForService').prop('checked', serviceInfo.IsTaxAppliedOnAddionalService);
+            currentRow.find('td:eq(2) .chkIsGstApplicableForService').prop('checked', serviceInfo.IsTaxApplicable);
             currentRow.find('td:eq(3) .btnAddAdditionalService').attr('data-serviceid', serviceId);
             currentRow.find('td:eq(3) .btnDeleteAdditionalService').attr('data-serviceid', serviceId);
         }
@@ -273,15 +279,11 @@ $('#service-list').unbind().on('click', '.btnDeleteAdditionalService', function 
     var selectedRow = $(this).closest('tr');
     bootbox.confirm("Are you sure you want to remove this additional service?", function (result) {
         if (result === true) {
-
             var index = selectedAdditionalServiceArray.findIndex(c => c.additionalServiceId === parseInt(serviceId));
             if (index >= 0) {
                 selectedAdditionalServiceArray.splice(index, 1);
             }
-
-            CalculateAdditionalServiceCost();
             CalculateOrderCost();
-
             selectedRow.remove();
         }
     });
@@ -295,6 +297,7 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
     var taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
     var serviceFee = currentRow.find('td:eq(1) .txtServiceFee').val();
     var isGstApplicable = currentRow.find('td:eq(2) .chkIsGstApplicableForService').is(':checked');
+
 
     if (serviceId === undefined || serviceId === '' || serviceId === '0' || serviceId < 1) {
         bootbox.alert("Please select service before adding it to the order or your service id is invalid.");
@@ -320,12 +323,14 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
     }
     selectedAdditionalServiceArray.push(serviceData);
 
-    CalculateAdditionalServiceCost();
     CalculateOrderCost();
 
     currentRow.find('td:eq(3) .btnAddAdditionalService').hide();
     currentRow.find('td:eq(3) .btnServiceAdded').show();
     currentRow.find('td:eq(3) .btnDeleteAdditionalService').removeAttr('disabled');
+    currentRow.find('td:eq(1) .txtServiceFee').prop('disabled', true);
+    currentRow.find('td:eq(0) .txtAdditionalServiceName').prop('disabled', true);
+    currentRow.find('td:eq(2) .chkIsGstApplicableForService').prop('disabled', true);
 
 });
 
@@ -349,37 +354,85 @@ $('#frmMiscOrderForm').on('keyup keypress', function (e) {
     }
 });
 $('#frmMiscOrderForm').unbind('submit').submit(function (event) {
-
     event.preventDefault();
-
     var dataArray = GetFormData();
     var isValid = ValidateOrderForm(dataArray[0]);
     if (isValid === false) {
         return;
     }
+    if (dataArray[0].cargoCtlNumber !== '' || dataArray[0].awbCtnNumber !== '' || dataArray[0].referenceNumber !== '') {
+        var countCtl = PerformPostActionWithObject('Order/GetCargoCtlNumberCount', { cargoCtl: dataArray[0].cargoCtlNumber, wayBill: dataArray[0].wayBillNumber });
+        var countAwb = PerformPostActionWithObject('Order/GetAwbCtnNumberCount', { awbCtn: dataArray[0].awbCtnNumber, wayBill: dataArray[0].wayBillNumber });
+        var countRef = PerformPostActionWithObject('Order/GetCustomerReferenceNumberCount', { custRef: dataArray[0].referenceNumber, wayBill: dataArray[0].wayBillNumber });
 
+        if (countRef > 0 && countAwb > 0 && countCtl > 0) {
+            bootbox.confirm("The Customer ref#, Cargo ctl# and Awb/ctn# are already exist. Do you want to use them for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countRef > 0 && countAwb > 0) {
+            bootbox.confirm("The Customer ref# and Awb/ctn# are already exist. Do you want to use them for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countRef > 0 && countCtl > 0) {
+            bootbox.confirm("The Customer ref# and Cargo ctl# are already exist. Do you want to use them for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countRef > 0) {
+            bootbox.confirm("The Customer ref# already exist. Do you want to use the same for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countAwb > 0 && countCtl > 0) {
+            bootbox.confirm("The Cargo ctl# and Awb/ctn# already exist. Do you want to use them for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countAwb > 0) {
+            bootbox.confirm("The Awb/ctn# already exist. Do you want to use it for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else if (countCtl > 0) {
+            bootbox.confirm("The Cargo ctl# already exist. Do you want to use it for this order too?", function (result) {
+                if (result === true) {
+                    SubmitOrderForm(dataArray);
+                }
+            });
+        } else {
+            SubmitOrderForm(dataArray);
+        }
+    }
+});
+function SubmitOrderForm(dataArray) {
     var result;
+
     if (dataArray[0].wayBillNumber > 0) {
         result = PerformPostActionWithObject('MiscellaneousOrder/Update', dataArray);
         if (result.length !== '') {
-            ClearForm();
-            $('#newMiscOrder').modal('hide');
             bootbox.alert('Order updated successfully.');
         }
     }
     else {
         result = PerformPostActionWithObject('MiscellaneousOrder/Add', dataArray);
         if (result.length !== '') {
-            ClearForm();
-            $('#newMiscOrder').modal('hide');
             bootbox.alert('Order saved successfully.');
         }
     }
     selectedAdditionalServiceArray = null;
     $('#loadMiscellaneousOrders').load('MiscellaneousOrder/LoadMiscellaneousOrders');
 
-});
-
+    ClearForm();
+    $('#newMiscOrder').modal('hide');
+}
 
 $('#misc-order-list').on('click', '.btnEdit', function (event) {
     event.preventDefault();
@@ -471,7 +524,7 @@ function GetAddressInfo(addressId) {
     return addressInfo;
 }
 function GetEmployeeById(employeeId) {
-    if (employeeId != null && employeeId != '') {
+    if (employeeId != null && employeeId !== '') {
         var empInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
         if (empInfo != null) {
             var employee = JSON.parse(empInfo);
@@ -488,17 +541,16 @@ function GetCustomerDefaultBillingAddress(customerId) {
     return customerDefaultBillingAddressId;
 }
 function FillCustomerAddress(addressId) {
-    var customerAddress = JSON.parse(GetAddressInfo(addressId));
-
     ClearCustomerAddressArea();
-
-    if (customerAddress !== null) {
-        $('#hfCustomerAddressId').val(customerAddress.Id);
-        $('#txtCustomerAddressLine').val(customerAddress.AddressLine);
-        $('#txtCustomerUnitNo').val(customerAddress.UnitNumber);
-        $('#ddlCustomerCityId').val(customerAddress.CityId);
-        $('#ddlCustomerProvinceId').val(customerAddress.ProvinceId);
-        $('#txtCustomerPostcode').val(customerAddress.PostCode);
+    var customerAddress = GetAddressInfo(addressId);
+    if (customerAddress !== null && customerAddress !== '') {
+        var customerAddressParsed = JSON.parse(GetAddressInfo(addressId));
+        $('#hfCustomerAddressId').val(customerAddressParsed.Id);
+        $('#txtCustomerAddressLine').val(customerAddressParsed.AddressLine);
+        $('#txtCustomerUnitNo').val(customerAddressParsed.UnitNumber);
+        $('#ddlCustomerCityId').val(customerAddressParsed.CityId);
+        $('#ddlCustomerProvinceId').val(customerAddressParsed.ProvinceId);
+        $('#txtCustomerPostcode').val(customerAddressParsed.PostCode);
     }
 }
 
@@ -510,98 +562,70 @@ function ValidateOrderForm(formData) {
     }
 
     if (formData.customerId <= 0) {
-        bootbox.alert('Please enter customer information');
+        bootbox.alert('Please enter or select service location customer');
         return false;
     }
 
     if (formData.customerAddressline === '') {
-        bootbox.alert('Please enter a valid address or select from address list');
+        bootbox.alert('Please enter a valid address for service location or select from address list');
         return false;
     }
 
-    if (formData.orderBasicCost <= 0) {
-        bootbox.alert('Please enter order price.');
+    if (formData.totalAdditionalServiceCost <= 0) {
+        bootbox.alert('Order price must be greater than 0.');
         return false;
     }
 
     return true;
 }
 
-function CalculateAdditionalServiceCost() {
-    var totalAdditionalServiceCost = 0.0;
-    var taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
+function CalculateOrderCost() {
 
+    var orderTotal = 0;
+    var discountPercentage = $('#txtDiscountPercent').val() !== "" ? parseFloat($('#txtDiscountPercent').val()) : 0.0;
+    var taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
+    //var isGstApplicable = $('#chkIsGstApplicable').is(':checked');
+
+    var totalServiceCost = 0.0;
+    var currentGstTotal = 0.0;
     if (selectedAdditionalServiceArray.length > 0) {
         for (var i = 0; i < selectedAdditionalServiceArray.length; i++) {
             if (selectedAdditionalServiceArray[i].additionalServiceFee > 0) {
-                totalAdditionalServiceCost = totalAdditionalServiceCost + selectedAdditionalServiceArray[i].additionalServiceFee;
+                totalServiceCost = totalServiceCost + selectedAdditionalServiceArray[i].additionalServiceFee;
                 if (selectedAdditionalServiceArray[i].isTaxAppliedOnAddionalService && taxPercentage > 0) {
                     var addServiceTax = taxPercentage * selectedAdditionalServiceArray[i].additionalServiceFee / 100;
-                    totalAdditionalServiceCost = totalAdditionalServiceCost + addServiceTax;
+                    currentGstTotal += addServiceTax;
                 }
-
             }
         }
     }
 
-    return totalAdditionalServiceCost;
-}
-
-function CalculateOrderCost() {
-
-    var orderTotal = 0;
-    var orderBasicTotal = $('#txtOrderTotal').val() !== "" ? parseFloat($('#txtOrderTotal').val()) : 0.0;
-    var discountPercentage = $('#txtDiscountPercent').val() !== "" ? parseFloat($('#txtDiscountPercent').val()) : 0.0;
-    var taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
-
-    var isGstApplicable = $('#chkIsGstApplicable').is(':checked');
-
-    if (orderBasicTotal > 0) {
-        orderTotal = orderBasicTotal;
-        $('#lblGrandBasicCost').text(orderBasicTotal.toFixed(2));
+    if (totalServiceCost > 0) {
+        orderTotal = totalServiceCost;
+        $('#lblGrandBasicCost').text(totalServiceCost.toFixed(2));
     }
     else {
         $('#lblGrandBasicCost').text('0.00');
     }
 
-    if (discountPercentage > 0 && orderBasicTotal > 0) {
-        var baseDiscountAmount = discountPercentage * orderBasicTotal / 100;
+    if (discountPercentage > 0 && totalServiceCost > 0) {
+        var baseDiscountAmount = discountPercentage * totalServiceCost / 100;
         $('#lblGrandDiscountAmount').text(baseDiscountAmount.toFixed(2));
-        orderTotal = orderBasicTotal - baseDiscountAmount;
+        orderTotal = totalServiceCost - baseDiscountAmount;
     } else {
         $('#lblGrandDiscountAmount').text('0.00');
     }
 
-    if (taxPercentage > 0 && isGstApplicable) {
-        var baseTaxAmount = taxPercentage * orderTotal / 100;
-        orderTotal = orderTotal + baseTaxAmount;
-        $('#lblGrandGstAmount').text(baseTaxAmount.toFixed(2));
-    }
-    else {
+    if (currentGstTotal > 0) {
+        orderTotal = orderTotal + currentGstTotal;
+        $('#lblGrandGstAmount').text(currentGstTotal.toFixed(2));
+    } else {
         $('#lblGrandGstAmount').text('0.00');
     }
 
     if (orderTotal > 0) {
-        $('#lblGrandTotalOrderCost').text(orderTotal.toFixed(2));
+        $('#lblGrandTotalAmount').text(orderTotal.toFixed(2));
     } else {
-        $('#lblGrandTotalOrderCost').text('0.00');
-    }
-
-
-    var grandTotal = orderTotal;
-    var totalServiceCost = CalculateAdditionalServiceCost();
-
-    if (totalServiceCost > 0) {
-        $('#lblGrandAddServiceAmount').text(totalServiceCost.toFixed(2));
-        grandTotal = grandTotal + totalServiceCost;
-    } else {
-        $('#lblGrandAddServiceAmount').text('0.00');
-    }
-
-    if (grandTotal > 0) {
-        $('#lblGrandTotalAmount').text(grandTotal.toFixed(2));
-    }
-    else {
         $('#lblGrandTotalAmount').text('0.00');
     }
 
@@ -785,7 +809,7 @@ function GetFormData() {
         phoneNumber: $('#txtPhoneNo').val() === "" ? null : $('#txtPhoneNo').val(),
         departmentName: $('#txtDepartment').val() === "" ? null : $('#txtDepartment').val(),
 
-        customerId: $('#lblCustomerAccountNo').text() === "" ? 0 : parseInt($('#lblCustomerAccountNo').text()),
+        customerId: $('#hfCustomerId').val() === "" ? 0 : parseInt($('#hfCustomerId').val()),
         customerAddressId: $('#hfCustomerAddressId').val() === "" ? 0 : parseInt($('#hfCustomerAddressId').val()),
         customerAddressline: $('#txtCustomerAddressLine').val(),
         customerUnitNo: $('#txtCustomerUnitNo').val(),
@@ -793,7 +817,7 @@ function GetFormData() {
         customerProvinceId: $('#ddlCustomerProvinceId').val() === "" ? 0 : parseInt($('#ddlCustomerProvinceId').val()),
         customerPostcode: $('#txtCustomerPostcode').val(),
         cityId: $('#ddlCustomerCityId').val() === "" ? 0 : parseInt($('#ddlCustomerCityId').val()),
-        serviceProviderEmployeeId: $('#hfEmployeeId').val() === "" ? 0 : parseInt($('#hfEmployeeId').val()),
+        serviceProviderEmployeeId: $('#hfEmployeeId').val() === "" ? null : parseInt($('#hfEmployeeId').val()),
 
         unitTypeId: $('#ddlUnitTypeId').val() === "" ? 0 : parseInt($('#ddlUnitTypeId').val()),
         weightScaleId: $('#ddlWeightScaleId').val() === "" ? null : parseInt($('#ddlWeightScaleId').val()),
@@ -803,16 +827,16 @@ function GetFormData() {
         totalPieces: $('#txtTotalPieces').val() === "" ? null : $('#txtTotalPieces').val(),
 
         discountPercentOnOrderCost: $('#txtDiscountPercent').val() === "" ? null : parseFloat($('#txtDiscountPercent').val()),
-        applicableGstPercent: $('#chkIsGstApplicable').is(':checked') === true ? ($('#lblGstAmount').text() === "" ? null : parseFloat($('#lblGstAmount').text())) : null,
+        applicableGstPercent: 0.0,
 
-        orderBasicCost: $('#txtOrderTotal').val() === "" ? null : parseFloat($('#txtOrderTotal').val()),
-        totalOrderCost: $('#lblGrandTotalOrderCost').text() === "" ? null : parseFloat($('#lblGrandTotalOrderCost').text()),
-        totalAdditionalServiceCost: $('#lblGrandAddServiceAmount').text() === "" ? null : parseFloat($('#lblGrandAddServiceAmount').text()),
+        orderBasicCost: $('#lblGrandBasicCost').text() === "" ? null : parseFloat($('#lblGrandBasicCost').text()),
+        totalOrderCost: 0,
+        totalAdditionalServiceCost: $('#lblGrandTotalAmount').text() === "" ? 0 : parseFloat($('#lblGrandTotalAmount').text()),
 
         commentsForWayBill: $('#txtCommentsForWayBill').val() === "" ? null : $('#txtCommentsForWayBill').val(),
         isPrintedOnWayBill: $('#chkIsPrintOnWayBill').is(':checked') === true ? 1 : 0,
         commentsForInvoice: $('#txtCommentsForInvoice').val() === "" ? null : $('#txtCommentsForInvoice').val(),
-        isPrintedOnInvoice: $('#chkIsPrintOnInvoice').is(':checked') === true ? 1 : 0,
+        isPrintedOnInvoice: $('#chkIsPrintOnInvoice').is(':checked') === true ? 1 : 0
     };
 
     return [orderData, selectedAdditionalServiceArray];
@@ -821,8 +845,11 @@ function GetFormData() {
 function ClearForm() {
 
     $('#hfOrderId').val('');
-    $('#txtWayBillNo').val('');
+    $('#hfCustomerAddressId').val('');
+    $('#hfEmployeeId').val('');
     $('#hfBillerCustomerId').val('');
+
+    $('#txtWayBillNo').val('');
     $('#txtCustomerRefNo').val('');
     $('#txtCargoCtlNo').val('');
     $('#txtAwbCtnNo').val('');
@@ -830,14 +857,14 @@ function ClearForm() {
     $('#txtOrderedBy').val('');
     $('#txtPhoneNo').val('');
     $('#txtDepartment').val('');
-    $('#lblCustomerAccountNo').text();
-    $('#hfCustomerAddressId').val('');
+    $('#hfCustomerId').val();
+    
     $('#txtCustomerAddressLine').val('');
     $('#txtCustomerUnitNo').val('');
     $('#ddlCustomerCityId').val('0');
     $('#ddlCustomerProvinceId').val('0');
     $('#txtCustomerPostcode').val('');
-    $('#hfEmployeeId').val('');
+    
     $('#txtEmployeeName').val('');
     $('#ddlUnitTypeId').val('0');
     $('#ddlWeightScaleId').val('1');
@@ -847,20 +874,15 @@ function ClearForm() {
     $('#txtTotalPieces').val('');
 
     $('#txtDiscountPercent').val('');
-    $('#chkIsGstApplicable').prop('checked', false);
-    //$('#lblGstAmount').text('');
 
     $('#txtCommentsForWayBill').val('');
     $('#chkIsPrintOnWayBill').prop('checked', false);
     $('#txtCommentsForInvoice').val('');
     $('#chkIsPrintOnInvoice').prop('checked', false);
 
-    $('#txtOrderTotal').val('');
     $('#lblGrandBasicCost').text('0.00');
     $('#lblGrandDiscountAmount').text('0.00');
     $('#lblGrandGstAmount').text('0.00');
-    $('#lblGrandTotalOrderCost').text('0.00');
-    $('#lblGrandAddServiceAmount').text('0.00');
     $('#lblGrandTotalAmount').text('0.00');
 
     $('#service-list').empty();

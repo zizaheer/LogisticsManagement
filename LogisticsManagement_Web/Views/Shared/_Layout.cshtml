@@ -40,6 +40,8 @@
         gtag('config', 'UA-118965717-5');
     </script>
 
+    
+
 </head>
 
 <body class="app sidebar-minimized aside-menu-fixed sidebar-lg-show">
@@ -101,7 +103,7 @@
                                         <label for="txtBreakTime">Break time</label>
                                     </b>
                                 </small>
-                                <input type="number" id="txtBreakTime" class="form-control form-control-sm txtBreakTime"  />
+                                <input type="number" id="txtBreakTime" class="form-control form-control-sm txtBreakTime" />
                             </div>
                             <div class="col-sm-4 form-group">
                                 <small>
@@ -109,7 +111,7 @@
                                         <label for="txtRemarks">Remarks</label>
                                     </b>
                                 </small>
-                                <input type="text" id="txtRemarks" class="form-control form-control-sm txtRemarks"  />
+                                <input type="text" id="txtRemarks" class="form-control form-control-sm txtRemarks" />
                             </div>
                         </div>
 
@@ -128,7 +130,6 @@
         </div>
     </div>
     <!-- Modal for clock-in -->
-
     <!-- Modal for change password -->
     <div class="modal fade bd-example-modal-xl" id="changePassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -205,11 +206,11 @@
                     </a>
                 </li>
                 @*<li class="nav-item d-md-down-none px-5">
-                    <a class="nav-link" href="#">
-                        <i class="icon-bell"></i>
-                        <span class="badge badge-pill badge-danger">5</span>
-                    </a>
-                </li>*@
+                        <a class="nav-link" href="#">
+                            <i class="icon-bell"></i>
+                            <span class="badge badge-pill badge-danger">5</span>
+                        </a>
+                    </li>*@
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                         <img src="~/images/flaticons-64x64/boss.png" style="border:1px solid #808080; border-radius:50%; padding:2px; width:30px; height:30px;" />
@@ -220,8 +221,8 @@
                             <strong>Account</strong>
                         </div>
                         @*<a class="dropdown-item" href="#">
-                            <i class="fa fa-user"></i> Profile
-                        </a>*@
+                                <i class="fa fa-user"></i> Profile
+                            </a>*@
                         <a class="dropdown-item" data-toggle="modal" id="lnkChangePassword" href="#">
                             <i class="fa fa-key"></i> Change password
                         </a>
@@ -415,6 +416,32 @@
         function SetSessionData(sessionDataParsed) {
             document.getElementById('txtEmployeeId').val = sessionDataParsed.LoggedInEmployeeId;
             console.log("sd emp: " + sessionDataParsed.LoggedInEmployeeId);
+        }
+    </script>
+    <script type="text/javascript">
+        var idleTime = 0;
+        $(document).ready(function () {
+
+            //Increment the idle time counter every minute.
+            var idleInterval = setInterval(timerIncrement, 600000); // 10 minute
+
+            //Zero the idle timer on mouse movement.
+            $(this).mousemove(function (e) {
+                idleTime = 0;
+            });
+            $(this).click(function (e) {
+                idleTime = 0;
+            });
+            $(this).keypress(function (e) {
+                idleTime = 0;
+            });
+        });
+
+        function timerIncrement() {
+            idleTime = idleTime + 1;
+            if (idleTime > 5) { // 60 minutes
+                window.location.href = window.location.origin + "/Login/InvalidLocation";
+            }
         }
     </script>
 

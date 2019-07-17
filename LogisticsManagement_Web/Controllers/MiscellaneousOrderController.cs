@@ -624,7 +624,7 @@ namespace LogisticsManagement_Web.Controllers
                 viewModelOrder.OrderTypeId = item.OrderTypeId;
                 viewModelOrder.OrderTypeFlag = "Misc.";
                 viewModelOrder.ServiceProviderEmployeeId = item.ServiceProviderEmployeeId;
-                if (item.ServiceProviderEmployeeId != null)
+                if (item.ServiceProviderEmployeeId != null && item.ServiceProviderEmployeeId > 0)
                 {
                     viewModelOrder.ServiceProviderEmployeeName = (miscOrderViewModel.Employees.Where(c => c.Id == item.ServiceProviderEmployeeId).FirstOrDefault()).FirstName;
                 }
@@ -633,13 +633,19 @@ namespace LogisticsManagement_Web.Controllers
 
                 viewModelOrder.CustomerRefNumber = item.ReferenceNumber;
                 viewModelOrder.UnitTypeId = item.UnitTypeId;
-                viewModelOrder.UnitTypeName = miscOrderViewModel.UnitTypes.Where(c => c.Id == viewModelOrder.UnitTypeId).FirstOrDefault().ShortCode;
+                if (item.UnitTypeId > 0)
+                {
+                    viewModelOrder.UnitTypeName = miscOrderViewModel.UnitTypes.Where(c => c.Id == viewModelOrder.UnitTypeId).FirstOrDefault().ShortCode;
+                }
                 viewModelOrder.UnitQuantity = item.UnitQuantity;
                 viewModelOrder.SkidQuantity = item.SkidQuantity;
                 viewModelOrder.TotalPiece = item.TotalPiece;
                 viewModelOrder.SpcIns = "";
                 viewModelOrder.BillerCustomerId = item.BillToCustomerId;
-                viewModelOrder.BillerCustomerName = miscOrderViewModel.Customers.Where(c => c.Id == viewModelOrder.BillerCustomerId).FirstOrDefault().CustomerName;
+                if (item.BillToCustomerId > 0)
+                {
+                    viewModelOrder.BillerCustomerName = miscOrderViewModel.Customers.Where(c => c.Id == viewModelOrder.BillerCustomerId).FirstOrDefault().CustomerName;
+                }
 
                 viewModelOrders.Add(viewModelOrder);
             }

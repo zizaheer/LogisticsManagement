@@ -23,7 +23,7 @@ namespace LogisticsManagement_Web.Controllers
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
-        
+
         public HomeController(IMemoryCache cache, LogisticsContext dbContext)
         {
             _cache = cache;
@@ -34,33 +34,21 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var currentData = HttpContext.Session.GetString("SessionData");
-            if (currentData != null) {
-                sessionData = JsonConvert.DeserializeObject<SessionData>(currentData);
-                if (sessionData == null)
-                {
-                    return RedirectToAction("Index", "Login");
-                }
+            ValidateSession();
 
-                var orderList = _orderLogic.GetList();
-                var orderStatusList = _orderStatusLogic.GetList();
+            var orderList = _orderLogic.GetList();
+            var orderStatusList = _orderStatusLogic.GetList();
 
-                var orders = (from order in orderList
-                              join status in orderStatusList on order.Id equals status.OrderId
-                              where status.IsPickedup != true
-                              select order).ToList();
+            var orders = (from order in orderList
+                          join status in orderStatusList on order.Id equals status.OrderId
+                          where status.IsPickedup != true
+                          select order).ToList();
 
-                ViewBag.OrderCount = orders.Count;
+            ViewBag.OrderCount = orders.Count;
 
-                ViewBag.UserId = sessionData.UserId;
-                ViewBag.FirstName = sessionData.FirstName;
-            }
-          
-            return View();
-        }
+            ViewBag.UserId = sessionData.UserId;
+            ViewBag.FirstName = sessionData.FirstName;
 
-        public IActionResult Privacy()
-        {
             return View();
         }
 
@@ -68,6 +56,22 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private void ValidateSession()
+        {
+            if (HttpContext.Session.GetString("SessionData") != null)
+            {
+                sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
+                if (sessionData == null)
+                {
+                    Response.Redirect("Login/Index");
+                }
+            }
+            else
+            {
+                Response.Redirect("Login/InvalidLocation");
+            }
         }
     }
 }

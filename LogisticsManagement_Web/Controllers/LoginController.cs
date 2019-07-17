@@ -68,6 +68,7 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult InvalidLocation()
         {
+            HttpContext.Session.Remove("SessionData");
             return View();
         }
 

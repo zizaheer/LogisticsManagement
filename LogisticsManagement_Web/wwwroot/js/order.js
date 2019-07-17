@@ -114,11 +114,11 @@ $('#btnCloseModal').unbind().on('click', function (event) {
 
 $('input[type=radio][name=rdoPaidBy]').change(function () {
     paidByValue = this.value;
-
+    var billerInfo = '';
     if (paidByValue === '1') {
         var shipperCustomerId = $('#lblShipperAccountNo').text();
         if (shipperCustomerId !== '') {
-            var billerInfo = GetCustomerInfo(shipperCustomerId);
+             billerInfo = GetCustomerInfo(shipperCustomerId);
             if (billerInfo != null && billerInfo != '') {
                 FillBillerInformation(billerInfo);
             }
@@ -127,7 +127,7 @@ $('input[type=radio][name=rdoPaidBy]').change(function () {
     else if (paidByValue === '2') {
         var consigneeCustomerId = $('#lblConsigneeAccountNo').text();
         if (consigneeCustomerId !== '') {
-            var billerInfo = GetCustomerInfo(consigneeCustomerId);
+             billerInfo = GetCustomerInfo(consigneeCustomerId);
             if (billerInfo != null && billerInfo != '') {
                 FillBillerInformation(billerInfo);
             }

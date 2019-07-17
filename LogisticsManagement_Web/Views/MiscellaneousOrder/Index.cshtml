@@ -75,7 +75,7 @@
                                         <label style="margin-top:5px" id="lblBillTo" for="txtBillToCustomerName"><b>Bill to</b></label>
                                     </small>
                                     <div class="col-sm-4" style="margin-right:50px">
-                                        <input type="hidden" id="hfBillerCustomerId" />
+                                        
                                         <input class="form-control form-control-sm" id="txtBillToCustomerName" name="txtBillToCustomerName" placeholder="Bill to" list="dlBillers" type="search" style="width:381px" />
                                         <datalist id="dlBillers">
                                             @foreach (var item in Model.Customers)
@@ -125,10 +125,10 @@
                                         <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px; margin-right:13px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>Awb ctl#</b></label>
+                                        <label style="margin-top:5px; margin-right:13px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>Awb/CTN#</b></label>
                                     </small>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Awb Ctl#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Awb/CTN#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No">
                                     </div>
                                     <small>
                                         <label style="margin-top:5px; margin-right:15px" id="lblDepartment" for="txtDepartment"><b>Dept.</b></label>
@@ -143,7 +143,7 @@
                                 <div class="row">
                                     <div class="col-4" style="padding-left:0px">
                                         <div class="row mb-1">
-                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Service location<label style="margin-bottom:0px" id="lblCustomerAccountNo" for="txtCustomerName"></label></small>
+                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Service location</small>
                                         </div>
                                         <div class="row mb-1">
 
@@ -266,8 +266,8 @@
                                                         <small>
                                                             <b>
                                                                 <div class="form-check-inline">
-                                                                    <input type="checkbox" class="form-check-input" id="chkIsGstApplicable" name="chkIsGstApplicable" />
-                                                                    <label for="chkIsGstApplicable" class="form-check-label"> Apply @Model.Configuration.TaxToCall - </label><label id="lblGstAmount" for="chkIsGstApplicable" class="form-check-label">@Model.Configuration.TaxAmount</label> %
+                                                                    @*<input type="checkbox" class="form-check-input" id="chkIsGstApplicable" name="chkIsGstApplicable" />*@
+                                                                    <label for="chkIsGstApplicable" class="form-check-label"> @Model.Configuration.TaxToCall - </label><label id="lblGstAmount" for="chkIsGstApplicable" class="form-check-label">@Model.Configuration.TaxAmount</label> %
                                                                 </div>
                                                             </b>
                                                         </small>
@@ -290,7 +290,7 @@
                                                     <tr>
                                                         <th style="width:300px">Additional service</th>
                                                         <th style="width:190px; padding-right:5px">Srv. Charge</th>
-                                                        <th style="width:160px; text-align:center">Apply GST</th>
+                                                        <th style="width:160px; text-align:center">Apply @Model.Configuration.TaxToCall</th>
                                                         <th style="width:100px; text-align:center; margin-bottom:10px"><button class="btn btn-sm btn-dark additionalServiceControl" id="btnAddAddtionalServiceRow"> <i class="fa fa-eyedropper"></i> Add service</button></th>
                                                     </tr>
                                                     <tr>
@@ -398,6 +398,8 @@
                         <div class="row">
                             <div class="col-sm-6" style="padding-left:0px">
                                 <input type="hidden" id="hfOrderId" class="hfOrderId" name="hfOrderId" />
+                                <input type="hidden" id="hfBillerCustomerId" />
+                                <input type="hidden" id="hfCustomerId" />
                                 <input type="hidden" id="hfCustomerAddressId" class="hfCustomerAddressId" name="hfCustomerAddressId" />
                                 <input type="hidden" id="hfTaxAmount" class="hfTaxAmount" name="hfTaxAmount" value="@Model.Configuration.TaxAmount" />
                                 <input type="hidden" id="hfEmployeeId" class="hfEmployeeId" name="hfEmployeeId" />
