@@ -61,8 +61,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content bg-light">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">New Misc. Order</h5>
-
+                    <img src="~/images/flaticons-64x64/effort.png" style="height:25px; padding-left:14px; padding-right:10px" /><h5 class="modal-title" id="exampleModalCenterTitle">New Misc. Order</h5>
                     <button type="button" class="close" id="btnCloseModal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -141,11 +140,10 @@
                                 <div class="row">
                                     <hr style="border-top:1px solid #cccccc; padding:0px; width:100%" />
                                 </div>
-                                <div class="row" style="margin-top:8px">
-
-                                    <div class="col-8" style="padding-left:0px">
+                                <div class="row">
+                                    <div class="col-4" style="padding-left:0px">
                                         <div class="row mb-1">
-                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Customer Acc#: <label style="margin-bottom:0px" id="lblCustomerAccountNo" for="txtCustomerName"></label></small>
+                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Service location<label style="margin-bottom:0px" id="lblCustomerAccountNo" for="txtCustomerName"></label></small>
                                         </div>
                                         <div class="row mb-1">
 
@@ -169,14 +167,14 @@
                                         <div class="row">
                                             <div class="col-12 input-group">
                                                 <select class="col-6 form-control form-control-sm" id="ddlCustomerCityId" name="ddlCustomerCityId" style="-webkit-appearance: none;">
-                                                    <option value="0"> City  </option>
+                                                    <option value="0" selected> City  </option>
                                                     @foreach (var item in Model.Cities)
                                                     {
                                                         <option value="@item.Id">@item.CityName</option>
                                                     }
                                                 </select>
                                                 <select class="col-3 form-control form-control-sm" id="ddlCustomerProvinceId" name="ddlCustomerProvinceId" style="-webkit-appearance: none;">
-                                                    <option value="0"> Province </option>
+                                                    <option value="0" selected> Province </option>
                                                     @foreach (var item in Model.Provinces)
                                                     {
                                                         <option value="@item.Id">@item.ShortCode</option>
@@ -187,11 +185,9 @@
                                         </div>
                                     </div>
 
-
-
-                                    <div class="col-4">
+                                    <div class="col-4" style="padding-left:0px">
                                         <div class="row mb-1">
-                                            <small class="col-sm-8" style="color:#000; font-weight:bold">Service provided by</small>
+                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Service provided by<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
                                         </div>
                                         <div class="row mb-1">
                                             <div class="form-group col-md-12 input-group">
@@ -205,27 +201,53 @@
                                             </div>
                                         </div>
                                         <div class="row mb-1">
-                                            <div class="col-md-12 input-group">
-                                                <select class="col-3 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId">
-                                                    <option value="0" selected> Unit </option>
-                                                    @foreach (var item in Model.UnitTypes)
-                                                    {
-                                                        var selected = item.IsDefault;
-                                                        <option value="@item.Id" selected="@item.IsDefault">@item.ShortCode</option>
-                                                    }
-                                                </select>
-                                                <input class="col-2 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
-                                                <input class="col-2 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity">
-                                                <input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces">
-                                                &nbsp;
-                                                <input class="col-2 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
-                                                <select class="col-1 form-control form-control-sm" id="ddlWeightScaleId" name="ddlWeightScaleId" style="-webkit-appearance: none;">
-                                                    @foreach (var item in Model.WeightScales)
-                                                    {
-                                                        var selected = item.IsDefault;
-                                                        <option value="@item.Id" selected="@selected">@item.ShortCode</option>
-                                                    }
-                                                </select>
+                                            <div class="col-12 input-group">
+                                                <input class="col-7 form-control form-control-sm" placeholder="Delivered by" id="txtDeliveredBy" name="txtDeliveredBy" type="text" />
+                                                <input class="col-5 form-control form-control-sm" placeholder="Bol/Pro ref#" id="txtBolRefNumber" name="txtBolRefNumber" type="text" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 input-group">
+                                                <input class="col-6 form-control form-control-sm" placeholder="Shipper" id="txtShipperName" name="txtShipperName" type="text" />
+                                                <input class="col-6 form-control form-control-sm" placeholder="Address" id="txtShipperAddress" name="txtShipperAddress" type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <div class="row mb-1">
+                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Quantity and weight</small>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-12 input-group">
+                                                <div class="row mb-1">
+                                                    <select class="col-2 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId">
+                                                        <option value="0" selected> Unit </option>
+                                                        @foreach (var item in Model.UnitTypes)
+                                                        {
+                                                            var selected = item.IsDefault;
+                                                            <option value="@item.Id" selected="@item.IsDefault">@item.ShortCode</option>
+                                                        }
+                                                    </select>
+                                                    <input class="col-2 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
+                                                    <input class="col-2 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity">
+                                                    <input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces">
+                                                    &nbsp;
+                                                    <input class="col-2 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
+                                                    <select class="col-1 form-control form-control-sm" id="ddlWeightScaleId" name="ddlWeightScaleId" style="-webkit-appearance: none;">
+                                                        @foreach (var item in Model.WeightScales)
+                                                        {
+                                                            var selected = item.IsDefault;
+                                                            <option value="@item.Id" selected="@selected">@item.ShortCode</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="col-12 input-group">
+
                                             </div>
                                         </div>
                                         <div class="row">
@@ -237,14 +259,16 @@
                                                             <label style="margin-top:5px;" id="lblDiscountPercent" for="txtDiscountPercent"><b>Discount</b></label>
                                                         </small>
                                                     </div>
-                                                    <div class="col-sm-5">
+                                                    <div class="col-sm-4">
                                                         <input class="form-control form-control-sm" style="height:25px; margin-bottom:2px; margin-top:2px" placeholder="Disc." id="txtDiscountPercent" type="number" name="txtDiscountPercent">
                                                     </div>
-                                                    <div class="col-sm-5">
+                                                    <div class="col-sm-6">
                                                         <small>
                                                             <b>
-                                                                <input type="checkbox" class="form-check-inline form-check-input" id="chkIsGstApplicable" name="chkIsGstApplicable" />
-                                                                <label for="chkIsGstApplicable"> Apply @Model.Configuration.TaxToCall - <label class="form-check-inline form-check-label" id="lblGstAmount">@Model.Configuration.TaxAmount</label>%</label>
+                                                                <div class="form-check-inline">
+                                                                    <input type="checkbox" class="form-check-input" id="chkIsGstApplicable" name="chkIsGstApplicable" />
+                                                                    <label for="chkIsGstApplicable" class="form-check-label"> Apply @Model.Configuration.TaxToCall - </label><label id="lblGstAmount" for="chkIsGstApplicable" class="form-check-label">@Model.Configuration.TaxAmount</label> %
+                                                                </div>
                                                             </b>
                                                         </small>
                                                     </div>
@@ -257,10 +281,10 @@
                                     <hr style="border-top:1px solid #cccccc; padding:0px; width:100%" />
                                 </div>
 
-                                <div class="row" style="margin-top:8px">
+                                <div class="row">
 
                                     <div class="col-sm-9" style="padding-left:0px">
-                                        <div style="overflow-y:scroll; height:207px; display:block;border:1px solid #d0d0d0; padding:10px">
+                                        <div style="overflow-y:scroll; height:190px; display:block;border:1px solid #d0d0d0; padding:10px">
                                             <table style="margin-bottom:10px">
                                                 <thead>
                                                     <tr>
@@ -283,7 +307,7 @@
 
                                     </div>
                                     <div class="col-sm-3">
-                                        <div style="margin-bottom:10px">
+                                        <div style="margin-bottom:18px">
 
                                             <div class="form-check-inline">
                                                 <input type="checkbox" id="chkIsPrintOnWayBill" name="chkIsPrintOnWayBill" class="form-check-input" />
@@ -295,7 +319,7 @@
 
                                             <div class="row">
                                                 <div class="col-12 input-group">
-                                                    <textarea class="form-control form-control-sm" id="txtCommentsForWayBill" name="txtCommentsForWayBill" rows="2" cols="45"></textarea>
+                                                    <textarea class="form-control form-control-sm" id="txtCommentsForWayBill" placeholder="Comments for waybill" name="txtCommentsForWayBill" rows="3" cols="45"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -308,11 +332,11 @@
                                             </small>
                                             <div class="row">
                                                 <div class="col-12 input-group">
-                                                    <textarea class="form-control form-control-sm" id="txtCommentsForInvoice" name="txtCommentsForInvoice" rows="2" cols="45"></textarea>
+                                                    <textarea class="form-control form-control-sm" id="txtCommentsForInvoice" placeholder="Comments for invoice" name="txtCommentsForInvoice" rows="3" cols="45"></textarea>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style="margin-top:5px">
+                                        @*<div style="margin-top:5px">
                                             <small>
                                                 <label id="lblOrderTotal" for="txtOrderTotal"><b><i class="fa fa-money"></i> ORDER TOTAL</b></label>
                                             </small>
@@ -321,7 +345,7 @@
                                                     <input type="number" class="form-control form-control-sm" id="txtOrderTotal" name="txtOrderTotal" style="background-color:#b3ffc3; font-weight:bolder" />
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>*@
                                     </div>
 
                                 </div>
@@ -330,16 +354,16 @@
                                     <hr style="border-top:1px solid #cccccc; padding:0px; width:100%" />
                                 </div>
 
-                                <div class="row" style="margin-top:0px">
-                                    <div class="card bg-success mr-auto" style="width:100%">
+                                <div class="row">
+                                    <div class="card bg-info mr-auto" style="width:100%">
                                         <table class="table table-sm table-striped table-dark mb-1 text-center">
                                             <thead>
                                                 <tr>
                                                     <td scope="col"><small>Basic Cost</small></td>
                                                     <td scope="col"><small>Sp. Discount</small></td>
                                                     <td scope="col"><small>GST</small></td>
-                                                    <td scope="col"><small>Total Cost</small></td>
-                                                    <td scope="col"><small>Add. Charges</small></td>
+                                                    @*<td scope="col"><small>Total Cost</small></td>
+                                                    <td scope="col"><small>Add. Charges</small></td>*@
                                                     <th scope="col">Grand Total</th>
                                                 </tr>
                                             </thead>
@@ -354,9 +378,9 @@
                                                     <td>
                                                         <label id="lblGrandGstAmount" type="number" min="0" name="lblGrandGstAmount" title="GST amount">0.00</label>
                                                     </td>
-                                                    <td><label id="lblGrandTotalOrderCost" type="number" min="0" name="lblGrandTotalOrderCost" title="Total order cost">0.00</label></td>
-                                                    <td><label id="lblGrandAddServiceAmount" type="number" min="0" name="lblGrandAddServiceAmount" title="Total additional service cost">0.00</label></td>
-                                                    <th class="bg-success">
+                                                    @*<td><label id="lblGrandTotalOrderCost" type="number" min="0" name="lblGrandTotalOrderCost" title="Total order cost">0.00</label></td>
+                                                    <td><label id="lblGrandAddServiceAmount" type="number" min="0" name="lblGrandAddServiceAmount" title="Total additional service cost">0.00</label></td>*@
+                                                    <th class="bg-info">
                                                         <label id="lblGrandTotalAmount" type="number" min="0" name="lblGrandTotalAmount" title="Grand total amount">0.00</label>
                                                     </th>
                                                 </tr>
@@ -368,7 +392,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <hr style="border-top:1px solid #cccccc; padding:0px; width:100%" />
+                            <hr style="border-top:1px solid #cccccc; padding:0px; width:100%;margin-bottom:7px;margin-top:5px" />
                         </div>
 
                         <div class="row">
@@ -376,9 +400,8 @@
                                 <input type="hidden" id="hfOrderId" class="hfOrderId" name="hfOrderId" />
                                 <input type="hidden" id="hfCustomerAddressId" class="hfCustomerAddressId" name="hfCustomerAddressId" />
                                 <input type="hidden" id="hfTaxAmount" class="hfTaxAmount" name="hfTaxAmount" value="@Model.Configuration.TaxAmount" />
-                                <input type="hidden" id="hfEmployeeId" class="hfEmployeeId" name="hfEmployeeId"/>
+                                <input type="hidden" id="hfEmployeeId" class="hfEmployeeId" name="hfEmployeeId" />
 
-                                <button type="reset" class="btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
                                 <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save order</button>
                             </div>
                         </div>

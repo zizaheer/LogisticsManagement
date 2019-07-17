@@ -25,6 +25,18 @@ var wayBillNumberArrayForInvoicePayment = [];
 var employeeNumber;
 
 
+$('#chkCheckAllOrders').prop('checked', true);
+$('.chkOrderSelected').prop('checked', true);
+var wbArrayString = $('#hfWaybillArray').val();
+wayBillNumberArray = [];
+var wbArray = wbArrayString.split(',');
+$.each(wbArray, function (i, item) {
+    if (item !== '') {
+        wayBillNumberArray.push({ wbillNumber: parseInt(item) });
+    }
+});
+
+
 $('#pending-list').on('change', '.chkOrderSelected', function (event) {
     event.preventDefault();
 

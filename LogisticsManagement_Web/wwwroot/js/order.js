@@ -36,6 +36,22 @@ var isCustomerTaxApplicable = false;
 var selectedAdditionalServiceArray = [];
 var selectedOrdersForDispatch = [];
 
+
+
+$('#chkCheckAllOrders').prop('checked', true);
+$('.chkDispatchToEmployee').prop('checked', true);
+var wbArrayString = $('#hfWaybillArray').val();
+selectedOrdersForDispatch = [];
+var wbArray = wbArrayString.split(',');
+$.each(wbArray, function (i, item) {
+    if (item !== '') {
+        selectedOrdersForDispatch.push(parseInt(item));
+    }
+});
+
+
+
+
 //#endregion
 
 //#region Events 
@@ -57,6 +73,12 @@ $('#btnNewOrder').unbind().on('click', function () {
             $('#dlConsigneeAddressLines').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
         });
     }
+
+
+
+
+
+
 
     $('#newOrder').modal({
         backdrop: 'static',

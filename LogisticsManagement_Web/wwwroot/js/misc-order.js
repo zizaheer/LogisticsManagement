@@ -834,14 +834,13 @@ function ClearForm() {
     $('#hfCustomerAddressId').val('');
     $('#txtCustomerAddressLine').val('');
     $('#txtCustomerUnitNo').val('');
-    $('#ddlCustomerCityId').val('');
-    $('#ddlCustomerProvinceId').val('');
+    $('#ddlCustomerCityId').val('0');
+    $('#ddlCustomerProvinceId').val('0');
     $('#txtCustomerPostcode').val('');
-    $('#ddlCustomerCityId').val('');
     $('#hfEmployeeId').val('');
     $('#txtEmployeeName').val('');
-    $('#ddlUnitTypeId').val('');
-    $('#ddlWeightScaleId').val('');
+    $('#ddlUnitTypeId').val('0');
+    $('#ddlWeightScaleId').val('1');
     $('#txtWeightTotal').val('');
     $('#txtUnitQuantity').val('');
     $('#txtSkidQuantity').val('');
@@ -849,7 +848,7 @@ function ClearForm() {
 
     $('#txtDiscountPercent').val('');
     $('#chkIsGstApplicable').prop('checked', false);
-    $('#lblGstAmount').text('');
+    //$('#lblGstAmount').text('');
 
     $('#txtCommentsForWayBill').val('');
     $('#chkIsPrintOnWayBill').prop('checked', false);
