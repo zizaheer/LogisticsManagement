@@ -41,7 +41,7 @@ namespace LogisticsManagement_Web.Controllers
 
             var orders = (from order in orderList
                           join status in orderStatusList on order.Id equals status.OrderId
-                          where status.IsPickedup != true
+                          where status.IsPickedup != true && order.OrderTypeId != 3
                           select order).ToList();
 
             ViewBag.OrderCount = orders.Count;

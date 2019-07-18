@@ -278,17 +278,24 @@ namespace LogisticsManagement_Web.Controllers
                                 existingOrder.WeightTotal = orderPoco.WeightTotal;
                                 existingOrder.CityId = orderPoco.CityId;
 
-                                foreach (var item in orderAdditionalServices)
+                                var orderServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == existingOrder.Id).ToList();
+                                if (orderServices.Count > 0)
                                 {
-                                    var existingRecord = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == orderPoco.Id && c.AdditionalServiceId == item.AdditionalServiceId).FirstOrDefault();
-                                    if (existingRecord == null)
+                                    foreach (var item in orderServices)
                                     {
-                                        _orderAdditionalServiceLogic.Add(item);
+                                        _orderAdditionalServiceLogic.Remove(item);
                                     }
-                                    else
+                                }
+
+                                if (orderAdditionalServices.Count > 0)
+                                {
+                                    foreach (var item in orderAdditionalServices)
                                     {
-                                        _orderAdditionalServiceLogic.Remove(existingRecord);
-                                        _orderAdditionalServiceLogic.Add(item);
+                                        if (item.AdditionalServiceId > 0)
+                                        {
+                                            item.OrderId = existingOrder.Id;
+                                            _orderAdditionalServiceLogic.Add(item);
+                                        }
                                     }
                                 }
 
