@@ -1,0 +1,298 @@
+﻿@using LogisticsManagement_Web.Models;
+@model ViewModel_PrintInvoice
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PrintWaybill</title>
+
+    <style type="text/css">
+
+        .tdStyle {
+            padding: 4px;
+            vertical-align: top;
+            border-left: none;
+            border-right: none;
+        }
+
+        .pagebreak {
+            page-break-after: always;
+        }
+    </style>
+
+
+</head>
+<body>
+    @{ var count = 0; }
+    @foreach (var item in Model.viewModelInvoiceBillers)
+    {
+        count = count + 1;
+
+        <table style="height: 36px; border:0px solid black" width="900" border="0">
+            <tbody>
+                <tr>
+                    <td style="width: 30%; vertical-align: top; text-align:right">
+                        <img src="~/images/clients/mfi_logo.jpg" style="width:90px; height:70px" />
+                    </td>
+                    <td style="text-align: center; vertical-align: top;" colspan="3">
+                        <table border="0" style="width:100%">
+                            <tr>
+                                <td>
+                                    <b><span style="font-size:1.5em"> Millenium Freightways Inc.</span></b><br />
+                                    <span>1981 BOYLEN ROAD # 11, MISSISSAUGA, ONTARIO, L5S 1R9</span><br />
+                                    <span>Tel: 905-7958686, Fax: 905-7958687, Email: accounts@milfrt.ca</span>
+                                </td>
+                                <td style="text-align: right; width:20%; vertical-align: top;">
+                                    @*<span>Pg. [page] / [toPage]</span>*@
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </td>
+
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle" colspan="4">
+                        <table border="1" style="border-collapse:collapse; border-right:none; border-left:none" width="100%">
+                            <tr>
+                                <td style="border-right:none; border-left:none; text-align:center; height:30px; background-color:#cccccc">
+                                    <span style="font-size:1.2em; font-weight:bold">INVOICE / FACTURE</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 214px; vertical-align:top" colspan="2"><b>To</b></td>
+                    <td style="width: 214px; vertical-align:top">
+                        <span>
+                            Acc #:
+                            @{
+                                var customerNo = item.BillerCustomerId > 0 ? item.BillerCustomerId.ToString() : "";
+                                @customerNo;
+                            }
+                        </span>
+                    </td>
+                    <td style="width: 215px; vertical-align:top">
+                        <b>
+                            <span>
+                                Invoice #:
+                                @{
+                                    var invNo = item.InvoiceNo > 0 ? item.InvoiceNo.ToString() : "";
+                                    @invNo;
+                                }
+                            </span>
+                        </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 214px; vertical-align:top" colspan="2">
+                        <span style="font-size:1.2em; font-weight:bold">@item.BillerCustomerName</span><br />
+                        <span>@item.BillerCustomerAddressLine</span><br />
+                        <span>@item.BillerCustomerCityLine</span><br />
+                        <span>@item.BillerPostCode</span><br />
+                    </td>
+                    <td style="width: 214px; vertical-align:top">&nbsp;</td>
+                    <td style="width: 215px; vertical-align: top;">
+                        <b>
+                            <span>
+                                Invoice date:
+                                @{
+                                    var dateString = item.InvoiceDate > DateTime.Now.AddYears(-20) ? item.InvoiceDate.ToString("dd-MMM-yyyy") : "";
+                                    @dateString;
+                                }
+                            </span>
+                        </b>
+                        <br />
+                        <b><span>Term: @item.Term (days)</span></b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 214px; height:35px">
+                        Attn: Account Payable
+                    </td>
+                    <td style="width: 214px;"></td>
+                    <td style="width: 214px;"></td>
+                    <td style="width: 215px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="4" height="945" style="vertical-align:top">
+                        <table style="width:100%; border-left:none;border-right:none; border-collapse:collapse;" border="1" cellspacing="2" cellpadding="2">
+                            <tbody>
+                                <tr style="background-color: #cccccc; font-family:Arial; font-weight:bold; font-size:.8em; border-top:8px">
+                                    <td class="tdStyle">
+                                        <span></span>
+                                    </td>
+                                    <td class="tdStyle">
+                                        <span>Date</span><br />
+                                        <span>Service</span>
+                                    </td>
+                                    <td class="tdStyle">
+                                        <span>Waybill#</span><br />
+                                        <span>Cust ref#</span><br />
+                                        <span>Ordered by</span>
+                                    </td>
+                                    <td class="tdStyle"><span>Location</span></td>
+
+                                    <td class="tdStyle">
+                                        <span>Unit/Qty</span><br />
+                                        <span>Weight</span>
+                                    </td>
+                                    <td class="tdStyle">Rate</td>
+                                    <td class="tdStyle">Net</td>
+                                </tr>
+                                @{
+                                    var wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId).ToList();
+                                    var serial = 0;
+                                    var accumulatedBasicChg = 0.00;
+
+                                    var accumulatedTaxAmnt = 0.00;
+                                    var accumulatedCurrentTotal = 0.00;
+                                    var accumulatedSavings = 0.00;
+                                    var accumulatedTotalDue = 0.00;
+                                }
+
+
+                                @foreach (var bill in wayBills)
+                                {
+                                    <tr style="font-size:11px">
+                                        <td class="tdStyle">
+                                            <span>@{ serial = serial + 1; @serial}</span>
+                                        </td>
+                                        <td class="tdStyle">
+                                            <span>@bill.WayBillDate</span><br />
+                                            @*<span>@bill.DeliveryOptionShortCode</span>*@
+                                        </td>
+                                        <td class="tdStyle">
+                                            <span>@bill.WaybillNumber</span><br />
+                                            <span>@bill.CustomerRefNo</span><br />
+                                            <span>@bill.OrderedByName</span>
+
+                                        </td>
+                                        <td class="tdStyle">
+                                            <span>@bill.ShipperCustomerName</span><br />
+                                            <span>@bill.ShipperCustomerAddressLine1</span><br />
+                                            <span>@bill.ShipperCustomerAddressLine2</span>
+                                        </td>
+
+                                        <td class="tdStyle">
+                                            <span>@bill.UnitQuantity @bill.UnitTypeShortCode</span><br />
+                                            <span>
+                                                @{
+                                                    var skidStr = "";
+                                                    if (bill.SkidQuantity > 0)
+                                                    {
+                                                        skidStr = "SKD";
+                                                    }
+                                                }
+                                                @bill.SkidQuantity @skidStr
+                                            </span><br />
+
+                                            <span>@bill.WeightTotal @bill.WeightScaleShortCode</span>
+                                        </td>
+                                        <td class="tdStyle">@bill.OrderBasePrice</td>
+
+                                        <td class="tdStyle">@bill.NetTotalOrderCost</td>
+                                    </tr>
+
+                                    if (bill.AdditionalServicesComments.Length > 0)
+                                    {
+                                        <tr style="font-size:10px">
+                                            <td class="tdStyle" colspan="7">
+                                                <span>@bill.AdditionalServicesComments</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                    if (bill.InvoiceComments.Length > 0)
+                                    {
+                                        <tr style="font-size:10px">
+                                            <td class="tdStyle" colspan="7">
+                                                <span>@bill.InvoiceComments</span>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                    accumulatedBasicChg += Convert.ToDouble(bill.OrderBasePrice);
+
+                                    accumulatedTaxAmnt += Convert.ToDouble(bill.OrderTaxAmountOnBasePrice);
+
+                                    accumulatedSavings += Convert.ToDouble(bill.OrderDiscountAmount);
+                                }
+                                @{
+
+                                    accumulatedCurrentTotal = accumulatedBasicChg - accumulatedSavings; ;
+                                    accumulatedTotalDue = accumulatedCurrentTotal + accumulatedTaxAmnt;
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr style="font-family:Arial; font-weight:bold; font-size:9px;">
+                    <td class="tdStyle" colspan="4">
+                        <span>*HST Applicable</span>
+                    </td>
+                </tr>
+                <tr style="font-family:Arial; font-weight:bold; font-size:.8em;">
+                    <td class="tdStyle" colspan="4">
+                        <table style="width: 100%;border-collapse:collapse; border-left:none;border-bottom:none; border-right:none" border="1">
+                            <tbody>
+                                <tr>
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Basic chg:</span><br />
+                                        <span>@accumulatedBasicChg.ToString("0.00")</span>
+                                    </td>
+
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Saving:</span><br />
+                                        <span>@accumulatedSavings.ToString("0.00")</span>
+                                    </td>
+
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Current TTL:</span><br />
+                                        <span>@accumulatedCurrentTotal.ToString("0.00")</span>
+                                    </td>
+
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>HST:</span><br />
+                                        <span>@accumulatedTaxAmnt.ToString("0.00")</span>
+                                    </td>
+
+                                    <td class="tdStyle" style="text-align:center">
+                                        <span>Total Amnt Due:</span><br />
+                                        <span>@accumulatedTotalDue.ToString("0.00")</span>
+                                    </td>
+                                </tr>
+                                <tr style="font-size:9px">
+                                    <td colspan="4" style="border-right:none; border-bottom:none; border-left:none">
+                                        <span>ALL INVOICES ARE DUE WHEN RENDERED UNLESS AGREED OTHERWISE</span><br />
+                                        <span>INTEREST CHARGED ON OUTSTANDING BALANCE AT THE RATE OF 2% PER MONTH</span>
+                                    </td>
+                                    <td style="border-right:none; border-left:none;border-bottom:none; padding-top:10px">
+                                        <span>HST: 886288521RT0001</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        if (count < Model.viewModelInvoiceBillers.Count)
+        {
+            <p class="pagebreak"></p>
+        }
+    }
+</body>
+</html>

@@ -8,7 +8,7 @@ $(document).ready(function () {
     currentDate.setDate(currentDate.getDate() - 60);
     $('#txtStartDate').val(ConvertDateToUSFormat(currentDate));
     $('#txtToDate').val(ConvertDateToUSFormat(new Date));
-    $('#txtPaymentDate').val(ConvertDateToUSFormat(new Date));
+
     $('#txtChequeDate').val(ConvertDateToUSFormat(new Date));
 
 
@@ -23,18 +23,20 @@ $(document).ready(function () {
 var wayBillNumberArray = [];
 var wayBillNumberArrayForInvoicePayment = [];
 var employeeNumber;
-
+var orderType = 0; // 1: Delivery, 3: Misc order
 
 $('#chkCheckAllOrders').prop('checked', true);
 $('.chkOrderSelected').prop('checked', true);
 var wbArrayString = $('#hfWaybillArray').val();
-wayBillNumberArray = [];
-var wbArray = wbArrayString.split(',');
-$.each(wbArray, function (i, item) {
-    if (item !== '') {
-        wayBillNumberArray.push({ wbillNumber: parseInt(item) });
-    }
-});
+if (wbArrayString != null && wbArrayString !== '') {
+    wayBillNumberArray = [];
+    var wbArray = wbArrayString.split(',');
+    $.each(wbArray, function (i, item) {
+        if (item !== '') {
+            wayBillNumberArray.push({ wbillNumber: parseInt(item) });
+        }
+    });
+}
 
 
 $('#pending-list').on('change', '.chkOrderSelected', function (event) {
@@ -168,18 +170,23 @@ $('#frmInvoiceGenerationForm').unbind('submit').submit(function (event) {
     });
 });
 
+$('input[name="orderType"]').on('change', function () {
+    $('#pending-list tbody').empty();
+    wayBillNumberArray = [];
+});
+
 $('#btnFilter').on('click', function (event) {
     event.preventDefault();
 
     var startDate = $('#txtStartDate').val();
     var toDate = $('#txtToDate').val();
     var selectedCustomer = $('#ddlCustomerId').val();
-    var orderType = $('input[name="orderType"]:checked').val();
+    orderType = parseInt($('input[name="orderType"]:checked').val());
     var filterData = {
         startDate: startDate,
         toDate: toDate,
         selectedCustomer: selectedCustomer,
-        orderType: parseInt(orderType)
+        orderType: orderType
     };
 
     $('#loadPendingInvoiceDataTable').load('Invoice/FilterPendingInvoiceDataTable?filterData=' + JSON.stringify(filterData));
@@ -196,9 +203,18 @@ $('#btnPrintPreview').unbind().on('click', function (event) {
         return false;
     }
 
+    orderType = parseInt($('input[name="orderType"]:checked').val());
+
+    var printUrl = "";
+    if (orderType === 1) {
+        printUrl = 'Invoice/PrintDeliveryInvoice';
+    } else if (orderType === 3) {
+        printUrl = 'Invoice/PrintMiscellaneousInvoice';
+    }
+
     $.ajax({
         'async': false,
-        url: "Invoice/PrintInvoice",
+        url: printUrl,
         type: 'POST',
         data: JSON.stringify([wayBillNumberArray]),
         dataType: 'json',
@@ -225,16 +241,57 @@ $('#customerdues-list').on('click', '.lnkCollectPayment', function (event) {
     $('#lblCustomerName').text(custName);
     $('#lblCustomerNo').text(customerId);
 
+    ClearPaymentForm();
     LoadDueInvoicesByCustomer(customerId);
-
 
     $('#collectPayment').modal({
         backdrop: 'static',
         keyboard: false
     });
     $('#collectPayment').modal('show');
+});
 
+$('#ddlPaymentMethodId').on('change', function () {
+    var selectedValue = parseInt($('#ddlPaymentMethodId').val());
+    if (selectedValue === 3) {
+        $('#ddlBankId').prop('disabled', true);
+        $('#ddlBankId').val('0');
+        $('#txtChequeNo').prop('disabled', true);
+        $('#txtChequeNo').val('');
+        $('#txtChequeDate').prop('disabled', true);
+        $('#txtChequeDate').val('');
+        $('#txtChequeAmount').prop('disabled', true);
+        $('#txtChequeAmount').val('');
+        $('#txtCashAmount').prop('disabled', false);
+    } else if (selectedValue === 2) {
+        $('#ddlBankId').prop('disabled', false);
+        $('#txtChequeNo').prop('disabled', false);
+        $('#txtChequeDate').prop('disabled', false);
+        $('#txtChequeAmount').prop('disabled', false);
+        $('#txtCashAmount').prop('disabled', false);
+    } else {
+        $('#ddlBankId').prop('disabled', false);
+        $('#txtChequeNo').prop('disabled', false);
+        $('#txtChequeDate').prop('disabled', false);
+        $('#txtChequeAmount').prop('disabled', false);
+        $('#txtCashAmount').prop('disabled', true);
+        $('#txtCashAmount').val('');
+    }
 
+    CalculatePaymentAppliedAmount();
+});
+
+$('#chkPayAllWaybill').unbind().on('change', function (event) {
+    event.preventDefault();
+    var isChecked = $('#chkPayAllWaybill').is(':checked');
+    if (isChecked === true) {
+        $('.chkAddToPayment').prop('checked', true);
+        $('.chkAddToPayment').trigger('change');
+    }
+    else {
+        $('.chkAddToPayment').prop('checked', false);
+        $('.chkAddToPayment').trigger('change');
+    }
 });
 
 function LoadDueInvoicesByCustomer(customerId) {
@@ -250,11 +307,12 @@ function LoadDueInvoicesByCustomer(customerId) {
 
     $.each(invoices, function (i, item) {
 
+        var paidAmnt = item.PaidAmount == null ? 0 : parseFloat(item.PaidAmount);
         var remainingAmount = (item.TotalInvoiceAmount - item.PaidAmount).toFixed(2);
         var appendString = "";
         appendString += "<tr>";
         appendString += "<td>";
-        appendString += "<a style='color:#1b8eb7;cursor:pointer' role='button' id='lnkDisplayInvoice' class='lnkDisplayInvoice' onclick='FillInvoiceData(this)' data-remainingamount='" + remainingAmount + "'  data-invoiceid='" + item.Id + "'>" + item.Id + "</a>";
+        appendString += "<a style='color:#1b8eb7;cursor:pointer;font-weight:bolder' role='button' id='lnkDisplayInvoice' class='lnkDisplayInvoice' onclick='FillInvoiceData(this)' data-invoicedate='" + item.CreateDate + "' data-paidamount='" + paidAmnt + "' data-remainingamount='" + remainingAmount + "'  data-invoiceid='" + item.Id + "'>" + item.Id + "</a>";
         appendString += "</td>";
         appendString += "<td>";
         appendString += ConvertDateToUSFormat(item.CreateDate);
@@ -281,9 +339,14 @@ function LoadDueInvoicesByCustomer(customerId) {
 function FillInvoiceData(event) {
     var invoiceId = event.dataset.invoiceid;
     var remaining = event.dataset.remainingamount;
+    var paidAmount = event.dataset.paidamount;
+    var invoiceDate = event.dataset.invoicedate;
     $('#txtInvoiceNo').val(invoiceId);
+    $('#txtPaidAmount').val(paidAmount);
     $('#txtDueAmount').val(remaining);
     $('#txtRemainingAmount').val(remaining);
+    $('#txtInvoiceDate').val(ConvertDateToUSFormat(new Date(invoiceDate)));
+
     var invoiceWiseWaybills = GetListById('GetDueWaybillsByInvoiceId', invoiceId);
     var waybills = JSON.parse(invoiceWiseWaybills);
 
@@ -339,26 +402,90 @@ function AddWayBillToPayment(event) {
         wayBillNumberArrayForInvoicePayment.splice(index, 1);
     }
 
-    var paidAmount = $('#txtPaidAmount').val() === '' ? 0 : parseFloat($('#txtPaidAmount').val());
-    var remainingAmnt = parseFloat($('#txtRemainingAmount').val());
+    var chequeAmount = $('#txtChequeAmount').val() === '' ? 0 : parseFloat($('#txtChequeAmount').val());
+    var dueAmount = $('#txtDueAmount').val() === '' ? 0 : parseFloat($('#txtDueAmount').val());
 
     var isChecked = event.checked;
     if (isChecked === true) {
-        paidAmount = paidAmount + waybillAmount;
-        remainingAmnt = remainingAmnt - waybillAmount;
-        if (isChecked) {
-            wayBillNumberArrayForInvoicePayment.push(wbNumber);
-        }
+        chequeAmount = chequeAmount + waybillAmount;
+        wayBillNumberArrayForInvoicePayment.push(wbNumber);
+
     }
     else {
-        if (paidAmount >= waybillAmount) {
-            paidAmount = paidAmount - waybillAmount;
-            remainingAmnt = remainingAmnt + waybillAmount;
+        if (chequeAmount >= waybillAmount) {
+            if (chequeAmount > dueAmount) {
+                chequeAmount = dueAmount;
+            }
+            chequeAmount = chequeAmount - waybillAmount;
+        } else if (chequeAmount >= dueAmount) {
+            chequeAmount = chequeAmount - dueAmount;
         }
     }
 
-    $('#txtPaidAmount').val(paidAmount.toFixed(2));
-    $('#txtRemainingAmount').val(remainingAmnt.toFixed(2));
+    if (chequeAmount > dueAmount) {
+        chequeAmount = dueAmount;
+    }
+
+    $('#txtChequeAmount').val(chequeAmount.toFixed(2));
+    $('#txtChequeAmount').trigger('change');
+}
+
+$('#txtChequeAmount').on('change', function () {
+    CalculatePaymentAppliedAmount();
+});
+$('#txtCashAmount').on('change', function () {
+    CalculatePaymentAppliedAmount();
+});
+
+$('#txtPaymentApplied').on('change', function () {
+    var paymentApplied = $('#txtPaymentApplied').val() === '' ? 0 : parseFloat($('#txtPaymentApplied').val());
+    var dueAmount = $('#txtDueAmount').val() === '' ? 0 : parseFloat($('#txtDueAmount').val());
+    var remainingAmount = 0;
+    remainingAmount = dueAmount - paymentApplied;
+
+    $('#txtRemainingAmount').val(remainingAmount.toFixed(2));
+});
+
+function CalculatePaymentAppliedAmount() {
+    var chequeAmnt = 0;
+    var cashAmnt = 0;
+    var paymentApplied = 0;
+
+    chequeAmnt = $('#txtChequeAmount').val() === '' ? 0 : parseFloat($('#txtChequeAmount').val());
+    cashAmnt = $('#txtCashAmount').val() === '' ? 0 : parseFloat($('#txtCashAmount').val());
+    paymentApplied = $('#txtPaymentApplied').val() === '' ? 0 : parseFloat($('#txtPaymentApplied').val());
+
+    paymentApplied = chequeAmnt + cashAmnt;
+
+    $('#txtPaymentApplied').val(paymentApplied.toFixed(2));
+    $('#txtPaymentApplied').trigger('change');
+
+}
+
+function ClearPaymentForm() {
+    $('#txtInvoiceNo').val('');
+    $('#txtPaidAmount').val('');
+    $('#txtDueAmount').val('');
+    $('#txtInvoiceDate').val('');
+
+
+    //$('#ddlPaymentMethodId').val('0');
+    $('#ddlBankId').val('0');
+    $('#txtChequeNo').val('');
+    $('#txtChequeAmount').val('');
+    $('#txtChequeDate').val('');
+    $('#txtCashAmount').val('');
+    $('#txtPaymentApplied').val('');
+    $('#txtRemainingAmount').val('');
+    $('#txtPaymentRemarks').val('');
+
+    $('#ddlBankId').prop('disabled', false);
+    $('#txtChequeNo').prop('disabled', false);
+    $('#txtChequeDate').prop('disabled', false);
+    $('#txtChequeAmount').prop('disabled', false);
+    $('#txtCashAmount').prop('disabled', false);
+
+    $('#ddlPaymentMethodId').trigger('change');
 }
 
 $('#btnMakePayment').unbind().on('click', function (event) {
@@ -367,14 +494,14 @@ $('#btnMakePayment').unbind().on('click', function (event) {
     var data = {
         invoiceNo: $('#txtInvoiceNo').val() === '' ? 0 : parseInt($('#txtInvoiceNo').val()),
         billerCustomerId: $('#lblCustomerNo').text() === '' ? 0 : parseInt($('#lblCustomerNo').text()),
-        paymentAmount: $('#txtPaidAmount').val(),
+        paymentAmount: $('#txtPaymentApplied').val() === '' ? 0 : parseFloat($('#txtPaymentApplied').val()),
         ddlBankId: $('#ddlBankId').val() === '0' ? 0 : parseInt($('#ddlBankId').val()),
         chequeNo: $('#txtChequeNo').val(),
         chequeDate: $('#txtChequeDate').val(),
         chequeAmount: $('#txtChequeAmount').val() === '' ? 0 : parseFloat($('#txtChequeAmount').val()),
         cashAmount: $('#txtCashAmount').val() === '' ? 0 : parseFloat($('#txtCashAmount').val()),
         paymentRemarks: $('#txtPaymentRemarks').val()
-    }
+    };
 
     if (data.invoiceNo <= 0) {
         bootbox.alert('Please select invoice number to make a payment.');
@@ -382,7 +509,7 @@ $('#btnMakePayment').unbind().on('click', function (event) {
     }
 
     if (data.paymentAmount === '' || data.paymentAmount <= 0) {
-        bootbox.alert('Paid amount is required. Please select w/b numbers those are considered in this payment.');
+        bootbox.alert('Payment amount is required. Please check and try again.');
         return;
     }
 
@@ -405,22 +532,11 @@ $('#btnMakePayment').unbind().on('click', function (event) {
         }
     }
 
-    var totalAmnt = data.chequeAmount + data.cashAmount;
-    if (totalAmnt < data.paymentAmount) {
-        bootbox.alert('Total amount in Cheque/Cash cannot be less than total payment amount. Please check and try again.');
-        return;
-    }
-
     var result = PerformPostActionWithObject('MakePayment', [data, wayBillNumberArrayForInvoicePayment]);
     if (result.length > 0) {
-
         LoadDueInvoicesByCustomer(data.billerCustomerId);
         bootbox.alert('Payment successfully made.');
-        $('#txtPaidAmount').val('');
-        $('#txtRemainingAmount').val('');
-        $('#txtChequeAmount').val('');
-        $('#txtCashAmount').val('');
-        $('#txtPaymentRemarks').val('');
+
         wayBillNumberArrayForInvoicePayment = [];
 
     } else {
@@ -428,12 +544,13 @@ $('#btnMakePayment').unbind().on('click', function (event) {
         return;
     }
 
+    ClearPaymentForm();
 
     var isApplyToNextInvoice = $('#chkKeepBankingInformation').is(':checked');
-    if (!isApplyToNextInvoice) {
-        $('#ddlBankId').val('0');
-        $('#txtChequeNo').val('');
-        $('#txtChequeDate').val('');
+    if (isApplyToNextInvoice === true) {
+        $('#ddlBankId').val(data.ddlBankId);
+        $('#txtChequeNo').val(data.chequeNo);
+        $('#txtChequeDate').val(data.chequeDate);
     }
 });
 

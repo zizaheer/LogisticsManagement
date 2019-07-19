@@ -38,11 +38,11 @@
                     <div class="row">
                         <div class="col-sm-8 form-group input-group">
                             @*<small>
-                                <b>
-                                    <label for="lblCustomerName">Customer:</label>
-                                    <label id="lblCustomerName" class="" style="margin-left:8px"></label>
-                                </b>
-                            </small>*@
+                                    <b>
+                                        <label for="lblCustomerName">Customer:</label>
+                                        <label id="lblCustomerName" class="" style="margin-left:8px"></label>
+                                    </b>
+                                </small>*@
                             @* <input type="text" id="txtCustomerName" class="form-control form-control-sm" style="margin-left:8px" readonly />*@
                         </div>
                     </div>
@@ -77,31 +77,35 @@
 
 
                     @*<div class="row">
-                        <div class="col-sm-12">
-                            <small><b><label for="txtCustomerName">Payment information</label></b></small>
-                            <hr style="margin-top:0px" />
-                        </div>
-                    </div>*@
+                            <div class="col-sm-12">
+                                <small><b><label for="txtCustomerName">Payment information</label></b></small>
+                                <hr style="margin-top:0px" />
+                            </div>
+                        </div>*@
 
                     <div class="row">
-                        <div class="col-sm-8">
+                        <div class="col-sm-8" style="background-color:#91dcff">
                             <div class="row mb-1">
-                                <div class="col-sm-4">
+                                <div class="col-sm-2">
                                     <small><b><label for="txtInvoiceNo">Invoice no:</label></b></small>
-                                    <input type="text" id="txtInvoiceNo" class="form-control form-control-sm" readonly />
+                                    <input type="text" id="txtInvoiceNo" class="form-control form-control-sm" style="font-weight:bolder" readonly />
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
+                                    <small><b><label for="txtPaidAmount">Paid amnt.</label></b></small>
+                                    <input type="text" id="txtPaidAmount" class="form-control form-control-sm" readonly />
+                                </div>
+                                <div class="col-sm-3">
                                     <small><b><label for="txtDueAmount">Due:</label></b></small>
                                     <input type="text" id="txtDueAmount" class="form-control form-control-sm" readonly />
                                 </div>
                                 <div class="col-sm-4">
-                                    <small><b><label for="txtPaymentDate">Payment date:</label></b></small>
-                                    <input type="date" id="txtPaymentDate" class="form-control form-control-sm" readonly />
+                                    <small><b><label for="txtInvoiceDate">Invoice date:</label></b></small>
+                                    <input type="date" id="txtInvoiceDate" class="form-control form-control-sm" readonly />
                                 </div>
                             </div>
                             <div class="row mb-1" style="margin-bottom:0px !important">
                                 <div class="col-sm-12">
-                                    <div style="display:block; height:260px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3;" id="loadPartialViewCustomerWiseDueInvoices">
+                                    <div style="display:block; height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3;" id="loadPartialViewCustomerWiseDueInvoices">
                                         <table class="table table-sm table-striped waybill-list-for-invoice-payment" style="width:100%; margin-top: -1px !important; font-size:.75em">
                                             <thead>
                                                 <tr style="background-color:#ffbfbf">
@@ -127,14 +131,27 @@
                         </div>
                         <div class="col-sm-4" style="background-color:#d8f0fb">
 
-                            <div class="row mb-1" style="margin-bottom:0px !important">
+                            <div class="row mb-1">
                                 <div class="col-sm-6">
-                                    <small><b><label for="txtPaidAmount">Paid Amount:</label></b></small>
-                                    <input type="number" id="txtPaidAmount" class="form-control form-control-sm" readonly/>
+                                    <small><b><label for="ddlPaymentMethodId">Payment method:</label></b></small>
+                                    <select class="form-control form-control-sm ddlPaymentMethodId" id="ddlPaymentMethodId">
+                                        @foreach (var item in ViewBag.PaymentMethods)
+                                        {
+                                            var selected = false;
+                                            if (item.Id == 1)
+                                            {selected = true; }
+
+                                            <option value="@item.Id" selected="@selected">@item.MethodName</option>
+                                        }
+
+                                    </select>
                                 </div>
                                 <div class="col-sm-6">
-                                    <small><b><label for="txtRemainingAmount">Remaining Amnt.:</label></b></small>
-                                    <input type="number" id="txtRemainingAmount" class="form-control form-control-sm" readonly />
+                                    <small><b><label>Banking info</label></b></small>
+                                    <div class="form-check-inline">
+                                        <input type="checkbox" class="form-check-input" id="chkKeepBankingInformation" />
+                                        <small><label class="form-check-label" for="chkKeepBankingInformation">Apply to next invoice</label></small>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row mb-1">
@@ -150,31 +167,33 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-6">
-                                    <small><b><label>Banking info</label></b></small>
-                                    <div class="form-check-inline">
-                                        <input type="checkbox" class="form-check-input" id="chkKeepBankingInformation" />
-                                        <small><label class="form-check-label" for="chkKeepBankingInformation">Apply to next invoice</label></small>
-                                    </div>
+                                    <small><b><label for="txtChequeNo">Cheque no:</label></b></small>
+                                    <input type="text" id="txtChequeNo" class="form-control form-control-sm" />
                                 </div>
                             </div>
                             <div class="row mb-1">
                                 <div class="col-sm-6">
-                                    <small><b><label for="txtChequeNo">Cheque no:</label></b></small>
-                                    <input type="text" id="txtChequeNo" class="form-control form-control-sm" />
+                                    <small><b><label for="txtChequeAmount">Cheque amt.:</label></b></small>
+                                    <input type="number" id="txtChequeAmount" class="form-control form-control-sm" />
                                 </div>
+                                
                                 <div class="col-sm-6">
                                     <small><b><label for="txtChequeDate">Cheque date:</label></b></small>
                                     <input type="date" id="txtChequeDate" class="form-control form-control-sm" />
                                 </div>
                             </div>
                             <div class="row mb-1">
-                                <div class="col-sm-6">
-                                    <small><b><label for="txtChequeAmount">Cheque amount:</label></b></small>
-                                    <input type="number" id="txtChequeAmount" class="form-control form-control-sm" />
+                                <div class="col-sm-4">
+                                    <small><b><label for="txtCashAmount">Cash amt.:</label></b></small>
+                                    <input type="number" id="txtCashAmount" class="form-control form-control-sm" disabled />
                                 </div>
-                                <div class="col-sm-6">
-                                    <small><b><label for="txtCashAmount">Cash amount:</label></b></small>
-                                    <input type="number" id="txtCashAmount" class="form-control form-control-sm" />
+                                <div class="col-sm-4">
+                                    <small><b><label for="txtPaymentApplied">Applied</label></b></small>
+                                    <input type="number" id="txtPaymentApplied" class="form-control form-control-sm"  />
+                                </div>
+                                <div class="col-sm-4">
+                                    <small><b><label for="txtRemainingAmount">Remaining</label></b></small>
+                                    <input type="number" id="txtRemainingAmount" class="form-control form-control-sm" disabled />
                                 </div>
                             </div>
                             <div class="row mb-1">

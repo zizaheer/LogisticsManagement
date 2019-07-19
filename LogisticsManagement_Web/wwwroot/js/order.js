@@ -36,8 +36,6 @@ var isCustomerTaxApplicable = false;
 var selectedAdditionalServiceArray = [];
 var selectedOrdersForDispatch = [];
 
-
-
 $('#chkCheckAllOrders').prop('checked', true);
 $('.chkDispatchToEmployee').prop('checked', true);
 var wbArrayString = $('#hfWaybillArray').val();
@@ -50,12 +48,9 @@ $.each(wbArray, function (i, item) {
 });
 
 
-
-
 //#endregion
 
 //#region Events 
-
 
 $('#btnNewOrder').unbind().on('click', function () {
     ClearForm();

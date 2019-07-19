@@ -532,7 +532,7 @@ namespace LogisticsManagement_Web.Controllers
                             }
                         }
 
-                        waybillPrintViewModel.GrandTotalOrderCost = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString();
+                        waybillPrintViewModel.NetTotalOrderCost = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString();
                         waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName;
 
                         var shippperAddress = addresses.Where(c => c.Id == orderInfo.ShipperAddressId).FirstOrDefault();

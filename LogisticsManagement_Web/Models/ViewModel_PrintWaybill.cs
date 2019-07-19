@@ -26,7 +26,7 @@ namespace LogisticsManagement_Web.Models
         //public string TotalOrderCost { get; set; }
         //public string TotalOrderCostWithoutTaxAndFuel { get; set; }
         public string AdditionalServiceCost { get; set; }
-        public string GrandTotalOrderCost { get; set; }
+        public string NetTotalOrderCost { get; set; }
 
         public string ShipperCustomerName { get; set; }
         public string ShipperCustomerAddressLine1 { get; set; }

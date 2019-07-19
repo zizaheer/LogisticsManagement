@@ -79,7 +79,9 @@ $('.btnPickup').unbind().on('click', function () {
         return;
     }
 });
-$('#btnSavePickup').unbind().on('click', function () {
+$('#btnSavePickup').unbind().on('click', function (event) {
+    event.preventDefault();
+
     var waitTime = $('#txtPickupWaitTime').val();
     var pickupDate = $('#txtPickupDateTime').val();
     var dispatchedDate = $('#txtDispatchDateTimeForPickupModal').val();
@@ -88,7 +90,6 @@ $('#btnSavePickup').unbind().on('click', function () {
 
     if (pickupDate <= dispatchedDate) {
         bootbox.alert('Pickup date must be greater than dispatch date.');
-        event.preventDefault();
         return;
     }
 
@@ -96,15 +97,14 @@ $('#btnSavePickup').unbind().on('click', function () {
 
     var result = PerformPostActionWithObject('Order/UpdatePickupStatus', dataArray);
     if (result.length > 0) {
-        event.preventDefault();
         $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
         bootbox.alert('Pickup has been updated.');
         $('#orderPickup').modal('hide');
     }
 
-
 });
-$('#btnRemovePickup').unbind().on('click', function () {
+$('#btnRemovePickup').unbind().on('click', function (event) {
+    event.preventDefault();
 
     orderId = $('#hfOrderIdForOrderStatusUpdate').val();
 
@@ -120,10 +120,10 @@ $('#btnRemovePickup').unbind().on('click', function () {
     });
 });
 
-$('.btnPasson').unbind().on('click', function () {
+$('.btnPasson').unbind().on('click', function (event) {
+    event.preventDefault();
 
     ClearModal();
-
     orderId = $("input[name='rdoWaybillNo']:checked").data('orderid');
     wayBillNumber = $("input[name='rdoWaybillNo']:checked").data('waybillnumber');
 
@@ -198,7 +198,8 @@ $('#txtPassOnEmployeeName').on('input', function (event) {
     $('#txtPassOnEmployeeName').attr('data-employeeid', passOnEmployeeId);
 });
 
-$('#btnSavePassOn').unbind().on('click', function () {
+$('#btnSavePassOn').unbind().on('click', function (event) {
+    event.preventDefault();
     var waitTime = $('#txtPassOnWaitTime').val();
     var pickupDate = $('#txtPickupDateTimeForPassOnModal').val();
     var passOnDate = $('#txtPassOnDateTime').val();
@@ -208,7 +209,6 @@ $('#btnSavePassOn').unbind().on('click', function () {
 
     if (passOnDate <= pickupDate) {
         bootbox.alert('Pass-on date must be greater than pickup date.');
-        event.preventDefault();
         return;
     }
 
@@ -223,10 +223,10 @@ $('#btnSavePassOn').unbind().on('click', function () {
     }
 
 });
-$('#btnRemovePassOn').unbind().on('click', function () {
+$('#btnRemovePassOn').unbind().on('click', function (event) {
+    event.preventDefault();
 
     orderId = $('#hfOrderIdForOrderStatusUpdate').val();
-
     bootbox.confirm("Pass-on information related to this order will be deleted. Are you sure to proceed?", function (result) {
         if (result === true) {
             var status = PerformPostActionWithId('Order/RemovePassonStatus', orderId);
@@ -319,7 +319,9 @@ $('.btnDeliver').unbind().on('click', function () {
         return;
     }
 });
-$('#btnSaveDeliver').unbind().on('click', function () {
+$('#btnSaveDeliver').unbind().on('click', function (event) {
+    event.preventDefault();
+
     var waitTime = $('#txtDeliveryWaitTime').val();
     var pickupDate = $('#txtPickupDateTimeForDeliverModal').val();
     var deliveryDate = $('#txtDeliveryDateTime').val();
@@ -331,7 +333,11 @@ $('#btnSaveDeliver').unbind().on('click', function () {
 
     if (deliveryDate <= pickupDate) {
         bootbox.alert('Delivery date must be greater than pickup date.');
-        event.preventDefault();
+        return;
+    }
+
+    if (receivedByName === '') {
+        bootbox.alert('Received by field cannot be empty.');
         return;
     }
 
@@ -340,17 +346,16 @@ $('#btnSaveDeliver').unbind().on('click', function () {
     var result = PerformPostActionWithObject('Order/UpdateDeliveryStatus', dataArray);
 
     if (result.length > 0) {
-        event.preventDefault();
         $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
         bootbox.alert('Delivery information has been updated.');
         $('#orderDeliver').modal('hide');
     }
 
 });
-$('#btnRemoveDeliver').unbind().on('click', function () {
+$('#btnRemoveDeliver').unbind().on('click', function (event) {
+    event.preventDefault();
 
     orderId = $('#hfOrderIdForOrderStatusUpdate').val();
-
     bootbox.confirm("Delivery information related to this order will be deleted. Are you sure to proceed?", function (result) {
         if (result === true) {
             var status = PerformPostActionWithId('Order/RemoveDeliveryStatus', orderId);
@@ -362,10 +367,10 @@ $('#btnRemoveDeliver').unbind().on('click', function () {
         }
     });
 
-
 });
 
-$('.btnRemoveDispatch').unbind().on('click', function () {
+$('.btnRemoveDispatch').unbind().on('click', function (event) {
+    event.preventDefault();
 
     wayBillNumber = $("input[name='rdoWaybillNo']:checked").data('waybillnumber');
 
