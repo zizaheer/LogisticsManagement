@@ -10,6 +10,7 @@
     .form-control {
         padding: 4px 4px 4px 8px;
         height: 29px;
+        text-transform:uppercase
     }
 
     .form-group {
@@ -688,8 +689,9 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="col-md-12 input-group">
-                                                <select class="col-3 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId">
-                                                    <option value="0" selected> Unit </option>
+                                                <input class="col-3 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity" style="background-color:#b3ffc3">
+                                                <input class="col-3 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity" >
+                                                <select class="col-3 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId" >
                                                     @foreach (var item in Model.UnitTypes)
                                                     {
                                                         if (item.Id == 2) {
@@ -698,9 +700,8 @@
                                                         <option value="@item.Id">@item.ShortCode</option>
                                                     }
                                                 </select>
-                                                <input class="col-2 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity" disabled>
-                                                <input class="col-2 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity" style="background-color:#b3ffc3">
-                                                <input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces" disabled>
+                                                                                               
+                                                @*<input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces" disabled>*@
                                                 &nbsp;
                                                 <input class="col-2 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
                                                 <select class="col-1 form-control form-control-sm" id="ddlWeightScaleId" name="ddlWeightScaleId" style="-webkit-appearance: none;">

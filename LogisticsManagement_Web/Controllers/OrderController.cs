@@ -226,7 +226,10 @@ namespace LogisticsManagement_Web.Controllers
                         existingOrder.VehicleTypeId = orderPoco.VehicleTypeId;
                         existingOrder.WeightScaleId = orderPoco.WeightScaleId;
                         existingOrder.WeightTotal = orderPoco.WeightTotal;
-                        existingOrder.UnitQuantity = orderPoco.UnitQuantity;
+                        if (orderPoco.UnitQuantity!=null && orderPoco.UnitQuantity > 0) {
+                            existingOrder.UnitTypeId = orderPoco.UnitTypeId;
+                            existingOrder.UnitQuantity = orderPoco.UnitQuantity;
+                        }
                         existingOrder.OrderBasicCost = orderPoco.OrderBasicCost;
                         existingOrder.BasicCostOverriden = orderPoco.BasicCostOverriden;
                         existingOrder.FuelSurchargePercentage = orderPoco.FuelSurchargePercentage;

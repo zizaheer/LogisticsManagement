@@ -115,7 +115,7 @@
         </small>
     </div>
     <div class="col-sm-2 form-group" style="margin-top:28px">
-        <small> <b><label for="btnFilter"></label></b></small><button id="btnFilter" class="btn btn-sm btn-dark"> Load invoices</button>
+        <small> <b><label for="btnFilter"></label></b></small><button id="btnFilter" class="btn btn-sm btn-dark" style="float:right"> Load invoices</button>
     </div>
 
 
@@ -137,19 +137,18 @@
             <button type="submit" class="btn btn-sm btn-primary" id="btnGenerateInvoice"><i class="fa fa-gear"></i> Generate invoice/s</button>
         </div>
         <div class="col-2 form-group">
-            <button id="btnPrintPreview" class="btn btn-sm btn-danger" style="float:right; margin-bottom:15px"><i class="fa fa-print"></i> Print preview </button>
+            <button id="btnPrintPreview" class="btn btn-sm btn-danger" style="float:right; margin-bottom:15px"><i class="fa fa-print"></i> Trial print preview </button>
         </div>
 
     </div>
 </form>
 
-<br /><br />
+<div style="margin-bottom:100px"></div>
 
 
 <div class="row">
-    <div class="col-md-12 input-group" style="margin-top:40px">
-        <h3>View generated invoices</h3>
-        <button style="margin-left:10px;margin-right:15px; margin-top:4px;height:27px" class="btn btn-sm btn-danger" id="btnDownloadData"><i class="fa fa-download"></i> View </button>
+    <div class="col-md-8 input-group">
+        <button class="btn btn-sm btn-success" id="btnDownloadData"><i class="fa fa-download"></i> Load generated invoices</button>
         <div style="margin-top:5px">
             <span id="spinnerLoadingDataTable" style="display:none">
                 <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
@@ -157,6 +156,11 @@
             </span>
         </div>
     </div>
+    <div class="col-md-4">
+        <button class="col-6 btn btn-sm btn-secondary" id="btnWaybillFinalPrint"><i class="fa fa-print"></i> Print waybills</button>
+        <button class="col-5 btn btn-sm btn-secondary" id="btnInvoiceFinalPrint" style="float:right"><i class="fa fa-print"></i> Print invoice</button>
+    </div>
+
 </div>
 <hr />
 

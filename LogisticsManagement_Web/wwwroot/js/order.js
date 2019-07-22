@@ -113,7 +113,7 @@ $('input[type=radio][name=rdoPaidBy]').change(function () {
     if (paidByValue === '1') {
         var shipperCustomerId = $('#lblShipperAccountNo').text();
         if (shipperCustomerId !== '') {
-             billerInfo = GetCustomerInfo(shipperCustomerId);
+            billerInfo = GetCustomerInfo(shipperCustomerId);
             if (billerInfo != null && billerInfo != '') {
                 FillBillerInformation(billerInfo);
             }
@@ -122,7 +122,7 @@ $('input[type=radio][name=rdoPaidBy]').change(function () {
     else if (paidByValue === '2') {
         var consigneeCustomerId = $('#lblConsigneeAccountNo').text();
         if (consigneeCustomerId !== '') {
-             billerInfo = GetCustomerInfo(consigneeCustomerId);
+            billerInfo = GetCustomerInfo(consigneeCustomerId);
             if (billerInfo != null && billerInfo != '') {
                 FillBillerInformation(billerInfo);
             }
@@ -402,15 +402,6 @@ $('#txtConsigneeAddressLine').on('input', function (event) {
 });
 
 
-$('#ddlUnitTypeId').on('change', function () {
-    var selectedValue = parseInt($('#ddlUnitTypeId').val());
-    if (selectedValue > 0 && selectedValue !== 2) {
-        $('#txtUnitQuantity').removeAttr('disabled');
-    } else {
-        $('#txtUnitQuantity').attr('disabled', true);
-    }
-});
-
 $('#txtUnitQuantity').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
@@ -418,6 +409,7 @@ $('#txtUnitQuantity').keypress(function (event) {
     }
 });
 $('#txtUnitQuantity').on('change', function (event) {
+
     CalculateOrderBaseCost();
 });
 
@@ -1093,8 +1085,11 @@ function GetTariffInfo() {
 
     var calculateByUnit = $('#chkIsCalculateByUnit').is(':checked');
     if (calculateByUnit === true) {
-        unitTypeId = $('#ddlUnitTypeId').val();
-        unitQuantity = $('#txtUnitQuantity').val();
+        if ($('#txtUnitQuantity').val() !== '') {
+            unitTypeId = $('#ddlUnitTypeId').val();
+            unitQuantity = $('#txtUnitQuantity').val();
+        }
+
     } else {
         unitTypeId = 2;
         unitQuantity = $('#txtSkidQuantity').val();
@@ -1350,8 +1345,11 @@ function FillOrderDetails(orderRelatedData) {
         $('#ddlDeliveryOptionId').val(orderRelatedData.DeliveryOptionId);
         $('#ddlVehicleTypeId').val(orderRelatedData.VehicleTypeId);
 
-        $('#ddlUnitTypeId').val(orderRelatedData.UnitTypeId);
+
         $('#txtUnitQuantity').val(orderRelatedData.UnitQuantity);
+        if (orderRelatedData.UnitTypeId > 0) { $('#ddlUnitTypeId').val(orderRelatedData.UnitTypeId); }
+
+
         $('#txtSkidQuantity').val(orderRelatedData.SkidQuantity);
         $('#txtTotalPieces').val(orderRelatedData.TotalPieces);
 
@@ -1624,7 +1622,7 @@ function ClearForm() {
     $('#ddlConsigneeProvinceId').val(7);
     $('#txtConsigneePostcode').val('');
 
-    $('#ddlUnitTypeId').val(0);
+    $('#ddlUnitTypeId').val('1');
     $('#txtUnitQuantity').val('');
     $('#txtSkidQuantity').val('');
     $('#txtTotalPieces').val('');

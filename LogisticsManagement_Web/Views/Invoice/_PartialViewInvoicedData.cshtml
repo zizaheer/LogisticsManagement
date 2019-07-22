@@ -1,6 +1,26 @@
 ﻿@using LogisticsManagement_Web.Models;
 @model IEnumerable<ViewModel_GeneratedInvoice>
 
+<style>
+    .form-control {
+        padding: 4px 4px 4px 8px;
+        height: 29px;
+        text-transform: uppercase
+    }
+
+    .form-group {
+        margin-bottom: .15rem;
+    }
+
+    #order-list tbody tr {
+        height: 60px; /* or whatever height you need to make them all consistent */
+    }
+
+    .additionalServiceControl {
+        height: 22px;
+        padding: 1px 6px 3px 6px;
+    }
+</style>
 
 <script>
     $(document).ready(function () {
@@ -9,15 +29,18 @@
         }
         $('#invoiced-list').DataTable({
             "order": [[0, "desc"]],
-            "lengthChange": false,
-            searching: false,
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+            },
+            searching: true,
             paging: false,
             info: false
         });
     });
 </script>
 
-<table id="invoiced-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
+<table id="invoiced-list" class="table table-sm table-striped" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr>
             <th style="width:100px">Invoice #</th>
