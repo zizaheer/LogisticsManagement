@@ -217,7 +217,7 @@ $('#txtBillToCustomerName').on('input', function (event) {
 $('#txtShipperCustomerName').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
-        shipperCustomerId = $('#txtShipperCustomerName').val();
+        var shipperCustomerId = $('#txtShipperCustomerName').val();
         if (shipperCustomerId > 0) {
             var shipperInfo = GetCustomerInfo(shipperCustomerId);
             if (shipperInfo != null && shipperInfo != '') {
@@ -238,7 +238,7 @@ $('#txtShipperCustomerName').keypress(function (event) {
 $('#txtShipperCustomerName').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $('#txtShipperCustomerName').val();
-    shipperCustomerId = $('#dlShipperCustomers option').filter(function () {
+    var shipperCustomerId = $('#dlShipperCustomers option').filter(function () {
         return this.value === valueSelected;
     }).data('customerid');
 
@@ -262,7 +262,7 @@ $('#txtShipperCustomerName').on('input', function (event) {
 $('#txtConsigneeCustomerName').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
-        consigneeCustomerId = $('#txtConsigneeCustomerName').val();
+        var consigneeCustomerId = $('#txtConsigneeCustomerName').val();
         if (consigneeCustomerId > 0) {
             var consigneeInfo = GetCustomerInfo(consigneeCustomerId);
             if (consigneeInfo != null && consigneeInfo != '') {
@@ -284,7 +284,7 @@ $('#txtConsigneeCustomerName').keypress(function (event) {
 $('#txtConsigneeCustomerName').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $('#txtConsigneeCustomerName').val();
-    consigneeCustomerId = $('#dlConsigneeCustomers option').filter(function () {
+    var consigneeCustomerId = $('#dlConsigneeCustomers option').filter(function () {
         return this.value === valueSelected;
     }).data('customerid');
 
@@ -374,6 +374,15 @@ $('#txtEmployeeName').on('input', function (event) {
     }).data('employeeid');
 });
 
+$('#txtShipperAddressLine').keypress(function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        var addressId = $('#txtShipperAddressLine').val();
+        if (addressId != '' && addressId > 0 && addressId != null) {
+            FillShipperAddress(addressId);
+        }
+    }
+});
 $('#txtShipperAddressLine').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $(this).val();
@@ -383,8 +392,15 @@ $('#txtShipperAddressLine').on('input', function (event) {
     if (addressId > 0 && addressId != '' && addressId != null) {
         FillShipperAddress(addressId);
     }
-    else {
-        ClearShipperAddressArea();
+});
+
+$('#txtConsigneeAddressLine').keypress(function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        addressId = $('#txtConsigneeAddressLine').val();
+        if (addressId != '' && addressId > 0 && addressId != null) {
+            FillShipperAddress(addressId);
+        }
     }
 });
 $('#txtConsigneeAddressLine').on('input', function (event) {
@@ -396,11 +412,7 @@ $('#txtConsigneeAddressLine').on('input', function (event) {
     if (addressId > 0 && addressId != '' && addressId != null) {
         FillConsigneeAddress(addressId);
     }
-    else {
-        ClearConsigneeAddressArea();
-    }
 });
-
 
 $('#txtUnitQuantity').keypress(function (event) {
     if (event.keyCode === 13) {
@@ -615,7 +627,6 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
 
 });
 
-
 $('.btnDelete').unbind().on('click', function () {
     var waybillNumber = $(this).data('waybillnumber');
     bootbox.confirm("This waybill number will be deleted along with all relavant data. Are you sure to proceed?", function (result) {
@@ -625,7 +636,6 @@ $('.btnDelete').unbind().on('click', function () {
         }
     });
 });
-
 
 $('#frmOrderForm').on('keyup keypress', function (e) {
     var keyCode = e.keyCode || e.which;
@@ -1046,38 +1056,51 @@ function GetCustomerDefaultBillingAddress(customerId) {
 }
 
 function FillShipperAddress(addressId) {
-    var shipperAddress = JSON.parse(GetAddressInfo(addressId));
-
-    ClearShipperAddressArea();
-
-    if (shipperAddress !== null && shipperAddress != '') {
-        $('#hfShipperAddressId').val(shipperAddress.Id);
-        $('#txtShipperAddressLine').val(shipperAddress.AddressLine);
-        $('#txtShipperUnitNo').val(shipperAddress.UnitNumber);
-        $('#ddlShipperCityId').val(shipperAddress.CityId);
-        $('#ddlShipperProvinceId').val(shipperAddress.ProvinceId);
-        $('#txtShipperPostcode').val(shipperAddress.PostCode);
+    var addressInfo = GetAddressInfo(addressId);
+    if (addressInfo !== '') {
+        var parsedAddress = JSON.parse(addressInfo);
+        if (parsedAddress != null) {
+            $('#hfShipperAddressId').val(parsedAddress.Id);
+            $('#txtShipperAddressLine').val(parsedAddress.AddressLine);
+            $('#txtShipperUnitNo').val(parsedAddress.UnitNumber);
+            $('#ddlShipperCityId').val(parsedAddress.CityId);
+            $('#ddlShipperProvinceId').val(parsedAddress.ProvinceId);
+            $('#txtShipperPostcode').val(parsedAddress.PostCode);
+        }
+    } else {
+        $('#hfShipperAddressId').val('');
+        $('#txtShipperUnitNo').val('');
+        $('#ddlShipperCityId').val('335');
+        $('#ddlShipperProvinceId').val('7');
+        $('#txtShipperPostcode').val('');
+        bootbox.alert('Shipper address not found. Please try again.');
     }
+    
 }
 
 function FillConsigneeAddress(addressId) {
-
-    var consigneeAddress = JSON.parse(GetAddressInfo(addressId));
-
-    ClearConsigneeAddressArea();
-
-    if (consigneeAddress !== null && consigneeAddress != '') {
-        $('#hfConsigneeAddressId').val(consigneeAddress.Id);
-        $('#txtConsigneeAddressLine').val(consigneeAddress.AddressLine);
-        $('#txtConsigneeUnitNo').val(consigneeAddress.UnitNumber);
-        $('#ddlConsigneeCityId').val(consigneeAddress.CityId);
-        $('#ddlConsigneeProvinceId').val(consigneeAddress.ProvinceId);
-        $('#txtConsigneePostcode').val(consigneeAddress.PostCode);
+    var addressInfo = GetAddressInfo(addressId);
+    if (addressInfo !== '') {
+        var parsedAddress = JSON.parse(addressInfo);
+        if (parsedAddress != null) {
+            $('#hfConsigneeAddressId').val(consigneeAddress.Id);
+            $('#txtConsigneeAddressLine').val(consigneeAddress.AddressLine);
+            $('#txtConsigneeUnitNo').val(consigneeAddress.UnitNumber);
+            $('#ddlConsigneeCityId').val(consigneeAddress.CityId);
+            $('#ddlConsigneeProvinceId').val(consigneeAddress.ProvinceId);
+            $('#txtConsigneePostcode').val(consigneeAddress.PostCode);
+        }
+    } else {
+        $('#hfConsigneeAddressId').val('');
+        $('#txtConsigneeUnitNo').val('');
+        $('#ddlConsigneeCityId').val('335');
+        $('#ddlConsigneeProvinceId').val('7');
+        $('#txtConsigneePostcode').val('');
+        bootbox.alert('Consignee address not found. Please try again.');
     }
 }
 
 function GetAddressInfo(addressId) {
-
     var addressInfo = GetSingleById('Address/GetAddressById', addressId);
     return addressInfo;
 }

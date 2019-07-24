@@ -363,9 +363,9 @@ function GetFormData() {
         contactPersonName: $('#txtContactPersonForMain').val(),
         emailAddress1: $('#txtEmailAddressForMain').val(),
         primaryPhoneNumber: $('#txtPrimaryPhoneNumberForMain').val(),
-        fax: $('#txtFaxNumberForMain').val()
+        fax: $('#txtFaxNumberForMain').val(),
+        isDefault: $('#chkMakeDefaultAddressForMain').is(':checked') === true ? 1 : 0
     };
-
 
     return [customerData, addressData];
 }
@@ -464,6 +464,12 @@ function FillMainFormAddress(addressId) {
         $('#txtFaxNumberForMain').val(addressInfo.Fax);
         $('#txtPrimaryPhoneNumberForMain').val(addressInfo.PrimaryPhoneNumber);
         $('#txtEmailAddressForMain').val(addressInfo.EmailAddress1);
+        if (addressInfo.IsDefault === true) {
+            $('#chkMakeDefaultAddressForMain').prop('checked', true);
+        } else {
+            $('#chkMakeDefaultAddressForMain').prop('checked', false);
+        }
+        
     }
 }
 

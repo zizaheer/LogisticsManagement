@@ -225,25 +225,34 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetAddressById(string id)
         {
-            if (!string.IsNullOrEmpty(id) && id!="null")
+            var result = "";
+            if (!string.IsNullOrEmpty(id) && id != "null")
             {
                 var address = _addressLogic.GetList().Where(c => c.Id == Convert.ToInt32(id)).FirstOrDefault();
-                return Json(JsonConvert.SerializeObject(address));
+                if (address != null)
+                {
+                    return Json(JsonConvert.SerializeObject(address));
+                }
             }
 
-            return null;
+            return Json(result);
         }
 
         public JsonResult GetAddressByAddressLine(string addressline)
         {
+            var result = "";
             if (!string.IsNullOrEmpty(addressline))
             {
                 var address = _addressLogic.GetList().Where(c => c.AddressLine == (addressline.Trim()));
-                return Json(JsonConvert.SerializeObject(address));
+                if (address != null)
+                {
+                    return Json(JsonConvert.SerializeObject(address));
+                }
+                
             }
 
-            return null;
-           
+            return Json(result); 
+
         }
 
         private void ValidateSession()
