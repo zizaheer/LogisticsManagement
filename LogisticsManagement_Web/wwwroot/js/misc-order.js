@@ -21,7 +21,19 @@ $(document).ready(function () {
 //#region Local Variables
 
 var selectedAdditionalServiceArray = [];
-var selectedOrdersForDispatch = [];
+var selectedOrdersForPrint = [];
+
+$('#chkCheckAllOrders').prop('checked', true);
+$('.chkWaybillNumber').prop('checked', true);
+var wbArrayString = $('#hfWaybillArray').val();
+selectedOrdersForPrint = [];
+var wbArray = wbArrayString.split(',');
+$.each(wbArray, function (i, item) {
+    if (item !== '') {
+        selectedOrdersForPrint.push(parseInt(item));
+    }
+});
+
 
 //#endregion
 
@@ -443,20 +455,65 @@ $('#misc-order-list').on('click', '.btnEdit', function (event) {
 
 });
 
-$('#btnPrintWaybill').unbind().on('click', function (event) {
+$('#misc-order-list .chkWaybillNumber').change(function (event) {
+    //event.preventDefault();
+
+    var isChecked = $(this).is(':checked');
+    var orderId = $(this).data('waybillnumber');
+
+    var index = selectedOrdersForPrint.indexOf(orderId);
+    if (index >= 0) {
+        selectedOrdersForPrint.splice(index, 1);
+    }
+
+    if (isChecked) {
+        selectedOrdersForPrint.push(orderId);
+    }
+});
+$('#misc-order-list').on('change', '#chkCheckAllOrders', function (event) {
     event.preventDefault();
 
-    if (selectedOrdersForDispatch.length < 1) {
+    var isChecked = $(this).is(':checked');
+    if (isChecked === true) {
+        $('.chkWaybillNumber').prop('checked', true);
+        var wbArrayString = $('#hfWaybillArray').val();
+        selectedOrdersForPrint = [];
+        var wbArray = wbArrayString.split(',');
+        $.each(wbArray, function (i, item) {
+            if (item !== '') {
+                selectedOrdersForPrint.push(parseInt(item));
+            }
+        });
+    } else {
+        $('.chkWaybillNumber').prop('checked', false);
+        selectedOrdersForPrint = [];
+    }
+});
+
+$('#btnTrialPrintWaybill').unbind().on('click', function (event) {
+    event.preventDefault();
+
+    if (selectedOrdersForPrint.length < 1) {
         bootbox.alert('Please select order/s to print.');
         event.preventDefault();
         return;
     }
 
-    var dataArray = [selectedOrdersForDispatch];
+    var printUrl = 'Order/PrintWaybillAsPdf';
+    var printOption = {
+        numberOfcopyOnEachPage: $('#ddlCopyOnPage').val(),
+        numberOfcopyPerItem: $('#ddlNumberOfCopies').val(),
+        ignorePrice: $('#chkIgnorePricingInformation').is(':checked') === true ? 1 : 0,
+        isMiscellaneous: 1,
+        viewName: 'PrintMiscellaneousWaybill',
+        printUrl: printUrl
+    };
+
+    var dataArray = [selectedOrdersForPrint, printOption];
 
     $.ajax({
         'async': false,
-        url: "Order/PrintWaybill",
+        url: printOption.printUrl,
         type: 'POST',
         data: JSON.stringify(dataArray),
         dataType: 'json',
@@ -467,7 +524,7 @@ $('#btnPrintWaybill').unbind().on('click', function (event) {
             }
         },
         error: function (result) {
-
+            bootbox.alert('Printing failed! There are some eror occurred while processing the printing.');
         }
     });
 
@@ -667,6 +724,12 @@ function FillOrderDetails(orderRelatedData) {
             $('#txtEmployeeName').val(employee.FirstName);
         }
 
+        $('#txtDeliveredBy').val(orderRelatedData.DeliveredBy);
+        $('#txtBolRefNumber').val(orderRelatedData.BolReferenceNumber);
+        $('#txtProRefNumber').val(orderRelatedData.ProReferenceNumber);
+        $('#txtShipperName').val(orderRelatedData.ShipperName);
+        $('#txtShipperAddress').val(orderRelatedData.ShipperAddress);
+
         $('#ddlUnitTypeId').val(orderRelatedData.UnitTypeId);
         $('#txtUnitQuantity').val(orderRelatedData.UnitQuantity);
         $('#txtSkidQuantity').val(orderRelatedData.SkidQuantity);
@@ -795,6 +858,12 @@ function GetFormData() {
         cityId: $('#ddlCustomerCityId').val() === "" ? 0 : parseInt($('#ddlCustomerCityId').val()),
         serviceProviderEmployeeId: $('#hfEmployeeId').val() === "" ? null : parseInt($('#hfEmployeeId').val()),
 
+        deliveredBy: $('#txtDeliveredBy').val() === "" ? null : $('#txtDeliveredBy').val(),
+        bolReferenceNumber: $('#txtBolRefNumber').val() === "" ? null : $('#txtBolRefNumber').val(),
+        proReferenceNumber: $('#txtProRefNumber').val() === "" ? null : $('#txtProRefNumber').val(),
+        shipperName: $('#txtShipperName').val() === "" ? null : $('#txtShipperName').val(),
+        shipperAddress: $('#txtShipperAddress').val() === "" ? null : $('#txtShipperAddress').val(),
+
         unitTypeId: $('#ddlUnitTypeId').val() === "" ? 0 : parseInt($('#ddlUnitTypeId').val()),
         weightScaleId: $('#ddlWeightScaleId').val() === "" ? null : parseInt($('#ddlWeightScaleId').val()),
         weightTotal: $('#txtWeightTotal').val() === "" ? null : parseFloat($('#txtWeightTotal').val()),
@@ -824,6 +893,7 @@ function ClearForm() {
     $('#hfCustomerAddressId').val('');
     $('#hfEmployeeId').val('');
     $('#hfBillerCustomerId').val('');
+    $('#hfCustomerId').val();
 
     $('#txtWayBillNo').val('');
     $('#txtCustomerRefNo').val('');
@@ -833,7 +903,6 @@ function ClearForm() {
     $('#txtOrderedBy').val('');
     $('#txtPhoneNo').val('');
     $('#txtDepartment').val('');
-    $('#hfCustomerId').val();
     
     $('#txtCustomerAddressLine').val('');
     $('#txtCustomerUnitNo').val('');
@@ -842,7 +911,13 @@ function ClearForm() {
     $('#txtCustomerPostcode').val('');
     
     $('#txtEmployeeName').val('');
-    $('#ddlUnitTypeId').val('0');
+    $('#txtDeliveredBy').val('');
+    $('#txtBolRefNumber').val('');
+    $('#txtProRefNumber').val('');
+    $('#txtShipperName').val('');
+    $('#txtShipperAddress').val('');
+
+    $('#ddlUnitTypeId').val('1');
     $('#ddlWeightScaleId').val('1');
     $('#txtWeightTotal').val('');
     $('#txtUnitQuantity').val('');

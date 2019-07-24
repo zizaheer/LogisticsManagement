@@ -19,7 +19,22 @@
 <table id="misc-order-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr>
-            <th>W/B #</th>
+            <th>
+                <div class="form-check-inline">
+                    @{
+                        var wayBillArray = Model.MiscellaneousOrders.Select(c => c.WayBillNumber).ToArray();
+                        string wayBillArrayString = "";
+                        foreach (var wb in wayBillArray)
+                        {
+                            wayBillArrayString += wb + ",";
+                        }
+                    }
+                    <input type="checkbox" class="form-check-inline" id="chkCheckAllOrders" />
+                    <input type="hidden" id="hfWaybillArray" value="@wayBillArrayString" />
+                    <label class="form-check-label">W/B #</label>
+                </div>
+
+            </th>
             <th>Date</th>
             <th>Ref #</th>
             <th>Unit/Qty</th>

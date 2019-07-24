@@ -28,8 +28,8 @@ var paidByValue = '1';
 var employeeId = 0;
 
 // global tax amount
-var taxPercentage = 0.0;
-taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
+//var taxPercentage = 0.0;
+//taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
 
 var isCustomerTaxApplicable = false;
 
@@ -910,7 +910,7 @@ $('#order-list').on('change', '#chkCheckAllOrders', function (event) {
         selectedOrdersForDispatch = [];
     }
 });
-$('#btnPrintWaybill').unbind().on('click', function (event) {
+$('#btnTrialPrintWaybill').unbind().on('click', function (event) {
     event.preventDefault();
 
     if (selectedOrdersForDispatch.length < 1) {
@@ -918,15 +918,22 @@ $('#btnPrintWaybill').unbind().on('click', function (event) {
         event.preventDefault();
         return;
     }
+
+    var printUrl = 'Order/PrintWaybillAsPdf';
     var printOption = {
         numberOfcopyOnEachPage: $('#ddlCopyOnPage').val(),
-        numberOfcopyPerItem: $('#ddlNumberOfCopies').val()
+        numberOfcopyPerItem: $('#ddlNumberOfCopies').val(),
+        ignorePrice: $('#chkIgnorePricingInformation').is(':checked') === true ? 1 : 0,
+        isMiscellaneous: 0,
+        viewName: 'PrintDeliveryWaybill',
+        printUrl: printUrl
     };
+
     var dataArray = [selectedOrdersForDispatch, printOption];
 
     $.ajax({
         'async': false,
-        url: "Order/PrintWaybill",
+        url: "Order/PrintWaybillAsPdf",
         type: 'POST',
         data: JSON.stringify(dataArray),
         dataType: 'json',
@@ -1149,6 +1156,7 @@ function CalculateOrderBaseCost() {
 
     var overriddenDiscountAmount = 0.0;
     var overriddenFuelSurchargeAmount = 0.0;
+    var overriddenTaxAmount = 0.0;
     var baseDiscountAmount = 0.0;
     var baseTaxAmount = 0.0;
 
@@ -1359,14 +1367,13 @@ function FillOrderDetails(orderRelatedData) {
         $('#txtFuelSurchargePercent').val(orderRelatedData.FuelSurchargePercentage);
         $('#txtDiscountPercent').val(orderRelatedData.DiscountPercentOnOrderCost);
         if (orderRelatedData.ApplicableGstPercent > 0) {
-            taxPercentage = orderRelatedData.applicableGstPercent;
             $('#chkIsGstApplicable').prop('checked', true);
             isCustomerTaxApplicable = true;
         } else {
             $('#chkIsGstApplicable').prop('checked', false);
             isCustomerTaxApplicable = false;
         }
-        $('#lblGstAmount').text(orderRelatedData.applicableGstPercent);
+        //$('#lblGstAmount').text(orderRelatedData.applicableGstPercent);
 
 
         $('#txtOrderedBy').val(orderRelatedData.OrderedBy);
@@ -1519,6 +1526,12 @@ function GetFormData() {
 
     var date = $('#txtSchedulePickupDate').val();
 
+    var taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : null;
+    var isGstApplicable = $('#chkIsGstApplicable').is(':checked');
+    if (isGstApplicable === false) {
+        taxPercentage = null;
+    }
+
     var orderData = {
         id: $('#hfOrderId').val() === "" ? 0 : parseInt($('#hfOrderId').val()),
         orderTypeId: $('#chkIsReturnOrder').is(':checked') === true ? 2 : 1,
@@ -1563,7 +1576,7 @@ function GetFormData() {
         basicCostOverriden: $('#txtOverriddenOrderCost').val() === "" ? null : parseFloat($('#txtOverriddenOrderCost').val()),
         fuelSurchargePercentage: $('#txtFuelSurchargePercent').val() === "" ? null : parseFloat($('#txtFuelSurchargePercent').val()),
         discountPercentOnOrderCost: $('#txtDiscountPercent').val() === "" ? null : parseFloat($('#txtDiscountPercent').val()),
-        applicableGstPercent: taxPercentage <= 0 ? null : taxPercentage,
+        applicableGstPercent: taxPercentage,
         totalOrderCost: $('#lblGrandTotalOrderCost').text() === "" ? null : parseFloat($('#lblGrandTotalOrderCost').text()),
         totalAdditionalServiceCost: $('#lblGrandAddServiceAmount').text() === "" ? null : parseFloat($('#lblGrandAddServiceAmount').text()),
         orderedBy: $('#txtOrderedBy').val() === "" ? null : $('#txtOrderedBy').val(),

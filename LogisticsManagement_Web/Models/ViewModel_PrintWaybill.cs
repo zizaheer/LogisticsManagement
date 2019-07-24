@@ -7,6 +7,7 @@ namespace LogisticsManagement_Web.Models
 {
     public class ViewModel_PrintWaybill
     {
+        public int? InvoiceNumber { get; set; }
         public string WaybillNumber { get; set; }
         public string WayBillDate { get; set; }
         public int BillerCustomerId { get; set; }

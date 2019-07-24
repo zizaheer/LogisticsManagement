@@ -270,6 +270,12 @@ namespace LogisticsManagement_Web.Controllers
                                 existingOrder.ShipperCustomerId = orderPoco.ShipperCustomerId;
                                 existingOrder.ServiceProviderEmployeeId = orderPoco.ServiceProviderEmployeeId;
 
+                                existingOrder.DeliveredBy = orderPoco.DeliveredBy;
+                                existingOrder.BolReferenceNumber = orderPoco.BolReferenceNumber;
+                                existingOrder.ProReferenceNumber = orderPoco.ProReferenceNumber;
+                                existingOrder.ShipperName = orderPoco.ShipperName;
+                                existingOrder.ShipperAddress = orderPoco.ShipperAddress;
+
                                 existingOrder.UnitTypeId = orderPoco.UnitTypeId;
                                 existingOrder.UnitQuantity = orderPoco.UnitQuantity;
                                 existingOrder.SkidQuantity = orderPoco.SkidQuantity;
@@ -621,7 +627,7 @@ namespace LogisticsManagement_Web.Controllers
             _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
             miscOrderViewModel.Employees = _employeeLogic.GetList().Where(c => c.EmployeeTypeId == 5).ToList(); // Load employees 'Broker'
 
-            var orders = _orderLogic.GetList().Where(c => c.OrderTypeId == 3).ToList(); // Load only misc. orders
+            var orders = _orderLogic.GetList().Where(c => c.OrderTypeId == 3 && c.IsInvoiced==false).ToList(); // Load only misc. orders
 
             List<ViewModel_OrderDispatched> viewModelOrders = new List<ViewModel_OrderDispatched>();
             foreach (var item in orders)

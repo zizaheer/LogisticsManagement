@@ -50,8 +50,14 @@ namespace LogisticsManagement_Poco
         public string DepartmentName { get; set; }
         public string ContactName { get; set; }
         public string ContactPhoneNumber { get; set; }
-        public bool IsInvoiced { get; set; }
 
+        public string DeliveredBy { get; set; }
+        public string BolReferenceNumber { get; set; }
+        public string ProReferenceNumber { get; set; }
+        public string ShipperName { get; set; }
+        public string ShipperAddress { get; set; }
+
+        public bool IsInvoiced { get; set; }
         public string CommentsForWayBill { get; set; }
         public bool? IsPrintedOnWayBill { get; set; }
         public string CommentsForInvoice { get; set; }

@@ -2,7 +2,7 @@
 @model List<ViewModel_OrderReadyForInvoice>
 
 @{
-    ViewData["Title"] = "Generate invoice ";
+    ViewData["Title"] = "Create invoice ";
 }
 
 
@@ -92,7 +92,8 @@
         <input type="date" id="txtStartDate" class="form-control form-control-sm txtStartDate" />
     </div>
     <div class="col-sm-2 form-group">
-        <small> <b><label for="txtToDate">To date</label></b></small><input type="date" id="txtToDate" class="form-control form-control-sm txtToDate" />
+        <small> <b><label for="txtToDate">To date</label></b></small>
+        <input type="date" id="txtToDate" class="form-control form-control-sm txtToDate" />
     </div>
     <div class="col-sm-3 form-group">
         <small> <b><label for="ddlCustomerId">Customer</label></b></small>
@@ -106,7 +107,7 @@
     </div>
     <div class="col-sm-3 form-group" style="margin-top:28px; padding-left:15px">
         <small>
-            <div class="form-control form-control-sm form-check-inline align-content-center">
+            <div class="form-control form-control-sm form-check-inline" style="text-transform:capitalize !important">
                 <input type="radio" id="rdoDeliveryOrder" name="orderType" class="form-check-input" value="1" style="margin-left:15px" checked />
                 <label for="rdoDeliveryOrder" class="form-check-label">Delivery orders</label> &nbsp;&nbsp;&nbsp;
                 <input type="radio" id="rdoMiscOrder" name="orderType" class="form-check-input" value="3" />
@@ -115,7 +116,7 @@
         </small>
     </div>
     <div class="col-sm-2 form-group" style="margin-top:28px">
-        <small> <b><label for="btnFilter"></label></b></small><button id="btnFilter" class="btn btn-sm btn-dark" style="float:right"> Load invoices</button>
+        <small> <b><label for="btnFilter"></label></b></small><button id="btnFilter" class="btn btn-sm btn-dark" style="float:right"> Load orders</button>
     </div>
 
 
@@ -137,18 +138,31 @@
             <button type="submit" class="btn btn-sm btn-primary" id="btnGenerateInvoice"><i class="fa fa-gear"></i> Generate invoice/s</button>
         </div>
         <div class="col-2 form-group">
-            <button id="btnPrintPreview" class="btn btn-sm btn-danger" style="float:right; margin-bottom:15px"><i class="fa fa-print"></i> Trial print preview </button>
+            <button id="btnTrialPrint" class="btn btn-sm btn-danger" style="float:right; margin-bottom:15px"><i class="fa fa-print"></i> Invoice trial print</button>
         </div>
 
     </div>
 </form>
 
-<div style="margin-bottom:100px"></div>
-
+<div style="margin-bottom:80px"></div>
+<h3>
+    Print waybill and invoice
+</h3>
+<hr />
 
 <div class="row">
-    <div class="col-md-8 input-group">
-        <button class="btn btn-sm btn-success" id="btnDownloadData"><i class="fa fa-download"></i> Load generated invoices</button>
+    <div class="col-sm-9 input-group">
+        <select class="col-4 form-control form-control-sm" id="ddlCustomerIdForPrint" style="background-color:#c8fde4; font-weight:bold;margin:0px !important">
+            <option value="0">- Select all customer -</option>
+            @foreach (var item in ViewBag.Customers)
+            {
+                <option value="@item.Id"> @item.CustomerName </option>
+            }
+        </select>
+        &nbsp;
+        <button class="btn btn-sm btn-success" id="btnDownloadData"><i class="fa fa-download"></i> Load invoices</button>&nbsp;  <div class="form-check-inline">
+            <input type="checkbox" class="col-3 form-check-input" id="chkIsMiscellaneous" /><label for="chkIsMiscellaneous" class="form-check-label"> Miscellaneous</label>
+        </div>
         <div style="margin-top:5px">
             <span id="spinnerLoadingDataTable" style="display:none">
                 <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
@@ -156,13 +170,14 @@
             </span>
         </div>
     </div>
-    <div class="col-md-4">
-        <button class="col-6 btn btn-sm btn-secondary" id="btnWaybillFinalPrint"><i class="fa fa-print"></i> Print waybills</button>
-        <button class="col-5 btn btn-sm btn-secondary" id="btnInvoiceFinalPrint" style="float:right"><i class="fa fa-print"></i> Print invoice</button>
+
+    <div class="col-md-3">
+       <button class="col-5 btn btn-sm btn-warning" id="btnWaybillFinalPrint"><i class="fa fa-print"></i> Print waybill</button>
+        <button class="col-6 btn btn-sm btn-warning" id="btnInvoiceFinalPrint" style="float:right"><i class="fa fa-print"></i> Print invoice</button>
     </div>
 
 </div>
-<hr />
+<br />
 
 <div class="row">
     <div class="col-sm-12">

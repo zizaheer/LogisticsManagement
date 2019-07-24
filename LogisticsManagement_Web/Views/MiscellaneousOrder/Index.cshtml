@@ -28,11 +28,18 @@
 </style>
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
 
+<div class="row">
+    <div class="col-sm-10">
+        <h4>
+            @ViewData["Title"]
+        </h4>
+    </div>
+    <div class="col-sm-2">
+        <button id="btnNewMiscOrder" type="button" class="btn btn-sm btn-danger form-control" title="New misc. order" data-toggle="modal"><i class="fa fa-plus-circle"></i> New misc. order </button>
+    </div>
+</div>
 
-<h3>
-    @ViewData["Title"]
-</h3>
-<hr style="margin-bottom:40px" />
+<hr />
 
 
 <div class="row">
@@ -44,13 +51,17 @@
 </div>
 
 <div class="row">
-    <div class="col-sm-12">
-        <div style="float:right">
-
-            <button class="btn btn-sm btn-danger" id="btnPrintWaybill"> <i class="fa fa-print"></i> Print preview</button>
-            <button id="btnNewMiscOrder" type="button" class="btn btn-sm btn-success" title="New misc. order" data-toggle="modal"><i class="fa fa-plus-circle"></i> New misc. order </button>
+        <div class="col-sm-7 offset-5 input-group">
+            <select class="col-3 form-control form-control-sm" id="ddlNumberOfCopies"><option value="1">Single copy</option><option value="2" selected>Double copy</option></select>
+            <select class="col-3 form-control form-control-sm" id="ddlCopyOnPage"><option value="1">1 Per page</option><option value="2" selected>2 Per page</option></select>
+            &nbsp;
+            <div class="form-control form-control-sm form-check-inline" style="text-transform:capitalize !important">
+                <input type="checkbox" id="chkIgnorePricingInformation" class="form-check-input" checked />
+                <label for="chkIgnorePricingInformation" class="form-check-label">Ignore price</label>
+            </div>
+          
+            <button class="col-4 btn btn-sm btn-warning" id="btnTrialPrintWaybill"> <i class="fa fa-print"></i> Waybill trial print</button>&nbsp;
         </div>
-    </div>
 </div>
 
 <hr />
@@ -76,7 +87,7 @@
                                         <label style="margin-top:5px" id="lblBillTo" for="txtBillToCustomerName"><b>Bill to</b></label>
                                     </small>
                                     <div class="col-sm-4" style="margin-right:50px">
-                                        
+
                                         <input class="form-control form-control-sm" id="txtBillToCustomerName" name="txtBillToCustomerName" placeholder="Bill to" list="dlBillers" type="search" style="width:381px" />
                                         <datalist id="dlBillers">
                                             @foreach (var item in Model.Customers)
@@ -203,8 +214,9 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="col-12 input-group">
-                                                <input class="col-7 form-control form-control-sm" placeholder="Delivered by" id="txtDeliveredBy" name="txtDeliveredBy" type="text" />
-                                                <input class="col-5 form-control form-control-sm" placeholder="Bol/Pro ref#" id="txtBolRefNumber" name="txtBolRefNumber" type="text" />
+                                                <input class="col-6 form-control form-control-sm" placeholder="Delivered by" id="txtDeliveredBy" name="txtDeliveredBy" type="text" />
+                                                <input class="col-3 form-control form-control-sm" placeholder="Bol ref#" id="txtBolRefNumber" name="txtBolRefNumber" type="text" />
+                                                <input class="col-3 form-control form-control-sm" placeholder="Pro ref#" id="txtProRefNumber" name="txtProRefNumber" type="text" />
                                             </div>
                                         </div>
                                         <div class="row">
@@ -224,7 +236,7 @@
                                                 <div class="row mb-1">
                                                     <input class="col-3 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity" style="background-color:#b3ffc3">
                                                     <input class="col-3 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
-                                                    <select class="col-3 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId">
+                                                    <select class="col-2 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId">
                                                         @foreach (var item in Model.UnitTypes)
                                                         {
                                                             if (item.Id == 2)
@@ -236,8 +248,8 @@
                                                     </select>
 
                                                     @*<input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces" disabled>*@
-                                                    &nbsp;
-                                                    <input class="col-2 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
+                                                   
+                                                    <input class="col-2 offset-1 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
                                                     <select class="col-1 form-control form-control-sm" id="ddlWeightScaleId" name="ddlWeightScaleId" style="-webkit-appearance: none;">
                                                         @foreach (var item in Model.WeightScales)
                                                         {
@@ -341,15 +353,15 @@
                                             </div>
                                         </div>
                                         @*<div style="margin-top:5px">
-                                            <small>
-                                                <label id="lblOrderTotal" for="txtOrderTotal"><b><i class="fa fa-money"></i> ORDER TOTAL</b></label>
-                                            </small>
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <input type="number" class="form-control form-control-sm" id="txtOrderTotal" name="txtOrderTotal" style="background-color:#b3ffc3; font-weight:bolder" />
+                                                <small>
+                                                    <label id="lblOrderTotal" for="txtOrderTotal"><b><i class="fa fa-money"></i> ORDER TOTAL</b></label>
+                                                </small>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <input type="number" class="form-control form-control-sm" id="txtOrderTotal" name="txtOrderTotal" style="background-color:#b3ffc3; font-weight:bolder" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>*@
+                                            </div>*@
                                     </div>
 
                                 </div>
@@ -367,7 +379,7 @@
                                                     <td scope="col"><small>Sp. Discount</small></td>
                                                     <td scope="col"><small>GST</small></td>
                                                     @*<td scope="col"><small>Total Cost</small></td>
-                                                    <td scope="col"><small>Add. Charges</small></td>*@
+                                                        <td scope="col"><small>Add. Charges</small></td>*@
                                                     <th scope="col">Grand Total</th>
                                                 </tr>
                                             </thead>
@@ -383,7 +395,7 @@
                                                         <label id="lblGrandGstAmount" type="number" min="0" name="lblGrandGstAmount" title="GST amount">0.00</label>
                                                     </td>
                                                     @*<td><label id="lblGrandTotalOrderCost" type="number" min="0" name="lblGrandTotalOrderCost" title="Total order cost">0.00</label></td>
-                                                    <td><label id="lblGrandAddServiceAmount" type="number" min="0" name="lblGrandAddServiceAmount" title="Total additional service cost">0.00</label></td>*@
+                                                        <td><label id="lblGrandAddServiceAmount" type="number" min="0" name="lblGrandAddServiceAmount" title="Total additional service cost">0.00</label></td>*@
                                                     <th class="bg-info">
                                                         <label id="lblGrandTotalAmount" type="number" min="0" name="lblGrandTotalAmount" title="Grand total amount">0.00</label>
                                                     </th>

@@ -1,0 +1,270 @@
+﻿@using LogisticsManagement_Web.Models;
+@model List<ViewModel_PrintWaybill>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PrintWaybill</title>
+
+    <style type="text/css">
+
+        .tg {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+            .tg td {
+                font-family: Arial, sans-serif;
+                font-size: 16px;
+                padding: 3px;
+                /*border-style: solid;*/
+                /*border-width: 1px;*/
+                overflow: hidden;
+                word-break: normal;
+                border-color: black;
+            }
+
+            .tg .tg-1wig {
+                font-weight: bold;
+                text-align: left;
+                vertical-align: top
+            }
+
+            .tg .tg-amwm {
+                font-weight: bold;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg .tg-7btt {
+                font-weight: bold;
+                border-color: inherit;
+                text-align: center;
+                vertical-align: top
+            }
+
+            .tg .tg-0lax {
+                text-align: left;
+                vertical-align: top
+            }
+
+        .pagebreak {
+            page-break-after: always;
+        }
+
+        label {
+            text-transform: uppercase
+        }
+    </style>
+
+
+</head>
+<body>
+    @{
+        var itemCount = 0;
+
+        var numberOfCopyOnEachPage = 0;
+        var numberOfCopyPerItem = 0;
+        var printOption = Model.FirstOrDefault();
+        if (printOption != null)
+        {
+            numberOfCopyOnEachPage = printOption.NumberOfCopyOnEachPage;
+            numberOfCopyPerItem = printOption.NumberOfCopyPerItem;
+        }
+    }
+
+    @foreach (var item in Model)
+    {
+        if (itemCount >= numberOfCopyOnEachPage)
+        {
+            <p class="pagebreak"></p>
+            itemCount = 0;
+        }
+
+        for (int i = 0; i < numberOfCopyPerItem; i++)
+        {
+            <table class="tg" style="table-layout: fixed; width: 1002px; height:600px; margin:0 auto; " border="1">
+                <colgroup>
+                    <col style="width: 281px">
+                    <col style="width: 121px">
+                    <col style="width: 165px">
+                    <col style="width: 215px">
+                    <col style="width: 220px">
+                </colgroup>
+                <tr>
+                    <td class="tg-amwm" rowspan="2">
+                        <b><span style="font-size:1.3em"> Millenium Freightways Inc.</span></b><br /><br />
+                        <table style="border-collapse:collapse; margin: 0 auto" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td rowspan="2"><img src="~/images/clients/mfi_logo.jpg" style="width:80px; height:60px;" /></td>
+                                <td><b style="padding-left:15px;font-size:1.10em">Tel: + 905.7958686</b></td>
+                            </tr>
+                            <tr>
+                                <td><b style="padding-left:15px;border-style:none;font-size:1.10em">Fax: + 905.7958687</b></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="tg-amwm">
+                        <div style="font-size:1.2em;">Date</div>
+                        <div style="padding-top:10px"><label id="lblWayBillDate">@item.WayBillDate</label></div>
+                    </td>
+                    <td class="tg-amwm">
+                        <div style="font-size:1.2em;">Account#</div>
+                        <div style="padding-top:10px"><label id="lblBillerAccountNo">@item.BillerCustomerId</label></div>
+                    </td>
+                    <td class="tg-amwm">
+                        <div style="font-size:1.2em;">Cust Ref#</div>
+                        <div style="padding-top:10px"><label id="lblCustomerRefNo">@item.CustomerRefNo</label></div>
+                    </td>
+                    <td class="tg-amwm">
+                        <div style="font-size:1.2em;">WB#</div>
+                        <div style="padding-top:10px; font-size:1.5em"><label id="lblWayBillNo">@item.WaybillNumber</label></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg-amwm" colspan="2">
+                        <div style="font-size:1.2em;">Cargo ctl#</div>
+                        <div style="padding-top:10px"><label id="lblCargoCtlNo">@item.CargoCtlNo</label></div>
+                    </td>
+                    <td class="tg-amwm">
+                        <div style="font-size:1.2em;">AWB/Ctn#</div>
+                        <div style="padding-top:10px"><label id="lblAwbContainerNo">@item.AwbContainerNo</label></div>
+                    </td>
+                    <td class="tg-amwm">
+                        <div style="font-size:1.2em;">Pickup ref#</div>
+                        <div style="padding-top:10px"><label id="lblPickupRefNo">@item.PickupRefNo</label></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg-1wig" style="vertical-align:middle">
+                        <span style="font-size:1.1em"><label id="lblBillerName">@item.BillerCustomerName</label></span>
+                    </td>
+                    <td class="tg-1wig" colspan="2" style="text-align:center">
+                        <div style="font-size:1.2em;">Ordered by:</div>
+                        <div style="padding-top:10px"><label id="lblOrderByName">@item.OrderedByName</label></div>
+                    </td>
+                    <td class="tg-amwm">
+                        <div style="font-size:1.2em;">Service</div>
+                        <div style="padding-top:10px"><label id="lblDeliveryOptionShortCode">@item.DeliveryOptionShortCode</label></div>
+                    </td>
+                    <td class="tg-amwm" rowspan="6">
+                        <table border="1" style="width:100%; border-collapse:collapse; height:100%; border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
+                            <tr><td style="height:18px; width:100px; border-left:none; border-top:none; height:20px">Base</td><td style="border-top:none;border-right:none"><label id="lblOrderBasePrice">@item.OrderBasePrice</label></td></tr>
+                            <tr><td style="height:18px; width:100px; border-left:none; height:20px">Fuel</td><td style="border-right:none"><label id="lblFuelSurcharge">@item.FuelSurcharge</label></td></tr>
+                            <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
+                            <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
+                            <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
+                            <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
+                            <tr><td style="height:18px; width:100px; border-left:none">Savings</td><td style="border-right:none">@item.OrderDiscountAmount</td></tr>
+                            <tr><td style="height:18px; width:100px; border-left:none; height:20px">Add. Srv.</td><td style="border-right:none"><label id="lblAdditionalServiceCost">@item.AdditionalServiceCost</label></td></tr>
+
+                            <tr><td style="border-left:none">HST</td><td style="border-right:none; height:20px"><label id="lblOrderTaxAmount">@item.OrderTaxAmountOnBasePrice</label></td></tr>
+                            <tr><td style="border-bottom:none; border-left:none; height:20px">Total</td><td style="border-bottom:none; border-right:none"><label id="lblTotalOrderCost">@item.NetTotalOrderCost</label></td></tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg-7btt" colspan="2" style="text-align:left">
+                        <div><u>Pickup From</u></div>
+                        <div style="padding-top:10px; text-align:center"><label>@item.ShipperCustomerName</label></div>
+                    </td>
+                    <td class="tg-amwm" colspan="2" style="text-align:left">
+                        <div><u>Delivered To</u></div>
+                        <div style="padding-top:10px; text-align:center"><label>@item.ConsigneeCustomerName</label></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg-amwm" colspan="2" style="text-align:center"><label id="lblPickupAddressLine">@item.ShipperCustomerAddressLine1</label></td>
+                    <td class="tg-amwm" colspan="2" style="text-align:center"><label id="lblDeliveryAddressLine">@item.ConsigneeCustomerAddressLine1</label></td>
+                </tr>
+                <tr>
+                    <td class="tg-amwm" colspan="2" style="text-align:center; height:35px"><label id="lblPickupCityAndProvince">@item.ShipperCustomerAddressLine2</label></td>
+                    <td class="tg-amwm" colspan="2" style="text-align:center"><label id="lblDeliveryCityAndProvince">@item.ConsigneeCustomerAddressLine2</label></td>
+                </tr>
+                <tr>
+                    <td class="tg-0lax" colspan="4" style="padding:0px">
+                        <table border="1" style="width:100%; border-collapse:collapse; height:100%; font-size:14px; font-weight:bold">
+                            <tr>
+                                <td style="vertical-align:top">
+                                    <div style="text-align:center">Unit/Qty</div>
+                                    <div style="padding-top:10px; text-align:center">
+                                        <span style="font-size:.8em"> <label id="lblNumberOfUnits">@item.UnitQuantity @item.UnitTypeShortCode</label></span>
+                                    </div>
+                                </td>
+                                <td style="vertical-align:top">
+                                    <div style="text-align:center">SKID</div>
+                                    <div style="padding-top:10px; text-align:center">
+                                        <span style="font-size:.8em"><label id="lblSkidQty">@item.SkidQuantity</label></span>
+                                    </div>
+                                </td>
+                                @*<td style="vertical-align:top">
+                                        <div style="text-align:center">PCs</div>
+                                        <div style="padding-top:10px; text-align:center">
+                                            <span style="font-size:.8em"><label id="lblTotalPiecesInSkids">@item.TotalSkidPieces</label></span>
+                                        </div>
+                                    </td>*@
+                                <td style="vertical-align:top">
+                                    <div style="text-align:center">Wght. (<label id="lblWeightMeasurementShortCode">@item.WeightScaleShortCode</label>)</div>
+                                    <div style="padding-top:10px; text-align:center">
+                                        <span style="font-size:.8em"><label id="lblWeightTotal">@item.WeightTotal</label></span>
+                                    </div>
+                                </td>
+                                <td style="vertical-align:top">
+                                    <div style="text-align:center">Delivery date:</div>
+                                    <div style="padding-top:10px; text-align:center">
+                                        <span style="font-size:.8em"><label id="lblDeliveryDate">@item.DeliveryDate</label></span>
+                                    </div>
+                                </td>
+                                <td style="vertical-align:top">
+                                    <div style="text-align:center">Time</div>
+                                    <div style="padding-top:10px; text-align:center">
+                                        <span style="font-size:.8em"><label id="lblDeliveryTime">@item.DeliveryTime</label></span>
+                                    </div>
+                                </td>
+                                <td style="vertical-align:top">
+                                    <div style="text-align:center">P/U: Drv.</div>
+                                    <div style="padding-top:10px; text-align:center">
+                                        <span style="font-size:.8em"><label id="lblPUDriver">@item.PUDriverName</label></span>
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tg-amwm" style="height:100px; vertical-align:top">Shipper print & sign</td>
+                    <td class="tg-amwm" style="height:38px; vertical-align:top" colspan="2">
+                        Receiver print & sign<br /><span style="font-size:.8em">(Received in good)</span>
+                    </td>
+                    <td class="tg-amwm" style="height:38px; vertical-align:top">
+                        Delivery driver<br>
+                        <label id="lblDeliveryDriverName">
+                            @item.DeliveryDriverName
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tg-0lax" colspan="5"><b>Comments:</b><br> <label id="lblWayBillComments">@item.WaybillComments</label></td>
+            </tr>
+            <tr>
+                <td class="tg-0lax" colspan="5" style="font-size:11px">
+                    The amount of any loss, damage or injury for which the carrier may be liable shall not exceed the lesser of $2.00 per pound compounted on the total weight of the shipment or $50.00 for the entire shipment, unless all of the following terms have been met.: The consignor/consignee or their agent has received in writting acceptance from the carrier for an increase in liability for the shipment. The valuation requested must be declared in the space provided on this document. The consignor/consignee or their agent pays the carrier's fee for the declared valuation service. This carrier is not responsible for concealed damange nor pilferage from sealed containers.
+                </td>
+            </tr>
+        </table>
+        <br /><br />
+        <hr /><br /><br />
+
+        itemCount = itemCount + 1;
+    }
+}
+</body>
+</html>

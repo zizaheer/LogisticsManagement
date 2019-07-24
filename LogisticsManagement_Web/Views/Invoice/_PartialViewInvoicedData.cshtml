@@ -3,22 +3,7 @@
 
 <style>
     .form-control {
-        padding: 4px 4px 4px 8px;
-        height: 29px;
-        text-transform: uppercase
-    }
-
-    .form-group {
-        margin-bottom: .15rem;
-    }
-
-    #order-list tbody tr {
-        height: 60px; /* or whatever height you need to make them all consistent */
-    }
-
-    .additionalServiceControl {
-        height: 22px;
-        padding: 1px 6px 3px 6px;
+        margin: 6px 7px 0px 8px;
     }
 </style>
 
@@ -29,6 +14,7 @@
         }
         $('#invoiced-list').DataTable({
             "order": [[0, "desc"]],
+            "columns": [{ "orderable": false }, null, null, null, null],
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
@@ -38,12 +24,27 @@
             info: false
         });
     });
+
 </script>
 
 <table id="invoiced-list" class="table table-sm table-striped" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
-        <tr>
-            <th style="width:100px">Invoice #</th>
+        <tr style="background-color:#ebffad">
+            <th style="width:100px">
+                <div class="form-check-inline">
+                    @{
+                        var invoiceArray = Model.Select(c => c.InvoiceId).ToArray();
+                        string invoiceArrayString = "";
+                        foreach (var invoice in invoiceArray)
+                        {
+                            invoiceArrayString += invoice + ",";
+                        }
+                    }
+                    <input type="checkbox" class="form-check-inline" id="chkCheckAllInvoices" />
+                    <input type="hidden" id="hfInvoiceArray" value="@invoiceArrayString" />
+                    <label class="form-check-label">Invoice #</label>
+                </div>
+            </th>
             <th style="width:200px">Biller</th>
             <th>W/B numbers</th>
             <th style="width:100px">Total amnt.</th>
@@ -55,7 +56,10 @@
         {
             <tr>
                 <td>
-                    @item.InvoiceId
+                    <div class="form-check-inline">
+                        <input type="checkbox" id="chkInvoiceSelected" name="chkInvoiceSelected" class="form-check-input chkInvoiceSelected" data-invoiceid='@item.InvoiceId' data-waybillnumbers="@item.WayBillNumbers" />
+                        <label class="form-check-label">@item.InvoiceId</label>
+                    </div>
                 </td>
                 <td>
                     @item.BillerName

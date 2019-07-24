@@ -18,9 +18,12 @@ $(document).ready(function () {
     $(document).ajaxComplete(function () {
         $("#spinnerLoadingDataTable").css("display", "none");
     });
+
+    GetInvoiceList();
 });
 
 var wayBillNumberArray = [];
+var invoiceNumberArray = [];
 var wayBillNumberArrayForInvoicePayment = [];
 var employeeNumber;
 var orderType = 0; // 1: Delivery, 3: Misc order
@@ -30,14 +33,36 @@ $('.chkOrderSelected').prop('checked', true);
 var wbArrayString = $('#hfWaybillArray').val();
 if (wbArrayString != null && wbArrayString !== '') {
     wayBillNumberArray = [];
-    var wbArray = wbArrayString.split(',');
-    $.each(wbArray, function (i, item) {
-        if (item !== '') {
-            wayBillNumberArray.push({ wbillNumber: parseInt(item) });
-        }
-    });
+    if (wbArrayString.indexOf(',') > -1) {
+        var wbArray = wbArrayString.split(',');
+        $.each(wbArray, function (i, item) {
+            if (item !== '') {
+                wayBillNumberArray.push({ wbillNumber: parseInt(item) });
+            }
+        });
+    } else {
+        wayBillNumberArray.push({ wbillNumber: parseInt(wbArrayString) });
+    }
 }
 
+function GetInvoiceList() {
+    $('#chkCheckAllInvoices').prop('checked', true);
+    $('.chkInvoiceSelected').prop('checked', true);
+    var invoiceArrayString = $('#hfInvoiceArray').val();
+    if (invoiceArrayString != null && invoiceArrayString !== '') {
+        invoiceNumberArray = [];
+        if (invoiceArrayString.indexOf(',') > -1) {
+            var invArray = invoiceArrayString.split(',');
+            $.each(invArray, function (i, item) {
+                if (item !== '') {
+                    invoiceNumberArray.push({ invoiceNumber: parseInt(item) });
+                }
+            });
+        } else {
+            invoiceNumberArray.push({ invoiceNumber: parseInt(invoiceArrayString) });
+        }
+    }
+}
 
 $('#pending-list').on('change', '.chkOrderSelected', function (event) {
     event.preventDefault();
@@ -58,7 +83,6 @@ $('#pending-list').on('change', '.chkOrderSelected', function (event) {
         wayBillNumberArray.push(wbNumber);
     }
 });
-
 $('#pending-list').on('change', '#chkCheckAllOrders', function (event) {
     event.preventDefault();
 
@@ -79,9 +103,49 @@ $('#pending-list').on('change', '#chkCheckAllOrders', function (event) {
     }
 });
 
+$('#invoiced-list').on('change', '.chkInvoiceSelected', function (event) {
+    event.preventDefault();
+
+    var invNumber =
+    {
+        invoiceNumber: $(this).data('invoiceid')
+    };
+
+    var isChecked = $(this).is(':checked');
+
+    var index = invoiceNumberArray.findIndex(c => c.invoiceNumber === invNumber.invoiceNumber);
+    if (index >= 0) {
+        invoiceNumberArray.splice(index, 1);
+    }
+
+    if (isChecked) {
+        invoiceNumberArray.push(invNumber);
+    }
+});
+$('#invoiced-list').on('change', '#chkCheckAllInvoices', function (event) {
+    event.preventDefault();
+
+    var isChecked = $(this).is(':checked');
+    if (isChecked === true) {
+        $('.chkInvoiceSelected').prop('checked', true);
+        var invArrayString = $('#hfInvoiceArray').val();
+        invoiceNumberArray = [];
+        var invArray = invArrayString.split(',');
+        $.each(invArray, function (i, item) {
+            if (item !== '') {
+                invoiceNumberArray.push({ invoiceNumber: parseInt(item) });
+            }
+        });
+    } else {
+        $('.chkInvoiceSelected').prop('checked', false);
+        invoiceNumberArray = [];
+    }
+});
+
 $('#btnDownloadData').unbind().on('click', function (event) {
     event.preventDefault();
-    $('#loadInvoicedDataTable').load('Invoice/PartialViewDataTable');
+    var isMisc = $('#chkIsMiscellaneous').is(':checked');
+    $('#loadInvoicedDataTable').load('Invoice/PartialViewDataTable/' + isMisc);
 
 });
 
@@ -161,10 +225,11 @@ $('#frmInvoiceGenerationForm').unbind('submit').submit(function (event) {
         return;
     }
 
-    bootbox.confirm("This will generate invoices for selected customer/s and cannot be undone. Did you see the print preview and found everything ok? ", function (result) {
+    bootbox.confirm("This will generate invoices for selected customer/s and cannot be undone. Did you see the trial print and found everything ok? ", function (result) {
         if (result === true) {
             PerformPostActionWithObject('Invoice/Add', [dataArray]);
             $('#loadPendingInvoiceDataTable').load('Invoice/PartialPendingInvoiceDataTable');
+            $('#loadInvoicedDataTable').load('Invoice/PartialViewDataTable');
             wayBillNumberArray = [];
         }
     });
@@ -190,33 +255,126 @@ $('#btnFilter').on('click', function (event) {
     };
 
     $('#loadPendingInvoiceDataTable').load('Invoice/FilterPendingInvoiceDataTable?filterData=' + JSON.stringify(filterData));
-    // doesnt work for some reason. check it later
+    // doesnt work for some reason. check it later. works but the loading gets exponentially slow if loading button is continuously clicked several times
 
     event.preventDefault();
 
 });
 
-$('#btnPrintPreview').unbind().on('click', function (event) {
+$('#btnTrialPrint').unbind().on('click', function (event) {
     event.preventDefault();
     if (wayBillNumberArray.length < 1) {
-        bootbox.alert('Please select waybill for Print preview');
+        bootbox.alert('Please select waybill for trial print');
         return false;
     }
 
     orderType = parseInt($('input[name="orderType"]:checked').val());
 
     var printUrl = "";
-    if (orderType === 1) {
-        printUrl = 'Invoice/PrintDeliveryInvoice';
-    } else if (orderType === 3) {
-        printUrl = 'Invoice/PrintMiscellaneousInvoice';
+    printUrl = 'Invoice/PrintInvoiceAsPdf';
+
+
+    var printData = { wayBillNumberArray: wayBillNumberArray, invoiceNumberArray: null };
+    var printOption = {
+        isMiscellaneous: orderType === 3 ? 1 : 0,
+        viewName: orderType === 3 ? 'PrintMiscellaneousInvoice' : 'PrintDeliveryInvoice',
+        isFinalPrint: 0,
+        printUrl: printUrl
+    };
+
+    PrintAsPdf(printData, printOption);
+});
+
+$('#btnInvoiceFinalPrint').unbind().on('click', function (event) {
+    event.preventDefault();
+    if (invoiceNumberArray.length < 1) {
+        bootbox.alert('Please select invoice for printing');
+        return false;
     }
+    var printUrl = "";
+    printUrl = 'Invoice/PrintInvoiceAsPdf';
+
+    var isMisc = $('#chkIsMiscellaneous').is(':checked');
+
+    var printData = { wayBillNumberArray: null, invoiceNumberArray: invoiceNumberArray };
+    var printOption = {
+        isMiscellaneous: isMisc === true ? 1 : 0,
+        viewName: isMisc === true ? 'PrintMiscellaneousInvoice' : 'PrintDeliveryInvoice',
+        isFinalPrint: 1,
+        printUrl: printUrl
+    };
+
+    PrintAsPdf(printData, printOption);
+
+});
+
+$('#btnWaybillFinalPrint').unbind().on('click', function (event) {
+    event.preventDefault();
+    
+    var invoiceArrayString = $('#hfInvoiceArray').val();
+    if (invoiceArrayString != null && invoiceArrayString !== '') {
+        invoiceNumberArray = [];
+        if (invoiceArrayString.indexOf(',') > -1) {
+            var invArray = invoiceArrayString.split(',');
+            $.each(invArray, function (i, item) {
+                if (item !== '') {
+                    invoiceNumberArray.push({ invoiceNumber: parseInt(item) });
+                }
+            });
+        } else {
+            invoiceNumberArray.push({ invoiceNumber: parseInt(invoiceArrayString) });
+        }
+    }
+
+    if (invoiceNumberArray.length < 1) {
+        bootbox.alert('Please select invoice for printing waybills');
+        return false;
+    }
+
+    var wbArrayForPrint = [];
+
+    $.each(invoiceNumberArray, function (i, item) {
+        var invoiceWiseWaybills = GetListById('Invoice/GetDueWaybillsByInvoiceId', item.invoiceNumber);
+        if (invoiceWiseWaybills !== '') {
+            var waybills = JSON.parse(invoiceWiseWaybills);
+            console.log('waybills' + waybills);
+            $.each(waybills, function (i, wb) {
+                var index = wbArrayForPrint.indexOf(wb.WaybillNumber);
+                if (index >= 0) {
+                    wbArrayForPrint.splice(index, 1);
+                }
+                wbArrayForPrint.push(wb.WaybillNumber);
+            });
+        }
+    });
+
+    var printUrl = "";
+    printUrl = 'Order/PrintWaybillAsPdf';
+
+    var isMisc = $('#chkIsMiscellaneous').is(':checked');
+
+    var printOption = {
+        numberOfcopyOnEachPage: 1, 
+        numberOfcopyPerItem: 1, 
+        ignorePrice: 0, 
+        isMiscellaneous: isMisc === true ? 1 : 0,
+        viewName: isMisc === true ? 'PrintMiscellaneousWaybill' : 'PrintDeliveryWaybill',
+        printUrl: printUrl 
+    };
+
+    PrintAsPdf(wbArrayForPrint, printOption);
+
+});
+
+function PrintAsPdf(printData, printOption) {
+
+    var printOptions = [printData, printOption];
 
     $.ajax({
         'async': false,
-        url: printUrl,
+        url: printOption.printUrl,
         type: 'POST',
-        data: JSON.stringify([wayBillNumberArray]),
+        data: JSON.stringify(printOptions),
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (result) {
@@ -228,8 +386,8 @@ $('#btnPrintPreview').unbind().on('click', function (event) {
             bootbox.alert('Error occurred: ' + result);
         }
     });
+}
 
-});
 
 //Payment Colelction
 $('#customerdues-list').on('click', '.lnkCollectPayment', function (event) {

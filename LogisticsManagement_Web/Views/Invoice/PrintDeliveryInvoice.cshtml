@@ -70,10 +70,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 214px; vertical-align:top" colspan="2"><b>To</b></td>
+                    <td style="width: 180px; vertical-align:top" colspan="2"><b>TO</b></td>
                     <td style="width: 214px; vertical-align:top">
                         <span>
-                            Acc #:
+                            A/C #:
                             @{
                                 var customerNo = item.BillerCustomerId > 0 ? item.BillerCustomerId.ToString() : "";
                                 @customerNo;
@@ -83,7 +83,7 @@
                     <td style="width: 215px; vertical-align:top">
                         <b>
                             <span>
-                                Invoice #:
+                                INVOICE #:
                                 @{
                                     var invNo = item.InvoiceNo > 0 ? item.InvoiceNo.ToString() : "";
                                     @invNo;
@@ -93,7 +93,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 214px; vertical-align:top" colspan="2">
+                    <td style="width: 180px; vertical-align:top" colspan="2">
                         <span style="font-size:1.2em; font-weight:bold">@item.BillerCustomerName</span><br />
                         <span>@item.BillerCustomerAddressLine</span><br />
                         <span>@item.BillerCustomerCityLine</span><br />
@@ -103,7 +103,7 @@
                     <td style="width: 215px; vertical-align: top;">
                         <b>
                             <span>
-                                Invoice date:
+                                DATE:
                                 @{
                                     var dateString = item.InvoiceDate > DateTime.Now.AddYears(-20) ? item.InvoiceDate.ToString("dd-MMM-yyyy") : "";
                                     @dateString;
@@ -111,14 +111,14 @@
                             </span>
                         </b>
                         <br />
-                        <b><span>Term: @item.Term (days)</span></b>
+                        <b><span>TERM (days): @item.Term</span></b>
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 214px; height:35px">
-                        Attn: Account Payable
+                    <td style="width: 180px; height:35px" colspan="2">
+                        ATTN: ACCOUNT PAYABLE
                     </td>
-                    <td style="width: 214px;"></td>
+                   
                     <td style="width: 214px;"></td>
                     <td style="width: 215px;"></td>
                 </tr>

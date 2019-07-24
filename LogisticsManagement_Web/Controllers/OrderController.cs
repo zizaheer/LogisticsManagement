@@ -226,7 +226,8 @@ namespace LogisticsManagement_Web.Controllers
                         existingOrder.VehicleTypeId = orderPoco.VehicleTypeId;
                         existingOrder.WeightScaleId = orderPoco.WeightScaleId;
                         existingOrder.WeightTotal = orderPoco.WeightTotal;
-                        if (orderPoco.UnitQuantity!=null && orderPoco.UnitQuantity > 0) {
+                        if (orderPoco.UnitQuantity != null && orderPoco.UnitQuantity > 0)
+                        {
                             existingOrder.UnitTypeId = orderPoco.UnitTypeId;
                             existingOrder.UnitQuantity = orderPoco.UnitQuantity;
                         }
@@ -950,7 +951,7 @@ namespace LogisticsManagement_Web.Controllers
         }
 
 
-        public JsonResult PrintWaybill([FromBody]dynamic orderData)
+        public JsonResult PrintWaybillAsPdf([FromBody]dynamic orderData)
         {
             try
             {
@@ -959,6 +960,12 @@ namespace LogisticsManagement_Web.Controllers
 
                 var orderList = _orderLogic.GetList();
                 var orderStatusList = _orderStatusLogic.GetList();
+
+                _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+                var orderAdditionalServices = _orderAdditionalServiceLogic.GetList();
+
+                _additionalServiceLogic = new Lms_AdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_AdditionalServicePoco>(_dbContext));
+                var additionalServices = _additionalServiceLogic.GetList();
 
                 _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
                 var addresses = _addressLogic.GetList();
@@ -992,138 +999,181 @@ namespace LogisticsManagement_Web.Controllers
                 var printOption = (JObject)orderData[1];
                 var numberOfCopyOnPage = printOption.SelectToken("numberOfcopyOnEachPage").ToString();
                 var numberOfCopyPerItem = printOption.SelectToken("numberOfcopyPerItem").ToString();
+                var ignorePrice = Convert.ToBoolean(printOption.SelectToken("ignorePrice"));
+                var isMiscellaneous = Convert.ToBoolean(printOption.SelectToken("isMiscellaneous"));
+                var viewName = printOption.SelectToken("viewName").ToString();
 
                 foreach (var item in wayBillNumberList)
                 {
-                    var wbNumber = item.ToString();
-                    var orderInfo = orderList.Where(c => c.WayBillNumber == wbNumber && c.OrderTypeId == 1).FirstOrDefault(); //consider only the single order; not the return order
-                    if (orderInfo != null)
+                    var wbNumber = item.ToString().Trim();
+                    var waybillOrderList = orderList.Where(c => c.WayBillNumber == wbNumber).ToList(); //loads all order
+                    foreach (var orderInfo in waybillOrderList)
                     {
-                        ViewModel_PrintWaybill waybillPrintViewModel = new ViewModel_PrintWaybill();
-
-                        waybillPrintViewModel.WaybillNumber = orderInfo.WayBillNumber;
-                        waybillPrintViewModel.WayBillDate = orderInfo.CreateDate.ToString("dd-MMM-yy");
-                        waybillPrintViewModel.BillerCustomerId = orderInfo.BillToCustomerId;
-                        waybillPrintViewModel.CustomerRefNo = orderInfo.ReferenceNumber;
-                        waybillPrintViewModel.CargoCtlNo = orderInfo.CargoCtlNumber;
-                        waybillPrintViewModel.AwbContainerNo = orderInfo.AwbCtnNumber;
-                        waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == orderInfo.BillToCustomerId).FirstOrDefault().CustomerName;
-                        waybillPrintViewModel.OrderedByName = orderInfo.OrderedBy;
-                        waybillPrintViewModel.DeliveryOptionShortCode = deliveryOptions.Where(c => c.Id == orderInfo.DeliveryOptionId).FirstOrDefault().ShortCode;
-
-                        waybillPrintViewModel.NumberOfCopyOnEachPage = numberOfCopyOnPage == "" ? 0 : Convert.ToInt32(numberOfCopyOnPage);
-                        waybillPrintViewModel.NumberOfCopyPerItem = numberOfCopyPerItem == "" ? 0 : Convert.ToInt32(numberOfCopyPerItem);
-
-                        waybillPrintViewModel.OrderBasePrice = orderInfo.OrderBasicCost.ToString();
-                        if (orderInfo.BasicCostOverriden != null && orderInfo.BasicCostOverriden > 0)
+                        if (orderInfo != null)
                         {
-                            waybillPrintViewModel.OrderBasePrice = orderInfo.BasicCostOverriden.ToString();
-                        }
+                            ViewModel_PrintWaybill waybillPrintViewModel = new ViewModel_PrintWaybill();
 
-                        if (orderInfo.DiscountPercentOnOrderCost != null && orderInfo.DiscountPercentOnOrderCost > 0)
-                        {
-                            var orderDiscount = Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) - (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.DiscountPercentOnOrderCost / 100);
-                            if (orderDiscount > 0)
+                            waybillPrintViewModel.WaybillNumber = orderInfo.WayBillNumber;
+                            waybillPrintViewModel.WayBillDate = orderInfo.CreateDate.ToString("dd-MMM-yy");
+                            waybillPrintViewModel.BillerCustomerId = orderInfo.BillToCustomerId;
+                            waybillPrintViewModel.CustomerRefNo = orderInfo.ReferenceNumber;
+                            waybillPrintViewModel.CargoCtlNo = orderInfo.CargoCtlNumber;
+                            waybillPrintViewModel.AwbContainerNo = orderInfo.AwbCtnNumber;
+                            waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == orderInfo.BillToCustomerId).FirstOrDefault().CustomerName;
+                            waybillPrintViewModel.OrderedByName = orderInfo.OrderedBy;
+                            if (orderInfo.DeliveryOptionId != null && orderInfo.DeliveryOptionId > 0)
                             {
-                                waybillPrintViewModel.OrderDiscountAmount = orderDiscount.ToString();
-                                waybillPrintViewModel.OrderBasePrice = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) - (decimal)orderDiscount).ToString();
+                                waybillPrintViewModel.DeliveryOptionShortCode = deliveryOptions.Where(c => c.Id == orderInfo.DeliveryOptionId).FirstOrDefault().ShortCode;
                             }
-                            else
-                            {
-                                waybillPrintViewModel.OrderDiscountAmount = "0.00";
-                            }
-                        }
+                            waybillPrintViewModel.NumberOfCopyOnEachPage = numberOfCopyOnPage == "" ? 0 : Convert.ToInt32(numberOfCopyOnPage);
+                            waybillPrintViewModel.NumberOfCopyPerItem = numberOfCopyPerItem == "" ? 0 : Convert.ToInt32(numberOfCopyPerItem);
 
-                        if (orderInfo.FuelSurchargePercentage != null && orderInfo.FuelSurchargePercentage > 0)
-                        {
-                            var fuelAmnt = Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.FuelSurchargePercentage / 100;
-                            if (fuelAmnt > 0)
+                            waybillPrintViewModel.OrderBasePrice = orderInfo.OrderBasicCost.ToString();
+                            if (orderInfo.BasicCostOverriden != null && orderInfo.BasicCostOverriden > 0)
                             {
-                                waybillPrintViewModel.FuelSurcharge = fuelAmnt.ToString();
+                                waybillPrintViewModel.OrderBasePrice = orderInfo.BasicCostOverriden.ToString();
                             }
-                            else
-                            {
-                                waybillPrintViewModel.FuelSurcharge = "0.00";
-                            }
-                        }
 
-                        if (orderInfo.TotalAdditionalServiceCost > 0)
-                        {
-                            waybillPrintViewModel.AdditionalServiceCost = orderInfo.TotalAdditionalServiceCost.ToString();
-                        }
-                        else
-                        {
+                            waybillPrintViewModel.FuelSurcharge = "0.00";
+                            if (orderInfo.FuelSurchargePercentage != null && orderInfo.FuelSurchargePercentage > 0)
+                            {
+                                var fuelAmnt = Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.FuelSurchargePercentage / 100;
+                                if (fuelAmnt > 0)
+                                {
+                                    waybillPrintViewModel.FuelSurcharge = ((decimal)fuelAmnt).ToString("0.00");
+                                }
+                            }
+
+                            waybillPrintViewModel.OrderDiscountAmount = "0.00";
+                            if (orderInfo.DiscountPercentOnOrderCost != null && orderInfo.DiscountPercentOnOrderCost > 0)
+                            {
+                                var orderDiscount = ((Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge)) * orderInfo.DiscountPercentOnOrderCost / 100);
+                                if (orderDiscount > 0)
+                                {
+                                    waybillPrintViewModel.OrderDiscountAmount = ((decimal)orderDiscount).ToString("0.00");
+                                }
+                            }
+
+                            decimal orderTotalTax = 0; // for misc. orders
                             waybillPrintViewModel.AdditionalServiceCost = "0.00";
-                        }
-
-                        if (orderInfo.ApplicableGstPercent != null && orderInfo.ApplicableGstPercent > 0)
-                        {
-                            var taxAmnt = Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) * orderInfo.ApplicableGstPercent / 100;
-                            if (taxAmnt > 0)
+                            if (orderInfo.TotalAdditionalServiceCost > 0)
                             {
-                                waybillPrintViewModel.OrderTaxAmountOnBasePrice = taxAmnt.ToString();
+                                waybillPrintViewModel.AdditionalServiceCost = Convert.ToDecimal(orderInfo.TotalAdditionalServiceCost).ToString("0.00");
+                                if (isMiscellaneous == true)
+                                {
+                                    var addServices = orderAdditionalServices.Where(c => c.OrderId == orderInfo.Id).ToList();
+                                    foreach (var addservice in addServices)
+                                    {
+                                        var serviceCost = addservice.AdditionalServiceFee;
+                                        if (orderInfo.DiscountPercentOnOrderCost != null && orderInfo.DiscountPercentOnOrderCost > 0)
+                                        {
+                                            serviceCost = serviceCost - (serviceCost * (decimal)orderInfo.DiscountPercentOnOrderCost / 100);
+                                        }
+                                        if (addservice.IsTaxAppliedOnAddionalService == true && addservice.TaxAmountOnAdditionalService != null && addservice.TaxAmountOnAdditionalService > 0)
+                                        {
+                                            orderTotalTax += serviceCost * (decimal)addservice.TaxAmountOnAdditionalService / 100;
+                                        }
+                                    }
+                                }
+                            }
+
+                            waybillPrintViewModel.OrderTaxAmountOnBasePrice = "0.00";
+
+                            if (isMiscellaneous == true)
+                            {
+                                waybillPrintViewModel.OrderTaxAmountOnBasePrice = Convert.ToDecimal(orderTotalTax).ToString("0.00");
+                                waybillPrintViewModel.NetTotalOrderCost = Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost).ToString("0.00");
+                                waybillPrintViewModel.AdditionalServiceCost = "0.00"; // For misc. waybill print 
                             }
                             else
                             {
-                                waybillPrintViewModel.OrderTaxAmountOnBasePrice = "0.00";
+                                decimal taxAmnt = 0;
+                                if (orderInfo.ApplicableGstPercent != null && orderInfo.ApplicableGstPercent > 0)
+                                {
+                                    taxAmnt = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) - Convert.ToDecimal(waybillPrintViewModel.OrderDiscountAmount)) * (decimal)orderInfo.ApplicableGstPercent / 100;
+                                    if (taxAmnt > 0)
+                                    {
+                                        waybillPrintViewModel.OrderTaxAmountOnBasePrice = Convert.ToDecimal(taxAmnt).ToString("0.00");
+                                    }
+                                }
+                                waybillPrintViewModel.NetTotalOrderCost = (taxAmnt + Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) - Convert.ToDecimal(waybillPrintViewModel.OrderDiscountAmount) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString("0.00");
                             }
-                        }
 
-                        waybillPrintViewModel.NetTotalOrderCost = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString();
-                        waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName;
+                            waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName;
+                            var shippperAddress = addresses.Where(c => c.Id == orderInfo.ShipperAddressId).FirstOrDefault();
+                            waybillPrintViewModel.ShipperCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber + ", " + shippperAddress.AddressLine : shippperAddress.AddressLine;
+                            waybillPrintViewModel.ShipperCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + shippperAddress.PostCode;
 
-                        var shippperAddress = addresses.Where(c => c.Id == orderInfo.ShipperAddressId).FirstOrDefault();
-
-                        waybillPrintViewModel.ShipperCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber + ", " + shippperAddress.AddressLine : shippperAddress.AddressLine;
-                        waybillPrintViewModel.ShipperCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + shippperAddress.PostCode;
-
-                        waybillPrintViewModel.ConsigneeCustomerName = customers.Where(c => c.Id == orderInfo.ConsigneeCustomerId).FirstOrDefault().CustomerName;
-
-                        var consigneeAddress = addresses.Where(c => c.Id == orderInfo.ConsigneeAddressId).FirstOrDefault();
-
-
-                        waybillPrintViewModel.ConsigneeCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
-                        waybillPrintViewModel.ConsigneeCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
-
-                        waybillPrintViewModel.SkidQuantity = orderInfo.SkidQuantity;
-                        waybillPrintViewModel.TotalSkidPieces = orderInfo.TotalPiece;
-
-                        if (orderInfo.UnitTypeId > 0) {
-                            waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().TypeName;
-                            waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().ShortCode;
-                        }
-                        if (orderInfo.UnitQuantity > 0) {
-                            waybillPrintViewModel.UnitQuantity = orderInfo.UnitQuantity;
-                        }
-
-                        if (orderInfo.WeightScaleId > 0) {
-                            waybillPrintViewModel.WeightScaleShortCode = weightScales.Where(c => c.Id == orderInfo.WeightScaleId).FirstOrDefault().ShortCode;
-                        }
-                        if (orderInfo.WeightTotal > 0) {
-                            waybillPrintViewModel.WeightTotal = orderInfo.WeightTotal.ToString();
-                        }
-                        
-                        waybillPrintViewModel.DeliveryDate = null;
-                        waybillPrintViewModel.DeliveryTime = null;
-                        waybillPrintViewModel.PUDriverName = "";
-
-                        var orderStatus = orderStatusList.Where(c => c.OrderId == orderInfo.Id).FirstOrDefault();
-                        if (orderStatus != null) {
-                            if (orderStatus.PassedOffToEmployeeId != null && orderStatus.PassedOffToEmployeeId > 0)
+                            if (isMiscellaneous == false)
                             {
-                                waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.PassedOffToEmployeeId).FirstOrDefault().FirstName;
+                                waybillPrintViewModel.ConsigneeCustomerName = customers.Where(c => c.Id == orderInfo.ConsigneeCustomerId).FirstOrDefault().CustomerName;
+                                var consigneeAddress = addresses.Where(c => c.Id == orderInfo.ConsigneeAddressId).FirstOrDefault();
+                                waybillPrintViewModel.ConsigneeCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
+                                waybillPrintViewModel.ConsigneeCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
                             }
-                            else if(orderStatus.DispatchedToEmployeeId != null && orderStatus.DispatchedToEmployeeId > 0) {
-                                waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.DispatchedToEmployeeId).FirstOrDefault().FirstName;
+
+                            waybillPrintViewModel.SkidQuantity = orderInfo.SkidQuantity;
+                            waybillPrintViewModel.TotalSkidPieces = orderInfo.TotalPiece;
+
+                            if (orderInfo.UnitQuantity > 0)
+                            {
+                                waybillPrintViewModel.UnitQuantity = orderInfo.UnitQuantity;
+                                if (orderInfo.UnitTypeId > 0)
+                                {
+                                    waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().TypeName;
+                                    waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().ShortCode;
+                                }
                             }
-                        }
-                        if (orderInfo.IsPrintedOnWayBill != null && orderInfo.IsPrintedOnWayBill == true)
-                        {
-                            waybillPrintViewModel.WaybillComments = orderInfo.CommentsForWayBill;
-                        }
 
-                        waybillPrintViewModels.Add(waybillPrintViewModel);
+                            if (orderInfo.WeightTotal > 0)
+                            {
+                                waybillPrintViewModel.WeightTotal = orderInfo.WeightTotal.ToString();
+                                if (orderInfo.WeightScaleId > 0)
+                                {
+                                    waybillPrintViewModel.WeightScaleShortCode = weightScales.Where(c => c.Id == orderInfo.WeightScaleId).FirstOrDefault().ShortCode;
+                                }
+                            }
 
+                            waybillPrintViewModel.DeliveryDate = null;
+                            waybillPrintViewModel.DeliveryTime = null;
+                            waybillPrintViewModel.PUDriverName = "";
+
+                            var orderStatus = orderStatusList.Where(c => c.OrderId == orderInfo.Id).FirstOrDefault();
+                            if (orderStatus != null)
+                            {
+                                if (orderStatus.PassedOffToEmployeeId != null && orderStatus.PassedOffToEmployeeId > 0)
+                                {
+                                    waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.PassedOffToEmployeeId).FirstOrDefault().FirstName;
+                                }
+                                else if (orderStatus.DispatchedToEmployeeId != null && orderStatus.DispatchedToEmployeeId > 0)
+                                {
+                                    waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.DispatchedToEmployeeId).FirstOrDefault().FirstName;
+                                }
+                            }
+                            if (orderInfo.IsPrintedOnWayBill != null && orderInfo.IsPrintedOnWayBill == true)
+                            {
+                                waybillPrintViewModel.WaybillComments = orderInfo.CommentsForWayBill;
+                            }
+
+                            if (isMiscellaneous)
+                            {
+                                waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderInfo.ServiceProviderEmployeeId).FirstOrDefault().FirstName;
+                            }
+
+                            if (ignorePrice == true)
+                            {
+                                waybillPrintViewModel.OrderBasePrice = "";
+                                waybillPrintViewModel.FuelSurcharge = "";
+                                waybillPrintViewModel.OrderDiscountAmount = "";
+                                waybillPrintViewModel.AdditionalServiceCost = "";
+                                waybillPrintViewModel.OrderTaxAmountOnBasePrice = "";
+                                waybillPrintViewModel.NetTotalOrderCost = "";
+                            }
+
+
+                            waybillPrintViewModels.Add(waybillPrintViewModel);
+
+                        }
                     }
                 }
 
@@ -1139,7 +1189,7 @@ namespace LogisticsManagement_Web.Controllers
                 }
 
 
-                var pdfReport = new ViewAsPdf("PrintWaybill", waybillPrintViewModels);
+                var pdfReport = new ViewAsPdf(viewName, waybillPrintViewModels);
                 var file = pdfReport.BuildFile(ControllerContext).Result;
 
                 System.IO.File.WriteAllBytes(filePath, file);
@@ -1247,10 +1297,11 @@ namespace LogisticsManagement_Web.Controllers
 
                 data.CustomerRefNumber = item.order.ReferenceNumber;
                 data.UnitTypeId = item.order.UnitTypeId;
-                if (data.UnitTypeId > 0) {
+                if (data.UnitTypeId > 0)
+                {
                     data.UnitTypeName = deliveryOrderViewModel.UnitTypes.Where(c => c.Id == data.UnitTypeId).FirstOrDefault().ShortCode;
                 }
-                
+
                 data.UnitQuantity = item.order.UnitQuantity;
                 data.SkidQuantity = item.order.SkidQuantity;
                 data.TotalPiece = item.order.TotalPiece;

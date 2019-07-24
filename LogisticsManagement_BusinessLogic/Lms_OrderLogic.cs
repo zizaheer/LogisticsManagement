@@ -153,6 +153,12 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@ContactName", SqlDbType.VarChar, 50) { Value =(object) orderPoco.ContactName ?? DBNull.Value },
                 new SqlParameter("@ContactPhoneNumber", SqlDbType.VarChar, 50) { Value = (object)orderPoco.ContactPhoneNumber ?? DBNull.Value },
 
+                new SqlParameter("@DeliveredBy", SqlDbType.VarChar, 100) { Value = (object)orderPoco.DeliveredBy ?? DBNull.Value },
+                new SqlParameter("@BolReferenceNumber", SqlDbType.VarChar, 100) { Value = (object)orderPoco.BolReferenceNumber ?? DBNull.Value },
+                new SqlParameter("@ProReferenceNumber", SqlDbType.VarChar, 100) { Value = (object)orderPoco.ProReferenceNumber ?? DBNull.Value },
+                new SqlParameter("@ShipperName", SqlDbType.VarChar, 100) { Value = (object)orderPoco.ShipperName ?? DBNull.Value },
+                new SqlParameter("@ShipperAddress", SqlDbType.VarChar, 200) { Value = (object)orderPoco.ShipperAddress ?? DBNull.Value },
+
                 new SqlParameter("@CommentsForWayBill", SqlDbType.VarChar, 200) { Value = (object)orderPoco.CommentsForWayBill ?? DBNull.Value },
                 new SqlParameter("@IsPrintedOnWayBill", SqlDbType.Bit) { Value = (object)orderPoco.IsPrintedOnWayBill ?? DBNull.Value },
                 new SqlParameter("@CommentsForInvoice", SqlDbType.VarChar, 200) { Value = (object)orderPoco.CommentsForInvoice ?? DBNull.Value },
@@ -172,7 +178,7 @@ namespace LogisticsManagement_BusinessLogic
             query.Append("@VehicleTypeId, @UnitTypeId, @WeightScaleId, @WeightTotal, @UnitQuantity, @SkidQuantity, @TotalPiece, @OrderBasicCost, ");
             query.Append("@BasicCostOverriden, @FuelSurchargePercentage, @DiscountPercentOnOrderCost, @ApplicableGstPercent,@TotalOrderCost, ");
 
-            query.Append("@TotalAdditionalServiceCost, @OrderedBy, @DepartmentName, @ContactName, @ContactPhoneNumber,  ");
+            query.Append("@TotalAdditionalServiceCost, @OrderedBy, @DepartmentName, @ContactName, @ContactPhoneNumber, @DeliveredBy, @BolReferenceNumber, @ProReferenceNumber, @ShipperName, @ShipperAddress, ");
             query.Append("@CommentsForWayBill, @IsPrintedOnWayBill, @CommentsForInvoice, @IsPrintedOnInvoice, @Remarks, @CreatedBy, @OrderAdditionalServiceList ");
 
             var outPut = base.CallStoredProcedure(query.ToString(), sqlParameters);

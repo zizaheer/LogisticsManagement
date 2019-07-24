@@ -36,8 +36,6 @@
 </style>
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
 
-
-<!-- Modal - Pickup Order -->
 <div class="modal fade bd-example-modal-xl" id="orderPickup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content bg-light">
@@ -112,8 +110,6 @@
         </div>
     </div>
 </div>
-<!-- Modal - Pickup Order -->
-<!-- Modal - Pass-on Order -->
 <div class="modal fade bd-example-modal-xl" id="orderPassOn" tabindex="-2" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content bg-light">
@@ -225,8 +221,6 @@
         </div>
     </div>
 </div>
-<!-- Modal - Pass-on Order -->
-<!-- Modal - Deliver Order -->
 <div class="modal fade bd-example-modal-xl" id="orderDeliver" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content bg-light">
@@ -367,8 +361,6 @@
         </div>
     </div>
 </div>
-<!-- Modal - Deliver Order -->
-
 <div class="modal fade bd-example-modal-xl" id="dispatchOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content bg-light">
@@ -461,14 +453,20 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-7">
-        <button id="btnDispatch" type="button" class="col-2 btn btn-sm btn-primary" title="Dispatch" data-toggle="modal"><i class="fa fa-arrow-circle-right"></i> Dispatch</button>
+    <div class="col-sm-5">
+        <button id="btnDispatch" type="button" class="btn btn-sm btn-primary" title="Dispatch" data-toggle="modal"><i class="fa fa-arrow-circle-right"></i> Dispatch</button>
     </div>
-    <div class="col-sm-5 input-group">
-        <select class="col-4 form-control form-control-sm" id="ddlNumberOfCopies"><option value="1">Single copy</option><option value="2" selected>Double copy</option></select>
+    <div class="col-sm-7 input-group">
+        <select class="col-3 form-control form-control-sm" id="ddlNumberOfCopies"><option value="1">Single copy</option><option value="2" selected>Double copy</option></select>
         <select class="col-3 form-control form-control-sm" id="ddlCopyOnPage"><option value="1">1 Per page</option><option value="2" selected>2 Per page</option></select>
-        <div class="col-1" style="margin-right:-25px"></div>
-        <button class="col-4 btn btn-sm btn-warning" id="btnPrintWaybill"> <i class="fa fa-print"></i> Print preview</button>
+        &nbsp;
+        <div class="form-control form-control-sm form-check-inline" style="text-transform:capitalize !important">
+            <input type="checkbox" id="chkIgnorePricingInformation" class="form-check-input" checked />
+            <label for="chkIgnorePricingInformation" class="form-check-label">Ignore price</label>
+        </div>
+        &nbsp;
+        <button class="col-4 btn btn-sm btn-warning" id="btnTrialPrintWaybill"> <i class="fa fa-print"></i> Waybill trial print</button>&nbsp;
+        <button class="col-2 btn btn-sm btn-primary" id="btnFinalPrintWaybill" style="float:right; display:none"> <i class="fa fa-print"></i> Final print</button>
     </div>
 </div>
 <div style="margin-bottom:20px;"></div>
