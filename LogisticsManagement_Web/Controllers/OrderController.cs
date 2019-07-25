@@ -169,16 +169,10 @@ namespace LogisticsManagement_Web.Controllers
                     if (orderPoco.Id < 1 && orderPoco.BillToCustomerId > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId > 0)
                     {
                         orderPoco.CreatedBy = sessionData.UserId;
-                        var orderInfo = _orderLogic.CreateNewOrder(orderPoco, orderAdditionalServices);
+                        var orderInfo = CreateDeliveryOrder(orderPoco, orderAdditionalServices); //_orderLogic.CreateNewOrder(orderPoco, orderAdditionalServices);
                         if (!string.IsNullOrEmpty(orderInfo))
                         {
-                            var jObject = JObject.Parse(orderInfo);
-                            var returnedObject = (string)jObject.SelectToken("ReturnedValue");
-
-                            if (returnedObject.Length > 0)
-                            {
-                                result = returnedObject;
-                            }
+                            result = orderInfo;
                         }
                     }
                 }
@@ -275,16 +269,10 @@ namespace LogisticsManagement_Web.Controllers
                     else if (orderPoco.OrderTypeId == 2)
                     {
                         orderPoco.CreatedBy = sessionData.UserId;
-                        var orderInfo = _orderLogic.CreateNewOrder(orderPoco, orderAdditionalServices);
+                        var orderInfo = CreateDeliveryOrder(orderPoco, orderAdditionalServices); //_orderLogic.CreateNewOrder(orderPoco, orderAdditionalServices);
                         if (!string.IsNullOrEmpty(orderInfo))
                         {
-                            var jObject = JObject.Parse(orderInfo);
-                            var returnedObject = (string)jObject.SelectToken("ReturnedValue");
-
-                            if (returnedObject.Length > 0)
-                            {
-                                result = returnedObject;
-                            }
+                            result = orderInfo;
                         }
 
                     }
@@ -730,6 +718,49 @@ namespace LogisticsManagement_Web.Controllers
                             scope.Complete();
 
                             result = "Success";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult RemoveDeliveryStatusByWaybill(string id)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (id != null)
+                {
+                    var orders = _orderLogic.GetList().Where(c => c.WayBillNumber == id).ToList();
+                    foreach (var order in orders)
+                    {
+                        var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == order.Id).FirstOrDefault();
+                        if (orderStatus != null)
+                        {
+                            using (var scope = new TransactionScope())
+                            {
+                                orderStatus.IsDelivered = null;
+                                orderStatus.DeliveredDatetime = null;
+                                orderStatus.DeliveryWaitTimeHour = null;
+                                orderStatus.ReceivedByName = null;
+                                orderStatus.ReceivedBySignature = null;
+                                orderStatus.ProofOfDeliveryNote = null;
+                                orderStatus.StatusLastUpdatedOn = DateTime.Now;
+
+                                _orderStatusLogic.Update(orderStatus);
+                                scope.Complete();
+
+                                result = "Success";
+                            }
                         }
                     }
                 }
@@ -1365,6 +1396,101 @@ namespace LogisticsManagement_Web.Controllers
             #endregion
         }
 
+        private string CreateDeliveryOrder(Lms_OrderPoco orderPoco, List<Lms_OrderAdditionalServicePoco> orderAdditionalServices)
+        {
+            string result = "";
+            string trackingNumber = "";
+            int orderId = 0;
+            string newWaybillNumber = "";
+            try
+            {
+                var waybillPrefix = "";
+
+                _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+                var configInfo = _configurationLogic.GetSingleById(1);
+
+                _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+
+                using (var scope = new TransactionScope())
+                {
+                    newWaybillNumber = orderPoco.WayBillNumber;
+
+                    if (string.IsNullOrEmpty(newWaybillNumber) || Convert.ToInt32(newWaybillNumber) < 1)
+                    {
+                        var maxWaybillNumber = _orderLogic.GetList().Select(c => c.WayBillNumber).OrderByDescending(c => c).FirstOrDefault();
+                        if (maxWaybillNumber != null)
+                        {
+                            newWaybillNumber = Convert.ToString(Convert.ToInt16(maxWaybillNumber) + 1);
+                        }
+                        else
+                        {
+                            newWaybillNumber = configInfo.DeliveryWBNoStartFrom;
+                            if (string.IsNullOrEmpty(newWaybillNumber))
+                            {
+                                newWaybillNumber = "1";
+                            }
+                        }
+
+                        waybillPrefix = configInfo.WayBillPrefix;
+                        newWaybillNumber = waybillPrefix + newWaybillNumber;
+
+                        if (orderPoco.OrderTypeId == 1)
+                        {
+                            orderPoco.WayBillNumber = newWaybillNumber;
+                        }
+                    }
+
+                    orderPoco.IsInvoiced = false;
+                    orderPoco.CreateDate = Convert.ToDateTime(DateTime.Now.ToString("dd-MMM-yyyy"));
+                    orderId = _orderLogic.Add(orderPoco).Id;
+
+                    foreach (var addService in orderAdditionalServices)
+                    {
+                        addService.OrderId = orderId;
+                        _orderAdditionalServiceLogic.Add(addService);
+                    }
+
+                    string sequecNo = DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0') + DateTime.Now.Year.ToString() + orderId.ToString();
+                    if (orderPoco.OrderTypeId == 1)
+                    {
+                        trackingNumber = "TRK01-" + sequecNo;
+                    }
+                    else if (orderPoco.OrderTypeId == 2)
+                    {
+                        trackingNumber = "TRK02-" + sequecNo;
+                    }
+
+                    Lms_OrderStatusPoco orderStatusPoco = new Lms_OrderStatusPoco();
+                    orderStatusPoco.OrderId = orderId;
+                    orderStatusPoco.TrackingNumber = trackingNumber;
+                    orderStatusPoco.StatusLastUpdatedOn = DateTime.Now;
+                    orderStatusPoco.CreateDate = orderPoco.CreateDate;
+
+                    _orderStatusLogic.Add(orderStatusPoco);
+
+                    if (orderId > 0)
+                    {
+                        scope.Complete();
+                    }
+
+                    var orderInfo = new
+                    {
+                        orderId = orderId.ToString(),
+                        waybillNumber = newWaybillNumber
+                    };
+
+                    result = JsonConvert.SerializeObject(orderInfo);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return result;
+
+        }
 
 
         private void ValidateSession()

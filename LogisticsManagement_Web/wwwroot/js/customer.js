@@ -114,12 +114,12 @@ $('#customer-list').on('click', '.btnEdit', function () {
 
     if (customerId !== '') {
         var customerInfo = GetSingleById('Customer/GetCustomerById', customerId);
-        if (customerInfo !== null && customerInfo !== undefined) {
+        if (customerInfo != null && customerInfo !== '') {
             FillCustomerInformation(JSON.parse(customerInfo));
             FillMainFormAddressByCustomer(customerId);
         }
         else {
-            bootbox.alert('The employee was not found. Please check or select from the bottom list of employees.');
+            bootbox.alert('The customer was not found. Please check and try again.');
             event.preventDefault();
             return;
         }
@@ -168,6 +168,15 @@ $('#btnNewAddress').unbind().on('click', function (event) {
     ClearAddressForm();
 });
 
+$('#txtAddressLine').unbind('keyup, keypress').on('keyup keypress', function (e) {
+    if (e.keyCode === 13) {
+        e.preventDefault();
+        var addressId = $('#txtAddressLine').val();
+        if (addressId !== '') {
+            FillAddress(addressId);
+        }
+    }
+});
 $('#txtAddressLine').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $('#txtAddressLine').val();
@@ -175,8 +184,32 @@ $('#txtAddressLine').on('input', function (event) {
         return this.value === valueSelected;
     }).data('addressid');
 
-    FillAddress(addressId);
+    if (addressId !== '') {
+        FillAddress(addressId);
+    }
 });
+
+$('#txtAddressLineForMain').unbind('keyup keypress').on('keyup keypress', function (e) {
+    if (e.keyCode === 13) {
+        e.preventDefault();
+        var addressId = $('#txtAddressLineForMain').val();
+        if (addressId !== '') {
+            FillMainFormAddress(addressId);
+        }
+    }
+});
+$('#txtAddressLineForMain').on('input', function (event) {
+    event.preventDefault();
+    var valueSelected = $('#txtAddressLineForMain').val();
+    var addressId = $('#addresses option').filter(function () {
+        return this.value === valueSelected;
+    }).data('addressid');
+
+    if (addressId !== '') {
+        FillMainFormAddress(addressId);
+    }
+});
+
 
 $('input[name=rdoAddressType]').on('change', function () {
 
@@ -208,12 +241,14 @@ $('input[name=rdoAddressTypeForMain]').on('change', function () {
             FillMainFormAddress(billingAddressId);
         } else {
             ClearMainFormAddress();
+            $('#txtAddressLineForMain').val('');
         }
     } else if (selectedValue === 2) {
         if (shippingAddressId !== '') {
             FillMainFormAddress(shippingAddressId);
         } else {
             ClearMainFormAddress();
+            $('#txtAddressLineForMain').val('');
         }
     }
     else if (selectedValue === 0) {
@@ -223,11 +258,11 @@ $('input[name=rdoAddressTypeForMain]').on('change', function () {
             FillMainFormAddress(billingAddressId);
         } else {
             ClearMainFormAddress();
+            $('#txtAddressLineForMain').val('');
         }
     }
 
 });
-
 
 $('#txtCustomerIdForAddress ').unbind('keypress').keypress(function (event) {
     if (event.keyCode === 13) {
@@ -403,8 +438,7 @@ function FillCustomerInformation(customerInfo) {
 
 function FillAddress(addressId) {
     var addressInfo = GetSingleById('Address/GetAddressById', addressId);
-
-    if (addressInfo !== null && addressInfo !== undefined) {
+    if (addressInfo !== null && addressInfo !== undefined && addressInfo !== '') {
         var address = JSON.parse(addressInfo);
         $('#hfAddressId').val(addressId);
         $('#txtAddressUnit').val(address.UnitNumber);
@@ -417,6 +451,9 @@ function FillAddress(addressId) {
         $('#txtFaxNumber').val(address.Fax);
         $('#txtPrimaryPhoneNumber').val(address.PrimaryPhoneNumber);
         $('#txtEmailAddress').val(address.EmailAddress1);
+    } else {
+        ClearAddressForm();
+        //bootbox.alert('Address not found. Please try again or select from the list.');
     }
 }
 
@@ -433,6 +470,7 @@ function FillMainFormAddressByCustomer(customerId) {
             FillMainFormAddress(shippingAddressId);
         } else {
             ClearMainFormAddress();
+            $('#txtAddressLineForMain').val('');
         }
     }
     else if (billingAddressId !== '') {
@@ -448,9 +486,7 @@ function FillMainFormAddressByCustomer(customerId) {
 }
 
 function FillMainFormAddress(addressId) {
-
     var address = GetSingleById('Address/GetAddressById', addressId);
-
     if (address != null && address !== '') {
         var addressInfo = JSON.parse(address);
         $('#hfAddressIdForMain').val(addressInfo.Id);
@@ -470,13 +506,16 @@ function FillMainFormAddress(addressId) {
             $('#chkMakeDefaultAddressForMain').prop('checked', false);
         }
         
+    } else {
+        ClearMainFormAddress();
+        //bootbox.alert('Address not found. Please try again or select from the list.');
     }
 }
 
 function ClearMainFormAddress() {
     $('#hfAddressIdForMain').val('');
     $('#txtAddressUnitForMain').val('');
-    $('#txtAddressLineForMain').val('');
+    //$('#txtAddressLineForMain').val('');
     $('#ddlCityIdForMain').val('335');
     $('#ddlProvinceIdForMain').val('7');
     $('#ddlCountryIdForMain').val('41');
@@ -489,7 +528,7 @@ function ClearMainFormAddress() {
 
 function ClearAddressForm() {
     $('#hfAddressId').val('');
-    $('#txtAddressLine').val('');
+    //$('#txtAddressLine').val('');
     $('#txtAddressUnit').val('');
     $('#ddlCityId').val('335');
     $('#ddlProvinceId').val('7');

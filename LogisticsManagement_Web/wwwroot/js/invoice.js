@@ -103,6 +103,22 @@ $('#pending-list').on('change', '#chkCheckAllOrders', function (event) {
     }
 });
 
+$('#pending-list').unbind().on('click', '.btnUndoDelivery', function (event) {
+    event.preventDefault();
+
+    var orderId = $(this).data('waybillnumber');
+    if (orderId !== '') {
+        bootbox.confirm("Delivery information related to this order will be deleted. Are you sure to proceed?", function (result) {
+            if (result === true) {
+                var status = PerformPostActionWithId('Order/RemoveDeliveryStatusByWaybill', orderId);
+                if (status.length > 0) {
+                    $('#loadPendingInvoiceDataTable').load('Invoice/PartialPendingInvoiceDataTable');
+                }
+            }
+        });
+    }
+});
+
 $('#invoiced-list').on('change', '.chkInvoiceSelected', function (event) {
     event.preventDefault();
 
@@ -310,7 +326,7 @@ $('#btnInvoiceFinalPrint').unbind().on('click', function (event) {
 
 $('#btnWaybillFinalPrint').unbind().on('click', function (event) {
     event.preventDefault();
-    
+
     var invoiceArrayString = $('#hfInvoiceArray').val();
     if (invoiceArrayString != null && invoiceArrayString !== '') {
         invoiceNumberArray = [];
@@ -354,12 +370,12 @@ $('#btnWaybillFinalPrint').unbind().on('click', function (event) {
     var isMisc = $('#chkIsMiscellaneous').is(':checked');
 
     var printOption = {
-        numberOfcopyOnEachPage: 1, 
-        numberOfcopyPerItem: 1, 
-        ignorePrice: 0, 
+        numberOfcopyOnEachPage: 1,
+        numberOfcopyPerItem: 1,
+        ignorePrice: 0,
         isMiscellaneous: isMisc === true ? 1 : 0,
         viewName: isMisc === true ? 'PrintMiscellaneousWaybill' : 'PrintDeliveryWaybill',
-        printUrl: printUrl 
+        printUrl: printUrl
     };
 
     PrintAsPdf(wbArrayForPrint, printOption);

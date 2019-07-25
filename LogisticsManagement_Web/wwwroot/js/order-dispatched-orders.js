@@ -264,9 +264,11 @@ $('.btnDeliver').unbind().on('click', function () {
     var shipperAddInfo = JSON.parse(GetSingleById('Address/GetAddressById', orderInfo.ShipperAddressId));
     var consigneeAddInfo = JSON.parse(GetSingleById('Address/GetAddressById', orderInfo.ConsigneeAddressId));
 
+    console.log(orderInfo);
 
-    $('#txtShipperInfo').val(shipperInfo.CustomerName + '\n' + shipperAddInfo.AddressLine);
-    $('#txtConsigneeInfo').val(consigneeInfo.CustomerName + '\n' + consigneeAddInfo.AddressLine);
+    //$('#lblShipperInfo').html(shipperInfo.CustomerName + '<br/>' + shipperAddInfo.AddressLine + ' &nbsp;&nbsp; // ' + orderInfo.UnitQuantity + ' ' + orderInfo.UnitTypeId + ', ' + orderInfo.SkidQuantity + ' SKD, ' + orderInfo.WeightTotal + ' ' + orderInfo.WeightScaleId);
+    $('#lblShipperInfo').html(shipperInfo.CustomerName + '<br/>' + shipperAddInfo.AddressLine);
+    $('#lblConsigneeInfo').html(consigneeInfo.CustomerName + '<br/>' + consigneeAddInfo.AddressLine);
 
     if (orderStatusInfo.PickupDatetime === null) {
         bootbox.alert('The order is not picked-up yet.');

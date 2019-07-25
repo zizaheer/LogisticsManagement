@@ -44,59 +44,61 @@
             <th>Biller name</th>
             <th>Ordered by</th>
             <th>Order cost</th>
+            <th>Undo delivery</th>
         </tr>
     </thead>
 
     <tbody>
         @foreach (var item in Model.OrderByDescending(c => c.WayBillNumber))
         {
-            <tr>
-                <td>
-                    <div class="form-check-inline">
+        <tr>
+            <td>
+                <div class="form-check-inline">
+                    <input type="checkbox" id="chkOrderSelected" name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
+                    <label class="form-check-label">@item.WayBillNumber</label>
+                </div>
+            </td>
+            <td>
+                @item.WaybillDate.ToString("dd-MMM-yy")
+            </td>
+            <td>
+                @item.CustomerReferenceNo
+            </td>
 
-                        <input type="checkbox" id="chkOrderSelected" name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
-                        <label class="form-check-label">@item.WayBillNumber</label>
-                    </div>
-                </td>
-                <td>
-                    @item.WaybillDate.ToString("dd-MMM-yy")
-                </td>
-                <td>
-                    @item.CustomerReferenceNo
-                </td>
+            <td>
+                @item.ShipperName
+            </td>
 
-                <td>
-                    @item.ShipperName
-                </td>
+            <td>
+                @item.ConsigneeName
+            </td>
 
-                <td>
-                    @item.ConsigneeName
-                </td>
+            <td>
+                @item.UnitQty @item.UnitTypeName
+            </td>
 
-                <td>
-                    @item.UnitQty @item.UnitTypeName
-                </td>
+            <td>
+                @item.SkidQty
+            </td>
 
-                <td>
-                    @item.SkidQty
-                </td>
+            <td>
+                @item.WeightTotal @item.WeightShortName
+            </td>
 
-                <td>
-                    @item.WeightTotal @item.WeightShortName
-                </td>
+            <td>
+                @item.BillerName
+            </td>
 
-                <td>
-                    @item.BillerName
-                </td>
-
-                <td>
-                    @item.OrderedBy
-                </td>
-                <td>
-                    @item.TotalOrderCost
-                </td>
-
-            </tr>
+            <td>
+                @item.OrderedBy
+            </td>
+            <td>
+                @item.TotalOrderCost
+            </td>
+            <td>
+               <button class="btn-danger smallGridIcon btnUndoDelivery" data-waybillnumber="@item.WayBillNumber" type="button"><i class="fa fa-undo"></i></button>
+            </td>
+        </tr>
         }
     </tbody>
 

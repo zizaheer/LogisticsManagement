@@ -378,7 +378,7 @@ $('#txtShipperAddressLine').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
         var addressId = $('#txtShipperAddressLine').val();
-        if (addressId != '' && addressId > 0 && addressId != null) {
+        if (addressId !== '' && addressId > 0 && addressId != null) {
             FillShipperAddress(addressId);
         }
     }
@@ -389,7 +389,7 @@ $('#txtShipperAddressLine').on('input', function (event) {
     var addressId = $('#dlShipperAddressLines option').filter(function () {
         return this.value === valueSelected;
     }).data('addressid');
-    if (addressId > 0 && addressId != '' && addressId != null) {
+    if (addressId > 0 && addressId !== '' && addressId != null) {
         FillShipperAddress(addressId);
     }
 });
@@ -719,8 +719,8 @@ function SubmitOrderForm(dataArray) {
         result = PerformPostActionWithObject('Order/Add', dataArray);
         if (result !== null) {
             parseData = JSON.parse(result);
-            $('#txtWayBillNo').val(parseData.WayBillNumber);
-            $('#hfOrderId').val(parseData.OrderId);
+            $('#txtWayBillNo').val(parseData.waybillNumber);
+            $('#hfOrderId').val(parseData.orderId);
 
             bootbox.alert('The order has been created successfully');
         }
@@ -1083,12 +1083,12 @@ function FillConsigneeAddress(addressId) {
     if (addressInfo !== '') {
         var parsedAddress = JSON.parse(addressInfo);
         if (parsedAddress != null) {
-            $('#hfConsigneeAddressId').val(consigneeAddress.Id);
-            $('#txtConsigneeAddressLine').val(consigneeAddress.AddressLine);
-            $('#txtConsigneeUnitNo').val(consigneeAddress.UnitNumber);
-            $('#ddlConsigneeCityId').val(consigneeAddress.CityId);
-            $('#ddlConsigneeProvinceId').val(consigneeAddress.ProvinceId);
-            $('#txtConsigneePostcode').val(consigneeAddress.PostCode);
+            $('#hfConsigneeAddressId').val(parsedAddress.Id);
+            $('#txtConsigneeAddressLine').val(parsedAddress.AddressLine);
+            $('#txtConsigneeUnitNo').val(parsedAddress.UnitNumber);
+            $('#ddlConsigneeCityId').val(parsedAddress.CityId);
+            $('#ddlConsigneeProvinceId').val(parsedAddress.ProvinceId);
+            $('#txtConsigneePostcode').val(parsedAddress.PostCode);
         }
     } else {
         $('#hfConsigneeAddressId').val('');

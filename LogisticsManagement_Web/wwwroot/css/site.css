@@ -59,3 +59,12 @@ input[type=number] {
 [list]::-webkit-calendar-picker-indicator {
     display: none;
 }
+
+.smallGridIcon {
+    padding: 0px;
+    width: 22px;
+    height: 16px;
+    border: 1px solid transparent;
+    text-align: center;
+    border-radius:2px;
+}

@@ -10,7 +10,7 @@
     .form-control {
         padding: 4px 4px 4px 8px;
         height: 29px;
-        text-transform:uppercase
+        text-transform: uppercase
     }
 
     .form-group {
@@ -233,7 +233,7 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-sm-4 form-group">
+                        <div class="col-sm-2 form-group">
                             <small>
                                 <b>
                                     <label for="txtWayBillNoForDeliverModal">W/B number</label>
@@ -241,24 +241,23 @@
                             </small>
                             <input class="form-control form-control-sm " placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNoForDeliverModal" type="number" name="txtWayBillNoForDeliverModal" readonly>
                         </div>
-                        <div class="col-sm-4 form-group">
+                        <div class="col-sm-5 form-group">
                             <small>
-                                <b>
-                                    <label for="txtWayBillNoForDeliverModal">Shipper</label>
-                                </b>
+                                <b><label for="lblShipperInfo">Shipper</label></b>
                             </small>
-                            <textarea id="txtShipperInfo" class="form-control form-control-sm" style="font-size:.8em" rows="3" readonly></textarea>
+                            <div>
+                                <label id="lblShipperInfo" style="font-size:.8em; text-transform:uppercase !important"></label>
+                            </div>
+
                         </div>
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtWayBillNoForDeliverModal">Consignee</label>
-                                </b>
-                            </small>
-                            <textarea id="txtConsigneeInfo" class="form-control form-control-sm" style="font-size:.8em" rows="3" readonly></textarea>
+                        <div class="col-sm-5 form-group">
+                            <small><b><label for="lblConsigneeInfo">Consignee</label></b></small>
+                            <div>
+                                <label id="lblConsigneeInfo" style="font-size:.8em; text-transform:uppercase !important"></label>
+                            </div>
                         </div>
                     </div>
-                    <hr />
+                    <hr style="margin-top:0px;margin-bottom:0px;" />
                     <div class="row">
                         <div class="col-sm-4 form-group">
                             <small>
@@ -324,17 +323,7 @@
                     </div>
 
                     <div class="row">
-
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDeliveryNote">Notes</label>
-                                </b>
-                            </small>
-                            <textarea id="txtDeliveryNote" class="form-control form-control-sm txtDeliveryNote" placeholder="Delivery note" title="Delivery note"></textarea>
-                        </div>
-
-                        <div class="col-sm-8">
+                        <div class="col-sm-6">
                             <small>
                                 <b>
                                     <label for="txtReceivedBySign">Signature </label>
@@ -342,20 +331,32 @@
                             </small>
                             <canvas id="signatureCanvas" class="card"></canvas>
                             <span style="float:left">
-                                <button type="button" class="btn btn-sm btn-secondary" id="btnOk"><i class="fa fa-check"></i> Ok </button>
-                                <button type="button" class="btn btn-sm btn-secondary" id="btnCancel"><i class="fa fa-times"></i> Cancel</button>
+                                <button type="button" class="btn btn-sm btn-secondary" id="btnOk"><i class="fa fa-check"></i> Accept signature </button>
+                                <button type="button" class="btn btn-sm btn-secondary" id="btnCancel"><i class="fa fa-times"></i> Erase signature</button>
                                 <input type="hidden" id="imgSignature" />
                             </span>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <div class="row">
+                                <small>
+                                    <b><label for="txtDeliveryNote">Notes</label></b>
+                                </small>
+                                <textarea id="txtDeliveryNote" class="form-control form-control-sm txtDeliveryNote" placeholder="Delivery note" title="Delivery note" rows="6"></textarea>
+                            </div>
+                            <div class="row" style="margin-bottom:47px">
+                            </div>
+                            <div class="row">
+                                <div class="offset-5">
+                                    <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
+                                    <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Undo delivery </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <hr />
-                    <div class="row" style="margin-bottom:80px">
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Undo delivery </button>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -688,17 +689,18 @@
                                         <div class="row mb-1">
                                             <div class="col-md-12 input-group">
                                                 <input class="col-3 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity" style="background-color:#b3ffc3">
-                                                <input class="col-3 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity" >
-                                                <select class="col-3 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId" >
+                                                <input class="col-3 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
+                                                <select class="col-3 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId">
                                                     @foreach (var item in Model.UnitTypes)
                                                     {
-                                                        if (item.Id == 2) {
+                                                        if (item.Id == 2)
+                                                        {
                                                             continue;
                                                         }
                                                         <option value="@item.Id">@item.ShortCode</option>
                                                     }
                                                 </select>
-                                                                                               
+
                                                 @*<input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces" disabled>*@
                                                 &nbsp;
                                                 <input class="col-2 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
@@ -872,7 +874,7 @@
                                                         <td>
                                                             <label id="lblGrandGstAmount" type="number" min="0" name="lblGrandGstAmount" title="GST amount">0.00</label>
                                                         </td>
-                                                        
+
                                                         <td><label id="lblGrandTotalOrderCost" type="number" min="0" name="lblGrandTotalOrderCost" title="Total order cost">0.00</label></td>
                                                         <td><label id="lblGrandAddServiceAmount" type="number" min="0" name="lblGrandAddServiceAmount" title="Total additional service cost">0.00</label></td>
                                                         <th class="bg-success">
