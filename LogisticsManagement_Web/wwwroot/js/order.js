@@ -36,16 +36,16 @@ var isCustomerTaxApplicable = false;
 var selectedAdditionalServiceArray = [];
 var selectedOrdersForDispatch = [];
 
-$('#chkCheckAllOrders').prop('checked', true);
-$('.chkDispatchToEmployee').prop('checked', true);
-var wbArrayString = $('#hfWaybillArray').val();
-selectedOrdersForDispatch = [];
-var wbArray = wbArrayString.split(',');
-$.each(wbArray, function (i, item) {
-    if (item !== '') {
-        selectedOrdersForDispatch.push(parseInt(item));
-    }
-});
+//$('#chkCheckAllOrders').prop('checked', true);
+//$('.chkDispatchToEmployee').prop('checked', true);
+//var wbArrayString = $('#hfWaybillArray').val();
+//selectedOrdersForDispatch = [];
+//var wbArray = wbArrayString.split(',');
+//$.each(wbArray, function (i, item) {
+//    if (item !== '') {
+//        selectedOrdersForDispatch.push(parseInt(item));
+//    }
+//});
 
 
 //#endregion
@@ -162,8 +162,8 @@ $('input[name=chkIsReturnOrder]').change(function () {
     $('#lblOrderTypeText').text('This is a return order.');
 });
 
-$('#txtBillToCustomerName').keypress(function (event) {
-    if (event.keyCode === 13) {
+$('#txtBillToCustomerName').on('keydown', function (event) {
+    if (event.keyCode === 13 || event.keyCode === 9) {
         event.preventDefault();
         var billerCustomerId = $('#txtBillToCustomerName').val();
         if (billerCustomerId > 0) {
@@ -208,8 +208,8 @@ $('#txtBillToCustomerName').on('input', function (event) {
 
 });
 
-$('#txtShipperCustomerName').keypress(function (event) {
-    if (event.keyCode === 13) {
+$('#txtShipperCustomerName').on('keydown', function (event) {
+    if (event.keyCode === 13 || event.keyCode === 9) {
         event.preventDefault();
         var shipperCustomerId = $('#txtShipperCustomerName').val();
         if (shipperCustomerId > 0) {
@@ -253,8 +253,8 @@ $('#txtShipperCustomerName').on('input', function (event) {
     }
 });
 
-$('#txtConsigneeCustomerName').keypress(function (event) {
-    if (event.keyCode === 13) {
+$('#txtConsigneeCustomerName').on('keydown', function (event) {
+    if (event.keyCode === 13 || event.keyCode === 9) {
         event.preventDefault();
         var consigneeCustomerId = $('#txtConsigneeCustomerName').val();
         if (consigneeCustomerId > 0) {
@@ -385,6 +385,8 @@ $('#txtShipperAddressLine').on('input', function (event) {
     }).data('addressid');
     if (addressId > 0 && addressId !== '' && addressId != null) {
         FillShipperAddress(addressId);
+    } else {
+        $('#hfShipperAddressId').val('');
     }
 });
 
@@ -405,6 +407,8 @@ $('#txtConsigneeAddressLine').on('input', function (event) {
     }).data('addressid');
     if (addressId > 0 && addressId != '' && addressId != null) {
         FillConsigneeAddress(addressId);
+    } else {
+        $('#hfConsigneeAddressId').val('');
     }
 });
 
@@ -796,13 +800,13 @@ function ValidateOrderForm(formData) {
         }
     }
 
-    var calculateByUnit = $('#chkIsCalculateByUnit').is(':checked');
-    if (calculateByUnit === false) {
-        if (formData.skidQuantity < 1) {
-            bootbox.alert('You selected the tariff to be calculated by skids; please enter Skid quantity in "Skids" field');
-            return false;
-        }
-    }
+    //var calculateByUnit = $('#chkIsCalculateByUnit').is(':checked');
+    //if (calculateByUnit === false) {
+    //    if (formData.skidQuantity < 1) {
+    //        bootbox.alert('You selected the tariff to be calculated by skids; please enter Skid quantity in "Skids" field');
+    //        return false;
+    //    }
+    //}
 
     if (formData.totalOrderCost <= 0) {
         bootbox.alert('Total order cost must be greater than zero. Please check your entry and try again.');
@@ -1384,7 +1388,6 @@ function FillOrderDetails(orderRelatedData) {
             }
         }
 
-
         $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(orderRelatedData.ScheduledPickupDate));
 
         $('#ddlDeliveryOptionId').val(orderRelatedData.DeliveryOptionId);
@@ -1423,8 +1426,6 @@ function FillOrderDetails(orderRelatedData) {
         $('#txtCommentsForWayBill').val(orderRelatedData.CommentsForWayBill);
         $('#chkIsPrintOnInvoice').val('checked', orderRelatedData.IsPrintedOnInvoice);
         $('#txtCommentsForInvoice').val(orderRelatedData.CommentsForInvoice);
-
-
 
         if (orderRelatedData.OrderBasicCost > 0) {
             $('#txtBaseOrderCost').val(orderRelatedData.OrderBasicCost.toFixed(2));
@@ -1605,11 +1606,11 @@ function GetFormData() {
         unitTypeId: parseInt($('#ddlUnitTypeId').val()),
         weightScaleId: parseInt($('#ddlWeightScaleId').val()),
         weightTotal: $('#txtWeightTotal').val() === "" ? null : $('#txtWeightTotal').val(),
-        unitQuantity: $('#txtUnitQuantity').val() === "" ? 0 : parseInt($('#txtUnitQuantity').val()),
-        skidQuantity: $('#txtSkidQuantity').val() === "" ? 0 : parseInt($('#txtSkidQuantity').val()),
-        totalPieces: $('#txtTotalPieces').val() === "" ? 0 : parseInt($('#txtTotalPieces').val()),
+        unitQuantity: $('#txtUnitQuantity').val() === "" ? null : parseInt($('#txtUnitQuantity').val()),
+        skidQuantity: $('#txtSkidQuantity').val() === "" ? null : parseInt($('#txtSkidQuantity').val()),
+        totalPieces: $('#txtTotalPieces').val() === "" ? null : parseInt($('#txtTotalPieces').val()),
 
-        orderBasicCost: $('#txtBaseOrderCost').val() === "" ? null : parseFloat($('#txtBaseOrderCost').val()),
+        orderBasicCost: $('#txtBaseOrderCost').val() === "" ? 0 : parseFloat($('#txtBaseOrderCost').val()),
         basicCostOverriden: $('#txtOverriddenOrderCost').val() === "" ? null : parseFloat($('#txtOverriddenOrderCost').val()),
         fuelSurchargePercentage: $('#txtFuelSurchargePercent').val() === "" ? null : parseFloat($('#txtFuelSurchargePercent').val()),
         discountPercentOnOrderCost: $('#txtDiscountPercent').val() === "" ? null : parseFloat($('#txtDiscountPercent').val()),
