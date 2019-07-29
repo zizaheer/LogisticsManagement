@@ -23,16 +23,16 @@ $(document).ready(function () {
 var selectedAdditionalServiceArray = [];
 var selectedOrdersForPrint = [];
 
-$('#chkCheckAllOrders').prop('checked', true);
-$('.chkWaybillNumber').prop('checked', true);
-var wbArrayString = $('#hfWaybillArray').val();
-selectedOrdersForPrint = [];
-var wbArray = wbArrayString.split(',');
-$.each(wbArray, function (i, item) {
-    if (item !== '') {
-        selectedOrdersForPrint.push(parseInt(item));
-    }
-});
+//$('#chkCheckAllOrders').prop('checked', true);
+//$('.chkWaybillNumber').prop('checked', true);
+//var wbArrayString = $('#hfWaybillArray').val();
+//selectedOrdersForPrint = [];
+//var wbArray = wbArrayString.split(',');
+//$.each(wbArray, function (i, item) {
+//    if (item !== '') {
+//        selectedOrdersForPrint.push(parseInt(item));
+//    }
+//});
 
 
 //#endregion
