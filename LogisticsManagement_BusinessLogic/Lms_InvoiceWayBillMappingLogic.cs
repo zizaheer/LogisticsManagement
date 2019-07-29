@@ -62,8 +62,6 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_InvoiceWayBillMappingPoco Add(Lms_InvoiceWayBillMappingPoco poco)
         {
-            poco.PaymentDate = Convert.ToDateTime(poco.PaymentDate);
-
             var addedPoco = base.Add(poco);
             _cache.Remove(App_CacheKeys.InvoiceWayBillMappings);
 
@@ -73,7 +71,6 @@ namespace LogisticsManagement_BusinessLogic
         public override Lms_InvoiceWayBillMappingPoco Update(Lms_InvoiceWayBillMappingPoco poco)
         {
 
-            poco.PaymentDate = Convert.ToDateTime(poco.PaymentDate);
             var updatedPoco = base.Update(poco);
             _cache.Remove(App_CacheKeys.InvoiceWayBillMappings);
 

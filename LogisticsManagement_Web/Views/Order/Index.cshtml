@@ -245,15 +245,15 @@
                             <small>
                                 <b><label for="lblShipperInfo">Shipper</label></b>
                             </small>
-                            <div>
-                                <label id="lblShipperInfo" style="font-size:.8em; text-transform:uppercase !important"></label>
+                            <div style="background-color:#c6ebf7">
+                                <label id="lblShipperInfo" style="font-size:.8em; text-transform:uppercase !important;margin-bottom:0px !important; padding-left:5px"></label>
                             </div>
 
                         </div>
                         <div class="col-sm-5 form-group">
                             <small><b><label for="lblConsigneeInfo">Consignee</label></b></small>
-                            <div>
-                                <label id="lblConsigneeInfo" style="font-size:.8em; text-transform:uppercase !important"></label>
+                            <div style="background-color:#c6ebf7">
+                                <label id="lblConsigneeInfo" style="font-size:.8em; text-transform:uppercase !important;margin-bottom:0px !important; padding-left:5px"></label>
                             </div>
                         </div>
                     </div>
@@ -349,7 +349,7 @@
                             <div class="row">
                                 <div class="offset-5">
                                     <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
-                                    <button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Undo delivery </button>
+                                    @*<button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Undo delivery </button>*@
                                 </div>
                             </div>
                         </div>
@@ -423,58 +423,6 @@
 
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-10">
-        <h4>
-            @ViewData["Title"]
-        </h4>
-    </div>
-    <div class="col-sm-2">
-        <button id="btnNewOrder" type="button" class="btn btn-sm btn-danger form-control" title="Create a new order" data-toggle="modal"><i class="fa fa-plus-circle"></i> New Order </button>
-    </div>
-</div>
-
-<hr />
-
-<div class="row">
-    <div class="col-md-12">
-        <div style="display:block; height:272px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; font-size:.7em; background-color:#022f67" id="loadDispatchedOrders">
-            <partial name="_PartialViewDispatchedOrders" />
-        </div>
-    </div>
-</div>
-
-<hr />
-<div class="row">
-    <div class="col-md-12" style="margin-top:20px">
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-5">
-        <button id="btnDispatch" type="button" class="btn btn-sm btn-primary" title="Dispatch" data-toggle="modal"><i class="fa fa-arrow-circle-right"></i> Dispatch</button>
-    </div>
-    <div class="col-sm-7 input-group">
-        <select class="col-3 form-control form-control-sm" id="ddlNumberOfCopies"><option value="1">Single copy</option><option value="2" selected>Double copy</option></select>
-        <select class="col-3 form-control form-control-sm" id="ddlCopyOnPage"><option value="1">1 Per page</option><option value="2" selected>2 Per page</option></select>
-        &nbsp;
-        <div class="form-control form-control-sm form-check-inline" style="text-transform:capitalize !important">
-            <input type="checkbox" id="chkIgnorePricingInformation" class="form-check-input" checked />
-            <label for="chkIgnorePricingInformation" class="form-check-label">Ignore price</label>
-        </div>
-        &nbsp;
-        <button class="col-4 btn btn-sm btn-warning" id="btnTrialPrintWaybill"> <i class="fa fa-print"></i> Waybill trial print</button>&nbsp;
-        <button class="col-2 btn btn-sm btn-primary" id="btnFinalPrintWaybill" style="float:right; display:none"> <i class="fa fa-print"></i> Final print</button>
-    </div>
-</div>
-<div style="margin-bottom:20px;"></div>
-<div class="row">
-    <div class="col-md-12">
-        <div style="display:block; max-height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadOrdersToBeDispatched">
-            <partial name="_PartialViewOrderData" />
         </div>
     </div>
 </div>
@@ -916,16 +864,76 @@
             </div>
         </div>
     </div>
-
     <!-- Modal - New Order -->
 </form>
+
+
+<div class="row">
+    <div class="col-sm-7">
+        <h4>
+            @ViewData["Title"]
+        </h4>
+    </div>
+    <div class="col-sm-3">
+        <div class="input-group">
+            <input type="text" id="txtInvoicedOrderNumber" placeholder="Enter invoiced order" class="col-8 form-control form-control-sm" />
+            <button id="btnExistingInvoicedOrder" type="button" class="btn btn-sm btn-secondary" data-toggle="modal"><i class="fa fa-edit"></i> Modify</button>
+        </div>
+        
+    </div>
+    <div class="col-sm-2">
+        <button id="btnNewOrder" type="button" class="btn btn-sm btn-danger form-control" title="Create a new order" data-toggle="modal"><i class="fa fa-plus-circle"></i> New Order </button>
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <div style="display:block; height:272px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; font-size:.7em; background-color:#022f67" id="loadDispatchedOrders">
+            <partial name="_PartialViewDispatchedOrders" />
+        </div>
+    </div>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-md-12" style="margin-top:20px">
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-5">
+        <button id="btnDispatch" type="button" class="btn btn-sm btn-primary" title="Dispatch" data-toggle="modal"><i class="fa fa-arrow-circle-right"></i> Dispatch</button>
+    </div>
+    <div class="col-sm-7 input-group">
+        <select class="col-3 form-control form-control-sm" id="ddlNumberOfCopies"><option value="1">Single copy</option><option value="2" selected>Double copy</option></select>
+        <select class="col-3 form-control form-control-sm" id="ddlCopyOnPage"><option value="1">1 Per page</option><option value="2" selected>2 Per page</option></select>
+        &nbsp;
+        <div class="form-control form-control-sm form-check-inline" style="text-transform:capitalize !important">
+            <input type="checkbox" id="chkIgnorePricingInformation" class="form-check-input" checked />
+            <label for="chkIgnorePricingInformation" class="form-check-label">Ignore price</label>
+        </div>
+        &nbsp;
+        <button class="col-4 btn btn-sm btn-warning" id="btnTrialPrintWaybill"> <i class="fa fa-print"></i> Waybill trial print</button>&nbsp;
+        <button class="col-2 btn btn-sm btn-primary" id="btnFinalPrintWaybill" style="float:right; display:none"> <i class="fa fa-print"></i> Final print</button>
+    </div>
+</div>
+<div style="margin-bottom:20px;"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div style="display:block; max-height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadOrdersToBeDispatched">
+            <partial name="_PartialViewOrderData" />
+        </div>
+    </div>
+</div>
+
 
 
 
 
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
-<script src="~/js/order.js"></script>
+@*<script src="~/js/order.js"></script>*@
 
 
 

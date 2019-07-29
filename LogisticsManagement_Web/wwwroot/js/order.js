@@ -69,12 +69,6 @@ $('#btnNewOrder').unbind().on('click', function () {
         });
     }
 
-
-
-
-
-
-
     $('#newOrder').modal({
         backdrop: 'static',
         keyboard: false
@@ -725,11 +719,10 @@ function SubmitOrderForm(dataArray) {
             bootbox.alert('The order has been created successfully');
         }
     }
-    selectedAdditionalServiceArray = null;
+    //selectedAdditionalServiceArray = null;
     selectedAdditionalServiceArray = [];
     $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
     $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-
 
     ClearForm();
     $('#frmOrderForm').trigger('reset');
@@ -901,6 +894,27 @@ $('#order-list').on('click', '.btnEdit', function (event) {
 
 });
 
+
+$('#btnExistingInvoicedOrder').unbind().on('click', function () {
+    event.preventDefault();
+
+    var orderId = $('#txtInvoicedOrderNumber').val();
+    if (orderId !== '') {
+        ClearForm();
+        $('#frmOrderForm').trigger('reset');
+
+        GetAndFillOrderDetailsByWayBillNumber(orderId, 1);
+
+        $('#newOrder').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#newOrder').modal('show');
+    }
+
+});
+
+
 $('#order-list').on('change', '#chkCheckAllOrders', function (event) {
     event.preventDefault();
 
@@ -976,7 +990,7 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, orderTypeId) {
         return item.OrderTypeId === orderTypeId;
     })[0];
 
-    if (orderData !== null && orderData !== undefined && orderData != '') {
+    if (orderData !== null && orderData !== undefined && orderData !== '') {
         $('#hfOrderId').val(orderData.Id);
         $('#hfBillerCustomerId').val(orderData.BillToCustomerId);
 
@@ -1075,7 +1089,7 @@ function FillShipperAddress(addressId) {
         $('#txtShipperPostcode').val('');
         bootbox.alert('Shipper address not found. Please try again.');
     }
-    
+
 }
 
 function FillConsigneeAddress(addressId) {

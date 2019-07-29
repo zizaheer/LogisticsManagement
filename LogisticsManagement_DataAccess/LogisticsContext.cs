@@ -48,6 +48,7 @@ namespace LogisticsManagement_DataAccess
         public DbSet<Lms_EmployeeTypePoco> lmsEmployeeTypePocos { get; set; }
         public DbSet<Lms_EmployeeVehicleMappingPoco> lmsEmployeeVehicleMappingPocos { get; set; }
         public DbSet<Lms_InvoicePoco> lmsInvoicePocos { get; set; }
+        public DbSet<Lms_InvoicePaymentCollectionPoco> lmsInvoicePaymentCollectionPocos { get; set; }
         public DbSet<Lms_InvoiceStorageOrderMappingPoco> lmsInvoiceStorageOrderMappingPocos { get; set; }
         public DbSet<Lms_InvoiceWayBillMappingPoco> lmsInvoiceWayBillMappingPocos { get; set; }
         public DbSet<Lms_OrderPoco> lmsOrderPocos { get; set; }

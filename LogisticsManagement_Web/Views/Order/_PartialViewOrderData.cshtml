@@ -69,16 +69,18 @@
                 </td>
                 <td>
                     @{
-                        if (item.UnitTypeId == 2)
+                        if (item.SkidQuantity > 0)
                         {
-                            @item.SkidQuantity;
+                            @item.SkidQuantity;<span> (SKD);</span>
                         }
-                        else
+
+                        if (item.UnitQuantity > 0)
                         {
-                            @item.UnitQuantity;
+                            <span>
+                                @item.UnitQuantity (@item.UnitTypeName)
+                            </span>
                         }
                     }
-                    (@item.UnitTypeName)
                 </td>
                 <td>
                     @item.SpcIns
@@ -102,4 +104,5 @@
 
     </tbody>
 </table>
+
 <script src="~/js/order.js"></script>

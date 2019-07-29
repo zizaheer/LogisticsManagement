@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using LogisticsManagement_BusinessLogic;
 using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
@@ -20,8 +21,12 @@ namespace LogisticsManagement_Web.Controllers
         private App_CityLogic _cityLogic;
         private App_ProvinceLogic _provinceLogic;
         private App_CountryLogic _countryLogic;
+        private Lms_CustomerAddressMappingLogic _customerAddressLogic;
+        private Lms_ChartOfAccountLogic _chartOfAccountLogic;
+        private Lms_ConfigurationLogic _configurationLogic;
 
         private readonly LogisticsContext _dbContext;
+
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
 
@@ -80,16 +85,42 @@ namespace LogisticsManagement_Web.Controllers
 
                     if (employeePoco.Id < 1 && employeePoco.FirstName.Trim() != string.Empty)
                     {
-                        employeePoco.CreatedBy = sessionData.UserId;
-                        var employeeId = _employeeLogic.CreateNewEmployee(employeePoco, (int)sessionData.BranchId);
-                        if (!string.IsNullOrEmpty(employeeId))
+
+                        _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+                        _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
+
+                        var parentGLForEmployeeAccount = _configurationLogic.GetSingleById(1).ParentGLForEmployeeAccount;
+                        var accounts = _chartOfAccountLogic.GetList().Where(c => c.ParentGLCode == parentGLForEmployeeAccount).ToList();
+                        var newAccountId = accounts.Max(c => c.Id) + 1;
+                        var newEmployeeId = _employeeLogic.GetMaxId() + 1;
+
+                        using (var scope = new TransactionScope())
                         {
-                            var jObject = JObject.Parse(employeeId);
-                            var returnedObject = (string)jObject.SelectToken("ReturnedValue");
-                            result = (string)JObject.Parse(returnedObject).SelectToken("EmployeeId");
-                            if (result.Length > 0)
+                            Lms_ChartOfAccountPoco accountPoco = new Lms_ChartOfAccountPoco();
+                            accountPoco.Id = newAccountId;
+                            accountPoco.ParentGLCode = parentGLForEmployeeAccount;
+                            accountPoco.AccountName = employeePoco.FirstName + employeePoco.LastName;
+                            accountPoco.BranchId = sessionData.BranchId == null ? 1 : (int)sessionData.BranchId;
+                            accountPoco.CurrentBalance = 0;
+                            accountPoco.IsActive = true;
+                            accountPoco.Remarks = "Employee Account Payable";
+                            accountPoco.CreateDate = DateTime.Now;
+                            accountPoco.CreatedBy = sessionData.UserId;
+
+                            var addedAcc = _chartOfAccountLogic.Add(accountPoco);
+                            if (addedAcc.Id > 0)
                             {
-                                result = Convert.ToInt32(result) < 1 ? "" : result;
+                                employeePoco.Id = newEmployeeId;
+                                employeePoco.AccountId = addedAcc.Id;
+                                employeePoco.CreateDate = DateTime.Now;
+                                employeePoco.CreatedBy = sessionData.UserId;
+                                var employeeId = _employeeLogic.Add(employeePoco).Id;
+
+                                if (employeeId > 0)
+                                {
+                                    scope.Complete();
+                                    result = employeeId.ToString();
+                                }
                             }
                         }
                     }

@@ -128,6 +128,7 @@ $('#frmEmployeeForm').on('keyup keypress', function (e) {
 });
 
 $('#frmEmployeeForm').unbind('submit').submit(function (event) {
+    event.preventDefault();
     var dataArray = GetFormData();
     console.log(dataArray[0].id);
     if (dataArray[0].id > 0) {
@@ -136,7 +137,7 @@ $('#frmEmployeeForm').unbind('submit').submit(function (event) {
     else {
         PerformPostActionWithObject('Employee/Add', dataArray);
     }
-    event.preventDefault();
+    
     $('#loadDataTable').load('Employee/PartialViewDataTable');
 });
 

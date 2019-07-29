@@ -17,17 +17,6 @@ namespace LogisticsManagement_Poco
         public string WayBillNumber { get; set; }
         //public int OrderId { get; set; }
         public decimal TotalWayBillAmount { get; set; }
-        public decimal? PaidAmount { get; set; }
-        public decimal? WaivedAmount { get; set; }
-        public decimal? DiscountAmount { get; set; }
-        public int? PaymentMethodId { get; set; }
-        public DateTime? PaymentDate { get; set; }
-        public int? TransactionId { get; set; }
-        public decimal? CashAmount { get; set; }
-        public decimal? ChequeAmount { get; set; }
-        public string ChequeNo { get; set; }
-        public DateTime? ChequeDate { get; set; }
-        public int? BankId { get; set; }
-        public string Remarks { get; set; }
+        public bool IsClear { get; set; }
     }
 }

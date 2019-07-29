@@ -169,7 +169,7 @@ namespace LogisticsManagement_Web.Controllers
                     if (orderPoco.Id < 1 && orderPoco.BillToCustomerId > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId > 0)
                     {
                         orderPoco.CreatedBy = sessionData.UserId;
-                        var orderInfo = CreateDeliveryOrder(orderPoco, orderAdditionalServices); //_orderLogic.CreateNewOrder(orderPoco, orderAdditionalServices);
+                        var orderInfo = CreateDeliveryOrder(orderPoco, orderAdditionalServices); 
                         if (!string.IsNullOrEmpty(orderInfo))
                         {
                             result = orderInfo;
@@ -269,7 +269,7 @@ namespace LogisticsManagement_Web.Controllers
                     else if (orderPoco.OrderTypeId == 2)
                     {
                         orderPoco.CreatedBy = sessionData.UserId;
-                        var orderInfo = CreateDeliveryOrder(orderPoco, orderAdditionalServices); //_orderLogic.CreateNewOrder(orderPoco, orderAdditionalServices);
+                        var orderInfo = CreateDeliveryOrder(orderPoco, orderAdditionalServices); 
                         if (!string.IsNullOrEmpty(orderInfo))
                         {
                             result = orderInfo;

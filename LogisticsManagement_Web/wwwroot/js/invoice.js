@@ -668,6 +668,7 @@ $('#btnMakePayment').unbind().on('click', function (event) {
     var data = {
         invoiceNo: $('#txtInvoiceNo').val() === '' ? 0 : parseInt($('#txtInvoiceNo').val()),
         billerCustomerId: $('#lblCustomerNo').text() === '' ? 0 : parseInt($('#lblCustomerNo').text()),
+        paymentMethodId: $('#ddlPaymentMethodId').text() === '' ? 0 : parseInt($('#ddlPaymentMethodId').text()),
         paymentAmount: $('#txtPaymentApplied').val() === '' ? 0 : parseFloat($('#txtPaymentApplied').val()),
         ddlBankId: $('#ddlBankId').val() === '0' ? 0 : parseInt($('#ddlBankId').val()),
         chequeNo: $('#txtChequeNo').val(),
