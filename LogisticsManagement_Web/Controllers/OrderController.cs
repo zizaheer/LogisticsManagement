@@ -174,7 +174,7 @@ namespace LogisticsManagement_Web.Controllers
                     if (orderPoco.Id < 1 && orderPoco.BillToCustomerId > 0 && orderPoco.ShipperCustomerId > 0 && orderPoco.ConsigneeCustomerId > 0)
                     {
                         orderPoco.CreatedBy = sessionData.UserId;
-                        var orderInfo = CreateDeliveryOrder(orderPoco, orderAdditionalServices); 
+                        var orderInfo = CreateDeliveryOrder(orderPoco, orderAdditionalServices);
                         if (!string.IsNullOrEmpty(orderInfo))
                         {
                             result = orderInfo;
@@ -274,7 +274,7 @@ namespace LogisticsManagement_Web.Controllers
                     else if (orderPoco.OrderTypeId == 2)
                     {
                         orderPoco.CreatedBy = sessionData.UserId;
-                        var orderInfo = CreateDeliveryOrder(orderPoco, orderAdditionalServices); 
+                        var orderInfo = CreateDeliveryOrder(orderPoco, orderAdditionalServices);
                         if (!string.IsNullOrEmpty(orderInfo))
                         {
                             result = orderInfo;
@@ -884,6 +884,47 @@ namespace LogisticsManagement_Web.Controllers
             {
                 return Json("");
             }
+        }
+
+        public JsonResult GetReleaseStatusByOrderId(string id)
+        {
+            ValidateSession();
+            string result = "";
+
+            try
+            {
+                if (id != "")
+                {
+                    var orderId = _orderLogic.GetList().Where(c => c.WayBillNumber == id).FirstOrDefault().WayBillNumber;
+
+                    if (!string.IsNullOrEmpty(orderId))
+                    {
+                        var _invoiceMappingLogic = new Lms_InvoiceWayBillMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_InvoiceWayBillMappingPoco>(_dbContext));
+                        var waybillInfo = _invoiceMappingLogic.GetList().Where(c => c.WayBillNumber == orderId).FirstOrDefault();
+
+                        if (waybillInfo != null)
+                        {
+                            if (waybillInfo.TotalWayBillAmount == 0)
+                            {
+                                result = "Released";
+                            }
+                            else {
+                                result = "";
+                            }
+                        }
+                        else
+                        {
+                            result = "Released"; // given the option to modify not-invoiced order also.
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return Json(result);
         }
 
         public JsonResult GetOrderStatusByOrderId(string id)

@@ -13,17 +13,16 @@ namespace LogisticsManagement_Poco
         [Column("PaymentId")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int PayrollGenerationId { get; set; }
         public int EmployeeId { get; set; }
-        public decimal TotalEarnings { get; set; }
-        public decimal? LoanDeduction { get; set; }
-        public decimal? InsuranceDeduction { get; set; }
-        public decimal? RadioInsuranceDeduction { get; set; }
-        public decimal? OtherDeduction { get; set; }
-        public decimal? BonusAmount { get; set; }
-        public decimal TotalToPay { get; set; }
-        public decimal PaidAmount { get; set; }
-        public DateTime CreateDate { get; set; }
-        public int CreatedBy { get; set; }
+        public decimal PaymentAmount { get; set; }
+        public int PaymentMethodId { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public int TransactionId { get; set; }
+        public decimal? CashAmount { get; set; }
+        public decimal? ChequeAmount { get; set; }
+        public string ChequeNo { get; set; }
+        public DateTime? ChequeDate { get; set; }
+        public int? BankId { get; set; }
+        public string Remarks { get; set; }
     }
 }

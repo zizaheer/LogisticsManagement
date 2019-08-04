@@ -8,13 +8,10 @@
             $('#employee-list').DataTable().destroy();
         }
         $('#employee-list').DataTable({
-            "order": [[0, "desc"]],
+            "order": [[0, "asc"]],
             "paging": false,
-            "language": {
-                searchPlaceholder: 'Search...',
-                search: "<i class='fa fa-search'></i>",
-
-            }
+            "lengthChange": false,
+            searching: false
         });
     });
 </script>
@@ -23,8 +20,8 @@
     <div class="col-sm-12">
         <table id="employee-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
             <thead>
-                <tr>
-                    <th>Number</th>
+                <tr style="background-color:#ebffad">
+                    <th>Emp #</th>
                     <th>First name</th>
                     <th>Last name</th>
                     <th>License#</th>
@@ -38,7 +35,11 @@
                 {
                     <tr>
                         <td>
-                            @item.Id
+                            <div class="form-check-inline">
+                                <input type="checkbox" name="chkSelectedEmployee" class="form-check-input chkSelectedEmployee" data-employeeid='@item.Id' />
+                                <label class="form-check-label">@item.Id</label>
+                            </div>
+                           
                         </td>
                         <td>
                             @item.FirstName

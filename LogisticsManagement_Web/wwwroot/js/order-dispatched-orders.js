@@ -71,7 +71,7 @@ $('.btnPickup').unbind().on('click', function () {
             backdrop: 'static',
             keyboard: false
         });
-
+        $('#orderPickup').draggable();
         $('#orderPickup').modal('show');
     }
     else {
@@ -180,7 +180,7 @@ $('.btnPasson').unbind().on('click', function (event) {
             backdrop: 'static',
             keyboard: false
         });
-
+        $('#orderPassOn').draggable();
         $('#orderPassOn').modal('show');
     }
     else {
@@ -313,7 +313,7 @@ $('.btnDeliver').unbind().on('click', function () {
             backdrop: 'static',
             keyboard: false
         });
-
+        $('#orderDeliver').draggable();
         $('#orderDeliver').modal('show');
     }
     else {
@@ -405,6 +405,7 @@ $('.btnEdit').on('click', function (event) {
         backdrop: 'static',
         keyboard: false
     });
+    $('#newOrder').draggable();
     $('#newOrder').modal('show');
 
 });

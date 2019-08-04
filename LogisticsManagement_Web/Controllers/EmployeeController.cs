@@ -54,7 +54,7 @@ namespace LogisticsManagement_Web.Controllers
             return PartialView("_PartialViewEmployeeData", GetEmployeeData());
         }
 
-        private ViewModel_Employee GetEmployeeData()
+        public ViewModel_Employee GetEmployeeData()
         {
             ViewModel_Employee employeeViewModel = new ViewModel_Employee();
             employeeViewModel.Employees = _employeeLogic.GetList();
@@ -219,12 +219,11 @@ namespace LogisticsManagement_Web.Controllers
             if (!string.IsNullOrEmpty(id))
             {
                 var employee = _employeeLogic.GetSingleById(Convert.ToInt32(id));
-                return Json(JsonConvert.SerializeObject(employee));
+                if (employee != null) {
+                    return Json(JsonConvert.SerializeObject(employee));
+                }
             }
-            else
-            {
-                return Json(string.Empty);
-            }
+            return Json(string.Empty);
         }
 
         private void ValidateSession()

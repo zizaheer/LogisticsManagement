@@ -591,7 +591,8 @@ namespace LogisticsManagement_Web.Controllers
             }
             catch (Exception ex)
             {
-                return null;
+                throw ex;
+                //return null;
             }
             //return View();
         }

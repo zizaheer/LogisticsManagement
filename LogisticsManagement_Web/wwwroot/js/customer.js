@@ -158,6 +158,7 @@ $('#btnAddAddress').unbind().on('click', function (event) {
             backdrop: 'static',
             keyboard: false
         });
+        $('#addAddress').draggable();
         $('#addAddress').modal('show');
         $('#loadAddressDataTable').load('Customer/LoadCustomerAddressData/' + customerId);
     }

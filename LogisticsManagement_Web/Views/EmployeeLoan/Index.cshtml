@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Loan";
+}
+
+<style>
+    .addressBox {
+        margin-left: 8px !important;
+        margin-bottom: 8px !important;
+    }
+</style>
+
+
+<h3>
+    @ViewData["Title"]
+</h3>
+<hr style="margin-bottom:40px" />
+
+
+
+<form id="frmLoanForm">
+    <div class="row">
+        <div class="col-sm-12 form-group">
+            <input type="hidden" id="hfEmployeeLoanId" />
+            <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Employee id" style="font-family:Arial, FontAwesome" id="txtEmployeeIdForLoan" type="number" min="1" name="txtEmployeeIdForLoan">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-6">
+            <label for="txtEmployeeName" class="form-group">Employee name</label>
+            <input class="form-control form-control-sm" id="txtEmployeeName" placeholder="Name" type="text" name="txtEmployeeName" title="Employee name" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-3">
+            <label for="txtTotalBorrowedAmnt" class="form-group">Total borrowed</label>
+            <input class="form-control form-control-sm" id="txtTotalBorrowedAmnt" placeholder="Amount" type="number" step=".01" name="txtTotalBorrowedAmnt" readonly />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtTotalPaidAmnt" class="form-group">Total paid</label>
+            <input class="form-control form-control-sm" id="txtTotalPaidAmnt" placeholder="Amount" type="number" step=".01" name="txtTotalPaidAmnt" readonly />
+        </div>
+        <div class="form-group col-sm-2">
+            <label for="txtTotalDueAmnt" class="form-group">Total due</label>
+            <input class="form-control form-control-sm" id="txtTotalDueAmnt" placeholder="Amount" type="number" step=".01" name="txtTotalDueAmnt" readonly />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-3">
+            <label for="txtNewSanctionAmnt" class="form-group">New amount</label>
+            <input class="form-control form-control-sm" id="txtNewSanctionAmnt" placeholder="Amount" type="number" step=".01" name="txtNewSanctionAmnt" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtDateTaken" class="form-group">Date taken</label>
+            <input class="form-control form-control-sm" id="txtDateTaken" placeholder="Amount" type="date" name="txtDateTaken" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtLoanRemarks" class="form-group">Remarks</label>
+            <input class="form-control form-control-sm" id="txtLoanRemarks" placeholder="Remarks" name="txtLoanRemarks" />
+        </div>
+    </div>
+
+    <hr />
+    <button type="reset" class="col-1 btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
+    <button type="submit" class="col-1 btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
+
+</form>
+
+
+<div class="row">
+    <div class="col-md-12 input-group" style="margin-top:40px">
+        <h3>Existing employee loans</h3>
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-sm-12">
+        <div style="display: block; max-height: 240px; min-height: 80px; padding:10px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadEmployeeWithLoans">
+            <partial name="_PartialViewEmployeeLoans" />
+        </div>
+    </div>
+
+</div>
+
+<script src="~/js/employee-loan.js"></script>

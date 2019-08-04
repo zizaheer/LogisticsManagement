@@ -72,8 +72,17 @@ namespace LogisticsManagement_DataAccess
 
         public int GetMaxId(Func<T, int> columnName)
         {
-            var GetMaxId = _context.Set<T>().Max(columnName);
-            return GetMaxId;
+            int id = 0;
+            try
+            {
+                var maxId = _context.Set<T>().Max(columnName);
+                id = maxId;
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return id;
         }
 
         public T Add(T item)

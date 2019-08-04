@@ -71,10 +71,10 @@
                             <div class="col-sm-6 form-group">
                                 <small>
                                     <b>
-                                        <label for="txtEmployeeId">Employee ID</label>
+                                        <label for="txtEmployeeClockInId">Employee ID</label>
                                     </b>
                                 </small>
-                                <input class="col-5 form-control form-control-sm" placeholder="Employee Id" id="txtEmployeeId" type="text" name="txtEmployeeId">
+                                <input class="col-5 form-control form-control-sm" placeholder="Employee Id" id="txtEmployeeClockInId" type="text" name="txtEmployeeClockInId">
                             </div>
                         </div>
                         <div class="row">
@@ -286,6 +286,16 @@
                                         <span style="padding-left:10px"></span><i class="nav-icon fa fa-money"></i> Make Payment
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="EmployeeLoan" asp-action="Index">
+                                        <span style="padding-left:10px"></span><i class="nav-icon fa fa-money"></i> Employee loan
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="EmployeePayroll" asp-action="Index">
+                                        <span style="padding-left:10px"></span><i class="nav-icon fa fa-money"></i> Employee payroll
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
@@ -414,7 +424,7 @@
 
     <script>
         function SetSessionData(sessionDataParsed) {
-            document.getElementById('txtEmployeeId').val = sessionDataParsed.LoggedInEmployeeId;
+            document.getElementById('txtEmployeeClockInId').val = sessionDataParsed.LoggedInEmployeeId;
             console.log("sd emp: " + sessionDataParsed.LoggedInEmployeeId);
         }
     </script>

@@ -60,6 +60,7 @@ $('#btnNewMiscOrder').unbind().on('click', function () {
         backdrop: 'static',
         keyboard: false
     });
+    $('#newMiscOrder').draggable();
     $('#newMiscOrder').modal('show');
 
 
@@ -451,6 +452,7 @@ $('#misc-order-list').on('click', '.btnEdit', function (event) {
         backdrop: 'static',
         keyboard: false
     });
+    $('#newMiscOrder').draggable();
     $('#newMiscOrder').modal('show');
 
 });

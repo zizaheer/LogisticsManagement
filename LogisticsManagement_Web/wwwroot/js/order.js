@@ -74,6 +74,7 @@ $('#btnNewOrder').unbind().on('click', function () {
         keyboard: false
     });
 
+    $('#newOrder').draggable();
     $('#newOrder').modal('show');
 
 });
@@ -137,7 +138,7 @@ $('input[name=chkIsCalculateByUnit]').change(function () {
     }
 });
 
-$('input[name=chkIsReturnOrder]').change(function () {
+$('input[name=chkIsReturnOrder]').on('change', function () {
 
     var wayBillNo = $('#txtWayBillNo').val();
     var isChecked = $(this).is(':checked');
@@ -162,8 +163,8 @@ $('input[name=chkIsReturnOrder]').change(function () {
     $('#lblOrderTypeText').text('This is a return order.');
 });
 
-$('#txtBillToCustomerName').on('keydown', function (event) {
-    if (event.keyCode === 13 || event.keyCode === 9) {
+$('#txtBillToCustomerName').on('keypress', function (event) {
+    if (event.keyCode === 13) {
         event.preventDefault();
         var billerCustomerId = $('#txtBillToCustomerName').val();
         if (billerCustomerId > 0) {
@@ -208,8 +209,8 @@ $('#txtBillToCustomerName').on('input', function (event) {
 
 });
 
-$('#txtShipperCustomerName').on('keydown', function (event) {
-    if (event.keyCode === 13 || event.keyCode === 9) {
+$('#txtShipperCustomerName').on('keypress', function (event) {
+    if (event.keyCode === 13) {
         event.preventDefault();
         var shipperCustomerId = $('#txtShipperCustomerName').val();
         if (shipperCustomerId > 0) {
@@ -219,6 +220,7 @@ $('#txtShipperCustomerName').on('keydown', function (event) {
                 if (paidByValue === '1') {
                     FillBillerInformation(shipperInfo);
                 }
+                CalculateOrderBaseCost();
             } else {
                 $('#lblShipperAccountNo').text('');
                 bootbox.alert('Customer information was not found for Id: ' + shipperCustomerId);
@@ -226,7 +228,7 @@ $('#txtShipperCustomerName').on('keydown', function (event) {
 
         }
 
-        CalculateOrderBaseCost();
+
     }
 });
 $('#txtShipperCustomerName').on('input', function (event) {
@@ -243,9 +245,7 @@ $('#txtShipperCustomerName').on('input', function (event) {
             if (paidByValue === '1') {
                 FillBillerInformation(shipperInfo);
             }
-
             CalculateOrderBaseCost();
-
         } else {
             $('#lblShipperAccountNo').text('');
         }
@@ -253,8 +253,8 @@ $('#txtShipperCustomerName').on('input', function (event) {
     }
 });
 
-$('#txtConsigneeCustomerName').on('keydown', function (event) {
-    if (event.keyCode === 13 || event.keyCode === 9) {
+$('#txtConsigneeCustomerName').on('keypress', function (event) {
+    if (event.keyCode === 13) {
         event.preventDefault();
         var consigneeCustomerId = $('#txtConsigneeCustomerName').val();
         if (consigneeCustomerId > 0) {
@@ -264,9 +264,7 @@ $('#txtConsigneeCustomerName').on('keydown', function (event) {
                 if (paidByValue === '2') {
                     FillBillerInformation(consigneeInfo);
                 }
-
                 CalculateOrderBaseCost();
-
             } else {
                 $('#lblConsigneeAccountNo').text('');
                 bootbox.alert('Customer information was not found for Id: ' + consigneeCustomerId);
@@ -289,9 +287,7 @@ $('#txtConsigneeCustomerName').on('input', function (event) {
             if (paidByValue === '2') {
                 FillBillerInformation(consigneeInfo);
             }
-
             CalculateOrderBaseCost();
-
         } else {
             $('#lblConsigneeAccountNo').text('');
         }
@@ -352,7 +348,6 @@ function FillConsigneeInformation(consigneeInfo) {
         }
     }
 }
-
 
 $('#txtEmployeeName').keypress(function (event) {
     if (event.keyCode === 13) {
@@ -419,8 +414,15 @@ $('#txtUnitQuantity').keypress(function (event) {
     }
 });
 $('#txtUnitQuantity').on('change', function (event) {
-
-    CalculateOrderBaseCost();
+    var qty = $('#txtUnitQuantity').val();
+    if (qty !== '') {
+        if (parseInt(qty) > 0) {
+            $('#ddlUnitTypeId').prop('disabled', false);
+            CalculateOrderBaseCost();
+        } else {
+            $('#ddlUnitTypeId').prop('disabled', true);
+        }
+    }
 });
 
 $('#txtSkidQuantity').keypress(function (event) {
@@ -710,7 +712,7 @@ function SubmitOrderForm(dataArray) {
     if (dataArray[0].wayBillNumber > 0) {
         result = PerformPostActionWithObject('Order/Update', dataArray);
         if (result.length > 0) {
-            bootbox.alert('The order has been updated successfully');
+            // bootbox.alert('The order has been updated successfully');
         }
     }
     else {
@@ -720,7 +722,7 @@ function SubmitOrderForm(dataArray) {
             $('#txtWayBillNo').val(parseData.waybillNumber);
             $('#hfOrderId').val(parseData.orderId);
 
-            bootbox.alert('The order has been created successfully');
+            // bootbox.alert('The order has been created successfully');
         }
     }
     //selectedAdditionalServiceArray = null;
@@ -730,8 +732,9 @@ function SubmitOrderForm(dataArray) {
 
     ClearForm();
     $('#frmOrderForm').trigger('reset');
-
     $('#newOrder').modal('hide');
+
+    location.reload();
 }
 
 function ValidateOrderForm(formData) {
@@ -741,12 +744,12 @@ function ValidateOrderForm(formData) {
     }
 
     if (formData.shipperCustomerId < 1) {
-        bootbox.alert('Please enter shipper information!');
+        bootbox.alert('Shipper not found or invalid. Please verify and try again.');
         return false;
     }
 
     if (formData.consigneeCustomerId < 1) {
-        bootbox.alert('Please enter consignee information!');
+        bootbox.alert('Consignee not found or invalid. Please verify and try again.');
         return false;
     }
 
@@ -755,12 +758,12 @@ function ValidateOrderForm(formData) {
         return false;
     }
 
-    if (formData.shipperAddressline.length < 5) {
+    if (formData.shipperAddressline.length < 1) {
         bootbox.alert('Please enter a valid address line for shipper!');
         return false;
     }
 
-    if (formData.consigneeAddressline.length < 5) {
+    if (formData.consigneeAddressline.length < 1) {
         bootbox.alert('Please enter a valid address line for consignee!');
         return false;
     }
@@ -828,6 +831,7 @@ $('#btnDispatch').unbind().on('click', function (event) {
         backdrop: "static",
         keyboard: false
     });
+    $('#dispatchOrder').draggable();
     $('#dispatchOrder').modal('show');
 
     $('#txtEmployeeName').val('');
@@ -894,29 +898,43 @@ $('#order-list').on('click', '.btnEdit', function (event) {
         backdrop: 'static',
         keyboard: false
     });
+    $('#newOrder').draggable();
     $('#newOrder').modal('show');
 
 });
 
-
+$('#txtInvoicedOrderNumber').on('keypress', function (e) {
+    var keyCode = e.keyCode || e.which;
+    if (keyCode === 13) {
+        e.preventDefault();
+        var orderId = $('#txtInvoicedOrderNumber').val();
+        ModifyReleasedOrder(orderId);
+    }
+});
 $('#btnExistingInvoicedOrder').unbind().on('click', function () {
     event.preventDefault();
-
     var orderId = $('#txtInvoicedOrderNumber').val();
-    if (orderId !== '') {
-        ClearForm();
-        $('#frmOrderForm').trigger('reset');
-
-        GetAndFillOrderDetailsByWayBillNumber(orderId, 1);
-
-        $('#newOrder').modal({
-            backdrop: 'static',
-            keyboard: false
-        });
-        $('#newOrder').modal('show');
-    }
-
+    ModifyReleasedOrder(orderId);
 });
+function ModifyReleasedOrder(orderId) {
+    if (orderId !== '') {
+        var orderInfo = GetSingleById('Order/GetReleaseStatusByOrderId', orderId);
+        if (orderInfo !== '') {
+            ClearForm();
+            $('#frmOrderForm').trigger('reset');
+            GetAndFillOrderDetailsByWayBillNumber(orderId, 1);
+            $('#newOrder').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#newOrder').draggable();
+            $('#newOrder').modal('show');
+        } else {
+            bootbox.alert('Please enter a valid order. Release the invoice if invoice was generated for this order.');
+            return;
+        }
+    }
+}
 
 
 $('#order-list').on('change', '#chkCheckAllOrders', function (event) {
@@ -1030,7 +1048,7 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, orderTypeId) {
             FillShipperAddress(consigneeAddressId);
             FillConsigneeAddress(shipperAddressId);
 
-            paidByValue = $('input[name=rdoPaidBy]:checked').val();
+            var paidByValue = $('input[name=rdoPaidBy]:checked').val();
             if (paidByValue === '1') {
                 paidByValue = '2';
                 $('#rdoShipper').prop('checked', false);

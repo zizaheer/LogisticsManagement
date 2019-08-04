@@ -8,8 +8,8 @@
         }
         $('#pending-list').DataTable({
             "order": [[0, "desc"]],
+            "columns": [{ "orderable": false }, null, null, null, null, null, null, null, null, null, null, null],
             "lengthChange": false,
-            "columns": [{ "orderable": false }, null, null, null, null, null, null, null, null, null, null,],
             searching: false,
             paging: false,
             info: false
@@ -29,7 +29,7 @@
                             wayBillArrayString += wb + ",";
                         }
                     }
-                    <input type="checkbox" class="form-check-inline" id="chkCheckAllOrders" />
+                    <input type="checkbox" class="form-check-inline chkSelectAllOrders" id="chkSelectAllOrders" />
                     <input type="hidden" id="hfWaybillArray" value="@wayBillArrayString" />
                     <label class="form-check-label">W/B #</label>
                 </div>
@@ -54,7 +54,7 @@
         <tr>
             <td>
                 <div class="form-check-inline">
-                    <input type="checkbox" id="chkOrderSelected" name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
+                    <input type="checkbox"  name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
                     <label class="form-check-label">@item.WayBillNumber</label>
                 </div>
             </td>
@@ -96,7 +96,8 @@
                 @item.TotalOrderCost
             </td>
             <td>
-               <button class="btn-danger smallGridIcon btnUndoDelivery" data-waybillnumber="@item.WayBillNumber" type="button"><i class="fa fa-undo"></i></button>
+               <button class="btn-danger smallGridIcon btnUndoDelivery" data-waybillnumber="@item.WayBillNumber" title="Undo delivery" type="button"><i class="fa fa-undo"></i></button>
+               <button class="btn-primary smallGridIcon btnPrintWaybill" data-waybillnumber="@item.WayBillNumber" title="Print waybill" type="button"><i class="fa fa-print"></i></button>
             </td>
         </tr>
         }

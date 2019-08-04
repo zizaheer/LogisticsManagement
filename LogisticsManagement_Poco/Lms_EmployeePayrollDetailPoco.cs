@@ -15,10 +15,8 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public int PayrollGenerationId { get; set; }
         public int EmployeeId { get; set; }
-        public bool? DoesTaxDeductionApply { get; set; }
-        public decimal? TaxDeductionPercent { get; set; }
-        public bool? DoesTaxAdditionApply { get; set; }
-        public decimal? TaxAdditionPercent { get; set; }
-        public decimal? TotalEarning { get; set; }
+
+        public string WaybillNo { get; set; }
+        public decimal? FuelPercent { get; set; }
     }
 }

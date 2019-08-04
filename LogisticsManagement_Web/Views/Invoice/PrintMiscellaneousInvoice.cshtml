@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>PrintWaybill</title>
+    <title>Print - Misc. Invoice</title>
 
     <style type="text/css">
 
@@ -94,10 +94,10 @@
                 </tr>
                 <tr>
                     <td style="width: 214px; vertical-align:top" colspan="2">
-                        <span style="font-size:1.2em; font-weight:bold">@item.BillerCustomerName</span><br />
-                        <span>@item.BillerCustomerAddressLine</span><br />
-                        <span>@item.BillerCustomerCityLine</span><br />
-                        <span>@item.BillerPostCode</span><br />
+                        <span style="font-size:1.2em; font-weight:bold">@item.BillerCustomerName.ToUpper()</span><br />
+                        <span>@item.BillerCustomerAddressLine.ToUpper()</span><br />
+                        <span>@item.BillerCustomerCityLine.ToUpper()</span><br />
+                        <span>@item.BillerPostCode.ToUpper()</span><br />
                     </td>
                     <td style="width: 214px; vertical-align:top">&nbsp;</td>
                     <td style="width: 215px; vertical-align: top;">
@@ -106,7 +106,7 @@
                                 DATE:
                                 @{
                                     var dateString = item.InvoiceDate > DateTime.Now.AddYears(-20) ? item.InvoiceDate.ToString("dd-MMM-yyyy") : "";
-                                    @dateString;
+                                    @dateString.ToUpper();
                                 }
                             </span>
                         </b>
@@ -124,9 +124,9 @@
                 </tr>
                 <tr>
                     <td colspan="4" height="945" style="vertical-align:top">
-                        <table style="width:100%; border-left:none;border-right:none; border-collapse:collapse;" border="1" cellspacing="2" cellpadding="2">
+                        <table style="width:100%; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
                             <tbody>
-                                <tr style="background-color: #cccccc; font-family:Arial; font-weight:bold; font-size:.8em; border-top:8px">
+                                <tr style="background-color: #ccc; font-family:Arial; font-weight:bold; font-size:.8em; border-top:8px">
                                     <td class="tdStyle">
                                         <span></span>
                                     </td>

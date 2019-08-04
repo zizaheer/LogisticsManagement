@@ -27,8 +27,10 @@ namespace LogisticsManagement_Poco
         public int? ParentGLForEmployeeAccount { get; set; }
         public int? SalesTaxPayableAccount { get; set; }
         public int? SalesIncomeAccount { get; set; }
+        public int? LoanIncomeAccount { get; set; }
         public int? SalaryExpenseAccount { get; set; }
         public int? BonusExpenseAccount { get; set; }
+        public int? LoanReceivableAccount { get; set; }
         public int? OtherReceivableAccount { get; set; }
         public int? OtherPayableAccount { get; set; }
         public int? OtherIncomeAccount { get; set; }

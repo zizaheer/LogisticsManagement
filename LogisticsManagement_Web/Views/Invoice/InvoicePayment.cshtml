@@ -139,7 +139,7 @@
                                         {
                                             var selected = false;
                                             if (item.Id == 1)
-                                            {selected = true; }
+                                            { selected = true; }
 
                                             <option value="@item.Id" selected="@selected">@item.MethodName</option>
                                         }
@@ -176,7 +176,7 @@
                                     <small><b><label for="txtChequeAmount">Cheque amt.:</label></b></small>
                                     <input type="number" id="txtChequeAmount" class="form-control form-control-sm" />
                                 </div>
-                                
+
                                 <div class="col-sm-6">
                                     <small><b><label for="txtChequeDate">Cheque date:</label></b></small>
                                     <input type="date" id="txtChequeDate" class="form-control form-control-sm" />
@@ -189,7 +189,7 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <small><b><label for="txtPaymentApplied">Applied</label></b></small>
-                                    <input type="number" id="txtPaymentApplied" class="form-control form-control-sm"  />
+                                    <input type="number" id="txtPaymentApplied" class="form-control form-control-sm" />
                                 </div>
                                 <div class="col-sm-4">
                                     <small><b><label for="txtRemainingAmount">Remaining</label></b></small>
@@ -220,9 +220,19 @@
 </div>
 
 <form id="frmInvoicePaymentForm">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-check-inline">
+                <input class="form-check-input" type="checkbox" id="chkShowPaidInvoice" />
+              <label class="form-check-label" id="" for="chkShowPaidInvoice">Show paid</label> 
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
-            <div style="display:block; max-height:300px; min-height:75px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px; padding:5px" id="loadPendingInvoiceDataTable">
+            <div style="display:block; max-height:300px; min-height:75px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px; padding:0px" id="loadCustomersInvoiceDue">
                 <partial name="_PartialViewCustomersInvoiceDue" />
             </div>
         </div>

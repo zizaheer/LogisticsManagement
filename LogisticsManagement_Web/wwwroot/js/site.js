@@ -18,7 +18,7 @@ $('#lnkEmployeeClockIn').on('click', function () {
     var userClockInInfo = GetSingleById('EmployeeTimesheet/GetEmployeeClockInInfo', employeeId);
     if (userClockInInfo !== '' && userClockInInfo != null) {
         var parsedData = JSON.parse(userClockInInfo);
-        $('#txtEmployeeId').val(parsedData.EmployeeId);
+        $('#txtEmployeeClockInId').val(parsedData.EmployeeId);
         $('#txtClockInTime').val(parsedData.SignInDatetime);
         $('#txtClockOutTime').val(parsedData.SignOutDatetime);
 
@@ -27,6 +27,7 @@ $('#lnkEmployeeClockIn').on('click', function () {
         backdrop: 'static',
         keyboard: false
     });
+    $('#employeeClockIn').draggable();
     $('#employeeClockIn').modal('show');
 });
 function displayClock() {
@@ -70,7 +71,7 @@ $('#btnClockOut').on('click', function (event) {
 });
 
 function GetClockInData() {
-    var empId = $('#txtEmployeeId').val();
+    var empId = $('#txtEmployeeClockInId').val();
     var clockInTime = $('#txtClockInTime').val();
     var clockOutTime = $('#txtClockOutTime').val();
     var remarks = ""; //$('#txtRemarks').val();
@@ -94,6 +95,7 @@ $('#lnkChangePassword').on('click', function (event) {
         backdrop: 'static',
         keyboard: false
     });
+    $('#changePassword').draggable();
     $('#changePassword').modal('show');
 });
 $('#btnSavePassword').on('click', function (event) {

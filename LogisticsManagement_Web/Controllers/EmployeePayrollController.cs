@@ -19,6 +19,7 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_EmployeePayrollLogic _employeePayrollLogic;
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
+        SessionData sessionData = new SessionData();
 
         public EmployeePayrollController(IMemoryCache cache, LogisticsContext dbContext)
         {
@@ -29,8 +30,28 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var customerList = _employeePayrollLogic.GetList();
-            return View();
+            ValidateSession();
+            ViewBag.EmployeeTypes = Enum.GetValues(typeof(Enum_EmployeeType)).Cast<Enum_EmployeeType>();
+
+            var employeeController = new EmployeeController(_cache,_dbContext);
+            employeeController.GetEmployeeData();
+            return View(employeeController.GetEmployeeData());
+        }
+
+        private void ValidateSession()
+        {
+            if (HttpContext.Session.GetString("SessionData") != null)
+            {
+                sessionData = JsonConvert.DeserializeObject<SessionData>(HttpContext.Session.GetString("SessionData"));
+                if (sessionData == null)
+                {
+                    Response.Redirect("Login/Index");
+                }
+            }
+            else
+            {
+                Response.Redirect("Login/InvalidLocation");
+            }
         }
     }
 }

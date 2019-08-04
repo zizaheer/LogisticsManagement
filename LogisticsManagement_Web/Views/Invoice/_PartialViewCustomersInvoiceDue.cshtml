@@ -7,18 +7,29 @@
             $('#customerdues-list').DataTable().destroy();
         }
         $('#customerdues-list').DataTable({
-            "order": [[1, "asc"]],
+            "order": [[2, "asc"]],
             "paging": false,
-            "language": {
-                searchPlaceholder: 'Search...',
-                search: "<i class='fa fa-search'></i>",
-            },
-            "info": false
+            "info": false,
+            "searching": false
         });
     });
 </script>
 
-
+<style>
+    /*.lnkCollectPayment {
+        background-color: #b50000;
+        padding: 2px 4px 2px 4px;
+        color: #fff;
+        border-radius: 3px
+    }*/
+    .lnkPaidInvoice {
+        /*border:1px solid #eee;*/
+        background-color: #037e09;
+        padding: 2px 8px 2px 8px;
+        color: #fff;
+        border-radius: 3px
+    }
+</style>
 <table id="customerdues-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr style="background-color:#ebffad">
@@ -37,7 +48,19 @@
         {
             <tr>
                 <td>
-                    <a data-toggle="modal" id="btnCollectPayment" class="lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#" >Collect payment</a>
+
+                    @{
+                        if (item.TotalDue == 0)
+                        {
+                            <a data-toggle="modal" id="btnViewInvoice" class="lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Open</a>
+                        }
+                        else
+                        {
+                            <a data-toggle="modal" id="btnCollectPayment" class="btn-danger smallGridIcon lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Open</a>
+                            <a data-toggle="modal" id="btnViewInvoice" class="lnkPaidInvoice" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Paid</a>
+                        }
+
+                    }
                 </td>
                 <td>
                     @item.CustomerId

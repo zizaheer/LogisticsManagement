@@ -126,26 +126,31 @@ $('#frmEmployeeForm').on('keyup keypress', function (e) {
         return false;
     }
 });
-
 $('#frmEmployeeForm').unbind('submit').submit(function (event) {
     event.preventDefault();
     var dataArray = GetFormData();
     console.log(dataArray[0].id);
     if (dataArray[0].id > 0) {
         PerformPostActionWithObject('Employee/Update', dataArray);
+        bootbox.alert('Data updated successfully.');
     }
     else {
         PerformPostActionWithObject('Employee/Add', dataArray);
+        bootbox.alert('Data saved successfully.');
     }
-    
+    $('#frmEmployeeForm').trigger('reset');
     $('#loadDataTable').load('Employee/PartialViewDataTable');
 });
 
 $('.btnDelete').unbind().on('click', function () {
     employeeId = $(this).data('employeeid');
-    PerformPostActionWithId('Employee/Remove', employeeId);
-    $('#loadDataTable').load('Employee/PartialViewDataTable');
-
+    bootbox.confirm("Are you sure you want to delete the employee?", function (result) {
+        if (result === true) {
+            PerformPostActionWithId('Employee/Remove', employeeId);
+            $('#loadDataTable').load('Employee/PartialViewDataTable');
+            $('#frmEmployeeForm').trigger('reset');
+        }
+    });
 });
 
 function GetFormData() {

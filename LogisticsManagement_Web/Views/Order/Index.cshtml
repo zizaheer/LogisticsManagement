@@ -31,7 +31,7 @@
     }
 
     .toggleButtonReturnOrder {
-        float: right;
+        margin-left:18px;
     }
 </style>
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
@@ -337,17 +337,15 @@
                             </span>
                         </div>
 
-                        <div class="col-sm-6 form-group">
-                            <div class="row">
-                                <small>
-                                    <b><label for="txtDeliveryNote">Notes</label></b>
-                                </small>
-                                <textarea id="txtDeliveryNote" class="form-control form-control-sm txtDeliveryNote" placeholder="Delivery note" title="Delivery note" rows="6"></textarea>
-                            </div>
+                        <div class="col-sm-6">
+                            <small>
+                                <b><label for="txtDeliveryNote">Notes</label></b>
+                            </small>
+                            <textarea id="txtDeliveryNote" class="form-control form-control-sm txtDeliveryNote" placeholder="Delivery note" title="Delivery note" rows="6"></textarea>
                             <div class="row" style="margin-bottom:47px">
                             </div>
                             <div class="row">
-                                <div class="offset-5">
+                                <div class="offset-8">
                                     <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
                                     @*<button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Undo delivery </button>*@
                                 </div>
@@ -430,15 +428,24 @@
 
 <form id="frmOrderForm">
     <!-- Modal - New Order -->
+    <input type="hidden" id="hfOrderId" class="hfOrderId" name="hfOrderId" />
+    <input type="hidden" id="hfShipperAddressId" class="hfShipperAddressId" name="hfShipperAddressId" />
+    <input type="hidden" id="hfConsigneeAddressId" class="hfConsigneeAddressId" name="hfConsigneeAddressId" />
+
     <div class="modal fade bd-example-modal-xl" id="newOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content bg-light">
-                <div class="modal-header">
-                    <img src="~/images/flaticons-64x64/logistics-delivery.png" style="height:25px; padding-left:14px; padding-right:10px" /><h5 class="modal-title" id="exampleModalCenterTitle">New Delivery Order</h5>
+                <div class="modal-header" style="justify-content:initial;padding-top:9px;padding-bottom:9px; padding-right:0px">
+                    <img src="~/images/flaticons-64x64/logistics-delivery.png" style="height:25px; padding-left:14px; padding-right:10px" />
+                    <b id="exampleModalCenterTitle">New Delivery Order</b>
+                    <div class="col-sm-2 offset-8" style="padding-right:0px;text-align:right">
+                        <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-check"></i> Save </button>
+                        <button type="button" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
+                    </div>
 
-                    <button type="button" class="close" id="btnCloseModal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    @*<button type="button" class="close" id="btnCloseModal" aria-label="Close">
+                            <span aria-hidden="true">&times; Close</span>
+                        </button>*@
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
@@ -620,7 +627,7 @@
                                     <div class="col-4">
                                         <div class="row mb-1">
                                             <small class="col-sm-4" style="color:#000; font-weight:bold">Transport</small>
-                                            <small class="col-sm-8" style="color:#000; font-weight:bold">Scheduled pickup date</small>
+                                            <small class="col-sm-8" style="color:#000; font-weight:bold">Order date</small>
                                         </div>
                                         <div class="row mb-1">
                                             <div class="form-group col-md-4 input-group">
@@ -636,9 +643,11 @@
                                         </div>
                                         <div class="row mb-1">
                                             <div class="col-md-12 input-group">
-                                                <input class="col-3 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity" style="background-color:#b3ffc3">
-                                                <input class="col-3 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
-                                                <select class="col-3 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId">
+
+                                                <input class="col-3 form-control form-control-sm" placeholder="Qty" id="txtUnitQuantity" type="number" min="0" name="txtUnitQuantity">
+                                                <input class="col-3 form-control form-control-sm" placeholder="Skids" id="txtSkidQuantity" type="number" min="0" name="txtSkidQuantity" style="background-color:#b3ffc3">
+
+                                                <select class="col-3 form-control form-control-sm" id="ddlUnitTypeId" name="ddlUnitTypeId" disabled>
                                                     @foreach (var item in Model.UnitTypes)
                                                     {
                                                         if (item.Id == 2)
@@ -757,8 +766,8 @@
                                             </div>
                                         </div>
                                         <div style="margin-top:13px;">
-                                            <input type="checkbox" id="chkIsCalculateByUnit" name="chkIsCalculateByUnit" title="Calculate by unit/skid" data-toggle="toggle" data-on="<i class='fa fa-balance-scale'></i> By unit" data-off="<i class='fa fa-stack-overflow'></i> By skid" data-onstyle="primary" data-offstyle="success" data-size="mini" data-width="95" data-height="28" data-style="toggleButtonByUnit">
-                                            <input type="checkbox" id="chkIsReturnOrder" name="chkIsReturnOrder" title="Turn it on if you want to place a return order" data-toggle="toggle" data-on="<i class='fa fa-mail-forward'></i> Single order" data-off="<i class='fa fa-mail-reply'></i> Return order" data-onstyle="danger" data-offstyle="secondary" data-size="mini" data-width="118" data-height="28" data-style="toggleButtonReturnOrder">
+                                            <input type="checkbox" id="chkIsCalculateByUnit" name="chkIsCalculateByUnit" title="Calculate by unit/skid" data-toggle="toggle" data-on="<i class='fa fa-balance-scale'></i> By unit" data-off="<i class='fa fa-stack-overflow'></i> By skid" data-onstyle="primary" data-offstyle="success" data-size="mini" data-width="90" data-height="28" data-style="toggleButtonByUnit">
+                                            <input type="checkbox" id="chkIsReturnOrder" name="chkIsReturnOrder" title="Turn it on if you want to place a return order" data-toggle="toggle" data-on="<i class='fa fa-mail-forward'></i> Single order" data-off="<i class='fa fa-mail-reply'></i> Return order" data-onstyle="danger" data-offstyle="secondary" data-size="mini" data-width="125" data-height="28" data-style="toggleButtonReturnOrder">
                                         </div>
                                     </div>
 
@@ -839,22 +848,12 @@
 
                             </div>
                         </div>
-                        <div class="row" style="margin-left:-30px;">
+                        @*<div class="row" style="margin-left:-30px;">
                             <div class="col-sm-12" style="padding-left:0px">
                                 <label style="margin-left:15px;font-size:.75em;color:#0577b9" id="lblOrderTypeText">This is a single order.</label>
                                 <hr style="border: .5px solid #c1c1c1; margin-top:-7px; margin-left:10px" />
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6" style="padding-left:0px">
-                                <input type="hidden" id="hfOrderId" class="hfOrderId" name="hfOrderId" />
-                                <input type="hidden" id="hfShipperAddressId" class="hfShipperAddressId" name="hfShipperAddressId" />
-                                <input type="hidden" id="hfConsigneeAddressId" class="hfConsigneeAddressId" name="hfConsigneeAddressId" />
-
-                                @*<button type="reset" class="btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>*@
-                                <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save order</button>
-                            </div>
-                        </div>
+                        </div>*@
                     </div>
 
 
@@ -876,10 +875,10 @@
     </div>
     <div class="col-sm-3">
         <div class="input-group">
-            <input type="text" id="txtInvoicedOrderNumber" placeholder="Enter invoiced order" class="col-8 form-control form-control-sm" />
+            <input type="text" id="txtInvoicedOrderNumber" placeholder="Enter released order" class="col-8 form-control form-control-sm" style="text-transform:capitalize !important" />
             <button id="btnExistingInvoicedOrder" type="button" class="btn btn-sm btn-secondary" data-toggle="modal"><i class="fa fa-edit"></i> Modify</button>
         </div>
-        
+
     </div>
     <div class="col-sm-2">
         <button id="btnNewOrder" type="button" class="btn btn-sm btn-danger form-control" title="Create a new order" data-toggle="modal"><i class="fa fa-plus-circle"></i> New Order </button>

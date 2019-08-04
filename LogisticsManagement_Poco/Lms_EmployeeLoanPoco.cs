@@ -16,7 +16,7 @@ namespace LogisticsManagement_Poco
         public int EmployeeId { get; set; }
         public decimal LoanAmount { get; set; }
         public DateTime LoanTakenOn { get; set; }
-        public decimal? PaidAmount { get; set; }
+        public int? TransactionId { get; set; }
         public string Remarks { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }

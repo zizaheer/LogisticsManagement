@@ -14,11 +14,20 @@ namespace LogisticsManagement_Poco
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int EmployeeTypeId { get; set; }
-        public DateTime PayrollStartDate { get; set; }
-        public DateTime PayrollEndDate { get; set; }
-        public int TotalEmployeeCount { get; set; }
-        public decimal TotalAmountToPay { get; set; }
+        public int EmployeeId { get; set; }
+
+        public decimal? OrderRelatedAmnt { get; set; }
+        public decimal? AdditionalServiceRelatedAmnt { get; set; }
+        public decimal? BonusAmount { get; set; }
+        public decimal? LoanDeduction { get; set; }
+        public decimal? InsuranceDeduction { get; set; }
+        public decimal? RadioInsuranceDeduction { get; set; }
+        public decimal? OtherDeduction { get; set; }
+        public decimal? DeductTaxPercent { get; set; }
+        public decimal? PayTaxPercent { get; set; }
+        public decimal TotalEarning { get; set; }
         public int TransactionId { get; set; }
+
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
     }

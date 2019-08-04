@@ -1,0 +1,64 @@
+﻿@using LogisticsManagement_Web.Models;
+@model List<ViewModel_EmployeeLoan>
+
+
+<script>
+    $(document).ready(function () {
+
+        if ($.fn.dataTable.isDataTable('#employee-loan-list')) {
+            $('#employee-loan-list').DataTable().destroy();
+        }
+        $('#employee-loan-list').DataTable({
+            "order": [[0, "desc"]],
+            "paging": false,
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+
+            }
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-sm-12">
+        <table id="employee-loan-list" class="table table-sm  table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
+            <thead>
+                <tr>
+                    <th>Employee Id</th>
+                    <th>Name</th>
+                    <th>Loan amount</th>
+                    <th>Taken on</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody id="tBodyCustomer">
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.EmployeeId
+                        </td>
+                        <td>
+                            @item.EmployeeName
+                        </td>
+                        <td>
+                            @item.LoanAmount
+                        </td>
+                        <td>
+                            @item.LoanTakenOn
+                        </td>
+                        <td>
+                           @* <button id="btnEditLoan" data-loanid='@item.LoanId' class="btn-primary smallGridIcon btnEditLoan" type="button"><i class="fa fa-pencil"></i> </button>*@
+                            <button id="btnDeleteLoan" data-loanid='@item.LoanId' class="btn-danger smallGridIcon btnDeleteLoan" type="button"><i class="fa fa-trash"></i> </button>
+                        </td>
+                    </tr>
+                }
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/employee-loan.js"></script>

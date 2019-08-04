@@ -40,7 +40,7 @@
                             invoiceArrayString += invoice + ",";
                         }
                     }
-                    <input type="checkbox" class="form-check-inline" id="chkCheckAllInvoices" />
+                    <input type="checkbox" class="form-check-inline chkCheckAllInvoices" id="chkCheckAllInvoices" />
                     <input type="hidden" id="hfInvoiceArray" value="@invoiceArrayString" />
                     <label class="form-check-label">Invoice #</label>
                 </div>
@@ -71,7 +71,15 @@
                     @item.TotalInvoiceAmnt
                 </td>
                 <td>
-                    <button id="btnEdit" data-invoiceid='@item.InvoiceId' data-billername="@item.BillerName" data-waybills="@item.WayBillNumbers" data-totalamount="@item.TotalInvoiceAmnt" class="btn-primary smallGridIcon btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                    @{ 
+                        var disabled = "";
+                        if (item.TotalInvoiceAmnt > 0) {
+                            disabled = "disabled";
+                        }
+
+                    }
+                    <button id="btnEdit" data-invoiceid='@item.InvoiceId' data-billername="@item.BillerName" data-waybills="@item.WayBillNumbers" data-totalamount="@item.TotalInvoiceAmnt" class="btn-primary smallGridIcon btnEdit" title="Edit or modify an invoice" type="button"><i class="fa fa-pencil"></i> </button>
+                    <button id="btnEdit" data-invoiceid='@item.InvoiceId' data-waybills="@item.WayBillNumbers"  class="btn-danger smallGridIcon btnRegenerateInvoice" title="Regenerate invoice" type="button" @disabled><i class="fa fa-cogs"></i> </button>
                 </td>
             </tr>
         }

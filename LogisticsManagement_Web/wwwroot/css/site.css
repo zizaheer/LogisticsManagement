@@ -61,10 +61,19 @@ input[type=number] {
 }
 
 .smallGridIcon {
-    padding: 0px;
+    padding: 0px 6px 3px 6px;
     width: 22px;
     height: 16px;
     border: 1px solid transparent;
     text-align: center;
     border-radius:2px;
+}
+
+.dispatchBoardIcon {
+    padding: 0px;
+    width: 22px;
+    height: 16px;
+    border: 1px solid transparent;
+    text-align: center;
+    border-radius: 2px;
 }
