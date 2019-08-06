@@ -16,15 +16,12 @@
 </script>
 
 <style>
-    /*.lnkCollectPayment {
-        background-color: #b50000;
-        padding: 2px 4px 2px 4px;
+    .lnkCollectPayment {
+        padding: 2px 8px 2px 8px;
         color: #fff;
         border-radius: 3px
-    }*/
+    }
     .lnkPaidInvoice {
-        /*border:1px solid #eee;*/
-        background-color: #037e09;
         padding: 2px 8px 2px 8px;
         color: #fff;
         border-radius: 3px
@@ -38,7 +35,7 @@
             <th>Biller name</th>
             <th>Address</th>
             <th>Phone</th>
-            <th>Number of invoices due</th>
+            <th>Number of invoices</th>
             <th>Total Due</th>
         </tr>
     </thead>
@@ -52,12 +49,11 @@
                     @{
                         if (item.TotalDue == 0)
                         {
-                            <a data-toggle="modal" id="btnViewInvoice" class="lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Open</a>
+                            <a data-toggle="modal" id="btnViewInvoice" class="btn-success lnkPaidInvoice" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Paid</a>
                         }
                         else
                         {
-                            <a data-toggle="modal" id="btnCollectPayment" class="btn-danger smallGridIcon lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Open</a>
-                            <a data-toggle="modal" id="btnViewInvoice" class="lnkPaidInvoice" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Paid</a>
+                            <a data-toggle="modal" id="btnCollectPayment" class="btn-danger lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Collect</a>
                         }
 
                     }

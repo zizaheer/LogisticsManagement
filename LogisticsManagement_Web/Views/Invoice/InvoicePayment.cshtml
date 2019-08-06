@@ -222,11 +222,26 @@
 <form id="frmInvoicePaymentForm">
 
     <div class="row">
-        <div class="col-sm-12">
-            <div class="form-check-inline">
-                <input class="form-check-input" type="checkbox" id="chkShowPaidInvoice" />
-              <label class="form-check-label" id="" for="chkShowPaidInvoice">Show paid</label> 
+        <div class="col-sm-6 input-group">
+            <select class="col-6 form-control form-control-sm" id="ddlCustomerId">
+                <option value="0">All Customer</option>
+                @foreach (var customer in ViewBag.Customers)
+                {
+                    <option value="@customer.Id">@customer.CustomerName</option>
+
+                }
+
+            </select>
+            <select class="col-3 form-control form-control-sm" id="ddlYear">
+                <option value="0">All</option>
+                <option value="@DateTime.Now.ToString("yyyy")">@DateTime.Now.ToString("yyyy")</option>
+                <option value="@DateTime.Now.AddYears(-1).ToString("yyyy")">@DateTime.Now.AddYears(-1).ToString("yyyy")</option>
+            </select>
+            <div class="col-2 form-control form-control-sm form-check-inline">
+                <input class="form-check-input" type="checkbox" id="chkShowPaidInvoice" style="margin-left:10px !important" />
+                <label class="form-check-label" id="" for="chkShowPaidInvoice">Paid</label>
             </div>
+            <button class="btn btn-sm btn-dark" id="btnShowRecords" style="margin-bottom:10px">Show</button>
         </div>
     </div>
 
@@ -243,6 +258,34 @@
 
 <br /><br />
 
+<h3>
+    Print paid invoices
+</h3>
 
-@*<script src="~/js/invoice.js"></script>*@
+<div class="row">
+    <div class="col-sm-6 input-group">
+        <select class="col-8 form-control form-control-sm" id="ddlCustomerIdForPaidInvoice">
+            <option value="0">Select customer</option>
+            @foreach (var customer in ViewBag.Customers)
+            {
+                <option value="@customer.Id">@customer.CustomerName</option>
+            }
+        </select>
+
+        <div class="col-3 form-control form-control-sm form-check-inline">
+            <input class="form-check-input" type="checkbox" id="chkShowMiscOrderInvoice" style="margin-left:10px !important" />
+            <label class="form-check-label" id="" for="chkShowMiscOrderInvoice">Miscellaneous</label>
+        </div>
+        <button class="btn btn-sm btn-dark" id="btnShowRecordsForPaidInvoice" style="margin-bottom:10px">Load</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div style="display:block; max-height:300px; min-height:75px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px; padding:0px" id="loadCustomerWiseInvoices">
+            @*<partial name="_PartialViewCustomerWiseDueInvoices" />*@
+        </div>
+    </div>
+</div>
+
+<script src="~/js/invoice.js"></script>
 

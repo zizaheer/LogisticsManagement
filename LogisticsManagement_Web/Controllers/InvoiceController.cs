@@ -88,14 +88,16 @@ namespace LogisticsManagement_Web.Controllers
             ValidateSession();
             Lms_BankLogic lms_BankLogic = new Lms_BankLogic(_cache, new EntityFrameworkGenericRepository<Lms_BankPoco>(_dbContext));
             Lms_PaymentMethodLogic paymentMethodLogic = new Lms_PaymentMethodLogic(_cache, new EntityFrameworkGenericRepository<Lms_PaymentMethodPoco>(_dbContext));
+            _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
 
+            ViewBag.Customers = _customerLogic.GetList();
             ViewBag.Banks = lms_BankLogic.GetList();
             ViewBag.PaymentMethods = paymentMethodLogic.GetList();
 
-            return View(GetCustomersWtihPendingInvoice());
+            return View(GetCustomersWtihPendingInvoice(0, string.Empty, false));
         }
 
-        private List<ViewModel_CustomerWithPendingInvoice> GetCustomersWtihPendingInvoice()
+        private List<ViewModel_CustomerWithPendingInvoice> GetCustomersWtihPendingInvoice(int customerId, string year, bool isPaidInclusive)
         {
 
             List<ViewModel_CustomerWithPendingInvoice> customersWithPendingInvoice = new List<ViewModel_CustomerWithPendingInvoice>();
@@ -109,11 +111,31 @@ namespace LogisticsManagement_Web.Controllers
             _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
             var addresses = _addressLogic.GetList();
 
-            var pendingInvoices = _invoiceLogic.GetList().Where(c => c.PaidAmount == null || c.PaidAmount < c.TotalInvoiceAmount).OrderBy(c => c.BillerCustomerId).ToList();
+            List<Lms_InvoicePoco> pendingInvoices = new List<Lms_InvoicePoco>();
+
+            pendingInvoices = _invoiceLogic.GetList();
+            if (customerId > 0)
+            {
+                pendingInvoices = pendingInvoices.Where(c => c.BillerCustomerId == customerId).ToList();
+            }
+
+            if (year != "")
+            {
+                if (Convert.ToInt16(year) > 2000)
+                {
+                    pendingInvoices = pendingInvoices.Where(c => c.CreateDate.ToString("yyyy") == year).ToList();
+                }
+            }
+
+            if (isPaidInclusive == false)
+            {
+                pendingInvoices = pendingInvoices.Where(c => c.PaidAmount == null || c.PaidAmount < c.TotalInvoiceAmount).ToList();
+            }
+
+            pendingInvoices = pendingInvoices.OrderBy(c => c.BillerCustomerId).ToList();
 
             foreach (var customer in pendingInvoices.ToList())
             {
-
                 ViewModel_CustomerWithPendingInvoice customerWithPendingInvoice = new ViewModel_CustomerWithPendingInvoice();
 
                 customerWithPendingInvoice.CustomerId = customer.BillerCustomerId;
@@ -161,7 +183,7 @@ namespace LogisticsManagement_Web.Controllers
                 decimal totalDue = 0;
                 foreach (var item in sameCustomer)
                 {
-                    if (item.TotalInvoiceAmount != null && item.TotalInvoiceAmount > 0)
+                    if (item.TotalInvoiceAmount > 0)
                     {
                         if (item.PaidAmount != null && item.PaidAmount > 0)
                         {
@@ -176,10 +198,7 @@ namespace LogisticsManagement_Web.Controllers
                 }
 
                 customerWithPendingInvoice.TotalDue = totalDue;
-                if (totalDue > 0)
-                {
-                    customersWithPendingInvoice.Add(customerWithPendingInvoice);
-                }
+                customersWithPendingInvoice.Add(customerWithPendingInvoice);
 
                 pendingInvoices.RemoveAll(c => c.BillerCustomerId == customerWithPendingInvoice.CustomerId);
 
@@ -342,10 +361,43 @@ namespace LogisticsManagement_Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult PartialCustomersInvoiceDueDataTable()
+        public IActionResult PartialCustomersInvoiceDueDataTable(string customerId, string year, string isPaid)
         {
             ValidateSession();
-            return PartialView("_PartialViewCustomersInvoiceDue", GetCustomersWtihPendingInvoice());
+            int billerId = 0;
+            string selectedYear = "";
+            bool isPaidInclusive = false;
+
+            if (customerId != "")
+                billerId = Convert.ToInt32(customerId);
+            if (year != "")
+                selectedYear = year;
+            if (isPaid != "")
+                isPaidInclusive = Convert.ToBoolean(Convert.ToInt16(isPaid));
+
+            return PartialView("_PartialViewCustomersInvoiceDue", GetCustomersWtihPendingInvoice(billerId, selectedYear, isPaidInclusive));
+
+        }
+
+
+        [HttpGet]
+        public IActionResult PartialGetPaidInvoicesByCustomer(string customerId, string isPaid)
+        {
+            ValidateSession();
+            int billerId = 0;
+            bool isPaidInclusive = false;
+
+            if (customerId.Length > 0)
+                billerId = Convert.ToInt32(customerId);
+            if (isPaid != "")
+                isPaidInclusive = Convert.ToBoolean(Convert.ToInt16(isPaid));
+
+            var invoiceList = _invoiceLogic.GetList().Where(c => c.BillerCustomerId == billerId && c.PaidAmount == c.TotalInvoiceAmount).ToList();
+
+
+
+            return PartialView("_PartialViewCustomerWiseDueInvoices", invoiceList);
+
         }
 
         [HttpPost]
@@ -644,7 +696,7 @@ namespace LogisticsManagement_Web.Controllers
                         invoicePaymentCollection.ChequeAmount = chqAmnt > 0 ? chqAmnt : (decimal?)null;
                         invoicePaymentCollection.ChequeNo = chqNo;
                         invoicePaymentCollection.ChequeDate = chqDate != "" ? Convert.ToDateTime(chqDate) : (DateTime?)null;
-                        invoicePaymentCollection.BankId = bankId > 0 ? bankId : (int?)null; 
+                        invoicePaymentCollection.BankId = bankId > 0 ? bankId : (int?)null;
                         invoicePaymentCollection.Remarks = remarks;
 
                         _paymentCollectionLogic.Add(invoicePaymentCollection);
@@ -818,16 +870,19 @@ namespace LogisticsManagement_Web.Controllers
 
                         decimal totalInvoiceAmount = 0;
                         var waybillInfoList = _invoiceWayBillMappingLogic.GetList().Where(c => c.InvoiceId == invoicePoco.Id).ToList();
-                        foreach (var waybill in waybillInfoList) {
+                        foreach (var waybill in waybillInfoList)
+                        {
 
                             decimal orderPrice = 0;
                             var orderInfo = _orderLogic.GetList().Where(c => c.WayBillNumber == waybill.WayBillNumber).ToList();
-                            foreach (var order in orderInfo) {
+                            foreach (var order in orderInfo)
+                            {
                                 if (order.OrderTypeId == 3)
                                 {
                                     orderPrice = (decimal)order.TotalAdditionalServiceCost;
                                 }
-                                else {
+                                else
+                                {
                                     orderPrice = orderPrice + order.TotalOrderCost + (decimal)order.TotalAdditionalServiceCost;
                                 }
                             }

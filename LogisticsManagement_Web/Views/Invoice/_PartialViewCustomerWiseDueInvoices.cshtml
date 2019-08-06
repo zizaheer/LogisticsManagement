@@ -24,16 +24,17 @@
             <th>Invoice amount</th>
             <th>Paid amount</th>
             <th>Due amount</th>
+            <th>Print</th>
         </tr>
     </thead>
 
     <tbody>
-        @*@foreach (var item in Model)
+        @foreach (var item in Model)
         {
         <tr>
             <td>
                 <div class="form-check-inline">
-                    <a id="lnkDisplayInvoice" data-invoiceid="@item.Id">@item.Id</a>
+                    <b>@item.Id</b>
                 </div>
             </td>
             <td>
@@ -51,11 +52,14 @@
                     @dues;
                 }
             </td>
+            <td>
+                <button class="btn-primary smallGridIcon btnPrintPaidInvoice" data-invoiceid="@item.Id" title="Print invoice" type="button"><i class="fa fa-print"></i></button>
+            </td>
         </tr>
-        }*@
+        }
 
     </tbody>
 
 </table>
 
-@*<script src="~/js/invoice.js"></script>*@
+<script src="~/js/invoice.js"></script>

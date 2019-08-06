@@ -27,42 +27,6 @@ var wayBillNumberArrayForInvoicePayment = [];
 var employeeNumber;
 var orderType = 0; // 1: Delivery, 3: Misc order
 
-//$('#chkCheckAllOrders').prop('checked', true);
-//$('.chkOrderSelected').prop('checked', true);
-//var wbArrayString = $('#hfWaybillArray').val();
-//if (wbArrayString != null && wbArrayString !== '') {
-//    wayBillNumberArray = [];
-//    if (wbArrayString.indexOf(',') > -1) {
-//        var wbArray = wbArrayString.split(',');
-//        $.each(wbArray, function (i, item) {
-//            if (item !== '') {
-//                wayBillNumberArray.push({ wbillNumber: parseInt(item) });
-//            }
-//        });
-//    } else {
-//        wayBillNumberArray.push({ wbillNumber: parseInt(wbArrayString) });
-//    }
-//}
-
-//function GetInvoiceList() {
-//    $('#chkCheckAllInvoices').prop('checked', true);
-//    $('.chkInvoiceSelected').prop('checked', true);
-//    var invoiceArrayString = $('#hfInvoiceArray').val();
-//    if (invoiceArrayString != null && invoiceArrayString !== '') {
-//        invoiceNumberArray = [];
-//        if (invoiceArrayString.indexOf(',') > -1) {
-//            var invArray = invoiceArrayString.split(',');
-//            $.each(invArray, function (i, item) {
-//                if (item !== '') {
-//                    invoiceNumberArray.push({ invoiceNumber: parseInt(item) });
-//                }
-//            });
-//        } else {
-//            invoiceNumberArray.push({ invoiceNumber: parseInt(invoiceArrayString) });
-//        }
-//    }
-//}
-
 $('#pending-list .chkOrderSelected').on('change', function (event) {
     event.preventDefault();
 
@@ -81,7 +45,7 @@ $('#pending-list .chkOrderSelected').on('change', function (event) {
     if (isChecked) {
         wayBillNumberArray.push(wbNumber);
     }
-    
+
 });
 $('#pending-list .chkSelectAllOrders').on('change', function (event) {
     event.preventDefault();
@@ -135,7 +99,7 @@ $('#pending-list .btnPrintWaybill').unbind().on('click', function (event) {
             numberOfcopyOnEachPage: 1,
             numberOfcopyPerItem: 1,
             ignorePrice: 0,
-            isMiscellaneous: isMiscellaneous===true ? 1: 0,
+            isMiscellaneous: isMiscellaneous === true ? 1 : 0,
             viewName: viewName,
             printUrl: printUrl
         };
@@ -255,7 +219,7 @@ $('#invoiced-list .btnRegenerateInvoice').unbind().on('click', function () {
 
     }
 
-   
+
 
 });
 
@@ -438,6 +402,33 @@ $('#btnWaybillFinalPrint').unbind().on('click', function (event) {
 
 });
 
+$('#customer-wise-due-invoices .btnPrintPaidInvoice').unbind().on('click', function (event) {
+    event.preventDefault();
+
+    var invoiceNo =
+    {
+        invoiceNumber: $(this).data('invoiceid')
+    };
+
+    invoiceNumberArray = [];
+    invoiceNumberArray.push(invoiceNo);
+
+    var printUrl = "";
+    printUrl = 'PrintInvoiceAsPdf';
+
+    var isMisc = $('#chkShowMiscOrderInvoice').is(':checked');
+
+    var printData = { wayBillNumberArray: null, invoiceNumberArray: invoiceNumberArray };
+    var printOption = {
+        isMiscellaneous: isMisc === true ? 1 : 0,
+        viewName: isMisc === true ? 'PrintMiscellaneousInvoice' : 'PrintDeliveryInvoice',
+        isFinalPrint: 1,
+        printUrl: printUrl
+    };
+
+    PrintAsPdf(printData, printOption);
+
+});
 function PrintAsPdf(printData, printOption) {
 
     var printOptions = [printData, printOption];
@@ -797,5 +788,25 @@ $('#btnMakePayment').unbind().on('click', function (event) {
     }
 });
 
+$('#btnShowRecords').unbind().on('click', function (event) {
 
+    event.preventDefault();
+    var customerId = $('#ddlCustomerId').val();
+    var selectedYear = $('#ddlYear').val();
+    var isPaid = $('#chkShowPaidInvoice').is(':checked') === true ? 1 : 0;
+
+    $('#loadCustomersInvoiceDue').load('PartialCustomersInvoiceDueDataTable?customerId=' + customerId + '&year=' + selectedYear + '&isPaid=' + isPaid);
+
+
+});
+
+$('#btnShowRecordsForPaidInvoice').unbind().on('click', function (event) {
+
+    event.preventDefault();
+    var customerId = $('#ddlCustomerIdForPaidInvoice').val();
+    var isPaid = 1;
+
+    $('#loadCustomerWiseInvoices').load('PartialGetPaidInvoicesByCustomer?customerId=' + customerId + '&isPaid=' + isPaid);
+
+});
 

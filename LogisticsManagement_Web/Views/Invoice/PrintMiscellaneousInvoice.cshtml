@@ -193,12 +193,13 @@
                                         </td>
 
                                         <td class="tdStyle">
-                                            <span>@bill.UnitQuantity @bill.UnitTypeShortCode</span><br />
+                                            <span>@bill.UnitQuantity @bill.UnitTypeShortCode</span>
                                             <span>
                                                 @{
                                                     var skidStr = "";
                                                     if (bill.SkidQuantity > 0)
                                                     {
+                                                        <br />
                                                         skidStr = "SKD";
                                                     }
                                                 }

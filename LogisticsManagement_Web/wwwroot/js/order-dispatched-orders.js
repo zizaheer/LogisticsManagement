@@ -313,7 +313,7 @@ $('.btnDeliver').unbind().on('click', function () {
             backdrop: 'static',
             keyboard: false
         });
-        $('#orderDeliver').draggable();
+        $('#orderDeliver').draggable({ handle:'#deliverHeader',cursor:'move'});
         $('#orderDeliver').modal('show');
     }
     else {
