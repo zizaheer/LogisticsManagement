@@ -64,9 +64,7 @@
             <select id="ddlEmployeeTypeId" class="form-control form-control-sm" name="ddlEmployeeTypeId">
                 @foreach (var item in ViewBag.EmployeeTypes)
                 {
-                    var itemId = 0;
-                    itemId = (int)item;
-                    <option value="@itemId"> @item </option>
+                    <option value="@item.Id"> @item.EmployeeTypeName </option>
                 }
 
             </select>

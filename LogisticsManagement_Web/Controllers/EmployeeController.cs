@@ -18,6 +18,7 @@ namespace LogisticsManagement_Web.Controllers
     public class EmployeeController : Controller
     {
         private Lms_EmployeeLogic _employeeLogic;
+        private Lms_EmployeeTypeLogic _employeeTypeLogic;
         private App_CityLogic _cityLogic;
         private App_ProvinceLogic _provinceLogic;
         private App_CountryLogic _countryLogic;
@@ -35,13 +36,14 @@ namespace LogisticsManagement_Web.Controllers
             _cache = cache;
             _dbContext = dbContext;
             _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
+            _employeeTypeLogic = new Lms_EmployeeTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeeTypePoco>(_dbContext));
         }
 
         public IActionResult Index()
         {
             ValidateSession();
 
-            ViewBag.EmployeeTypes = Enum.GetValues(typeof(Enum_EmployeeType)).Cast<Enum_EmployeeType>();
+            ViewBag.EmployeeTypes = _employeeTypeLogic.GetList();
 
             return View(GetEmployeeData());
 

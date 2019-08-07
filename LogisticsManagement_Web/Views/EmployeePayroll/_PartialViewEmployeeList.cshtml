@@ -8,7 +8,7 @@
             $('#employee-list').DataTable().destroy();
         }
         $('#employee-list').DataTable({
-            "order": [[0, "asc"]],
+            "order": [[1, "asc"]],
             "paging": false,
             "lengthChange": false,
             searching: false
@@ -21,47 +21,44 @@
         <table id="employee-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
             <thead>
                 <tr style="background-color:#ebffad">
+                    <th>Select</th>
+                    <th>Name</th>
                     <th>Emp #</th>
-                    <th>First name</th>
-                    <th>Last name</th>
+                    <th>Emp type</th>
                     <th>License#</th>
                     <th>Phone</th>
                     <th>Email</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.Employees.OrderByDescending(c => c.Id))
                 {
-                    <tr>
-                        <td>
-                            <div class="form-check-inline">
-                                <input type="checkbox" name="chkSelectedEmployee" class="form-check-input chkSelectedEmployee" data-employeeid='@item.Id' />
-                                <label class="form-check-label">@item.Id</label>
-                            </div>
-                           
-                        </td>
-                        <td>
-                            @item.FirstName
-                        </td>
-                        <td>
-                            @item.LastName
-                        </td>
-                        <td>
-                            @item.DriverLicenseNo
-                        </td>
-                        <td>
-                            @item.PhoneNumber
-                        </td>
-                        <td>
-                            @item.EmailAddress
-                        </td>
-
-                        <td>
-                            <button id="btnEdit" data-employeeid='@item.Id' class="btn-primary smallGridIcon btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
-                            <button id="btnDelete" data-employeeid='@item.Id' class="btn-danger smallGridIcon btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>
+                        <button id="btnEdit" data-employeeid='@item.Id' class="btn-primary btnEdit" type="button"> Select </button>
+                    </td>
+                    <td>
+                        @item.FirstName
+                    </td>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @{ 
+                            var typeName = Model.EmployeeTypes.Where(c => c.Id == item.EmployeeTypeId).FirstOrDefault().EmployeeTypeName;
+                        }
+                        @typeName
+                    </td>
+                    <td>
+                        @item.DriverLicenseNo
+                    </td>
+                    <td>
+                        @item.PhoneNumber
+                    </td>
+                    <td>
+                        @item.EmailAddress
+                    </td>
+                </tr>
                 }
 
 

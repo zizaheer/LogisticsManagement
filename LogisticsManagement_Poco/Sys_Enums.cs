@@ -28,16 +28,16 @@ namespace LogisticsManagement_Poco
         Income,
         Expense
     }
-    public enum Enum_EmployeeType
-    {
-        Employee = 1,
-        EmployeeDriver,
-        Salesman,
-        Agent,
-        Broker,
-        OwnerOperator,
-        UnknownType,
-    }
+    //public enum Enum_EmployeeType
+    //{
+    //    Employee = 1,
+    //    EmployeeDriver,
+    //    Salesman,
+    //    Agent,
+    //    Broker,
+    //    OwnerOperator,
+    //    UnknownType,
+    //}
 
     public enum Enum_UserGroup
     {

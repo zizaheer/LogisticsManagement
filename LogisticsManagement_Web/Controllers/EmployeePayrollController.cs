@@ -17,6 +17,7 @@ namespace LogisticsManagement_Web.Controllers
     public class EmployeePayrollController : Controller
     {
         private Lms_EmployeePayrollLogic _employeePayrollLogic;
+        private Lms_EmployeeTypeLogic  _employeeTypeLogic;
         private readonly LogisticsContext _dbContext;
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
@@ -31,7 +32,8 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
-            ViewBag.EmployeeTypes = Enum.GetValues(typeof(Enum_EmployeeType)).Cast<Enum_EmployeeType>();
+            _employeeTypeLogic = new Lms_EmployeeTypeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeeTypePoco>(_dbContext));
+            ViewBag.EmployeeTypes = _employeeTypeLogic.GetList();
 
             var employeeController = new EmployeeController(_cache,_dbContext);
             employeeController.GetEmployeeData();
