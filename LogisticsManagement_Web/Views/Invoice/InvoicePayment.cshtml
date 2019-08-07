@@ -263,20 +263,17 @@
 </h3>
 
 <div class="row">
-    <div class="col-sm-6 input-group">
-        <select class="col-8 form-control form-control-sm" id="ddlCustomerIdForPaidInvoice">
+    <div class="col-sm-3">
+        <select class="form-control form-control-sm" id="ddlCustomerIdForPaidInvoice">
             <option value="0">Select customer</option>
             @foreach (var customer in ViewBag.Customers)
             {
                 <option value="@customer.Id">@customer.CustomerName</option>
             }
         </select>
-
-        <div class="col-3 form-control form-control-sm form-check-inline">
-            <input class="form-check-input" type="checkbox" id="chkShowMiscOrderInvoice" style="margin-left:10px !important" />
-            <label class="form-check-label" id="" for="chkShowMiscOrderInvoice">Miscellaneous</label>
-        </div>
-        <button class="btn btn-sm btn-dark" id="btnShowRecordsForPaidInvoice" style="margin-bottom:10px">Load</button>
+    </div>
+    <div class="col-sm-4">
+        <button class="btn btn-sm btn-dark" id="btnShowRecordsForPaidInvoice" style="margin-bottom:10px">Load invoices</button>
     </div>
 </div>
 <div class="row">

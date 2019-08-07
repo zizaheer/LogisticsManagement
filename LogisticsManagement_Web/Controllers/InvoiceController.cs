@@ -392,9 +392,10 @@ namespace LogisticsManagement_Web.Controllers
             if (isPaid != "")
                 isPaidInclusive = Convert.ToBoolean(Convert.ToInt16(isPaid));
 
-            var invoiceList = _invoiceLogic.GetList().Where(c => c.BillerCustomerId == billerId && c.PaidAmount == c.TotalInvoiceAmount).ToList();
-
-
+            var invoiceList = _invoiceLogic.GetList().Where(c => c.PaidAmount == c.TotalInvoiceAmount).ToList();
+            if (billerId > 0) {
+                invoiceList = invoiceList.Where(c => c.BillerCustomerId == billerId).ToList();
+            }
 
             return PartialView("_PartialViewCustomerWiseDueInvoices", invoiceList);
 
@@ -1113,10 +1114,12 @@ namespace LogisticsManagement_Web.Controllers
                                         if (order.OrderTypeId == 3)
                                         {
                                             isMiscellaneous = true;
+                                            viewName = "PrintMiscellaneousInvoice";
                                         }
                                         else
                                         {
                                             isMiscellaneous = false;
+                                            viewName = "PrintDeliveryInvoice";
                                         }
                                         var waybillInfoForPrint = GetWaybillInformationForPrint(order, isMiscellaneous);
                                         waybillInfoForPrint.InvoiceNumber = Convert.ToInt32(invNo);
