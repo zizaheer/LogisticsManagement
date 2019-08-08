@@ -1,0 +1,114 @@
+﻿@using LogisticsManagement_Web.Models;
+@model List<ViewModel_PayrollOrder>
+
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.dataTable.isDataTable('#delivery-list')) {
+            $('#delivery-list').DataTable().destroy();
+        }
+        $('#delivery-list').DataTable({
+            "order": [[1, "asc"]],
+            "paging": false,
+            "lengthChange": false,
+            searching: false,
+            info: false
+        });
+    });
+</script>
+
+<table id="delivery-list" class="table table-sm table-striped table-bordered" cellspacing="0" style="width:1100px; margin-top: -1px !important; font-size:.8em">
+    <thead>
+        <tr style="background-color:#ebffad">
+            <th style="width:70px">
+                <div class="form-check-inline">
+                    @{
+                        string wayBillArrayString = "";
+                        foreach (var wb in Model)
+                        {
+                            wayBillArrayString += wb.WaybillNumber + ",";
+                        }
+                    }
+                    <input type="checkbox" class="form-check-inline" id="chkCheckAllOrders" />
+                    <input type="hidden" id="hfWaybillArray" value="@wayBillArrayString" />
+                    <label class="form-check-label">W/B#</label>
+                </div>
+            </th>
+            <th style="width:55px">DATE</th>
+            <th style="width:30px">TYPE</th>
+            <th style="width:25px">SVC</th>
+            <th>PU BY</th>
+            <th>DL BY</th>
+            <th style="width:72px">ORDER COST</th>
+            <th style="width:60px">COMM(%)</th>
+            <th style="width:45px">COMM.</th>
+            <th style="width:60px">FUEL(%)</th>
+            <th style="width:40px">FUEL</th>
+            <th style="width:30px">ADD.</th>
+            <th style="width:30px">NET</th>
+            <th style="width:55px">WAITING</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <div class="form-check-inline">
+                        <input type="checkbox" class="form-check-input chkSelectedOrder" data-waybillnumber="@item.WaybillNumber">
+                        <label class="form-check-label">@item.WaybillNumber</label>
+                    </div>
+                </td>
+                <td>
+                    @item.WaybillDate.ToString("dd-MMM-yyyy")
+                </td>
+                <td>
+                    @item.OrderType
+                </td>
+                <td>
+                    @item.DeliveryOptionShortCode
+                </td>
+                <td>
+                    @item.PickupEmployeeId - @item.PickupEmployeeName
+                </td>
+                <td>
+                    @item.DeliveryEmployeeId - @item.DeliveryEmployeeName
+                </td>
+                <td>
+                    <label class="lblOrderBaseAmount">@item.WaybillBaseAmount</label>
+
+                </td>
+                <td>
+                    <input type="number" style="height:22px" class="form-control form-control-sm txtOrderCommPercent" value="@item.OrderCommissionPercent" />
+                </td>
+                <td>
+                    <label class="lblOrderCommissionAmount">@item.OrderCommissionAmnt</label>
+                </td>
+                <td>
+                    <input type="number" style="height:22px" class="form-control form-control-sm txtOrderFuelPercent" value="@item.OrderFuelPercent" />
+                </td>
+                <td>
+                    <label class="lblOrderFuelAmount">@item.OrderFuelAmnt</label>
+                </td>
+                <td>
+                    <label class="lblOrderAdditionalSrvAmount">@item.AddServiceAmnt.ToString("0.00")</label>
+                </td>
+                <td>
+                    <label class="lblNetAmount">
+                        @{
+                            var netAmnt = item.OrderCommissionAmnt + item.OrderFuelAmnt + item.AddServiceAmnt;
+                            @netAmnt;
+                        }
+                    </label>
+                </td>
+                <td>
+                    @item.WaitTime
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<script src="~/js/employee-payroll.js"></script>

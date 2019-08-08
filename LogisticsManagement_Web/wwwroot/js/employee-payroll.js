@@ -5,6 +5,11 @@ $(document).ready(function () {
     MaskPhoneNumber('#txtMobileNo');
     MaskPhoneNumber('#txtPhoneNumber');
 
+    var currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() - 7);
+    $('#txtStartDate').val(ConvertDateToUSFormat(currentDate));
+    $('#txtToDate').val(ConvertDateToUSFormat(new Date));
+
     $(document).ajaxStart(function () {
         $("#spinnerLoadingDataTable").css("display", "inline-block");
     });
@@ -13,117 +18,15 @@ $(document).ready(function () {
     });
 });
 
-$('#btnNew').on('click', function () {
-    $('#txtEmployeeId').prop('readonly', true);
-});
 
-$('#btnClear').on('click', function () {
-    $('#txtEmployeeId').prop('readonly', false);
-});
-
-
-$('#txtEmployeeId').unbind('keypress').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-
-        var employeeId = $('#txtEmployeeId').val();
-        var employeeInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
-        if (employeeInfo !== "" && employeeInfo !== null) {
-            employeeInfo = JSON.parse(employeeInfo);
-        }
-        else {
-            bootbox.alert('The employee was not found. Please check or select from the bottom list of employees.');
-            event.preventDefault();
-            return;
-        }
-
-        if (employeeInfo !== null) {
-            FillEmployeeInfo(employeeInfo);
-        }
-    }
-});
-
-$('#chkIsHourlyPaid').on('change', function () {
-
-    var isChecked = $('input[name=chkIsHourlyPaid]').is(':checked');
-    if (!isChecked) {
-
-        $('#txtHourlyRate').val('');
-        $('#txtHourlyRate').prop('disabled', true);
-    }
-    else {
-        $('#txtHourlyRate').prop('disabled', false);
-    }
-});
-$('#chkIsSalaryEmployee').on('change', function () {
-
-    var isChecked = $('input[name=chkIsSalaryEmployee]').is(':checked');
-    if (!isChecked) {
-
-        $('#txtSalaryAmount').val('');
-        $('#txtSalaryAmount').prop('disabled', true);
-    }
-    else {
-        $('#txtSalaryAmount').prop('disabled', false);
-    }
-});
-$('#chkIsCommissionProvided').on('change', function () {
-
-    var isChecked = $('input[name=chkIsCommissionProvided]').is(':checked');
-    if (!isChecked) {
-
-        $('#txtCommissionAmount').val('');
-        $('#txtCommissionAmount').prop('disabled', true);
-    }
-    else {
-        $('#txtCommissionAmount').prop('disabled', false);
-    }
-});
-$('#chkIsFuelProvided').on('change', function () {
-
-    var isChecked = $('input[name=chkIsFuelProvided]').is(':checked');
-    if (!isChecked) {
-
-        $('#txtFuelSurchargePercentage').val('');
-        $('#txtFuelSurchargePercentage').prop('disabled', true);
-    }
-    else {
-        $('#txtFuelSurchargePercentage').prop('disabled', false);
-    }
-});
-
-$('#employee-list').on('click', '.btnEdit', function () {
-    $('#txtEmployeeId').prop('readonly', true);
-
-    var employeeId = $(this).data('employeeid');
-    var employeeInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
-
-    if (employeeInfo !== "") {
-        employeeInfo = JSON.parse(employeeInfo);
-    }
-    else {
-        bootbox.alert('The employee was not found. Please check or select from the bottom list of employees.');
-        event.preventDefault();
-        return;
-    }
-
-    FillEmployeeInfo(employeeInfo);
-});
-
-$('#btnDownloadData').unbind().on('click', function (event) {
-    event.preventDefault();
-    $('#loadDataTable').load('Employee/PartialViewDataTable');
-
-});
-
-$('#frmEmployeeForm').on('keyup keypress', function (e) {
+$('#frmPayrollGenerationForm').on('keyup keypress', function (e) {
     var keyCode = e.keyCode || e.which;
     if (keyCode === 13) {
         e.preventDefault();
         return false;
     }
 });
-$('#frmEmployeeForm').unbind('submit').submit(function (event) {
+$('#frmPayrollGenerationForm').unbind('submit').submit(function (event) {
     event.preventDefault();
     var dataArray = GetFormData();
     console.log(dataArray[0].id);
@@ -150,12 +53,44 @@ $('.btnDelete').unbind().on('click', function () {
     });
 });
 
-$('#btnLoadEmployee').unbind().on('click', function () {
+
+
+
+
+
+$('#btnLoadEmployee').unbind().on('click', function (event) {
+    event.preventDefault();
+
+    var empType = $('#ddlEmployeeTypeIdForPayroll').val();
+
+    $('#loadEmployeeList').load('EmployeePayroll/PartialLoadEmployees?empTypeId=' + empType);
 
 });
 
+$('#employee-list .btnSelect').unbind().on('click', function () {
 
+    var empId = $(this).data('employeeid');
+    var employeeInfo = GetSingleById('Employee/GetEmployeeById', empId);
+    if (employeeInfo !== '') {
+        var employee = JSON.parse(employeeInfo);
 
+        $('#txtEmployeeIdForPayroll').val(employee.Id);
+        $('#txtEmployeeNameForPayroll').val(employee.FirstName);
+    } else {
+        $('#txtEmployeeIdForPayroll').val('');
+        $('#txtEmployeeNameForPayroll').val('');
+    }
+});
+
+$('#btnLoadDelivery').unbind().on('click', function () {
+
+    var empId = $('#txtEmployeeIdForPayroll').val();
+    var fromDate = $('#txtStartDate').val();
+    var toDate = $('#txtToDate').val();
+
+    $('#loadEmployeeOrderList').load('EmployeePayroll/PartialLoadEmployeeOrders?empId=' + empId + '&fromDate=' + fromDate + '&toDate=' + toDate);
+
+});
 
 
 

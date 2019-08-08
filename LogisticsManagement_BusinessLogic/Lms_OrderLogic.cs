@@ -64,7 +64,6 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_OrderPoco Update(Lms_OrderPoco poco)
         {
-            poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
             _cache.Remove(App_CacheKeys.Orders);
             return base.Update(poco);
         }

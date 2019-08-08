@@ -7,19 +7,19 @@
 
 <div class="row">
 
-    
+
     <div class="col-sm-2 form-group">
-        <small> <b><label for="ddlCustomerId">Employee Type</label></b></small>
-        <select class="form-control form-control-sm" id="ddlCustomerId" style="background-color:#c8fde4; font-weight:bold">
+        <small> <b><label for="ddlEmployeeTypeIdForPayroll">Employee Type</label></b></small>
+        <select class="form-control form-control-sm" id="ddlEmployeeTypeIdForPayroll" style="background-color:#c8fde4; font-weight:bold">
             <option value="0">- All -</option>
-            @foreach (var item in ViewBag.EmployeeTypes)
+            @foreach (var item in Model.EmployeeTypes)
             {
-                <option value="@item.Id"> @item.EmployeeTypeName </option>
+                <option value="@item.Id">@item.EmployeeTypeName</option>
             }
 
         </select>
     </div>
-    
+
     <div class="col-sm-2 form-group" style="margin-top:28px">
         <small> <b><label for="btnLoadEmployee"></label></b></small><button id="btnLoadEmployee" class="btn btn-sm btn-dark"> Load employee</button>
     </div>
@@ -35,11 +35,19 @@
     </div>
 </div>
 
-<form id="frmPayrollGenerationForm">
-    
+<hr />
 
-    <hr />
+<form id="frmPayrollGenerationForm">
+
     <div class="row">
+        <div class="col-sm-1 form-group">
+            <small> <b><label for="txtEmployeeIdForPayroll">Emp. #</label></b></small>
+            <input type="number" id="txtEmployeeIdForPayroll" class="form-control form-control-sm" readonly />
+        </div>
+        <div class="col-sm-3 form-group">
+            <small> <b><label for="txtEmployeeNameForPayroll">Employee name</label></b></small>
+            <input type="text" id="txtEmployeeNameForPayroll" class="form-control form-control-sm" readonly />
+        </div>
         <div class="col-sm-2 form-group">
             <small> <b><label for="txtStartDate">From date</label></b></small>
             <input type="date" id="txtStartDate" class="form-control form-control-sm txtStartDate" />
@@ -48,14 +56,49 @@
             <small> <b><label for="txtToDate">To date</label></b></small>
             <input type="date" id="txtToDate" class="form-control form-control-sm txtToDate" />
         </div>
-        <div class="col-sm-10">
-            <button type="submit" class="btn btn-sm btn-primary" id="btnGenerateInvoice"><i class="fa fa-gear"></i> Generate invoice/s</button>
+        <div class="col-sm-2 form-group">
+            <button type="button" class="btn btn-sm btn-primary" id="btnLoadDelivery" style="margin-top:28px"><i class="fa fa-gear"></i> Load delivery</button>
         </div>
-        <div class="col-2 form-group">
-            <button id="btnTrialPrint" class="btn btn-sm btn-danger" style="float:right; margin-bottom:15px"><i class="fa fa-print"></i> Invoice trial print</button>
+    </div>
+    <div class="row">
+        <div class="col-sm-1 form-group">
+            <small> <b><label for="txtEmployeeIdForPayroll">Emp. #</label></b></small>
+            <input type="number" id="txtEmployeeIdForPayroll" class="form-control form-control-sm" readonly />
         </div>
+        <div class="col-sm-3 form-group">
+            <small> <b><label for="txtEmployeeNameForPayroll">Employee name</label></b></small>
+            <input type="text" id="txtEmployeeNameForPayroll" class="form-control form-control-sm" readonly />
+        </div>
+        <div class="col-sm-2 form-group">
+            <small> <b><label for="txtStartDate">From date</label></b></small>
+            <input type="date" id="txtStartDate" class="form-control form-control-sm txtStartDate" />
+        </div>
+        <div class="col-sm-2 form-group">
+            <small> <b><label for="txtToDate">To date</label></b></small>
+            <input type="date" id="txtToDate" class="form-control form-control-sm txtToDate" />
+        </div>
+        <div class="col-sm-2 form-group">
+            <button type="button" class="btn btn-sm btn-primary" id="btnLoadDelivery" style="margin-top:28px"><i class="fa fa-gear"></i> Load delivery</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div style="display:block; max-height:278px; min-height:75px; overflow-y:scroll; overflow-x:scroll; border:1px solid #c3c3c3; margin-bottom:15px" id="loadEmployeeOrderList">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+
 
     </div>
+
+
+
+
 </form>
 
 
@@ -80,4 +123,4 @@
 </div>
 
 
-<script src="~/js/invoice.js"></script>
+<script src="~/js/employee-payroll.js"></script>

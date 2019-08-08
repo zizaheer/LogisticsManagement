@@ -60,6 +60,7 @@ namespace LogisticsManagement_Web.Controllers
         {
             ViewModel_Employee employeeViewModel = new ViewModel_Employee();
             employeeViewModel.Employees = _employeeLogic.GetList();
+            employeeViewModel.EmployeeTypes = _employeeTypeLogic.GetList();
 
             _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
             _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));

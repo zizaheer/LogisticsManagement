@@ -11,7 +11,8 @@
             "order": [[1, "asc"]],
             "paging": false,
             "lengthChange": false,
-            searching: false
+            searching: false,
+            info: false
         });
     });
 </script>
@@ -35,7 +36,7 @@
                 {
                 <tr>
                     <td>
-                        <button id="btnEdit" data-employeeid='@item.Id' class="btn-primary btnEdit" type="button"> Select </button>
+                        <button  data-employeeid='@item.Id' class="btn-primary btnSelect" type="button"> Select </button>
                     </td>
                     <td>
                         @item.FirstName
