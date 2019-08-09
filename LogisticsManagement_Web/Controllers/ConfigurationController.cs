@@ -118,6 +118,7 @@ namespace LogisticsManagement_Web.Controllers
                 _cache.Remove(App_CacheKeys.Tariffs);
                 _cache.Remove(App_CacheKeys.Addresses);
                 _cache.Remove(App_CacheKeys.Customers);
+                _cache.Remove(App_CacheKeys.CustomerAddresses);
                 _cache.Remove(App_CacheKeys.Employees);
                 _cache.Remove(App_CacheKeys.Orders);
                 _cache.Remove(App_CacheKeys.OrderAdditionalServices);

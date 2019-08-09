@@ -23,7 +23,7 @@ namespace LogisticsManagement_Web.Models
         public string BillerCustomerCityLine { get; set; }
         public string BillerPostCode { get; set; }
         public string BillerDepartment { get; set; }
-        public byte? Term { get; set; }
+        public string Term { get; set; }
     }
 }
 

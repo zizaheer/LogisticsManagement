@@ -14,6 +14,7 @@ namespace LogisticsManagement_Poco
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int EmployeeId { get; set; }
+        public string PaymentReferenceNo { get; set; }
         public decimal PaymentAmount { get; set; }
         public int PaymentMethodId { get; set; }
         public DateTime PaymentDate { get; set; }

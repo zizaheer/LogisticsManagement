@@ -15,8 +15,9 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public int PayrollGenerationId { get; set; }
         public int EmployeeId { get; set; }
-
         public string WaybillNo { get; set; }
-        public decimal? FuelPercent { get; set; }
+        public decimal? OrderRelatedAmnt { get; set; }
+        public decimal? FuelSurchargeAmnt { get; set; }
+        public decimal? AddServiceAmnt { get; set; }
     }
 }

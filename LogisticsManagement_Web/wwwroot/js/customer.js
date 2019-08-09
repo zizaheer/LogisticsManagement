@@ -180,12 +180,13 @@ $('#txtAddressLine').unbind('keyup, keypress').on('keyup keypress', function (e)
 });
 $('#txtAddressLine').on('input', function (event) {
     event.preventDefault();
+    var addressId = '';
     var valueSelected = $('#txtAddressLine').val();
-    var addressId = $('#addresses option').filter(function () {
+    addressId = $('#addresses option').filter(function () {
         return this.value === valueSelected;
     }).data('addressid');
 
-    if (addressId !== '') {
+    if (addressId !== '' && addressId !== undefined) {
         FillAddress(addressId);
     }
 });
@@ -201,12 +202,13 @@ $('#txtAddressLineForMain').unbind('keyup keypress').on('keyup keypress', functi
 });
 $('#txtAddressLineForMain').on('input', function (event) {
     event.preventDefault();
+    var addressId = '';
     var valueSelected = $('#txtAddressLineForMain').val();
-    var addressId = $('#addresses option').filter(function () {
+    addressId = $('#addresses option').filter(function () {
         return this.value === valueSelected;
     }).data('addressid');
 
-    if (addressId !== '') {
+    if (addressId !== '' && addressId !== undefined) {
         FillMainFormAddress(addressId);
     }
 });
@@ -225,8 +227,6 @@ $('input[name=rdoAddressType]').on('change', function () {
     else if (selectedValue === '4') {
         $('#lblIsDefault').text('Default warehouse address');
     }
-
-
 });
 
 $('input[name=rdoAddressTypeForMain]').on('change', function () {
@@ -234,32 +234,34 @@ $('input[name=rdoAddressTypeForMain]').on('change', function () {
     var selectedValue = parseInt($('input[name="rdoAddressTypeForMain"]:checked').val());
     var customerId = $('#txtCustomerId').val();
 
-    var shippingAddressId = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
-    var billingAddressId = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
+    if (customerId !== '') {
+        var shippingAddressId = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
+        var billingAddressId = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
 
-    if (selectedValue === 1) {
-        if (billingAddressId !== '') {
-            FillMainFormAddress(billingAddressId);
-        } else {
-            ClearMainFormAddress();
-            $('#txtAddressLineForMain').val('');
+        if (selectedValue === 1) {
+            if (billingAddressId !== '') {
+                FillMainFormAddress(billingAddressId);
+            } else {
+                ClearMainFormAddress();
+                $('#txtAddressLineForMain').val('');
+            }
+        } else if (selectedValue === 2) {
+            if (shippingAddressId !== '') {
+                FillMainFormAddress(shippingAddressId);
+            } else {
+                ClearMainFormAddress();
+                $('#txtAddressLineForMain').val('');
+            }
         }
-    } else if (selectedValue === 2) {
-        if (shippingAddressId !== '') {
-            FillMainFormAddress(shippingAddressId);
-        } else {
-            ClearMainFormAddress();
-            $('#txtAddressLineForMain').val('');
-        }
-    }
-    else if (selectedValue === 0) {
-        if (shippingAddressId !== '') {
-            FillMainFormAddress(shippingAddressId);
-        } else if (billingAddressId !== '') {
-            FillMainFormAddress(billingAddressId);
-        } else {
-            ClearMainFormAddress();
-            $('#txtAddressLineForMain').val('');
+        else if (selectedValue === 0) {
+            if (shippingAddressId !== '') {
+                FillMainFormAddress(shippingAddressId);
+            } else if (billingAddressId !== '') {
+                FillMainFormAddress(billingAddressId);
+            } else {
+                ClearMainFormAddress();
+                $('#txtAddressLineForMain').val('');
+            }
         }
     }
 
@@ -388,7 +390,7 @@ function GetFormData() {
     var addressData = {
         customerId: $('#txtCustomerId').val() === "" ? "0" : $('#txtCustomerId').val(),
         addressTypeId: $('input[name="rdoAddressTypeForMain"]:checked').val(),
-        addressId: $('#hfAddressIdForMain').val() === '' ? 0 : parseInt($('#hfAddressIdForMain')),
+        addressId: $('#hfAddressIdForMain').val() === '' ? 0 : parseInt($('#hfAddressIdForMain').val()),
 
         addressLine: $('#txtAddressLineForMain').val(),
         unitNumber: $('#txtAddressUnitForMain').val(),
@@ -506,7 +508,7 @@ function FillMainFormAddress(addressId) {
         } else {
             $('#chkMakeDefaultAddressForMain').prop('checked', false);
         }
-        
+
     } else {
         ClearMainFormAddress();
         //bootbox.alert('Address not found. Please try again or select from the list.');

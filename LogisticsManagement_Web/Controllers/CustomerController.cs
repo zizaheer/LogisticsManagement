@@ -120,6 +120,7 @@ namespace LogisticsManagement_Web.Controllers
                         if (customerAddress != null)
                         {
                             customerAddress.CustomerId = newCustomerId;
+                            customerAddress.IsDefault = true;
                             _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
                             var addressList = _addressLogic.GetList();
 
@@ -217,7 +218,6 @@ namespace LogisticsManagement_Web.Controllers
 
                     using (var scope = new TransactionScope())
                     {
-
                         if (customerPoco.Id > 0)
                         {
                             var customer = _customerLogic.GetSingleById(customerPoco.Id);
@@ -231,12 +231,12 @@ namespace LogisticsManagement_Web.Controllers
                             accountInfo.AccountName = customerPoco.CustomerName;
 
                             _chartOfAccountLogic.Update(accountInfo);
-                            _customerLogic.Update(customer);
-
+                            result = _customerLogic.Update(customer).Id.ToString();
 
                             if (customerAddress != null)
                             {
                                 customerAddress.CustomerId = customerPoco.Id;
+                                customerAddress.IsDefault = true;
                                 _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
                                 var addressList = _addressLogic.GetList();
 
@@ -244,7 +244,7 @@ namespace LogisticsManagement_Web.Controllers
                                 var customerAddressList = _customerAddressLogic.GetList().Where(c => c.CustomerId == customerAddress.CustomerId);
 
                                 int addressId = 0;
-                                var existingAddress = addressList.Where(c => c.UnitNumber == customerAddress.UnitNumber && c.AddressLine == customerAddress.AddressLine && c.CityId == customerAddress.CityId).FirstOrDefault();
+                                var existingAddress = addressList.Where(c => c.UnitNumber == customerAddress.UnitNumber && c.AddressLine == customerAddress.AddressLine && c.CityId == customerAddress.CityId).ToList().FirstOrDefault();
                                 if (existingAddress != null)
                                 {
                                     existingAddress.ProvinceId = customerAddress.ProvinceId;
@@ -276,13 +276,27 @@ namespace LogisticsManagement_Web.Controllers
                                     addressId = _addressLogic.Add(addressPoco).Id;
                                 }
 
+                                // This will ensure only one address is set as default address for the same type
+                                var typeWiseAddresses = new List<Lms_CustomerAddressMappingPoco>();
+                                if (customerAddress.IsDefault)
+                                {
+                                    typeWiseAddresses = customerAddressList.Where(c => c.CustomerId == customerAddress.CustomerId && c.AddressTypeId == customerAddress.AddressTypeId).ToList();
+                                    if (typeWiseAddresses.Count > 0)
+                                    {
+                                        foreach (var item in typeWiseAddresses)
+                                        {
+                                            item.IsDefault = false;
+                                            _customerAddressLogic.Update(item);
+                                        }
+                                    }
+                                }
 
                                 var addressMappingList = _customerAddressLogic.GetList();
                                 if (customerAddress.AddressTypeId == 0)
                                 {
                                     Lms_CustomerAddressMappingPoco customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
 
-                                    customerAddressMappingPoco = addressMappingList.Where(c => c.CustomerId == customerAddress.CustomerId && c.AddressId == addressId && c.AddressTypeId == 1).FirstOrDefault();
+                                    customerAddressMappingPoco = addressMappingList.Where(c => c.CustomerId == customerAddress.CustomerId && c.AddressId == addressId && c.AddressTypeId == 1).ToList().FirstOrDefault();
                                     if (customerAddressMappingPoco != null)
                                     {
                                         customerAddressMappingPoco.IsDefault = customerAddress.IsDefault;
@@ -334,6 +348,7 @@ namespace LogisticsManagement_Web.Controllers
                                         _customerAddressLogic.Add(customerAddressMappingPoco);
                                     }
                                 }
+
                             }
 
                             scope.Complete();

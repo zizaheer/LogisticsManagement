@@ -15,9 +15,7 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public int EmployeeTypeId { get; set; }
         public int EmployeeId { get; set; }
-
-        public decimal? OrderRelatedAmnt { get; set; }
-        public decimal? AdditionalServiceRelatedAmnt { get; set; }
+        public decimal? PayrollAmount { get; set; }
         public decimal? BonusAmount { get; set; }
         public decimal? LoanDeduction { get; set; }
         public decimal? InsuranceDeduction { get; set; }
@@ -27,7 +25,6 @@ namespace LogisticsManagement_Poco
         public decimal? PayTaxPercent { get; set; }
         public decimal TotalEarning { get; set; }
         public int TransactionId { get; set; }
-
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
     }
