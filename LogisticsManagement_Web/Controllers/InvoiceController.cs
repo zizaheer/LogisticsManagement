@@ -393,7 +393,8 @@ namespace LogisticsManagement_Web.Controllers
                 isPaidInclusive = Convert.ToBoolean(Convert.ToInt16(isPaid));
 
             var invoiceList = _invoiceLogic.GetList().Where(c => c.PaidAmount == c.TotalInvoiceAmount).ToList();
-            if (billerId > 0) {
+            if (billerId > 0)
+            {
                 invoiceList = invoiceList.Where(c => c.BillerCustomerId == billerId).ToList();
             }
 
@@ -434,37 +435,29 @@ namespace LogisticsManagement_Web.Controllers
 
                     using (var scope = new TransactionScope())
                     {
-                        var customerWiseOrders = new List<Lms_OrderPoco>();
+                        var billerList = orders.Select(c => c.BillToCustomerId).Distinct().ToList();
 
-                        foreach (var item in orders.ToArray())
+                        foreach (var biller in billerList)
                         {
+                            var customerWiseOrders = new List<Lms_OrderPoco>();
+                            customerWiseOrders = orders.Where(c => c.BillToCustomerId == biller).ToList();
 
-                            if (customerWiseOrders.Find(c => c.Id == item.Id) != null)
+                            if (customerWiseOrders.Count > 0)
                             {
-                                continue;
+                                int billerCustomerId;
+                                string billerDepartment;
+                                int createdBy = sessionData.UserId;
+
+                                string[] customerWiseWbNumbers;
+                                customerWiseWbNumbers = customerWiseOrders.Select(c => c.WayBillNumber).ToArray();
+                                billerCustomerId = customerWiseOrders.FirstOrDefault().BillToCustomerId;
+                                billerDepartment = customerWiseOrders.FirstOrDefault().DepartmentName;
+
+                                _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, createdBy, customerWiseWbNumbers);
                             }
-
-                            customerWiseOrders = orders.Where(c => c.BillToCustomerId == item.BillToCustomerId).ToList();
-
-                            int billerCustomerId;
-                            string billerDepartment;
-                            int createdBy = sessionData.UserId;
-
-                            string[] customerWiseWbNumbers;
-                            customerWiseWbNumbers = customerWiseOrders.Select(c => c.WayBillNumber).ToArray();
-                            billerCustomerId = customerWiseOrders.FirstOrDefault().BillToCustomerId;
-                            billerDepartment = customerWiseOrders.FirstOrDefault().DepartmentName;
-
-
-                            _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, createdBy, customerWiseWbNumbers);
-
-                            orders.RemoveAll(c => c.BillToCustomerId == item.BillToCustomerId);
-
                         }
 
-
                         scope.Complete();
-
                         result = "Success";
 
                     }

@@ -266,9 +266,7 @@ $('#frmInvoiceGenerationForm').on('keyup keypress', function (e) {
     }
 });
 $('#frmInvoiceGenerationForm').unbind('submit').submit(function (event) {
-
     event.preventDefault();
-
     var dataArray = wayBillNumberArray;
 
     if (dataArray.length < 1) {
@@ -278,10 +276,12 @@ $('#frmInvoiceGenerationForm').unbind('submit').submit(function (event) {
 
     bootbox.confirm("This will generate invoices for selected customer/s and cannot be undone. Did you see the trial print and found everything ok? ", function (result) {
         if (result === true) {
-            PerformPostActionWithObject('Invoice/Add', [dataArray]);
-            $('#loadPendingInvoiceDataTable').load('Invoice/PartialPendingInvoiceDataTable');
-            $('#loadInvoicedDataTable').load('Invoice/PartialViewDataTable');
-            wayBillNumberArray = [];
+            var output = PerformPostActionWithObject('Invoice/Add', [dataArray]);
+            if (output !== '') {
+                $('#loadPendingInvoiceDataTable').load('Invoice/PartialPendingInvoiceDataTable');
+                $('#loadInvoicedDataTable').load('Invoice/PartialViewDataTable');
+                wayBillNumberArray = [];
+            }
         }
     });
 });

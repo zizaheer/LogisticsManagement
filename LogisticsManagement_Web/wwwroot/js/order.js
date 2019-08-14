@@ -25,7 +25,6 @@ $(document).ready(function () {
 //#region Local Variables
 var employeeData;
 var paidByValue = '1';
-var employeeId = 0;
 
 // global tax amount
 //var taxPercentage = 0.0;
@@ -352,15 +351,42 @@ function FillConsigneeInformation(consigneeInfo) {
 $('#txtEmployeeName').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
+
+        var empInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
+        if (empInfo !== '') {
+            var emp = JSON.parse(empInfo);
+            $('#txtEmployeeName').val(emp.FirstName);
+            //$('#txtEmployeeTypeName').val(empInfo.FirstName);
+            $('#hfDispatchToEmployeeId').val(employeeId);
+            $('#txtOrderPortionForNewOrders').prop('disabled', false);
+        } else {
+            $('#hfDispatchToEmployeeId').val('');
+            $('#txtOrderPortionForNewOrders').prop('disabled', true);
+        }
     }
 });
 $('#txtEmployeeName').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $(this).val();
 
-    employeeId = $('#dlEmployees option').filter(function () {
+    var employeeId = $('#dlEmployees option').filter(function () {
         return this.value === valueSelected;
     }).data('employeeid');
+
+    var empInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
+    if (empInfo !== '') {
+        var emp = JSON.parse(empInfo);
+        $('#txtEmployeeName').val(emp.FirstName);
+        //$('#txtEmployeeTypeName').val(empInfo.FirstName);
+        $('#hfDispatchToEmployeeId').val(employeeId);
+        $('#txtOrderPortionForNewOrders').prop('disabled', false);
+    } else {
+        $('#hfDispatchToEmployeeId').val('');
+        $('#txtOrderPortionForNewOrders').prop('disabled', true);
+    }
+
+
+    
 });
 
 $('#txtShipperAddressLine').keypress(function (event) {
@@ -840,7 +866,7 @@ $('#btnDispatch').unbind().on('click', function (event) {
 $('#btnDispatchToEmployee').unbind().on('click', function (event) {
     event.preventDefault();
 
-    var selectedEmployeeId = employeeId;
+    var selectedEmployeeId = $('#hfDispatchToEmployeeId').val();
     var dispatchDate = $('#txtDispatchDatetimeForNewOrders').val();
     var vehicleId = 0; //Get vehicle Id feature
 
