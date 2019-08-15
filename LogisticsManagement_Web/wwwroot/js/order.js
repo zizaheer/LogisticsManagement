@@ -352,16 +352,22 @@ $('#txtEmployeeName').keypress(function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
 
+        var employeeId = $('#txtEmployeeName').val();
+
+        $('#hfDispatchToEmployeeId').val('');
+        $('#ddlShareType').prop('disabled', true);
+        $('#txtOrderPortionForNewOrders').prop('disabled', true);
+
         var empInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
         if (empInfo !== '') {
             var emp = JSON.parse(empInfo);
             $('#txtEmployeeName').val(emp.FirstName);
-            //$('#txtEmployeeTypeName').val(empInfo.FirstName);
             $('#hfDispatchToEmployeeId').val(employeeId);
-            $('#txtOrderPortionForNewOrders').prop('disabled', false);
-        } else {
-            $('#hfDispatchToEmployeeId').val('');
-            $('#txtOrderPortionForNewOrders').prop('disabled', true);
+
+            if ((emp.EmployeeTypeId === 4 | emp.EmployeeTypeId === 6) && selectedOrdersForDispatch.length === 1 ) {
+                $('#ddlShareType').prop('disabled', false);
+                $('#txtOrderPortionForNewOrders').prop('disabled', false);
+            } 
         }
     }
 });
@@ -373,20 +379,22 @@ $('#txtEmployeeName').on('input', function (event) {
         return this.value === valueSelected;
     }).data('employeeid');
 
+    $('#hfDispatchToEmployeeId').val('');
+    $('#ddlShareType').prop('disabled', true);
+    $('#txtOrderPortionForNewOrders').prop('disabled', true);
+
     var empInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
+
     if (empInfo !== '') {
         var emp = JSON.parse(empInfo);
         $('#txtEmployeeName').val(emp.FirstName);
-        //$('#txtEmployeeTypeName').val(empInfo.FirstName);
         $('#hfDispatchToEmployeeId').val(employeeId);
-        $('#txtOrderPortionForNewOrders').prop('disabled', false);
-    } else {
-        $('#hfDispatchToEmployeeId').val('');
-        $('#txtOrderPortionForNewOrders').prop('disabled', true);
-    }
 
-
-    
+        if ((emp.EmployeeTypeId === 4 | emp.EmployeeTypeId === 6) && selectedOrdersForDispatch.length === 1) {
+            $('#ddlShareType').prop('disabled', false);
+            $('#txtOrderPortionForNewOrders').prop('disabled', false);
+        }
+    } 
 });
 
 $('#txtShipperAddressLine').keypress(function (event) {
@@ -861,6 +869,10 @@ $('#btnDispatch').unbind().on('click', function (event) {
     $('#dispatchOrder').modal('show');
 
     $('#txtEmployeeName').val('');
+    $('#hfDispatchToEmployeeId').val('');
+    $('#ddlShareType').prop('disabled', true);
+    $('#txtOrderPortionForNewOrders').prop('disabled', true);
+    $('#txtOrderPortionForNewOrders').val('');
 });
 
 $('#btnDispatchToEmployee').unbind().on('click', function (event) {
@@ -868,6 +880,9 @@ $('#btnDispatchToEmployee').unbind().on('click', function (event) {
 
     var selectedEmployeeId = $('#hfDispatchToEmployeeId').val();
     var dispatchDate = $('#txtDispatchDatetimeForNewOrders').val();
+    var isPercent = parseInt($('#ddlShareType').val());
+    var sharePortion = $('#txtOrderPortionForNewOrders').val() === '' ? 0 : parseFloat($('#txtOrderPortionForNewOrders').val());
+
     var vehicleId = 0; //Get vehicle Id feature
 
     if (selectedEmployeeId < 1) {
@@ -880,7 +895,7 @@ $('#btnDispatchToEmployee').unbind().on('click', function (event) {
         return;
     }
 
-    var dataArray = [selectedOrdersForDispatch, selectedEmployeeId, dispatchDate, vehicleId];
+    var dataArray = [selectedOrdersForDispatch, selectedEmployeeId, dispatchDate, vehicleId, isPercent, sharePortion];
 
     var result = PerformPostActionWithObject('Order/UpdateDispatchStatus', dataArray);
     if (result.length > 0) {

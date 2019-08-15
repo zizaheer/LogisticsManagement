@@ -357,6 +357,8 @@ namespace LogisticsManagement_Web.Controllers
                     var employeeNumber = Convert.ToInt32(orderData[1]);
                     var dispatchDate = Convert.ToDateTime(orderData[2]);
                     var vehicleId = Convert.ToInt16(orderData[3]);
+                    var isShareOnPercent = Convert.ToBoolean(orderData[4]);
+                    var shareAmount = Convert.ToDecimal(orderData[5]);
 
                     var orders = _orderLogic.GetList();
                     var orderStatuses = _orderStatusLogic.GetList();
@@ -379,6 +381,13 @@ namespace LogisticsManagement_Web.Controllers
                                 status.StatusLastUpdatedOn = DateTime.Now;
 
                                 _orderStatusLogic.Update(status);
+
+                                if (shareAmount > 0)
+                                {
+                                    order.OrderShareAmount = shareAmount;
+                                    order.IsSharingOnPercent = isShareOnPercent;
+                                    _orderLogic.Update(order);
+                                }
                             }
 
                         }
@@ -571,6 +580,16 @@ namespace LogisticsManagement_Web.Controllers
 
                 using (var scope = new TransactionScope())
                 {
+
+                    foreach (var order in orders)
+                    {
+                        if (order.OrderShareAmount != null) {
+                            order.OrderShareAmount = null;
+                            order.IsSharingOnPercent = null;
+                            _orderLogic.Update(order);
+                        }
+                    }
+
                     foreach (var orderStatus in dispatchedList)
                     {
                         orderStatus.IsDispatched = null;
@@ -908,7 +927,8 @@ namespace LogisticsManagement_Web.Controllers
                             {
                                 result = "Released";
                             }
-                            else {
+                            else
+                            {
                                 result = "";
                             }
                         }

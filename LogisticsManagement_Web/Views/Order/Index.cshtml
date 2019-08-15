@@ -31,7 +31,7 @@
     }
 
     .toggleButtonReturnOrder {
-        margin-left:18px;
+        margin-left: 18px;
     }
 </style>
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
@@ -373,7 +373,7 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-sm-5">
+                        <div class="col-sm-4">
                             <small><b><label for="txtEmployeeName">Select employee/driver</label></b></small>
                             <input type="search" id="txtEmployeeName" name="txtEmployeeName" class="form-control form-control-sm txtEmployeeName" placeholder="Select employee/driver" list="dlEmployees" />
                             <datalist id="dlEmployees">
@@ -392,13 +392,17 @@
                             </small>
                             <input class="form-control form-control-sm  form-group" id="txtDispatchDatetimeForNewOrders" type="datetime-local" min="1" name="txtDispatchDatetimeForNewOrders">
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <small>
                                 <b>
-                                    <label for="txtOrderPortionForNewOrders">Order portion</label>
+                                    <label for="txtOrderPortionForNewOrders">Order share <span style="font-size:.85em; color:#a40c0c">(Only for single order dispatch)</span></label>
                                 </b>
                             </small>
-                            <input class="form-control form-control-sm  form-group" id="txtOrderPortionForNewOrders" type="number" name="txtOrderPortionForNewOrders" disabled>
+                            <div class="input-group">
+                                <select class=" col-sm-5 form-control form-control-sm" id="ddlShareType" disabled><option value="1">Fixed</option><option value="2">Pct.(%)</option></select>
+                                <input class="form-control form-control-sm  form-group" id="txtOrderPortionForNewOrders" type="number" name="txtOrderPortionForNewOrders" disabled>
+                            </div>
+                            
                         </div>
                     </div>
                     <div class="row" style="display:none">

@@ -56,6 +56,8 @@ namespace LogisticsManagement_Poco
         public string ProReferenceNumber { get; set; }
         public string ShipperName { get; set; }
         public string ShipperAddress { get; set; }
+        public decimal? OrderShareAmount { get; set; }
+        public bool? IsSharingOnPercent { get; set; }
 
         public bool IsInvoiced { get; set; }
         public string CommentsForWayBill { get; set; }
