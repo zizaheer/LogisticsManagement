@@ -880,7 +880,7 @@ $('#btnDispatchToEmployee').unbind().on('click', function (event) {
 
     var selectedEmployeeId = $('#hfDispatchToEmployeeId').val();
     var dispatchDate = $('#txtDispatchDatetimeForNewOrders').val();
-    var isPercent = parseInt($('#ddlShareType').val());
+    var isPercent = parseInt($('#ddlShareType').val()) === 1 ? true : false;
     var sharePortion = $('#txtOrderPortionForNewOrders').val() === '' ? 0 : parseFloat($('#txtOrderPortionForNewOrders').val());
 
     var vehicleId = 0; //Get vehicle Id feature
@@ -893,6 +893,13 @@ $('#btnDispatchToEmployee').unbind().on('click', function (event) {
     if (dispatchDate === null || dispatchDate === "") {
         bootbox.alert('Please enter dispatch date');
         return;
+    }
+
+    if (isPercent === true) {
+        if (sharePortion > 100) {
+            bootbox.alert('Percent amount cannot be greater than 100.');
+            return;
+        }
     }
 
     var dataArray = [selectedOrdersForDispatch, selectedEmployeeId, dispatchDate, vehicleId, isPercent, sharePortion];

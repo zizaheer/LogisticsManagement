@@ -161,8 +161,16 @@ $('#txtEmployeeName').keypress(function (event) {
 
         var employeeId = $('#txtEmployeeName').val();
         if (employeeId > 0) {
-            var emp = GetEmployeeById(employeeId);
-            $('#txtEmployeeName').val(emp.FirstName);
+            var empInfo = GetEmployeeById(employeeId);
+            if (empInfo !== '') {
+                $('#txtEmployeeName').val(empInfo.FirstName);
+                $('#hfEmployeeId').val(employeeId);
+
+                if (empInfo.EmployeeTypeId === 4 | empInfo.EmployeeTypeId === 6) {
+                    $('#ddlShareTypeId').prop('disabled', false);
+                    $('#txtShareAmount').prop('disabled', false);
+                }
+            }
         }
     }
 });
@@ -174,13 +182,23 @@ $('#txtEmployeeName').on('input', function (event) {
         return this.value === valueSelected;
     }).data('employeeid');
 
+    $('#ddlShareTypeId').prop('disabled', true);
+    $('#txtShareAmount').prop('disabled', true);
+    $('#txtShareAmount').val('');
+
     if (employeeId > 0) {
-        $('#hfEmployeeId').val(employeeId);
-        var emp = GetEmployeeById(employeeId);
-        $('#txtEmployeeName').val(emp.FirstName);
+        var empInfo = GetEmployeeById(employeeId);
+        if (empInfo !== '') {
+            $('#txtEmployeeName').val(empInfo.FirstName);
+            $('#hfEmployeeId').val(employeeId);
+
+            if (empInfo.EmployeeTypeId === 4 | empInfo.EmployeeTypeId === 6) {
+                $('#ddlShareTypeId').prop('disabled', false);
+                $('#txtShareAmount').prop('disabled', false);
+            }
+        } 
     }
-
-
+    
 });
 
 
@@ -575,7 +593,7 @@ function GetAddressInfo(addressId) {
 function GetEmployeeById(employeeId) {
     if (employeeId != null && employeeId !== '') {
         var empInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
-        if (empInfo != null) {
+        if (empInfo != null && empInfo!=='') {
             var employee = JSON.parse(empInfo);
         }
         return employee;
@@ -724,6 +742,16 @@ function FillOrderDetails(orderRelatedData) {
         var employee = GetEmployeeById(orderRelatedData.ServiceProviderEmployeeId);
         if (employee != null) {
             $('#txtEmployeeName').val(employee.FirstName);
+        }
+
+        if (orderRelatedData.OrderShareAmount > 0) {
+            if (orderRelatedData.IsSharingOnPercent === true) {
+                $('#ddlShareTypeId').val('1');
+            } else {
+                $('#ddlShareTypeId').val('0');
+            }
+
+            $('#txtShareAmount').val(orderRelatedData.OrderShareAmount);
         }
 
         $('#txtDeliveredBy').val(orderRelatedData.DeliveredBy);
@@ -879,6 +907,8 @@ function GetFormData() {
         orderBasicCost: $('#lblGrandBasicCost').text() === "" ? null : parseFloat($('#lblGrandBasicCost').text()),
         totalOrderCost: 0,
         totalAdditionalServiceCost: $('#lblGrandTotalAmount').text() === "" ? 0 : parseFloat($('#lblGrandTotalAmount').text()),
+        orderShareAmount: $('#txtShareAmount').val() === "" ? 0 : parseFloat($('#txtShareAmount').val()),
+        isSharingOnPercent: parseInt($('#ddlShareTypeId').val()),
 
         commentsForWayBill: $('#txtCommentsForWayBill').val() === "" ? null : $('#txtCommentsForWayBill').val(),
         isPrintedOnWayBill: $('#chkIsPrintOnWayBill').is(':checked') === true ? 1 : 0,
@@ -925,6 +955,10 @@ function ClearForm() {
     $('#txtUnitQuantity').val('');
     $('#txtSkidQuantity').val('');
     $('#txtTotalPieces').val('');
+
+    $('#ddlShareTypeId').prop('disabled', true);
+    $('#txtShareAmount').prop('disabled', true);
+    $('#txtShareAmount').val('');
 
     $('#txtDiscountPercent').val('');
 

@@ -104,6 +104,12 @@ namespace LogisticsManagement_Web.Controllers
                         orderPoco.CreateDate = orderDate == "" ? DateTime.Today : Convert.ToDateTime(orderDate);
                         orderPoco.CreatedBy = sessionData.UserId;
                         orderPoco.OrderTypeId = 3;  //3 for misc. order
+
+                        if (orderPoco.OrderShareAmount <= 0) {
+                            orderPoco.OrderShareAmount = null;
+                            orderPoco.IsSharingOnPercent = null;
+                        }
+
                         var newWbNumber = _orderLogic.GetList().OrderByDescending(c => c.WayBillNumber).Take(1).FirstOrDefault().WayBillNumber;
                         if (!(newWbNumber.Length > 0))
                         {
@@ -213,6 +219,12 @@ namespace LogisticsManagement_Web.Controllers
                         orderPoco.ShipperCustomerId = customerId == "" ? 0 : Convert.ToInt32(customerId);
                         orderPoco.CreateDate = orderDate == "" ? DateTime.Today : Convert.ToDateTime(orderDate);
 
+                        if (orderPoco.OrderShareAmount <= 0)
+                        {
+                            orderPoco.OrderShareAmount = null;
+                            orderPoco.IsSharingOnPercent = null;
+                        }
+
                         var customerAddressInfo = addressList.Where(c => c.Id == orderPoco.ShipperAddressId).FirstOrDefault();
                         if (customerAddressInfo != null)
                         {
@@ -269,6 +281,8 @@ namespace LogisticsManagement_Web.Controllers
                                 existingOrder.ShipperAddressId = orderPoco.ShipperAddressId;
                                 existingOrder.ShipperCustomerId = orderPoco.ShipperCustomerId;
                                 existingOrder.ServiceProviderEmployeeId = orderPoco.ServiceProviderEmployeeId;
+                                existingOrder.OrderShareAmount = orderPoco.OrderShareAmount;
+                                existingOrder.IsSharingOnPercent = orderPoco.IsSharingOnPercent;
 
                                 existingOrder.DeliveredBy = orderPoco.DeliveredBy;
                                 existingOrder.BolReferenceNumber = orderPoco.BolReferenceNumber;

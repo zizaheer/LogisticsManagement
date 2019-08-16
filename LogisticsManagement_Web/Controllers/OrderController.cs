@@ -583,7 +583,8 @@ namespace LogisticsManagement_Web.Controllers
 
                     foreach (var order in orders)
                     {
-                        if (order.OrderShareAmount != null) {
+                        if (order.OrderShareAmount != null)
+                        {
                             order.OrderShareAmount = null;
                             order.IsSharingOnPercent = null;
                             _orderLogic.Update(order);
@@ -1252,9 +1253,12 @@ namespace LogisticsManagement_Web.Controllers
                                 waybillPrintViewModel.WaybillComments = orderInfo.CommentsForWayBill;
                             }
 
-                            if (isMiscellaneous)
+                            if (isMiscellaneous == true)
                             {
-                                waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderInfo.ServiceProviderEmployeeId).FirstOrDefault().FirstName;
+                                if (orderInfo.ServiceProviderEmployeeId != null && orderInfo.ServiceProviderEmployeeId > 0)
+                                {
+                                    waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderInfo.ServiceProviderEmployeeId).FirstOrDefault().FirstName;
+                                }
                             }
 
                             if (ignorePrice == true)

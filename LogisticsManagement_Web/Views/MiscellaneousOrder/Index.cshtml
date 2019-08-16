@@ -198,18 +198,24 @@
                                     </div>
 
                                     <div class="col-4" style="padding-left:0px">
-                                        <div class="row mb-1">
-                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Service provided by<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
+                                        <div class="row mb-1 input-group">
+                                            <small class="col-sm-6" style="color:#000; font-weight:bold">Service provided by<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
+                                            <small class="col-sm-6" style="color:#000; font-weight:bold">Share order<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
                                         </div>
                                         <div class="row mb-1">
                                             <div class="form-group col-md-12 input-group">
-                                                <input class="form-control form-control-sm" id="txtEmployeeName" type="text" placeholder="Service provided by" title="Service provided by" name="txtEmployeeName" list="dlEmployees">
+                                                <input class="form-control form-control-sm" id="txtEmployeeName" type="search" placeholder="Service provided by" title="Service provided by" name="txtEmployeeName" list="dlEmployees">
                                                 <datalist id="dlEmployees">
                                                     @foreach (var item in Model.Employees)
                                                     {
                                                         <option data-employeeid="@item.Id" data-employeename="@item.FirstName" value="(@item.Id) - @item.FirstName"></option>
                                                     }
                                                 </datalist>
+                                                <select id="ddlShareTypeId" class="col-3 form-control form-control-sm" disabled>
+                                                    <option value="0">Fixed</option>
+                                                    <option value="1">Pct.(%)</option>
+                                                </select>
+                                                <input class="col-3 form-control form-control-sm" placeholder="Amount" id="txtShareAmount" name="txtShareAmount" type="number" disabled />
                                             </div>
                                         </div>
                                         <div class="row mb-1">
@@ -248,7 +254,7 @@
                                                     </select>
 
                                                     @*<input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces" disabled>*@
-                                                   
+
                                                     <input class="col-2 offset-1 form-control form-control-sm" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
                                                     <select class="col-1 form-control form-control-sm" id="ddlWeightScaleId" name="ddlWeightScaleId" style="-webkit-appearance: none;">
                                                         @foreach (var item in Model.WeightScales)
@@ -291,6 +297,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                     </div>
                                 </div>
                                 <div class="row">
