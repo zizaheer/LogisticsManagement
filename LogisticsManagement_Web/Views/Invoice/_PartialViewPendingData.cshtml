@@ -54,8 +54,10 @@
         <tr>
             <td>
                 <div class="form-check-inline">
-                    <input type="checkbox"  name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
-                    <label class="form-check-label">@item.WayBillNumber</label>
+                    <input type="checkbox" name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
+                    <a asp-action="Index" asp-controller="Order" style="cursor:pointer" title="Modify order">
+                        <label class="form-check-label" style="cursor:pointer">@item.WayBillNumber</label>
+                    </a>
                 </div>
             </td>
             <td>

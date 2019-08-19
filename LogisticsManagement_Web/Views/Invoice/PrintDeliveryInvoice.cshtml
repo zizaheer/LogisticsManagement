@@ -216,13 +216,34 @@
                                         <td class="tdStyle">@bill.NetTotalOrderCost</td>
                                     </tr>
 
-                                    if (bill.AdditionalServicesComments.Length > 0)
+                                    if (!string.IsNullOrEmpty(bill.AdditionalServicesComments) || !string.IsNullOrEmpty(bill.CargoCtlNo) || !string.IsNullOrEmpty(bill.AwbContainerNo) || !string.IsNullOrEmpty(bill.PickupRefNo))
                                     {
-                                        <tr style="font-size:10px">
-                                            <td class="tdStyle" colspan="9">
-                                                <span>@bill.AdditionalServicesComments</span>
-                                            </td>
-                                        </tr>
+                                    <tr style="font-size:10px">
+                                        <td class="tdStyle" colspan="4">
+                                            @{
+                                                if (!string.IsNullOrEmpty(bill.AdditionalServicesComments))
+                                                {
+                                                    <span>@bill.AdditionalServicesComments</span>
+                                                }
+                                            }
+                                        </td>
+                                        <td class="tdStyle" colspan="5">
+                                            @{
+                                                if (!string.IsNullOrEmpty(bill.CargoCtlNo))
+                                                {
+                                                    <span>CC# @bill.CargoCtlNo;</span>
+                                                }
+                                                if (!string.IsNullOrEmpty(bill.AwbContainerNo))
+                                                {
+                                                    <span>AWB/CTN# @bill.AwbContainerNo;</span>
+                                                }
+                                                if (!string.IsNullOrEmpty(bill.PickupRefNo))
+                                                {
+                                                    <span>PU/DL# @bill.PickupRefNo</span>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
                                     }
                                     if (bill.InvoiceComments.Length > 0)
                                     {
