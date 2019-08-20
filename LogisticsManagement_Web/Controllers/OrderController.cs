@@ -1391,7 +1391,14 @@ namespace LogisticsManagement_Web.Controllers
                 data.OrderTypeId = item.order.OrderTypeId;
                 data.OrderTypeFlag = data.OrderTypeId == 1 ? "S" : data.OrderTypeId == 2 ? "R" : "";
                 data.WayBillNumber = item.order.WayBillNumber;
-                data.OrderDateString = item.order.CreateDate.ToString("dd-MMM-yy");
+                if (item.order.ScheduledPickupDate != null)
+                {
+                    data.OrderDateString = ((DateTime)item.order.ScheduledPickupDate).ToString("dd-MMM-yy");
+                }
+                else {
+                    data.OrderDateString = item.order.CreateDate.ToString("dd-MMM-yy");
+                }
+                
                 data.DeliveryOptionId = (int)item.order.DeliveryOptionId;
                 data.DeliveryOptionName = deliveryOrderViewModel.DeliveryOptions.Where(c => c.Id == data.DeliveryOptionId).FirstOrDefault().OptionName;
                 data.DeliveryOptionCode = deliveryOrderViewModel.DeliveryOptions.Where(c => c.Id == data.DeliveryOptionId).FirstOrDefault().ShortCode;

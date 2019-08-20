@@ -41,11 +41,11 @@
 
     <div class="row">
         <div class="col-sm-1 form-group">
-            <small> <b><label for="txtEmployeeIdForPayroll">Emp. #</label></b></small>
+            <small> <b><label for="txtEmployeeIdForPayroll">ID #</label></b></small>
             <input type="number" id="txtEmployeeIdForPayroll" class="form-control form-control-sm" readonly />
         </div>
         <div class="col-sm-3 form-group">
-            <small> <b><label for="txtEmployeeNameForPayroll">Employee name</label></b></small>
+            <small> <b><label for="txtEmployeeNameForPayroll">Name</label></b></small>
             <input type="text" id="txtEmployeeNameForPayroll" class="form-control form-control-sm" readonly />
         </div>
         <div class="col-sm-2 form-group">
@@ -57,30 +57,80 @@
             <input type="date" id="txtToDate" class="form-control form-control-sm txtToDate" />
         </div>
         <div class="col-sm-2 form-group">
-            <button type="button" class="btn btn-sm btn-primary" id="btnLoadDelivery" style="margin-top:28px"><i class="fa fa-gear"></i> Load delivery</button>
+            <small> <b><label for="txtToDate">Calculation method</label></b></small>
+            <select class="form-control form-control-sm" id="ddlCalculationMethodId">
+                <option value="1">Agent</option>
+                <option value="2">Owner operator</option>
+                <option value="3">Commission</option>
+                <option value="4">Hourly rate</option>
+                <option value="5">Daily rate</option>
+                <option value="6">Fixed salary</option>
+            </select>
+        </div>
+        <div class="col-sm-2 form-group">
+            <button type="button" class="btn btn-sm btn-primary" id="btnLoadDelivery" style="margin-top:28px"> Load delivery</button>
         </div>
     </div>
+
     <div class="row">
-        <div class="col-sm-1 form-group">
-            <small> <b><label for="txtEmployeeIdForPayroll">Emp. #</label></b></small>
-            <input type="number" id="txtEmployeeIdForPayroll" class="form-control form-control-sm" readonly />
+        <div class="col-md-8">
+            <div>
+                <fieldset>
+                    <legend>Deductions</legend>
+                    <div class="row">
+                        <div class="col-sm-2 form-group">
+                            <small> <b><label for="txtEmployeeIdForPayroll">Loan opening</label></b></small>
+                            <input type="number" id="txtEmployeeIdForPayroll" class="form-control form-control-sm" readonly />
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <small> <b><label for="txtEmployeeIdForPayroll">Loan due</label></b></small>
+                            <input type="number" id="txtEmployeeIdForPayroll" class="form-control form-control-sm" readonly />
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <small> <b><label for="txtEmployeeNameForPayroll">Loan payment</label></b></small>
+                            <input type="number" id="txtEmployeeNameForPayroll" class="form-control form-control-sm" />
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <small> <b><label for="txtStartDate">Insurance</label></b></small>
+                            <input type="number" id="txtStartDate" class="form-control form-control-sm txtStartDate" />
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <small> <b><label for="txtToDate">Radio Ins.</label></b></small>
+                            <input type="number" id="txtToDate" class="form-control form-control-sm txtToDate" />
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <small> <b><label for="txtToDate">Bonus</label></b></small>
+                            <input type="number" id="txtToDate" class="form-control form-control-sm txtToDate" />
+                        </div>
+
+                    </div>
+                </fieldset>
+            </div>
         </div>
-        <div class="col-sm-3 form-group">
-            <small> <b><label for="txtEmployeeNameForPayroll">Employee name</label></b></small>
-            <input type="text" id="txtEmployeeNameForPayroll" class="form-control form-control-sm" readonly />
-        </div>
-        <div class="col-sm-2 form-group">
-            <small> <b><label for="txtStartDate">From date</label></b></small>
-            <input type="date" id="txtStartDate" class="form-control form-control-sm txtStartDate" />
-        </div>
-        <div class="col-sm-2 form-group">
-            <small> <b><label for="txtToDate">To date</label></b></small>
-            <input type="date" id="txtToDate" class="form-control form-control-sm txtToDate" />
-        </div>
-        <div class="col-sm-2 form-group">
-            <button type="button" class="btn btn-sm btn-primary" id="btnLoadDelivery" style="margin-top:28px"><i class="fa fa-gear"></i> Load delivery</button>
+        <div class="col-md-4">
+            <div>
+                <fieldset>
+                    <legend>Change</legend>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <button id="btnChangeOrderShare" class="btn btn-sm btn-info" style="padding:2px 8px 2px 8px; color:#fff; border-radius:3px">Order share</button>
+                        </div>
+                        <div class="col-sm-2">
+                            <button id="btnChangeDriver" class="btn btn-sm btn-info" style="padding:2px 8px 2px 8px; color:#fff; border-radius:3px">Driver</button>
+                        </div>
+                        <div class="col-sm-5">
+                            <button id="btnChangeDriver" class="btn btn-sm btn-info" style="padding:2px 8px 2px 8px; color:#fff; border-radius:3px">Add. services</button>
+                        </div>
+
+
+                    </div>
+                </fieldset>
+            </div>
         </div>
     </div>
+
+    
+
 
     <div class="row">
         <div class="col-md-12">

@@ -43,6 +43,10 @@
     <tbody>
         @foreach (var item in Model)
         {
+            if (item.TotalDue == 0 && item.NumberOfInvoices == 0)
+            {
+                continue;
+            }
             <tr>
                 <td>
 
