@@ -82,7 +82,7 @@ namespace LogisticsManagement_Web.Controllers
             orderTypeToLoad = 1;
             return View(GetPendingWaybillsForInvoice());
         }
-
+        
         public IActionResult InvoicePayment()
         {
             ValidateSession();
@@ -1204,6 +1204,7 @@ namespace LogisticsManagement_Web.Controllers
                 waybillPrintViewModel.CustomerRefNo = order.ReferenceNumber;
                 waybillPrintViewModel.CargoCtlNo = order.CargoCtlNumber;
                 waybillPrintViewModel.AwbContainerNo = order.AwbCtnNumber;
+                waybillPrintViewModel.PickupRefNo = order.PickupReferenceNumber;
                 waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == order.BillToCustomerId).FirstOrDefault().CustomerName;
                 waybillPrintViewModel.OrderedByName = order.OrderedBy;
                 if (order.DeliveryOptionId != null && order.DeliveryOptionId > 0)

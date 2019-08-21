@@ -2,7 +2,6 @@
 
 $(document).ready(function () {
 
-
     $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(new Date));
     $('#txtDispatchDatetimeForNewOrders').val(ConvertDatetimeToUSDatetime(new Date));
 
@@ -17,14 +16,35 @@ $(document).ready(function () {
     });
 
 
-
+    //var routingOrderId = $('#txtInvoicedOrderNumber').val();
+    //if (routingOrderId !== '') {
+    //    var isTriggerModify = $('#txtInvoicedOrderNumber').data('triggermodify');
+    //    if (isTriggerModify === "1" || isTriggerModify === 1) {
+    //        $('#btnExistingInvoicedOrder').trigger('click');
+    //    }
+    //}
+    waitLoading();
 });
+
+function waitLoading() {
+    setTimeout(function () {
+        var routingOrderId = $('#txtInvoicedOrderNumber').val();
+        if (routingOrderId !== '') {
+            var isTriggerModify = $('#txtInvoicedOrderNumber').data('triggermodify');
+            if (isTriggerModify === "1" || isTriggerModify === 1) {
+                $('#btnExistingInvoicedOrder').trigger('click');
+            }
+        }
+
+    }, 500);
+}
 
 //#endregion 
 
 //#region Local Variables
 var employeeData;
 var paidByValue = '1';
+
 
 // global tax amount
 //var taxPercentage = 0.0;
@@ -364,10 +384,10 @@ $('#txtEmployeeName').keypress(function (event) {
             $('#txtEmployeeName').val(emp.FirstName);
             $('#hfDispatchToEmployeeId').val(employeeId);
 
-            if ((emp.EmployeeTypeId === 4 | emp.EmployeeTypeId === 6) && selectedOrdersForDispatch.length === 1 ) {
+            if ((emp.EmployeeTypeId === 4 | emp.EmployeeTypeId === 6) && selectedOrdersForDispatch.length === 1) {
                 $('#ddlShareType').prop('disabled', false);
                 $('#txtOrderPortionForNewOrders').prop('disabled', false);
-            } 
+            }
         }
     }
 });
@@ -394,7 +414,7 @@ $('#txtEmployeeName').on('input', function (event) {
             $('#ddlShareType').prop('disabled', false);
             $('#txtOrderPortionForNewOrders').prop('disabled', false);
         }
-    } 
+    }
 });
 
 $('#txtShipperAddressLine').keypress(function (event) {
@@ -959,7 +979,7 @@ $('#txtInvoicedOrderNumber').on('keypress', function (e) {
         ModifyReleasedOrder(orderId);
     }
 });
-$('#btnExistingInvoicedOrder').unbind().on('click', function () {
+$('#btnExistingInvoicedOrder').unbind().on('click', function (event) {
     event.preventDefault();
     var orderId = $('#txtInvoicedOrderNumber').val();
     ModifyReleasedOrder(orderId);
@@ -1490,7 +1510,7 @@ function FillOrderDetails(orderRelatedData) {
 
         $('#chkIsPrintOnWayBill').prop('checked', orderRelatedData.IsPrintedOnWayBill);
         $('#txtCommentsForWayBill').val(orderRelatedData.CommentsForWayBill);
-        $('#chkIsPrintOnInvoice').val('checked', orderRelatedData.IsPrintedOnInvoice);
+        $('#chkIsPrintOnInvoice').prop('checked', orderRelatedData.IsPrintedOnInvoice);
         $('#txtCommentsForInvoice').val(orderRelatedData.CommentsForInvoice);
 
         if (orderRelatedData.OrderBasicCost > 0) {
@@ -1775,8 +1795,10 @@ function ClearForm() {
 
     $('#service-list').empty();
 
-    var toggle = $('#chkIsReturnOrder').data('bs.toggle');
-    toggle.off(true);
+    $('#chkIsReturnOrder').prop('checked', false);
+
+    //var toggle = $('#chkIsReturnOrder').data('bs.toggle');
+    //toggle.off(true);
 
 }
 
@@ -1831,6 +1853,10 @@ function GenerateNewAdditionalServiceRow() {
 
     return appendString;
 }
+
+
+
+
 
 //#endregion 
 

@@ -51,17 +51,17 @@
 </div>
 
 <div class="row">
-        <div class="col-sm-7 offset-5 input-group">
-            <select class="col-3 form-control form-control-sm" id="ddlNumberOfCopies"><option value="1">Single copy</option><option value="2" selected>Double copy</option></select>
-            <select class="col-3 form-control form-control-sm" id="ddlCopyOnPage"><option value="1">1 Per page</option><option value="2" selected>2 Per page</option></select>
-            &nbsp;
-            <div class="form-control form-control-sm form-check-inline" style="text-transform:capitalize !important">
-                <input type="checkbox" id="chkIgnorePricingInformation" class="form-check-input" checked />
-                <label for="chkIgnorePricingInformation" class="form-check-label">Ignore price</label>
-            </div>
-          
-            <button class="col-4 btn btn-sm btn-warning" id="btnTrialPrintWaybill"> <i class="fa fa-print"></i> Waybill trial print</button>&nbsp;
+    <div class="col-sm-7 offset-5 input-group">
+        <select class="col-3 form-control form-control-sm" id="ddlNumberOfCopies"><option value="1">Single copy</option><option value="2" selected>Double copy</option></select>
+        <select class="col-3 form-control form-control-sm" id="ddlCopyOnPage"><option value="1">1 Per page</option><option value="2" selected>2 Per page</option></select>
+        &nbsp;
+        <div class="form-control form-control-sm form-check-inline" style="text-transform:capitalize !important">
+            <input type="checkbox" id="chkIgnorePricingInformation" class="form-check-input" checked />
+            <label for="chkIgnorePricingInformation" class="form-check-label">Ignore price</label>
         </div>
+
+        <button class="col-4 btn btn-sm btn-warning" id="btnTrialPrintWaybill"> <i class="fa fa-print"></i> Waybill trial print</button>&nbsp;
+    </div>
 </div>
 
 <hr />
@@ -73,10 +73,16 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content bg-light">
                 <div class="modal-header">
-                    <img src="~/images/flaticons-64x64/effort.png" style="height:25px; padding-left:14px; padding-right:10px" /><h5 class="modal-title" id="exampleModalCenterTitle">New Misc. Order</h5>
-                    <button type="button" class="close" id="btnCloseModal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <img src="~/images/flaticons-64x64/effort.png" style="height:25px; padding-left:14px; padding-right:10px" />
+                    <b id="exampleModalCenterTitle">New Misc. Order</b>
+                    <div class="col-sm-2 offset-8" style="padding-right:0px;text-align:right">
+                        <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-check"></i> Save </button>
+                        <button type="button" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
+                    </div>
+                    @*<button type="button" class="close" id="btnCloseModal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>*@
+
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
@@ -200,7 +206,7 @@
                                     <div class="col-4" style="padding-left:0px">
                                         <div class="row mb-1 input-group">
                                             <small class="col-sm-6" style="color:#000; font-weight:bold">Service provided by<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
-                                            <small class="col-sm-6" style="color:#000; font-weight:bold">Share order<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
+                                            <small class="col-sm-6" style="color:#000; font-weight:bold">Agreed rate<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
                                         </div>
                                         <div class="row mb-1">
                                             <div class="form-group col-md-12 input-group">
@@ -297,7 +303,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                                 <div class="row">
@@ -414,9 +420,6 @@
 
                             </div>
                         </div>
-                        <div class="row">
-                            <hr style="border-top:1px solid #cccccc; padding:0px; width:100%;margin-bottom:7px;margin-top:5px" />
-                        </div>
 
                         <div class="row">
                             <div class="col-sm-6" style="padding-left:0px">
@@ -426,14 +429,9 @@
                                 <input type="hidden" id="hfCustomerAddressId" class="hfCustomerAddressId" name="hfCustomerAddressId" />
                                 <input type="hidden" id="hfTaxAmount" class="hfTaxAmount" name="hfTaxAmount" value="@Model.Configuration.TaxAmount" />
                                 <input type="hidden" id="hfEmployeeId" class="hfEmployeeId" name="hfEmployeeId" />
-
-                                <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save order</button>
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
 
             </div>

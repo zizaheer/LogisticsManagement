@@ -395,7 +395,7 @@
                         <div class="col-sm-4">
                             <small>
                                 <b>
-                                    <label for="txtOrderPortionForNewOrders">Agreed price</label>
+                                    <label for="txtOrderPortionForNewOrders">Agreed rate</label>
                                 </b>
                             </small>
                             <div class="input-group">
@@ -890,7 +890,7 @@
     </div>
     <div class="col-sm-3">
         <div class="input-group">
-            <input type="text" id="txtInvoicedOrderNumber" placeholder="Enter released order" class="col-8 form-control form-control-sm" style="text-transform:capitalize !important" />
+            <input type="text" id="txtInvoicedOrderNumber" placeholder="Enter released order" class="col-8 form-control form-control-sm" style="text-transform:capitalize !important" value="@ViewBag.routingOrderId" data-triggermodify="@ViewBag.isTriggerModify" />
             <button id="btnExistingInvoicedOrder" type="button" class="btn btn-sm btn-secondary" data-toggle="modal"><i class="fa fa-edit"></i> Modify</button>
         </div>
 
@@ -941,13 +941,7 @@
     </div>
 </div>
 
-
-
-
-
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 @*<script src="~/js/order.js"></script>*@
-
-
 

@@ -61,7 +61,20 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
+            ViewBag.routingOrderId = TempData["OrderId"];
+            ViewBag.isTriggerModify = TempData["TriggerModify"];
             return View(GetAllRequiredDataForDispatchBoard());
+        }
+
+        public IActionResult RoutingAction(string id)
+        {
+            if (id != "")
+            {
+                var orderInfo = _orderLogic.GetList().Where(c => c.WayBillNumber == id).FirstOrDefault();
+                TempData["OrderId"] = id;
+                TempData["TriggerModify"] = 1;
+            }
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -215,6 +228,7 @@ namespace LogisticsManagement_Web.Controllers
                         existingOrder.ReferenceNumber = orderPoco.ReferenceNumber;
                         existingOrder.CargoCtlNumber = orderPoco.CargoCtlNumber;
                         existingOrder.AwbCtnNumber = orderPoco.CargoCtlNumber;
+                        existingOrder.PickupReferenceNumber = orderPoco.PickupReferenceNumber;
                         existingOrder.ShipperCustomerId = orderPoco.ShipperCustomerId;
                         existingOrder.ConsigneeCustomerId = orderPoco.ConsigneeCustomerId;
                         existingOrder.BillToCustomerId = orderPoco.BillToCustomerId;
@@ -241,6 +255,10 @@ namespace LogisticsManagement_Web.Controllers
                         existingOrder.ContactName = orderPoco.ContactName;
                         existingOrder.ContactPhoneNumber = orderPoco.ContactPhoneNumber;
                         existingOrder.Remarks = orderPoco.Remarks;
+                        existingOrder.IsPrintedOnWayBill = orderPoco.IsPrintedOnWayBill;
+                        existingOrder.CommentsForWayBill = orderPoco.CommentsForWayBill;
+                        existingOrder.IsPrintedOnInvoice = orderPoco.IsPrintedOnInvoice;
+                        existingOrder.CommentsForInvoice = orderPoco.CommentsForInvoice;
 
 
                         _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
@@ -1395,10 +1413,11 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     data.OrderDateString = ((DateTime)item.order.ScheduledPickupDate).ToString("dd-MMM-yy");
                 }
-                else {
+                else
+                {
                     data.OrderDateString = item.order.CreateDate.ToString("dd-MMM-yy");
                 }
-                
+
                 data.DeliveryOptionId = (int)item.order.DeliveryOptionId;
                 data.DeliveryOptionName = deliveryOrderViewModel.DeliveryOptions.Where(c => c.Id == data.DeliveryOptionId).FirstOrDefault().OptionName;
                 data.DeliveryOptionCode = deliveryOrderViewModel.DeliveryOptions.Where(c => c.Id == data.DeliveryOptionId).FirstOrDefault().ShortCode;
