@@ -1141,7 +1141,8 @@ namespace LogisticsManagement_Web.Controllers
 
                 var pdfReport = new ViewAsPdf(viewName, viewModelPrintInvoice)
                 {
-                    CustomSwitches = "--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8"
+                    CustomSwitches = "--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8",
+                    PageSize = Rotativa.AspNetCore.Options.Size.Letter
                 };
 
                 var file = pdfReport.BuildFile(ControllerContext).Result;

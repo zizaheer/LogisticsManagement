@@ -14,11 +14,37 @@ $(document).ready(function () {
         $("#spinnerLoadingDataTable").css("display", "none");
     });
 
+    waitLoading();
+
 });
 
 //#endregion 
 
 //#region Local Variables
+
+function waitLoading() {
+    setTimeout(function () {
+        var routingOrderId = $('#hfRoutingOrderId').val();
+        if (routingOrderId !== '') {
+            var isTriggerModify = $('#hfIsTriggerModify').val();
+            if (isTriggerModify === "1" || isTriggerModify === 1) {
+                $('#btnExistingInvoicedOrder').trigger('click');
+
+                if (routingOrderId > 0) {
+                    GetAndFillOrderDetailsByWayBillNumber(routingOrderId, 3);
+
+                    $('#newMiscOrder').modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                    $('#newMiscOrder').draggable();
+                    $('#newMiscOrder').modal('show');
+                }
+            }
+        }
+
+    }, 500);
+}
 
 var selectedAdditionalServiceArray = [];
 var selectedOrdersForPrint = [];

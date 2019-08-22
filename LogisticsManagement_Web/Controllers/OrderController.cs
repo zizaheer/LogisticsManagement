@@ -70,7 +70,6 @@ namespace LogisticsManagement_Web.Controllers
         {
             if (id != "")
             {
-                var orderInfo = _orderLogic.GetList().Where(c => c.WayBillNumber == id).FirstOrDefault();
                 TempData["OrderId"] = id;
                 TempData["TriggerModify"] = 1;
             }

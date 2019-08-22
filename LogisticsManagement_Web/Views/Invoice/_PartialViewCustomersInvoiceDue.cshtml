@@ -30,13 +30,14 @@
 <table id="customerdues-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr style="background-color:#ebffad">
-            <th>Collect</th>
-            <th>Biller Id</th>
-            <th>Biller name</th>
+
+            <th>Cust. Id</th>
+            <th>Cust. Name</th>
             <th>Address</th>
             <th>Phone</th>
             <th>Number of invoices</th>
             <th>Total Due</th>
+            <th>Apply payment</th>
         </tr>
     </thead>
 
@@ -47,43 +48,44 @@
             {
                 continue;
             }
-            <tr>
-                <td>
+        <tr>
 
-                    @{
-                        if (item.TotalDue == 0)
-                        {
-                            <a data-toggle="modal" id="btnViewInvoice" class="btn-success lnkPaidInvoice" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Paid</a>
-                        }
-                        else
-                        {
-                            <a data-toggle="modal" id="btnCollectPayment" class="btn-danger lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Collect</a>
-                        }
+            <td>
+                @item.CustomerId
+            </td>
+            <td>
+                @item.CustomerName
+            </td>
+            <td>
+                @item.CustomerAdress
+            </td>
 
+            <td>
+                @item.CustomerPhone
+            </td>
+
+            <td>
+                @item.NumberOfInvoices
+            </td>
+
+            <td>
+                @item.TotalDue
+            </td>
+            <td>
+
+                @{
+                    if (item.TotalDue == 0)
+                    {
+                        <a data-toggle="modal" id="btnViewInvoice" class="btn-success lnkPaidInvoice" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Paid</a>
                     }
-                </td>
-                <td>
-                    @item.CustomerId
-                </td>
-                <td>
-                    @item.CustomerName
-                </td>
-                <td>
-                    @item.CustomerAdress
-                </td>
+                    else
+                    {
+                        <a data-toggle="modal" id="btnCollectPayment" class="btn-danger lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Apply payment</a>
+                    }
 
-                <td>
-                    @item.CustomerPhone
-                </td>
-
-                <td>
-                    @item.NumberOfInvoices
-                </td>
-
-                <td>
-                    @item.TotalDue
-                </td>
-            </tr>
+                }
+            </td>
+        </tr>
         }
 
     </tbody>

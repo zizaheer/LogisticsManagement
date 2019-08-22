@@ -60,7 +60,20 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             ValidateSession();
+            ViewBag.routingOrderId = TempData["OrderId"];
+            ViewBag.isTriggerModify = TempData["TriggerModify"];
+
             return View(GetMiscellaneousOrders());
+        }
+
+        public IActionResult RoutingAction(string id)
+        {
+            if (id != "")
+            {
+                TempData["OrderId"] = id;
+                TempData["TriggerModify"] = 1;
+            }
+            return RedirectToAction("Index");
         }
 
         [HttpGet]

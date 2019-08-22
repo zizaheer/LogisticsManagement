@@ -55,7 +55,17 @@
             <td>
                 <div class="form-check-inline">
                     <input type="checkbox" name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
-                    <a href="Order/RoutingAction/@item.WayBillNumber" style="cursor:pointer" title="Modify order">
+                    @{ 
+                        var routingUrl = "";
+                        if (item.OrderTypeId == 3)
+                        {
+                            routingUrl = "MiscellaneousOrder/RoutingAction/" + item.WayBillNumber;
+                        }
+                        else {
+                            routingUrl = "Order/RoutingAction/" + item.WayBillNumber;
+                        }
+                    }
+                    <a href="@routingUrl" style="cursor:pointer" title="Modify order">
                         <label class="form-check-label" style="cursor:pointer">@item.WayBillNumber</label>
                     </a>
                 </div>
