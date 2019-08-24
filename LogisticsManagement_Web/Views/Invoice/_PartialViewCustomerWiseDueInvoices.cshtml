@@ -19,11 +19,15 @@
 <table id="customer-wise-due-invoices" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr style="background-color:#ebffad">
-            <th>Invoice #</th>
-            <th>Invoice Date</th>
-            <th>Invoice amount</th>
-            <th>Paid amount</th>
-            <th>Due amount</th>
+            <th>Cust. Name</th>
+            <th>Inv. #</th>
+            <th>Inv. Date</th>
+            <th>Inv. Amnt</th>
+            <th>Paid Amnt</th>
+            <th>Cheque No.</th>
+            <th>Cheque Date</th>
+            <th>Bank Name</th>
+
             <th>Print</th>
         </tr>
     </thead>
@@ -33,10 +37,14 @@
         {
         <tr>
             <td>
+                <b>@item.BillerCustomerId asdasda asd as das das dasd as da</b>
+            </td>
+            <td>
                 <div class="form-check-inline">
                     <b>@item.Id</b>
                 </div>
             </td>
+
             <td>
                 @item.CreateDate.ToString("dd-MMM-yyyy")
             </td>
@@ -47,11 +55,15 @@
                 @item.PaidAmount
             </td>
             <td>
-                @{
-                    var dues = item.TotalInvoiceAmount - item.PaidAmount;
-                    @dues;
-                }
+                @item.TotalInvoiceAmount
             </td>
+            <td>
+                @item.TotalInvoiceAmount
+            </td>
+            <td>
+                @item.TotalInvoiceAmount
+            </td>
+
             <td>
                 <button class="btn-primary smallGridIcon btnPrintPaidInvoice" data-invoiceid="@item.Id" title="Print invoice" type="button"><i class="fa fa-print"></i></button>
             </td>
