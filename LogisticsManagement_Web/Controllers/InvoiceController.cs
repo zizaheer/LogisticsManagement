@@ -387,6 +387,8 @@ namespace LogisticsManagement_Web.Controllers
             int billerId = 0;
             bool isPaidInclusive = false;
 
+            List<ViewModel_PaidInvoice> PaidInvoices = new List<ViewModel_PaidInvoice>();
+            Lms_InvoicePaymentCollectionLogic _paymentCollectionLogic = new Lms_InvoicePaymentCollectionLogic(_cache, new EntityFrameworkGenericRepository<Lms_InvoicePaymentCollectionPoco>(_dbContext));
             if (customerId.Length > 0)
                 billerId = Convert.ToInt32(customerId);
             if (isPaid != "")
@@ -398,7 +400,49 @@ namespace LogisticsManagement_Web.Controllers
                 invoiceList = invoiceList.Where(c => c.BillerCustomerId == billerId).ToList();
             }
 
-            return PartialView("_PartialViewCustomerWiseDueInvoices", invoiceList);
+            foreach (var inv in invoiceList) {
+                ViewModel_PaidInvoice paidInvoice = new ViewModel_PaidInvoice();
+                paidInvoice.InvoiceId = inv.Id;
+                paidInvoice.InvoiceDate = inv.CreateDate.ToString("dd-MMM-yyyy");
+                paidInvoice.InvoiceAmount = inv.TotalInvoiceAmount;
+                paidInvoice.PaidAmount = (decimal)inv.PaidAmount;
+                paidInvoice.BillToCustomerId = inv.BillerCustomerId;
+                if (inv.BillerCustomerId > 0) {
+                    _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+                    paidInvoice.BillerName = _customerLogic.GetSingleById(inv.BillerCustomerId).CustomerName;
+                }
+
+                var paymentCollections = _paymentCollectionLogic.GetList().Where(c => c.InvoiceId == inv.Id).ToList();
+                if (paymentCollections.Count > 0) {
+                    var paymentInfo = paymentCollections.FirstOrDefault();
+                    paidInvoice.ChequeNo = paymentInfo.ChequeNo;
+                    if (paymentInfo.ChequeDate != null) {
+                        paidInvoice.ChequeDate = ((DateTime)paymentInfo.ChequeDate).ToString("dd-MMM-yyyy");
+                    }
+
+                    if (paymentInfo.BankId != null) {
+                        Lms_BankLogic _bankLogic = new Lms_BankLogic(_cache, new EntityFrameworkGenericRepository<Lms_BankPoco>(_dbContext));
+                        paidInvoice.BankId = paymentInfo.BankId;
+                        paidInvoice.BankName = _bankLogic.GetSingleById((int)paidInvoice.BankId).BankName;
+                    }
+
+                    if (paymentCollections.Count > 1) {
+                        foreach (var payment in paymentCollections)
+                        {
+                            paidInvoice.MorePaymentInfo = 
+                        }
+                    }
+
+                } 
+
+                 
+                paidInvoice
+                
+
+
+            }
+
+            return PartialView("_PartialViewCustomerPaidInvoices", invoiceList);
 
         }
 
@@ -922,13 +966,13 @@ namespace LogisticsManagement_Web.Controllers
 
             return Json(result);
         }
-        [HttpGet]
-        public IActionResult FillPartialViewCustomerWiseDueInvoices(string id)
-        {
-            ValidateSession();
+        //[HttpGet]
+        //public IActionResult FillPartialViewCustomerWiseDueInvoices(string id)
+        //{
+        //    ValidateSession();
 
-            return PartialView("_PartialViewCustomerWiseDueInvoices", GetDueInvoicesByCustomerId(id));
-        }
+        //    return PartialView("_PartialViewCustomerPaidInvoices", GetDueInvoicesByCustomerId(id));
+        //}
 
         [HttpGet]
         public IActionResult GetDueInvoicesByCustomerId(string id)

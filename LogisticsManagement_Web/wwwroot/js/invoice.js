@@ -788,6 +788,11 @@ $('#btnMakePayment').unbind().on('click', function (event) {
     }
 });
 
+$('#btnCloseModal').unbind().on('click', function (event) {
+    event.preventDefault();
+    $('#collectPayment').modal('hide');
+});
+
 $('#btnShowRecords').unbind().on('click', function (event) {
 
     event.preventDefault();
