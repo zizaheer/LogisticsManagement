@@ -416,6 +416,7 @@ namespace LogisticsManagement_Web.Controllers
                 if (paymentCollections.Count > 0) {
                     var paymentInfo = paymentCollections.FirstOrDefault();
                     paidInvoice.ChequeNo = paymentInfo.ChequeNo;
+                    paidInvoice.ChequeAmount = paymentInfo.ChequeAmount;
                     if (paymentInfo.ChequeDate != null) {
                         paidInvoice.ChequeDate = ((DateTime)paymentInfo.ChequeDate).ToString("dd-MMM-yyyy");
                     }
@@ -427,22 +428,35 @@ namespace LogisticsManagement_Web.Controllers
                     }
 
                     if (paymentCollections.Count > 1) {
+                        paidInvoice.MorePaymentInfo = "";
+                        int serial = 0;
                         foreach (var payment in paymentCollections)
                         {
-                            paidInvoice.MorePaymentInfo = 
+                            string chequeDate = "";
+                            string bankName = "";
+
+                            if (payment.ChequeDate != null)
+                            {
+                                chequeDate = ((DateTime)payment.ChequeDate).ToString("dd-MMM-yyyy");
+                            }
+
+                            if (payment.BankId != null)
+                            {
+                                Lms_BankLogic _bankLogic = new Lms_BankLogic(_cache, new EntityFrameworkGenericRepository<Lms_BankPoco>(_dbContext));
+                                bankName = _bankLogic.GetSingleById((int)paidInvoice.BankId).BankName;
+                            }
+                            serial += 1;
+                            paidInvoice.MorePaymentInfo = paidInvoice.MorePaymentInfo + (serial + ">> " + "Chq# " + payment.ChequeNo + "; Chq Amt. " + payment.ChequeAmount.ToString() + "; Chq Date: " + chequeDate + "; Bank: " + bankName + "\r\n");
                         }
                     }
 
-                } 
-
-                 
-                paidInvoice
-                
+                }
 
 
+                PaidInvoices.Add(paidInvoice);
             }
 
-            return PartialView("_PartialViewCustomerPaidInvoices", invoiceList);
+            return PartialView("_PartialViewCustomerPaidInvoices", PaidInvoices);
 
         }
 

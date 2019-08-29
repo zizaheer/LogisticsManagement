@@ -1,5 +1,13 @@
 ﻿@using LogisticsManagement_Poco;
-@model List<Lms_InvoicePoco>
+@model List<ViewModel_PaidInvoice>
+
+<style>
+    .lnkMorePayment {
+        padding: 2px 8px 2px 8px;
+        color: #fff;
+        border-radius: 3px
+    }
+</style>
 
 <script>
     $(document).ready(function () {
@@ -16,6 +24,7 @@
 </script>
 
 
+
 <table id="customer-paid-invoices" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr style="background-color:#ebffad">
@@ -24,6 +33,7 @@
             <th>Inv. Date</th>
             <th>Inv. Amnt</th>
             <th>Paid Amnt</th>
+            <th>Cheque Amnt</th>
             <th>Cheque No.</th>
             <th>Cheque Date</th>
             <th>Bank Name</th>
@@ -35,39 +45,71 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                <b>@item.BillerCustomerId asdasda asd as das das dasd as da</b>
-            </td>
-            <td>
-                <div class="form-check-inline">
-                    <b>@item.Id</b>
-                </div>
-            </td>
+            <tr>
+                <td>
+                    <b>@item.BillerName</b>
+                </td>
+                <td>
+                    <div class="form-check-inline">
+                        <b>@item.InvoiceId</b>
+                    </div>
+                </td>
 
-            <td>
-                @item.CreateDate.ToString("dd-MMM-yyyy")
-            </td>
-            <td>
-                @item.TotalInvoiceAmount
-            </td>
-            <td>
-                @item.PaidAmount
-            </td>
-            <td>
-                @item.TotalInvoiceAmount
-            </td>
-            <td>
-                @item.TotalInvoiceAmount
-            </td>
-            <td>
-                @item.TotalInvoiceAmount
-            </td>
+                <td>
+                    @item.InvoiceDate
+                </td>
+                <td>
+                    @item.InvoiceAmount
+                </td>
+                <td>
+                    @item.PaidAmount
+                </td>
+                <td>
+                    @item.ChequeAmount
+                </td>
+                <td>
+                    @item.ChequeNo
+                    @{
+                        if (!string.IsNullOrEmpty(item.MorePaymentInfo))
+                        {
+                            <div class="modal fade bd-example-modal-xl" id="morePaymentInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                    <div class="modal-content bg-light">
+                                        <div class="modal-header">
+                                            <b class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/online-payment.png" style="height:25px; padding-left:28px; padding-right:10px" />Payment info</b>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                   @Html.Raw(item.MorePaymentInfo.Replace("\r\n", "<br/>"))
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-            <td>
-                <button class="btn-primary smallGridIcon btnPrintPaidInvoice" data-invoiceid="@item.Id" title="Print invoice" type="button"><i class="fa fa-print"></i></button>
-            </td>
-        </tr>
+                            <a href="#" class="btn-success lnkMorePayment" data-toggle="modal" data-target="#morePaymentInfo" title="@item.MorePaymentInfo">
+                                <i class="fa fa-search-plus"></i> View more
+                            </a>
+                        }
+
+                    }
+                </td>
+                <td>
+                    @item.ChequeDate
+                </td>
+                <td>
+                    @item.BankName
+                </td>
+
+                <td>
+                    <button class="btn-primary smallGridIcon btnPrintPaidInvoice" data-invoiceid="@item.InvoiceId" title="Print invoice" type="button"><i class="fa fa-print"></i></button>
+                </td>
+            </tr>
         }
 
     </tbody>

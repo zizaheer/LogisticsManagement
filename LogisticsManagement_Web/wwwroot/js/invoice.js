@@ -402,7 +402,7 @@ $('#btnWaybillFinalPrint').unbind().on('click', function (event) {
 
 });
 
-$('#customer-wise-due-invoices .btnPrintPaidInvoice').unbind().on('click', function (event) {
+$('#customer-paid-invoices .btnPrintPaidInvoice').unbind().on('click', function (event) {
     event.preventDefault();
 
     var invoiceNo =

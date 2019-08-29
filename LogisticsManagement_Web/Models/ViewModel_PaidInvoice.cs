@@ -14,6 +14,7 @@ namespace LogisticsManagement_Web.Models
         public decimal InvoiceAmount { get; set; }
         public decimal PaidAmount { get; set; }
         public string ChequeNo { get; set; }
+        public decimal? ChequeAmount { get; set; }
         public string ChequeDate { get; set; }
         public int? BankId { get; set; }
         public string BankName { get; set; }
