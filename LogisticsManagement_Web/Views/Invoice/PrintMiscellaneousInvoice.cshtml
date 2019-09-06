@@ -154,7 +154,8 @@
                                     {
                                         wayBills = Model.viewModelWaybills.Where(c => c.InvoiceNumber == item.InvoiceNo).ToList();
                                     }
-                                    else {
+                                    else
+                                    {
                                         wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId).ToList();
                                     }
 
@@ -213,12 +214,55 @@
                                         <td class="tdStyle">@bill.NetTotalOrderCost</td>
                                     </tr>
 
+
+
                                     if (bill.AdditionalServicesComments.Length > 0)
                                     {
                                         <tr style="font-size:10px">
                                             <td class="tdStyle" colspan="7">
                                                 <span>@bill.AdditionalServicesComments</span>
                                             </td>
+                                        </tr>
+                                    }
+
+                                    if (!string.IsNullOrEmpty(bill.DeliveredBy) || !string.IsNullOrEmpty(bill.BolReferenceNumber) || !string.IsNullOrEmpty(bill.ProReferenceNumber) || !string.IsNullOrEmpty(bill.ShipperName))
+                                    {
+                                        <tr style="font-size:10px">
+                                            <td class="tdStyle" colspan="3">
+                                                @{
+                                                    if (!string.IsNullOrEmpty(bill.DeliveredBy))
+                                                    {
+                                                        <span>@bill.DeliveredBy &nbsp;&nbsp; </span>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="tdStyle">
+                                                @{
+                                                    if (!string.IsNullOrEmpty(bill.BolReferenceNumber))
+                                                    {
+                                                        <span>@bill.BolReferenceNumber &nbsp;&nbsp;&nbsp;&nbsp; </span>
+                                                    }
+
+                                                    if (!string.IsNullOrEmpty(bill.ProReferenceNumber))
+                                                    {
+                                                        <span>@bill.ProReferenceNumber  &nbsp;&nbsp; </span>
+                                                    }
+                                                }
+                                            </td>
+
+                                            <td class="tdStyle" colspan="3">
+                                                @{
+                                                    if (!string.IsNullOrEmpty(bill.ShipperName))
+                                                    {
+                                                        <span>@bill.ShipperName  </span>
+                                                        if (!string.IsNullOrEmpty(bill.ShipperName))
+                                                        {
+                                                            <span>@bill.ShipperAddress</span>
+                                                        }
+                                                    }
+                                                }
+                                            </td>
+
                                         </tr>
                                     }
                                     if (bill.InvoiceComments.Length > 0)

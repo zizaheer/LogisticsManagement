@@ -44,7 +44,7 @@ function waitLoading() {
 //#region Local Variables
 var employeeData;
 var paidByValue = '1';
-
+var isNewEntry = false;
 
 // global tax amount
 //var taxPercentage = 0.0;
@@ -87,6 +87,9 @@ $('#btnNewOrder').unbind().on('click', function () {
             $('#dlConsigneeAddressLines').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
         });
     }
+
+    isNewEntry = true;
+    $('#txtWayBillNo').prop('disabled', false);
 
     $('#newOrder').modal({
         backdrop: 'static',
@@ -763,20 +766,27 @@ function SubmitOrderForm(dataArray) {
     var result;
     var parseData;
 
-    if (dataArray[0].wayBillNumber > 0) {
+    if (dataArray[0].wayBillNumber > 0 && isNewEntry === false) {
         result = PerformPostActionWithObject('Order/Update', dataArray);
         if (result.length > 0) {
             // bootbox.alert('The order has been updated successfully');
         }
     }
     else {
-        result = PerformPostActionWithObject('Order/Add', dataArray);
-        if (result !== null) {
-            parseData = JSON.parse(result);
-            $('#txtWayBillNo').val(parseData.waybillNumber);
-            $('#hfOrderId').val(parseData.orderId);
-
-            // bootbox.alert('The order has been created successfully');
+        if (dataArray[0].wayBillNumber > 0 && isNewEntry === true) {
+            var duplicateWaybill = GetSingleById('Order/FindDuplicateWayBill', dataArray[0].wayBillNumber);
+            if (duplicateWaybill !== '') {
+                bootbox.alert('This waybill was already used. Cannot create duplicate waybill.');
+                return;
+            } else {
+                result = PerformPostActionWithObject('Order/Add', dataArray);
+                if (result !== null) {
+                    parseData = JSON.parse(result);
+                    $('#txtWayBillNo').val(parseData.waybillNumber);
+                    $('#hfOrderId').val(parseData.orderId);
+                    // bootbox.alert('The order has been created successfully');
+                }
+            }
         }
     }
     //selectedAdditionalServiceArray = null;
@@ -902,6 +912,9 @@ $('#btnDispatchToEmployee').unbind().on('click', function (event) {
     var dispatchDate = $('#txtDispatchDatetimeForNewOrders').val();
     var isPercent = parseInt($('#ddlShareType').val()) === 1 ? true : false;
     var sharePortion = $('#txtOrderPortionForNewOrders').val() === '' ? 0 : parseFloat($('#txtOrderPortionForNewOrders').val());
+    var isSendEmail = $('#chkSendEmail').is(':checked');
+    var emailAddress = $('#txtEmailAddressForDispatch').val();
+    
 
     var vehicleId = 0; //Get vehicle Id feature
 
@@ -918,6 +931,14 @@ $('#btnDispatchToEmployee').unbind().on('click', function (event) {
     if (isPercent === true) {
         if (sharePortion > 100) {
             bootbox.alert('Percent amount cannot be greater than 100.');
+            return;
+        }
+    }
+
+    if (isSendEmail === true)
+    {
+        if (emailAddress === '') {
+            bootbox.alert('Please enter email address.');
             return;
         }
     }
@@ -962,6 +983,9 @@ $('#order-list').on('click', '.btnEdit', function (event) {
         GetAndFillOrderDetailsByWayBillNumber(wbNumber, 1);
     }
 
+    $('#txtWayBillNo').prop('disabled', true);
+    isNewEntry = false;
+
     $('#newOrder').modal({
         backdrop: 'static',
         keyboard: false
@@ -991,6 +1015,10 @@ function ModifyReleasedOrder(orderId) {
             ClearForm();
             $('#frmOrderForm').trigger('reset');
             GetAndFillOrderDetailsByWayBillNumber(orderId, 1);
+
+            $('#txtWayBillNo').prop('disabled', true);
+            isNewEntry = false;
+
             $('#newOrder').modal({
                 backdrop: 'static',
                 keyboard: false

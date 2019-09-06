@@ -815,6 +815,55 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public IActionResult AddPrePrintedWaybill(string fromNumber, string toNumber)
+        {
+            var result = "";
+            try
+            {
+                var orders = _orderLogic.GetList();
+                var dispatchedList = _orderStatusLogic.GetList();
+
+                dispatchedList = (from dispatch in dispatchedList
+                                  join order in orders on dispatch.OrderId equals order.Id
+                                  select dispatch).ToList();
+
+                using (var scope = new TransactionScope())
+                {
+
+
+                    scope.Complete();
+
+                    result = "Success";
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
+
+        public JsonResult FindDuplicateWayBill(string id)
+        {
+            ValidateSession();
+            string result = "";
+            try
+            {
+                var orderPoco = _orderLogic.GetList().Where(c => c.WayBillNumber == id).FirstOrDefault();
+                if (orderPoco != null) {
+                    result = orderPoco.WayBillNumber;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return Json(result);
+        }
+
 
         public JsonResult GetTariffCostByParam(string jsonStringParam)
         {
@@ -1536,6 +1585,7 @@ namespace LogisticsManagement_Web.Controllers
                     }
 
                     orderPoco.IsInvoiced = false;
+                    orderPoco.IsPrePrinted = false;
                     orderPoco.CreateDate = Convert.ToDateTime(DateTime.Now.ToString("dd-MMM-yyyy"));
                     orderId = _orderLogic.Add(orderPoco).Id;
 

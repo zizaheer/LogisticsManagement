@@ -1338,6 +1338,50 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     waybillPrintViewModel.OrderTaxAmountOnBasePrice = Convert.ToDecimal(orderTotalTax).ToString("0.00");
                     waybillPrintViewModel.NetTotalOrderCost = Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice).ToString("0.00");
+                    if (!string.IsNullOrEmpty(order.DeliveredBy))
+                    {
+                        if (order.DeliveredBy.Length > 25)
+                        {
+                            waybillPrintViewModel.DeliveredBy = "Deli. By: " + order.DeliveredBy.Substring(0, 22) + "...";
+                        }
+                        else {
+                            waybillPrintViewModel.DeliveredBy = "Deli. By: " + order.DeliveredBy;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(order.BolReferenceNumber)) {
+                        waybillPrintViewModel.BolReferenceNumber = "BOL: " + order.BolReferenceNumber;
+                    }
+
+                    if (!string.IsNullOrEmpty(order.ProReferenceNumber))
+                    {
+                        waybillPrintViewModel.ProReferenceNumber = "PRO: " + order.ProReferenceNumber;
+                    }
+
+                    if (!string.IsNullOrEmpty(order.ShipperName))
+                    {
+                        if (order.ShipperName.Length > 25)
+                        {
+                            waybillPrintViewModel.ShipperName = "Shipper: " + order.ShipperName.Substring(0, 22) + "...";
+                        }
+                        else
+                        {
+                            waybillPrintViewModel.ShipperName = "Shipper: " + order.ShipperName;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(order.ShipperAddress))
+                    {
+                        if (order.ShipperAddress.Length > 10)
+                        {
+                            waybillPrintViewModel.ShipperAddress = "; " + order.ShipperAddress.Substring(0, 7) + "...";
+                        }
+                        else
+                        {
+                            waybillPrintViewModel.ShipperAddress = "; " + order.ShipperAddress;
+                        }
+                    }
+
                 }
                 else
                 {

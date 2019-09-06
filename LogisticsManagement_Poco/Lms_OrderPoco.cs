@@ -65,6 +65,7 @@ namespace LogisticsManagement_Poco
         public string CommentsForInvoice { get; set; }
         public bool? IsPrintedOnInvoice { get; set; }
 
+        public bool IsPrePrinted { get; set; }
         public string Remarks { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
