@@ -864,7 +864,6 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-
         public JsonResult GetTariffCostByParam(string jsonStringParam)
         {
             ValidateSession();
@@ -889,7 +888,7 @@ namespace LogisticsManagement_Web.Controllers
             var shipperTariffInfo = tariffList.Where(c =>
                                                           c.CityId == shipperCityId && c.DeliveryOptionId == deliveryOptionId
                                                           && c.VehicleTypeId == vehicleTypeId && c.UnitTypeId == unitTypeId
-                                                          && c.UptoWeight >= weightQuantity
+                                                          //&& c.UptoWeight >= weightQuantity
                                                           ).ToList().FirstOrDefault();
             if (shipperTariffInfo != null)
             {

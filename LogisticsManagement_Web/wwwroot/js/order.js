@@ -776,7 +776,7 @@ function SubmitOrderForm(dataArray) {
         if (dataArray[0].wayBillNumber > 0 && isNewEntry === true) {
             var duplicateWaybill = GetSingleById('Order/FindDuplicateWayBill', dataArray[0].wayBillNumber);
             if (duplicateWaybill !== '') {
-                bootbox.alert('This waybill was already used. Cannot create duplicate waybill.');
+                bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number or keep it blank to create auto.');
                 return;
             } else {
                 result = PerformPostActionWithObject('Order/Add', dataArray);
