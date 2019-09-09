@@ -22,7 +22,7 @@ namespace LogisticsManagement_Web.Services
         }
 
 
-        public async Task SendEmail(string sentToFirstName, string sendToEmailAddress, int emailType, string attachmentFilePath = "", string emailSubject = "", string emailMessage = "")
+        public async Task SendEmail(string sentToFirstName, string sendToEmailAddress, int emailType, string attachmentFilePath = "", string emailSubject = "", string emailMessageBody = "")
         {
             try
             {
@@ -50,6 +50,7 @@ namespace LogisticsManagement_Web.Services
                             mailMessage.Subject = _configuration["WaybillEmail:Subject"];
                             mailMessage.Body = _configuration["WaybillEmail:Salutation"];
                             mailMessage.Body = mailMessage.Body + sentToFirstName + Environment.NewLine;
+                            mailMessage.Body = mailMessage.Body + emailMessageBody + Environment.NewLine;
                             mailMessage.Body = mailMessage.Body + _configuration["WaybillEmail:BodyText"];
                         }
                         else if (emailType == 2)
@@ -57,6 +58,7 @@ namespace LogisticsManagement_Web.Services
                             mailMessage.Subject = _configuration["InvoiceEmail:Subject"];
                             mailMessage.Body = _configuration["InvoiceEmail:Salutation"];
                             mailMessage.Body = mailMessage.Body + sentToFirstName + Environment.NewLine;
+                            mailMessage.Body = mailMessage.Body + emailMessageBody + Environment.NewLine;
                             mailMessage.Body = mailMessage.Body + _configuration["InvoiceEmail:BodyText"];
                         }
 

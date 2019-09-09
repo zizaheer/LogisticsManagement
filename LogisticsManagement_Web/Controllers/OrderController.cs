@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using LogisticsManagement_BusinessLogic;
@@ -376,6 +377,10 @@ namespace LogisticsManagement_Web.Controllers
                     var vehicleId = Convert.ToInt16(orderData[3]);
                     var isShareOnPercent = Convert.ToBoolean(orderData[4]);
                     var shareAmount = Convert.ToDecimal(orderData[5]);
+                    var isSendEmail = Convert.ToBoolean(orderData[6]);
+                    var emailAddress = Convert.ToString(orderData[7]);
+
+                    string waybillNumbersForEmail = "";
 
                     var orders = _orderLogic.GetList();
                     var orderStatuses = _orderStatusLogic.GetList();
@@ -385,6 +390,10 @@ namespace LogisticsManagement_Web.Controllers
                         foreach (var item in wayBillNumberList)
                         {
                             var wbNumber = item.ToString();
+                            if (waybillNumbersForEmail != "") {
+                                waybillNumbersForEmail = waybillNumbersForEmail + ",";
+                            }
+                            waybillNumbersForEmail = waybillNumbersForEmail + wbNumber;
 
                             var filteredOrders = orders.Where(c => c.WayBillNumber == wbNumber).ToList();
                             foreach (var order in filteredOrders)
@@ -406,7 +415,14 @@ namespace LogisticsManagement_Web.Controllers
                                     _orderLogic.Update(order);
                                 }
                             }
+                        }
 
+                        if (isSendEmail == true && !string.IsNullOrEmpty(emailAddress))
+                        {
+                            _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
+
+                            string firstName = _employeeLogic.GetSingleById((int)employeeNumber).FirstName;
+                            SendDispatchEmail(firstName, emailAddress, waybillNumbersForEmail);
                         }
 
                         scope.Complete();
@@ -1113,7 +1129,6 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-
         public JsonResult PrintWaybillAsPdf([FromBody]dynamic orderData)
         {
             try
@@ -1371,6 +1386,35 @@ namespace LogisticsManagement_Web.Controllers
                 return null;
             }
             //return View();
+        }
+
+        public void SendDispatchEmail(string firstName, string emailAddress, string waybillNumbers)
+        {
+            try
+            {
+                string[] waybills = waybillNumbers.Split(",");
+                StringBuilder emailBody = new StringBuilder(); 
+
+                foreach (var waybill in waybills) {
+                    var orderList = _orderLogic.GetList().Where(c => c.WayBillNumber == waybill.Trim()).ToList();
+                    foreach (var order in orderList)
+                    {
+                        emailBody.Append("Order number: " + order.WayBillNumber + Environment.NewLine);
+                        emailBody.Append("Pickup from: " + order.ShipperCustomerId + order.ShipperAddressId + Environment.NewLine);
+                        emailBody.Append("Deliver to: " + order.ConsigneeCustomerId  + order.ConsigneeAddressId + Environment.NewLine);
+                        emailBody.Append("Update delivery status link: " +  HttpContext.Request.Host + "/UpdateDelivery/OrderId=" + order.Id.ToString() + Environment.NewLine);
+                    }
+
+                    emailBody.Append(Environment.NewLine + Environment.NewLine);
+                }
+
+                _emailService.SendEmail(firstName, emailAddress, 1, "", "", emailBody.ToString());
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
         }
 
         private ViewModel_DeliveryOrder GetAllRequiredDataForDispatchBoard()
