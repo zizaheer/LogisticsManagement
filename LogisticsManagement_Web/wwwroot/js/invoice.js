@@ -66,21 +66,7 @@ $('#pending-list .chkSelectAllOrders').on('change', function (event) {
     }
 });
 
-$('#pending-list .btnUndoDelivery').unbind().on('click', function (event) {
-    event.preventDefault();
 
-    var orderId = $(this).data('waybillnumber');
-    if (orderId !== '') {
-        bootbox.confirm("Delivery information related to this order will be deleted. Are you sure to proceed?", function (result) {
-            if (result === true) {
-                var status = PerformPostActionWithId('Order/RemoveDeliveryStatusByWaybill', orderId);
-                if (status.length > 0) {
-                    $('#loadPendingInvoiceDataTable').load('Invoice/PartialPendingInvoiceDataTable');
-                }
-            }
-        });
-    }
-});
 $('#pending-list .btnPrintWaybill').unbind().on('click', function (event) {
     event.preventDefault();
 

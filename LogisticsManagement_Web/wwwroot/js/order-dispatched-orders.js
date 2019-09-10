@@ -98,8 +98,8 @@ $('#btnSavePickup').unbind().on('click', function (event) {
     var result = PerformPostActionWithObject('Order/UpdatePickupStatus', dataArray);
     if (result.length > 0) {
         $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-        bootbox.alert('Pickup has been updated.');
         $('#orderPickup').modal('hide');
+        location.reload();
     }
 
 });
@@ -114,7 +114,7 @@ $('#btnRemovePickup').unbind().on('click', function (event) {
             if (status.length > 0) {
                 $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
                 $('#orderPickup').modal('hide');
-                bootbox.alert('Pickup has been removed.');
+                location.reload();
             }
         }
     });
@@ -218,8 +218,8 @@ $('#btnSavePassOn').unbind().on('click', function (event) {
     if (result.length > 0) {
         event.preventDefault();
         $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-        bootbox.alert('Pass-on has been updated.');
         $('#orderPassOn').modal('hide');
+        location.reload();
     }
 
 });
@@ -233,7 +233,7 @@ $('#btnRemovePassOn').unbind().on('click', function (event) {
             if (status.length > 0) {
                 $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
                 $('#orderPassOn').modal('hide');
-                bootbox.alert('Pass-on has been removed.');
+                location.reload();
             }
         }
     });
@@ -349,8 +349,8 @@ $('#btnSaveDeliver').unbind().on('click', function (event) {
 
     if (result.length > 0) {
         $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
-        bootbox.alert('Delivery information has been updated.');
         $('#orderDeliver').modal('hide');
+        location.reload();
     }
 
 });
@@ -364,7 +364,7 @@ $('#btnRemoveDeliver').unbind().on('click', function (event) {
             if (status.length > 0) {
                 $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
                 $('#orderDeliver').modal('hide');
-                bootbox.alert('Delivery information has been removed.');
+                location.reload();
             }
         }
     });
@@ -386,6 +386,7 @@ $('.btnRemoveDispatch').unbind().on('click', function (event) {
             PerformPostActionWithId('Order/RemoveDispatchStatus', wayBillNumber);
             $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
             $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
+            location.reload();
         }
     });
 });

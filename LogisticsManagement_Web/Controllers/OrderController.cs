@@ -227,7 +227,7 @@ namespace LogisticsManagement_Web.Controllers
                     {
                         existingOrder.ReferenceNumber = orderPoco.ReferenceNumber;
                         existingOrder.CargoCtlNumber = orderPoco.CargoCtlNumber;
-                        existingOrder.AwbCtnNumber = orderPoco.CargoCtlNumber;
+                        existingOrder.AwbCtnNumber = orderPoco.AwbCtnNumber;
                         existingOrder.PickupReferenceNumber = orderPoco.PickupReferenceNumber;
                         existingOrder.ShipperCustomerId = orderPoco.ShipperCustomerId;
                         existingOrder.ConsigneeCustomerId = orderPoco.ConsigneeCustomerId;
@@ -422,7 +422,7 @@ namespace LogisticsManagement_Web.Controllers
                             _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
 
                             string firstName = _employeeLogic.GetSingleById((int)employeeNumber).FirstName;
-                            SendDispatchEmail(firstName, emailAddress, waybillNumbersForEmail);
+                            //SendDispatchEmail(firstName, emailAddress, waybillNumbersForEmail);
                         }
 
                         scope.Complete();
@@ -861,7 +861,6 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-
         public JsonResult FindDuplicateWayBill(string id)
         {
             ValidateSession();
@@ -871,6 +870,34 @@ namespace LogisticsManagement_Web.Controllers
                 var orderPoco = _orderLogic.GetList().Where(c => c.WayBillNumber == id).FirstOrDefault();
                 if (orderPoco != null) {
                     result = orderPoco.WayBillNumber;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return Json(result);
+        }
+
+        public JsonResult GetNextWaybillNumber(string id)
+        {
+            ValidateSession();
+            string result = "";
+            try
+            {
+                var maxNumber = _orderLogic.GetList().Max(c => c.WayBillNumber);
+                if (maxNumber != null)
+                {
+                    result = Convert.ToString(Convert.ToInt32(maxNumber) + 1) ;
+                }
+                else
+                {
+                    _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+                    var configItem = _configurationLogic.GetSingleById(1).DeliveryWBNoStartFrom;
+                    if (configItem != null) {
+                        result = configItem;
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -1192,7 +1219,14 @@ namespace LogisticsManagement_Web.Controllers
                             ViewModel_PrintWaybill waybillPrintViewModel = new ViewModel_PrintWaybill();
 
                             waybillPrintViewModel.WaybillNumber = orderInfo.WayBillNumber;
-                            waybillPrintViewModel.WayBillDate = orderInfo.CreateDate.ToString("dd-MMM-yy");
+                            if (orderInfo.ScheduledPickupDate != null)
+                            {
+                                waybillPrintViewModel.WayBillDate = ((DateTime)orderInfo.ScheduledPickupDate).ToString("dd-MMM-yy");
+                            }
+                            else {
+                                //waybillPrintViewModel.WayBillDate = orderInfo.CreateDate.ToString("dd-MMM-yy");
+                            }
+                            
                             waybillPrintViewModel.BillerCustomerId = orderInfo.BillToCustomerId;
                             waybillPrintViewModel.CustomerRefNo = orderInfo.ReferenceNumber;
                             waybillPrintViewModel.CargoCtlNo = orderInfo.CargoCtlNumber;
@@ -1607,7 +1641,7 @@ namespace LogisticsManagement_Web.Controllers
                         var maxWaybillNumber = _orderLogic.GetList().Select(c => c.WayBillNumber).OrderByDescending(c => c).FirstOrDefault();
                         if (maxWaybillNumber != null)
                         {
-                            newWaybillNumber = Convert.ToString(Convert.ToInt16(maxWaybillNumber) + 1);
+                            newWaybillNumber = Convert.ToString(Convert.ToInt32(maxWaybillNumber) + 1);
                         }
                         else
                         {

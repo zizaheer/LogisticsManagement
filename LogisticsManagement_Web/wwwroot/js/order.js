@@ -78,6 +78,7 @@ $('#btnNewOrder').unbind().on('click', function () {
     $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(new Date));
 
     var addressLinesForAutoComplete = GetList('Address/GetAddressForAutoComplete');
+    var maxWayBill = GetSingleById('Order/GetNextWaybillNumber', 0);
 
     if (addressLinesForAutoComplete !== null) {
         var addressLines = JSON.parse(addressLinesForAutoComplete);
@@ -90,6 +91,7 @@ $('#btnNewOrder').unbind().on('click', function () {
 
     isNewEntry = true;
     $('#txtWayBillNo').prop('disabled', false);
+    $('#txtWayBillNo').val(maxWayBill);
 
     $('#newOrder').modal({
         backdrop: 'static',
@@ -946,6 +948,7 @@ $('#btnDispatchToEmployee').unbind().on('click', function (event) {
         selectedOrdersForDispatch = [];
 
         $('#dispatchOrder').modal('hide');
+        location.reload();
     }
 
 });

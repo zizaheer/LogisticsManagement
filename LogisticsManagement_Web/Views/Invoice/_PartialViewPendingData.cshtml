@@ -20,7 +20,7 @@
 <table id="pending-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr style="background-color:#ebffad">
-            <th>
+            <th style="width:50px">
                 <div class="form-check-inline">
                     @{
                         var wayBillArray = Model.Select(c => c.WayBillNumber).ToArray();
@@ -31,20 +31,20 @@
                     }
                     <input type="checkbox" class="form-check-inline chkSelectAllOrders" id="chkSelectAllOrders" />
                     <input type="hidden" id="hfWaybillArray" value="@wayBillArrayString" />
-                    <label class="form-check-label">W/B #</label>
+                    <label class="form-check-label">W/B#</label>
                 </div>
             </th>
-            <th>Date</th>
-            <th>Customer ref #</th>
-            <th>Shipper name</th>
-            <th>Consignee name</th>
-            <th>Unit/qty.</th>
-            <th>Skid</th>
-            <th>Weight</th>
-            <th>Biller name</th>
-            <th>Ordered by</th>
-            <th>Order cost</th>
-            <th>Undo delivery</th>
+            <th style="width:50px">Date</th>
+            <th style="width:75px">Cust. ref#</th>
+            <th style="width:150px">Shipper</th>
+            <th style="width:150px">Consignee</th>
+            <th style="width:50px">Unt/qty.</th>
+            <th style="width:40px">SKD</th>
+            <th style="width:50px">Wgt.</th>
+            <th style="width:150px">Bill to</th>
+            <th style="width:80px">Ord. By</th>
+            <th style="width:70px">Ord. Cost</thstyle="width:70px">
+            <th style="width:30px">Print</th>
         </tr>
     </thead>
 
@@ -77,12 +77,33 @@
                 @item.CustomerReferenceNo
             </td>
 
-            <td>
-                @item.ShipperName
+            <td title="@item.ShipperName">
+                @{ 
+                    var shipper = "";
+                    if (item.ShipperName.Length > 25)
+                    {
+                        shipper = item.ShipperName.Substring(0, 22) + "...";
+                    }
+                    else {
+                        shipper = item.ShipperName;
+                    }
+                    @shipper
+                }
             </td>
 
             <td>
-                @item.ConsigneeName
+                @{
+                    var consignee = "";
+                    if (item.ConsigneeName.Length > 25)
+                    {
+                        consignee = item.ConsigneeName.Substring(0, 22) + "...";
+                    }
+                    else
+                    {
+                        consignee = item.ConsigneeName;
+                    }
+                    @consignee
+                }
             </td>
 
             <td>
@@ -98,7 +119,18 @@
             </td>
 
             <td>
-                @item.BillerName
+                @{
+                    var billerName = "";
+                    if (item.BillerName.Length > 25)
+                    {
+                        billerName = item.BillerName.Substring(0, 22) + "...";
+                    }
+                    else
+                    {
+                        billerName = item.BillerName;
+                    }
+                    @billerName
+                }
             </td>
 
             <td>
@@ -108,7 +140,6 @@
                 @item.TotalOrderCost
             </td>
             <td>
-               <button class="btn-danger smallGridIcon btnUndoDelivery" data-waybillnumber="@item.WayBillNumber" title="Undo delivery" type="button"><i class="fa fa-undo"></i></button>
                <button class="btn-primary smallGridIcon btnPrintWaybill" data-waybillnumber="@item.WayBillNumber" title="Print waybill" type="button"><i class="fa fa-print"></i></button>
             </td>
         </tr>

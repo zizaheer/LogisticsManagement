@@ -247,7 +247,14 @@ namespace LogisticsManagement_Web.Controllers
                     pendingInvoice.OrderTypeId = order.OrderTypeId;
                     pendingInvoice.OrderType = order.OrderTypeId == 2 ? "Return" : "Single";
                     pendingInvoice.CustomerReferenceNo = order.ReferenceNumber;
-                    pendingInvoice.WaybillDate = order.CreateDate;
+                    if (order.ScheduledPickupDate != null)
+                    {
+                        pendingInvoice.WaybillDate = (DateTime)order.ScheduledPickupDate;
+                    }
+                    else {
+                        //pendingInvoice.WaybillDate = order.CreateDate;
+                    }
+                    
                     pendingInvoice.ShipperId = (int)order.ShipperCustomerId;
                     pendingInvoice.ShipperName = customers.Where(c => c.Id == pendingInvoice.ShipperId).FirstOrDefault().CustomerName;
                     if (order.ConsigneeCustomerId != null)
@@ -1127,9 +1134,19 @@ namespace LogisticsManagement_Web.Controllers
 
                             billerList = orders.Select(c => c.BillToCustomerId).Distinct().ToList();
 
+                            var maxInvNo = _invoiceLogic.GetMaxId();
+                            if (maxInvNo < 1) {
+                                _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+                                var invNoStartFrom = _configurationLogic.GetSingleById(1).InvoiceNumberStartFrom;
+                                maxInvNo = Convert.ToInt32(invNoStartFrom) - 1;
+                            }
+
                             foreach (var billerId in billerList)
                             {
+                                maxInvNo += 1;
                                 var biller = GetBillerInformation(billerId);
+                                biller.InvoiceNo = maxInvNo;
+                                biller.InvoiceDate = DateTime.Now;
                                 invoiceBillerList.Add(biller);
                             }
 
@@ -1258,7 +1275,15 @@ namespace LogisticsManagement_Web.Controllers
             if (order != null)
             {
                 waybillPrintViewModel.WaybillNumber = order.WayBillNumber;
-                waybillPrintViewModel.WayBillDate = order.CreateDate.ToString("dd-MMM-yy");
+                if (order.ScheduledPickupDate != null)
+                {
+                    waybillPrintViewModel.WayBillDate = ((DateTime)order.ScheduledPickupDate).ToString("dd-MMM-yy");
+                }
+                else
+                {
+                    //waybillPrintViewModel.WayBillDate = orderInfo.CreateDate.ToString("dd-MMM-yy");
+                }
+                
                 waybillPrintViewModel.BillerCustomerId = order.BillToCustomerId;
                 waybillPrintViewModel.CustomerRefNo = order.ReferenceNumber;
                 waybillPrintViewModel.CargoCtlNo = order.CargoCtlNumber;
