@@ -82,7 +82,7 @@ namespace LogisticsManagement_Web.Controllers
             orderTypeToLoad = 1;
             return View(GetPendingWaybillsForInvoice());
         }
-        
+
         public IActionResult InvoicePayment()
         {
             ValidateSession();
@@ -251,10 +251,11 @@ namespace LogisticsManagement_Web.Controllers
                     {
                         pendingInvoice.WaybillDate = (DateTime)order.ScheduledPickupDate;
                     }
-                    else {
+                    else
+                    {
                         //pendingInvoice.WaybillDate = order.CreateDate;
                     }
-                    
+
                     pendingInvoice.ShipperId = (int)order.ShipperCustomerId;
                     pendingInvoice.ShipperName = customers.Where(c => c.Id == pendingInvoice.ShipperId).FirstOrDefault().CustomerName;
                     if (order.ConsigneeCustomerId != null)
@@ -407,34 +408,40 @@ namespace LogisticsManagement_Web.Controllers
                 invoiceList = invoiceList.Where(c => c.BillerCustomerId == billerId).ToList();
             }
 
-            foreach (var inv in invoiceList) {
+            foreach (var inv in invoiceList)
+            {
                 ViewModel_PaidInvoice paidInvoice = new ViewModel_PaidInvoice();
                 paidInvoice.InvoiceId = inv.Id;
                 paidInvoice.InvoiceDate = inv.CreateDate.ToString("dd-MMM-yyyy");
                 paidInvoice.InvoiceAmount = inv.TotalInvoiceAmount;
                 paidInvoice.PaidAmount = (decimal)inv.PaidAmount;
                 paidInvoice.BillToCustomerId = inv.BillerCustomerId;
-                if (inv.BillerCustomerId > 0) {
+                if (inv.BillerCustomerId > 0)
+                {
                     _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
                     paidInvoice.BillerName = _customerLogic.GetSingleById(inv.BillerCustomerId).CustomerName;
                 }
 
                 var paymentCollections = _paymentCollectionLogic.GetList().Where(c => c.InvoiceId == inv.Id).ToList();
-                if (paymentCollections.Count > 0) {
+                if (paymentCollections.Count > 0)
+                {
                     var paymentInfo = paymentCollections.FirstOrDefault();
                     paidInvoice.ChequeNo = paymentInfo.ChequeNo;
                     paidInvoice.ChequeAmount = paymentInfo.ChequeAmount;
-                    if (paymentInfo.ChequeDate != null) {
+                    if (paymentInfo.ChequeDate != null)
+                    {
                         paidInvoice.ChequeDate = ((DateTime)paymentInfo.ChequeDate).ToString("dd-MMM-yyyy");
                     }
 
-                    if (paymentInfo.BankId != null) {
+                    if (paymentInfo.BankId != null)
+                    {
                         Lms_BankLogic _bankLogic = new Lms_BankLogic(_cache, new EntityFrameworkGenericRepository<Lms_BankPoco>(_dbContext));
                         paidInvoice.BankId = paymentInfo.BankId;
                         paidInvoice.BankName = _bankLogic.GetSingleById((int)paidInvoice.BankId).BankName;
                     }
 
-                    if (paymentCollections.Count > 1) {
+                    if (paymentCollections.Count > 1)
+                    {
                         paidInvoice.MorePaymentInfo = "";
                         int serial = 0;
                         foreach (var payment in paymentCollections)
@@ -478,6 +485,16 @@ namespace LogisticsManagement_Web.Controllers
                 if (invoiceData != null)
                 {
                     var wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(invoiceData[0]));
+                    var invoiceDateString = JsonConvert.DeserializeObject<string>(JsonConvert.SerializeObject(invoiceData[1]));
+
+                    var invoiceDate = DateTime.Now;
+                    if (invoiceDateString != "")
+                    {
+                        if (DateTime.TryParse(invoiceDateString, out invoiceDate))
+                        {
+                            invoiceDate = Convert.ToDateTime(invoiceDateString);
+                        }
+                    }
 
                     var countArray = ((JArray)wayBillNumberList).Count;
                     string[] wbNumbers = new string[countArray];
@@ -500,12 +517,26 @@ namespace LogisticsManagement_Web.Controllers
 
                     using (var scope = new TransactionScope())
                     {
-                        var billerList = orders.Select(c => c.BillToCustomerId).Distinct().ToList();
+                        var billerIdUnSorted = orders.Select(c => c.BillToCustomerId).Distinct().ToList();
 
-                        foreach (var biller in billerList)
+
+                        var billerListUnSorted = new List<ViewModel_InvoiceBiller>();
+                        _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+                        foreach (var billerId in billerIdUnSorted)
+                        {
+                            var billerSorted = new ViewModel_InvoiceBiller();
+                            billerSorted.BillerCustomerId = billerId;
+                            billerSorted.BillerCustomerName = _customerLogic.GetSingleById(billerId).CustomerName;
+                            billerListUnSorted.Add(billerSorted);
+                        }
+
+                        var billerListSorted = new List<ViewModel_InvoiceBiller>();
+                        billerListSorted = billerListUnSorted.OrderBy(c => c.BillerCustomerName).ToList();
+
+                        foreach (var biller in billerListSorted)
                         {
                             var customerWiseOrders = new List<Lms_OrderPoco>();
-                            customerWiseOrders = orders.Where(c => c.BillToCustomerId == biller).ToList();
+                            customerWiseOrders = orders.Where(c => c.BillToCustomerId == biller.BillerCustomerId).ToList();
 
                             if (customerWiseOrders.Count > 0)
                             {
@@ -518,7 +549,7 @@ namespace LogisticsManagement_Web.Controllers
                                 billerCustomerId = customerWiseOrders.FirstOrDefault().BillToCustomerId;
                                 billerDepartment = customerWiseOrders.FirstOrDefault().DepartmentName;
 
-                                _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, createdBy, customerWiseWbNumbers);
+                                _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, invoiceDate.ToString("dd-MMM-yyyy"), createdBy, customerWiseWbNumbers);
                             }
                         }
 
@@ -584,7 +615,7 @@ namespace LogisticsManagement_Web.Controllers
 
 
 
-                            _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, createdBy, customerWiseWbNumbers);
+                           // _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, createdBy, customerWiseWbNumbers);
 
                             orders.RemoveAll(c => c.BillToCustomerId == item.BillToCustomerId);
 
@@ -1094,6 +1125,7 @@ namespace LogisticsManagement_Web.Controllers
                     List<ViewModel_GeneratedInvoice> invoiceViewModels = new List<ViewModel_GeneratedInvoice>();
                     List<Lms_OrderPoco> orders = new List<Lms_OrderPoco>();
                     var invoiceBillerList = new List<ViewModel_InvoiceBiller>();
+                    var invoiceBillerSortedList = new List<ViewModel_InvoiceBiller>();
                     var invoiceWaybillList = new List<ViewModel_PrintWaybill>();
                     var billerList = new List<int>();
                     orders = _orderLogic.GetList();
@@ -1103,6 +1135,17 @@ namespace LogisticsManagement_Web.Controllers
                     var isMiscellaneous = Convert.ToBoolean(printOptionObject.SelectToken("isMiscellaneous"));
                     viewName = printOptionObject.SelectToken("viewName").ToString();
                     var isFinalPrint = Convert.ToBoolean(printOptionObject.SelectToken("isFinalPrint"));
+                    var invoiceDateString = Convert.ToString(printOptionObject.SelectToken("invoiceDate"));
+
+                    DateTime invoiceDate = DateTime.Now;
+
+                    if (invoiceDateString != "")
+                    {
+                        if (DateTime.TryParse(invoiceDateString, out invoiceDate))
+                        {
+                            invoiceDate = Convert.ToDateTime(invoiceDateString);
+                        }
+                    }
 
                     var countArray = 0;
                     var dataObject = new JObject();
@@ -1135,7 +1178,8 @@ namespace LogisticsManagement_Web.Controllers
                             billerList = orders.Select(c => c.BillToCustomerId).Distinct().ToList();
 
                             var maxInvNo = _invoiceLogic.GetMaxId();
-                            if (maxInvNo < 1) {
+                            if (maxInvNo < 1)
+                            {
                                 _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
                                 var invNoStartFrom = _configurationLogic.GetSingleById(1).InvoiceNumberStartFrom;
                                 maxInvNo = Convert.ToInt32(invNoStartFrom) - 1;
@@ -1143,11 +1187,17 @@ namespace LogisticsManagement_Web.Controllers
 
                             foreach (var billerId in billerList)
                             {
-                                maxInvNo += 1;
                                 var biller = GetBillerInformation(billerId);
-                                biller.InvoiceNo = maxInvNo;
-                                biller.InvoiceDate = DateTime.Now;
                                 invoiceBillerList.Add(biller);
+                            }
+
+                            invoiceBillerSortedList = invoiceBillerList.OrderBy(c => c.BillerCustomerName).ToList();
+
+                            foreach (var biller in invoiceBillerSortedList)
+                            {
+                                maxInvNo += 1;
+                                biller.InvoiceNo = maxInvNo;
+                                biller.InvoiceDate = invoiceDate;
                             }
 
                             foreach (var item in orders)
@@ -1171,7 +1221,7 @@ namespace LogisticsManagement_Web.Controllers
                                 biller.InvoiceNo = Convert.ToInt32(invNo);
                                 biller.InvoiceDate = invoice.CreateDate;
 
-                                invoiceBillerList.Add(biller);
+                                invoiceBillerSortedList.Add(biller);
 
                                 var orderWaybillNumbers = _invoiceWayBillMappingLogic.GetList().Where(c => c.InvoiceId == Convert.ToInt32(invNo)).Select(d => d.WayBillNumber).ToList();
                                 foreach (var waybill in orderWaybillNumbers)
@@ -1197,7 +1247,7 @@ namespace LogisticsManagement_Web.Controllers
                             }
                         }
 
-                        viewModelPrintInvoice.viewModelInvoiceBillers = invoiceBillerList;
+                        viewModelPrintInvoice.viewModelInvoiceBillers = invoiceBillerSortedList;
                         viewModelPrintInvoice.viewModelWaybills = invoiceWaybillList;
                     }
 
@@ -1283,7 +1333,7 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     //waybillPrintViewModel.WayBillDate = orderInfo.CreateDate.ToString("dd-MMM-yy");
                 }
-                
+
                 waybillPrintViewModel.BillerCustomerId = order.BillToCustomerId;
                 waybillPrintViewModel.CustomerRefNo = order.ReferenceNumber;
                 waybillPrintViewModel.CargoCtlNo = order.CargoCtlNumber;
@@ -1369,12 +1419,14 @@ namespace LogisticsManagement_Web.Controllers
                         {
                             waybillPrintViewModel.DeliveredBy = "Deli. By: " + order.DeliveredBy.Substring(0, 22) + "...";
                         }
-                        else {
+                        else
+                        {
                             waybillPrintViewModel.DeliveredBy = "Deli. By: " + order.DeliveredBy;
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(order.BolReferenceNumber)) {
+                    if (!string.IsNullOrEmpty(order.BolReferenceNumber))
+                    {
                         waybillPrintViewModel.BolReferenceNumber = "BOL: " + order.BolReferenceNumber;
                     }
 

@@ -689,7 +689,7 @@ $('.btnDelete').unbind().on('click', function () {
     bootbox.confirm("This waybill number will be deleted along with all relavant data. Are you sure to proceed?", function (result) {
         if (result === true) {
             PerformPostActionWithId('Order/Remove', waybillNumber);
-            $('#loadOrdersToBeDispatched').load('Order/LoadOrdersForDispatch');
+            location.reload();
         }
     });
 });
@@ -1360,7 +1360,7 @@ function CalculateOrderBaseCost() {
             overriddenDiscountAmount = 0;
         }
 
-        if (taxPercentage > 0 && baseTaxAmount > 0) {
+        if (taxPercentage > 0 && isGstApplicable === true) {
             overriddenTaxAmount = taxPercentage * overriddenOrderCost / 100;
             overriddenOrderCost = overriddenOrderCost + overriddenTaxAmount;
             $('#txtOverriddenOrderGST').val(overriddenTaxAmount.toFixed(2));

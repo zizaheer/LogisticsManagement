@@ -134,10 +134,16 @@
 
     <hr />
     <div class="row">
-        <div class="col-sm-10">
+        <div class="col-sm-2">
             <button type="submit" class="btn btn-sm btn-primary" id="btnGenerateInvoice"><i class="fa fa-gear"></i> Generate invoice/s</button>
         </div>
-        <div class="col-2 form-group">
+        <div class="col-sm-4">
+            <div class="col-sm-12 input-group">
+                <small style="padding-top:5px; padding-right:10px"> <b><label for="txtInvoiceDate">Invoice date</label></b></small>
+                <input type="date" id="txtInvoiceDate" class="form-control form-control-sm txtInvoiceDate" />
+            </div>
+        </div>
+        <div class="col-2 offset-4 form-group">
             <button id="btnTrialPrint" class="btn btn-sm btn-danger" style="float:right; margin-bottom:15px"><i class="fa fa-print"></i> Invoice trial print</button>
         </div>
 

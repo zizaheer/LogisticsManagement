@@ -106,7 +106,7 @@ namespace LogisticsManagement_BusinessLogic
 
         #endregion
 
-        public string GenerateInvoice(int billerCustomerId, string billerDepartment, int createdBy, string[] wayBillNumbers)
+        public string GenerateInvoice(int billerCustomerId, string billerDepartment, string invoiceDate, int createdBy, string[] wayBillNumbers)
         {
             try
             {
@@ -138,12 +138,13 @@ namespace LogisticsManagement_BusinessLogic
                 new SqlParameter("@BillerCustomerId", SqlDbType.Int) { Value = billerCustomerId },
                 new SqlParameter("@BillerDepartment", SqlDbType.VarChar, 100) { Value = (object)billerDepartment ?? DBNull.Value },
                 new SqlParameter("@wbNumbers", SqlDbType.VarChar, 100) { Value = wbNumbers },
+                new SqlParameter("@CreateDate", SqlDbType.VarChar) { Value = invoiceDate },
                 new SqlParameter("@CreatedBy", SqlDbType.Int) { Value = createdBy },
                 new SqlParameter("@WayBillNumberList", SqlDbType.Structured) { TypeName = "dbo.WayBillNumbers", Value = wayBillNumberList }
             };
 
                 StringBuilder query = new StringBuilder();
-                query.Append("EXEC GenerateInvoice @BillerCustomerId, @BillerDepartment, @wbNumbers, @CreatedBy, @WayBillNumberList");
+                query.Append("EXEC GenerateInvoice @BillerCustomerId, @BillerDepartment, @wbNumbers, @CreateDate, @CreatedBy, @WayBillNumberList");
 
                 var outPut = base.CallStoredProcedure(query.ToString(), sqlParameters);
 

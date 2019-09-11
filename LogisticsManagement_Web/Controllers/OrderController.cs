@@ -885,7 +885,7 @@ namespace LogisticsManagement_Web.Controllers
             string result = "";
             try
             {
-                var maxNumber = _orderLogic.GetList().Max(c => c.WayBillNumber);
+                var maxNumber = _orderLogic.GetSingleById(_orderLogic.GetList().Max(c => c.Id)).WayBillNumber;
                 if (maxNumber != null)
                 {
                     result = Convert.ToString(Convert.ToInt32(maxNumber) + 1) ;

@@ -8,6 +8,7 @@ $(document).ready(function () {
     currentDate.setDate(currentDate.getDate() - 60);
     $('#txtStartDate').val(ConvertDateToUSFormat(currentDate));
     $('#txtToDate').val(ConvertDateToUSFormat(new Date));
+    $('#txtInvoiceDate').val(ConvertDateToUSFormat(new Date));
 
     $('#txtChequeDate').val(ConvertDateToUSFormat(new Date));
 
@@ -66,7 +67,22 @@ $('#pending-list .chkSelectAllOrders').on('change', function (event) {
     }
 });
 
+$('#pending-list .btnUndoDelivery').unbind().on('click', function (event) {
+    event.preventDefault();
 
+    var orderId = $(this).data('waybillnumber');
+    if (orderId !== '') {
+        bootbox.confirm("Delivery information related to this order will be deleted. Are you sure to proceed?", function (result) {
+            if (result === true) {
+                var status = PerformPostActionWithId('Order/RemoveDeliveryStatusByWaybill', orderId);
+                if (status.length > 0) {
+                    //$('#loadPendingInvoiceDataTable').load('Invoice/PartialPendingInvoiceDataTable');
+                    location.reload();
+                }
+            }
+        });
+    }
+});
 $('#pending-list .btnPrintWaybill').unbind().on('click', function (event) {
     event.preventDefault();
 
@@ -254,7 +270,7 @@ $('#frmInvoiceGenerationForm').on('keyup keypress', function (e) {
 $('#frmInvoiceGenerationForm').unbind('submit').submit(function (event) {
     event.preventDefault();
     var dataArray = wayBillNumberArray;
-
+    var invoiceDate = $('#txtInvoiceDate').val();
     if (dataArray.length < 1) {
         bootbox.alert('Please select waybill number/s to generate invoice');
         return;
@@ -262,10 +278,12 @@ $('#frmInvoiceGenerationForm').unbind('submit').submit(function (event) {
 
     bootbox.confirm("This will generate invoices for selected customer/s and cannot be undone. Did you see the trial print and found everything ok? ", function (result) {
         if (result === true) {
-            var output = PerformPostActionWithObject('Invoice/Add', [dataArray]);
+            var output = PerformPostActionWithObject('Invoice/Add', [dataArray, invoiceDate]);
             if (output !== '') {
                 $('#loadPendingInvoiceDataTable').load('Invoice/PartialPendingInvoiceDataTable');
                 $('#loadInvoicedDataTable').load('Invoice/PartialViewDataTable');
+                location.reload();
+
                 wayBillNumberArray = [];
             }
         }
@@ -316,6 +334,7 @@ $('#btnTrialPrint').unbind().on('click', function (event) {
         isMiscellaneous: orderType === 3 ? 1 : 0,
         viewName: orderType === 3 ? 'PrintMiscellaneousInvoice' : 'PrintDeliveryInvoice',
         isFinalPrint: 0,
+        invoiceDate: $('#txtInvoiceDate').val(),
         printUrl: printUrl
     };
 
@@ -338,6 +357,7 @@ $('#btnInvoiceFinalPrint').unbind().on('click', function (event) {
         isMiscellaneous: isMisc === true ? 1 : 0,
         viewName: isMisc === true ? 'PrintMiscellaneousInvoice' : 'PrintDeliveryInvoice',
         isFinalPrint: 1,
+        invoiceDate: $('#txtInvoiceDate').val(),
         printUrl: printUrl
     };
 
