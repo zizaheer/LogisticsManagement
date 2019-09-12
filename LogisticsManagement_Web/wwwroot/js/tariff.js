@@ -14,6 +14,24 @@ $('#btnNew').on('click', function () {
     $('#txtTariffId').val('');
 });
 
+
+$('#btnNewTariff').on('click', function () {
+    $('#txtTariffId').prop('readonly', true);
+    $('#txtTariffId').val('');
+    $('#frmTariffForm').trigger('reset');
+
+    $('#tariffUpdate').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+
+    $('#tariffUpdate').draggable();
+    $('#tariffUpdate').modal('show');
+
+});
+
+
+
 $('#btnClear').on('click', function () {
     $('#txtTariffId').prop('readonly', false);
 });
@@ -46,7 +64,7 @@ $('#tariff-list').on('click', '.btnEdit', function () {
 
     var tariffId = $(this).data('tariffid');
     var tariffInfo = GetSingleById('Tariff/GetTariffById', tariffId);
-    console.log(tariffInfo);
+
     if (tariffInfo !== "") {
         tariffInfo = JSON.parse(tariffInfo);
     }
@@ -57,6 +75,18 @@ $('#tariff-list').on('click', '.btnEdit', function () {
     }
 
     FillTariffInfo(tariffInfo);
+
+    $('#tariffUpdate').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+
+    $('#tariffUpdate').draggable();
+    $('#tariffUpdate').modal('show');
+});
+
+$('#btnCloseModal').on('click', function () {
+    $('#tariffUpdate').modal('hide');
 });
 
 $('#btnDownloadTariffData').unbind().on('click', function (event) {
@@ -72,7 +102,6 @@ $('#frmTariffForm').on('keyup keypress', function (e) {
         return false;
     }
 });
-
 $('#frmTariffForm').unbind('submit').submit(function (event) {
     event.preventDefault();
 
@@ -102,8 +131,9 @@ $('#frmTariffForm').unbind('submit').submit(function (event) {
             $('#txtTariffId').val(result);
         }
     }
-   
+
     $('#loadTariffDataTable').load('Tariff/PartialViewDataTable');
+    location.reload();
 });
 
 $('.btnDelete').unbind().on('click', function () {

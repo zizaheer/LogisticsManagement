@@ -6,163 +6,176 @@
     ViewData["Title"] = "Tarrif";
 }
 
-<h3>
-    @ViewData["Title"]
-</h3>
-<hr style="margin-bottom:40px" />
-
-
-
-
-<form id="frmTariffForm">
-
-    <div class="row">
-        <div class="col-sm-12 form-group">
-            <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Tariff id" style="font-family:Arial, FontAwesome" id="txtTariffId" type="number" min="1" name="txtTariffId" readonly>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="form-group col-sm-3">
-            <small>
-                <b><label for="ddlDeliveryOptionId">Service option</label></b>
-            </small>
-            <select class="form-control form-control-sm" id="ddlDeliveryOptionId">
-                @foreach (var deliveryOption in Model.DeliveryOptions)
-                {
-                    var selected = false;
-                    if (deliveryOption.Id == 1)
-                    {
-                        selected = true;
-                    }
-                    <option value="@deliveryOption.Id" selected="@selected">@deliveryOption.OptionName</option>
-                }
-            </select>
-        </div>
-        <div class="form-group col-sm-4">
-            <small>
-                <b>
-                    <label for="ddlCityId">Select city</label>
-                </b>
-            </small>
-            <select class="form-control form-control-sm" id="ddlCityId">
-                <option value="0">-- Select --</option>
-                @foreach (var city in Model.Cities)
-                {
-                    var selected = false;
-                    if (city.Id == 335)
-                    {
-                        selected = true;
-                    }
-                    <option value="@city.Id" selected="@selected">@city.CityName</option>
-                }
-            </select>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="form-group col-sm-3">
-            <small>
-                <b>
-                    <label for="ddlVehicleTypeId">Transport medium</label>
-                </b>
-            </small>
-            <select class="form-control form-control-sm" id="ddlVehicleTypeId">
-                @foreach (var vehicleType in Model.VehicleTypes)
-                {
-                    var selected = false;
-                    if (vehicleType.Id == 1)
-                    {
-                        selected = true;
-                    }
-                    <option value="@vehicleType.Id" selected="@selected">@vehicleType.TypeName</option>
-                }
-            </select>
-        </div>
-
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="ddlUnitTypeId">Unit type</label>
-                </b>
-            </small>
-            <select class="form-control form-control-sm" id="ddlUnitTypeId" disabled>
-                @foreach (var unitType in Model.UnitTypes)
-                {
-                    var selected = false;
-                    if (unitType.Id == 2)
-                    {
-                        selected = true;
-                    }
-                    <option value="@unitType.Id" selected="@selected">@unitType.TypeName</option>
-                }
-            </select>
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="ddlWeightScaleId">Weight</label>
-                </b>
-            </small>
-            <select class="form-control form-control-sm" id="ddlWeightScaleId" disabled>
-                @foreach (var weightScale in Model.WeightScales)
-                {
-                    var selected = false;
-                    if (weightScale.Id == 1)
-                    {
-                        selected = true;
-                    }
-                    <option value="@weightScale.Id" selected="@selected">@weightScale.ScaleName (@weightScale.ShortCode)</option>
-                }
-            </select>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="form-group col-sm-3">
-            <small>
-                <b>
-                    <label for="txtCity">First unit rate</label>
-                </b>
-            </small>
-            <input class="form-control form-control-sm" id="txtFirstUnitPrice" placeholder="First unit price" type="number" min="0" step=".01" />
-        </div>
-
-        <div class="form-group col-sm-4">
-            <small>
-                <b>
-                    <label for="txtCity">Per unit rate (after 1st unit)</label>
-                </b>
-            </small>
-            <input class="form-control form-control-sm" id="txtPerUnitPrice" placeholder="Per unit price" type="number" min="0" step=".01" />
-        </div>
-
-    </div>
-
-    <hr />
-
-    <button type="reset" class="btn btn-sm btn-primary" id="btnNew"><i class="fa fa-refresh"></i> New</button>
-    <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save tariff</button>
-
-
-</form>
 
 
 <div class="row">
-    <div class="col-md-12 input-group" style="margin-top:40px">
-        <h3>Existing tariffs</h3>
-
-        
-        <button style="margin-left:10px;margin-right:15px; margin-top:4px;height:27px" class="btn btn-sm btn-danger" id="btnDownloadTariffData"><i class="fa fa-download"></i> Load tariffs </button>
-        <div style="margin-top:5px">
-            <span id="spinnerLoadingDataTable" style="display:none">
-                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
-                <span style="margin-right:20px">Loading...</span>
-            </span>
-        </div>
+    <div class="col-sm-10">
+        <h4>
+            @ViewData["Title"]
+        </h4>
+    </div>
+    <div class="col-sm-2">
+        <button id="btnNewTariff" type="button" class="btn btn-sm btn-danger form-control" title="Create a new tariff" data-toggle="modal"><i class="fa fa-plus-circle"></i> New Tariff </button>
     </div>
 </div>
-<hr />
+
+<hr style="margin-bottom:40px" />
+
+<form id="frmTariffForm">
+
+    <div class="modal fade bd-example-modal-xl" id="tariffUpdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content bg-light">
+                <div class="modal-header" style="justify-content:initial;padding-top:9px;padding-bottom:9px; padding-right:0px">
+                    <img src="~/images/flaticons-64x64/wishlist.png" style="height:25px; padding-left:14px; padding-right:10px" />
+                    <b id="exampleModalCenterTitle">Tariff</b>
+                    <div class="col-sm-3 offset-7" style="padding-right:0px;text-align:right">
+                        <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-check"></i> Save </button>
+                        <button type="button" style="margin-right:-31px" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+
+
+                        <div class="row">
+                            <div class="col-sm-12 form-group">
+                                <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Tariff id" style="font-family:Arial, FontAwesome" id="txtTariffId" type="number" min="1" name="txtTariffId" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-3">
+                                <small>
+                                    <b><label for="ddlDeliveryOptionId">Service option</label></b>
+                                </small>
+                                <select class="form-control form-control-sm" id="ddlDeliveryOptionId">
+                                    @foreach (var deliveryOption in Model.DeliveryOptions)
+                                    {
+                                        var selected = false;
+                                        if (deliveryOption.Id == 1)
+                                        {
+                                            selected = true;
+                                        }
+                                        <option value="@deliveryOption.Id" selected="@selected">@deliveryOption.OptionName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <small>
+                                    <b>
+                                        <label for="ddlCityId">Select city</label>
+                                    </b>
+                                </small>
+                                <select class="form-control form-control-sm" id="ddlCityId">
+                                    <option value="0">-- Select --</option>
+                                    @foreach (var city in Model.Cities)
+                                    {
+                                        var selected = false;
+                                        if (city.Id == 335)
+                                        {
+                                            selected = true;
+                                        }
+                                        <option value="@city.Id" selected="@selected">@city.CityName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-3">
+                                <small>
+                                    <b>
+                                        <label for="ddlVehicleTypeId">Transport medium</label>
+                                    </b>
+                                </small>
+                                <select class="form-control form-control-sm" id="ddlVehicleTypeId">
+                                    @foreach (var vehicleType in Model.VehicleTypes)
+                                    {
+                                        var selected = false;
+                                        if (vehicleType.Id == 1)
+                                        {
+                                            selected = true;
+                                        }
+                                        <option value="@vehicleType.Id" selected="@selected">@vehicleType.TypeName</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="form-group col-sm-2">
+                                <small>
+                                    <b>
+                                        <label for="ddlUnitTypeId">Unit type</label>
+                                    </b>
+                                </small>
+                                <select class="form-control form-control-sm" id="ddlUnitTypeId" disabled>
+                                    @foreach (var unitType in Model.UnitTypes)
+                                    {
+                                        var selected = false;
+                                        if (unitType.Id == 2)
+                                        {
+                                            selected = true;
+                                        }
+                                        <option value="@unitType.Id" selected="@selected">@unitType.TypeName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <small>
+                                    <b>
+                                        <label for="ddlWeightScaleId">Weight</label>
+                                    </b>
+                                </small>
+                                <select class="form-control form-control-sm" id="ddlWeightScaleId" disabled>
+                                    @foreach (var weightScale in Model.WeightScales)
+                                    {
+                                        var selected = false;
+                                        if (weightScale.Id == 1)
+                                        {
+                                            selected = true;
+                                        }
+                                        <option value="@weightScale.Id" selected="@selected">@weightScale.ScaleName (@weightScale.ShortCode)</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-3">
+                                <small>
+                                    <b>
+                                        <label for="txtCity">First unit rate</label>
+                                    </b>
+                                </small>
+                                <input class="form-control form-control-sm" id="txtFirstUnitPrice" placeholder="First unit price" type="number" min="0" step=".01" />
+                            </div>
+
+                            <div class="form-group col-sm-4">
+                                <small>
+                                    <b>
+                                        <label for="txtCity">Per unit rate (after 1st unit)</label>
+                                    </b>
+                                </small>
+                                <input class="form-control form-control-sm" id="txtPerUnitPrice" placeholder="Per unit price" type="number" min="0" step=".01" />
+                            </div>
+
+                        </div>
+
+                        <hr />
+
+                        @*<button type="reset" class="btn btn-sm btn-primary" id="btnNew"><i class="fa fa-refresh"></i> New</button>
+                            <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save tariff</button>*@
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 <div class="row">
     <div class="col-sm-12">
