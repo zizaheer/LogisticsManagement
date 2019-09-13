@@ -390,7 +390,8 @@ namespace LogisticsManagement_Web.Controllers
                         foreach (var item in wayBillNumberList)
                         {
                             var wbNumber = item.ToString();
-                            if (waybillNumbersForEmail != "") {
+                            if (waybillNumbersForEmail != "")
+                            {
                                 waybillNumbersForEmail = waybillNumbersForEmail + ",";
                             }
                             waybillNumbersForEmail = waybillNumbersForEmail + wbNumber;
@@ -422,7 +423,7 @@ namespace LogisticsManagement_Web.Controllers
                             _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
 
                             string firstName = _employeeLogic.GetSingleById((int)employeeNumber).FirstName;
-                            //SendDispatchEmail(firstName, emailAddress, waybillNumbersForEmail);
+                            SendDispatchEmail(firstName, emailAddress, waybillNumbersForEmail);
                         }
 
                         scope.Complete();
@@ -868,7 +869,8 @@ namespace LogisticsManagement_Web.Controllers
             try
             {
                 var orderPoco = _orderLogic.GetList().Where(c => c.WayBillNumber == id).FirstOrDefault();
-                if (orderPoco != null) {
+                if (orderPoco != null)
+                {
                     result = orderPoco.WayBillNumber;
                 }
             }
@@ -888,16 +890,17 @@ namespace LogisticsManagement_Web.Controllers
                 var maxNumber = _orderLogic.GetSingleById(_orderLogic.GetList().Max(c => c.Id)).WayBillNumber;
                 if (maxNumber != null)
                 {
-                    result = Convert.ToString(Convert.ToInt32(maxNumber) + 1) ;
+                    result = Convert.ToString(Convert.ToInt32(maxNumber) + 1);
                 }
                 else
                 {
                     _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
                     var configItem = _configurationLogic.GetSingleById(1).DeliveryWBNoStartFrom;
-                    if (configItem != null) {
+                    if (configItem != null)
+                    {
                         result = configItem;
                     }
-                    
+
                 }
             }
             catch (Exception ex)
@@ -1223,10 +1226,11 @@ namespace LogisticsManagement_Web.Controllers
                             {
                                 waybillPrintViewModel.WayBillDate = ((DateTime)orderInfo.ScheduledPickupDate).ToString("dd-MMM-yy");
                             }
-                            else {
+                            else
+                            {
                                 //waybillPrintViewModel.WayBillDate = orderInfo.CreateDate.ToString("dd-MMM-yy");
                             }
-                            
+
                             waybillPrintViewModel.BillerCustomerId = orderInfo.BillToCustomerId;
                             waybillPrintViewModel.CustomerRefNo = orderInfo.ReferenceNumber;
                             waybillPrintViewModel.CargoCtlNo = orderInfo.CargoCtlNumber;
@@ -1427,16 +1431,57 @@ namespace LogisticsManagement_Web.Controllers
             try
             {
                 string[] waybills = waybillNumbers.Split(",");
-                StringBuilder emailBody = new StringBuilder(); 
+                StringBuilder emailBody = new StringBuilder();
+                emailBody.Append("<br />" + "Please find order dispatch information below: <br />" + Environment.NewLine + Environment.NewLine);
+                _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+                _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
+                _cityLogic = new App_CityLogic(_cache, new EntityFrameworkGenericRepository<App_CityPoco>(_dbContext));
+                _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
 
-                foreach (var waybill in waybills) {
+                foreach (var waybill in waybills)
+                {
                     var orderList = _orderLogic.GetList().Where(c => c.WayBillNumber == waybill.Trim()).ToList();
                     foreach (var order in orderList)
                     {
-                        emailBody.Append("Order number: " + order.WayBillNumber + Environment.NewLine);
-                        emailBody.Append("Pickup from: " + order.ShipperCustomerId + order.ShipperAddressId + Environment.NewLine);
-                        emailBody.Append("Deliver to: " + order.ConsigneeCustomerId  + order.ConsigneeAddressId + Environment.NewLine);
-                        emailBody.Append("Update delivery status link: " +  HttpContext.Request.Host + "/UpdateDelivery/OrderId=" + order.Id.ToString() + Environment.NewLine);
+                        var sipperAddress = _addressLogic.GetSingleById((int)order.ShipperAddressId);
+                        var consigneeAddress = _addressLogic.GetSingleById((int)order.ConsigneeAddressId);
+
+                        if (!string.IsNullOrEmpty(sipperAddress.UnitNumber))
+                        {
+                            sipperAddress.UnitNumber = sipperAddress.UnitNumber + ", ";
+                        }
+                        if (!string.IsNullOrEmpty(consigneeAddress.UnitNumber))
+                        {
+                            consigneeAddress.UnitNumber = consigneeAddress.UnitNumber + ", ";
+                        }
+
+                        emailBody.Append("ORDER # <b>" + order.WayBillNumber + "</b>" + Environment.NewLine);
+                        //emailBody.Append("==============================================" + Environment.NewLine);
+                        emailBody.Append("<table border=2><tr><td>  </td></tr></table>");
+                        emailBody.Append("<table border=2><tr><td>  </td></tr></table>");
+
+
+
+                        emailBody.Append("PICKUP FROM:  ");
+                        emailBody.Append(_customerLogic.GetSingleById((int)order.ShipperCustomerId).CustomerName + Environment.NewLine);
+                        emailBody.Append(sipperAddress.UnitNumber + sipperAddress.AddressLine + Environment.NewLine);
+                        emailBody.Append(_cityLogic.GetSingleById(sipperAddress.CityId).CityName + ", " + _provinceLogic.GetSingleById(sipperAddress.ProvinceId).ShortCode + "  " + sipperAddress.PostCode + Environment.NewLine);
+                        emailBody.Append("* * * * * * * * * *" + Environment.NewLine);
+                        emailBody.Append("DELIVER TO:  ");
+                        emailBody.Append(_customerLogic.GetSingleById((int)order.ConsigneeCustomerId).CustomerName + Environment.NewLine);
+                        emailBody.Append(consigneeAddress.UnitNumber + consigneeAddress.AddressLine + Environment.NewLine);
+                        emailBody.Append(_cityLogic.GetSingleById(consigneeAddress.CityId).CityName + ", " + _provinceLogic.GetSingleById(consigneeAddress.ProvinceId).ShortCode + "  " + consigneeAddress.PostCode + Environment.NewLine);
+                        emailBody.Append("* * * * * * * * * *" + Environment.NewLine);
+                        var statusUpdateLink = "";
+                        if (HttpContext.Request.IsHttps == true)
+                        {
+                            statusUpdateLink = "https://";
+                        }
+                        else {
+                            statusUpdateLink = "http://";
+                        }
+                        statusUpdateLink = statusUpdateLink + HttpContext.Request.Host + "/UpdateDelivery/OrderId=" + order.Id.ToString();
+                        emailBody.Append("Update delivery status link: " + "<a href='" + statusUpdateLink + "'> Click Here </a>" + Environment.NewLine);
                     }
 
                     emailBody.Append(Environment.NewLine + Environment.NewLine);
@@ -1446,7 +1491,7 @@ namespace LogisticsManagement_Web.Controllers
             }
             catch (Exception ex)
             {
-                
+
             }
 
         }
