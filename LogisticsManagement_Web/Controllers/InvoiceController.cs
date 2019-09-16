@@ -549,19 +549,22 @@ namespace LogisticsManagement_Web.Controllers
                                 billerCustomerId = customerWiseOrders.FirstOrDefault().BillToCustomerId;
                                 billerDepartment = customerWiseOrders.FirstOrDefault().DepartmentName;
 
-                                _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, invoiceDate.ToString("dd-MMM-yyyy"), createdBy, customerWiseWbNumbers);
+                                result = _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, invoiceDate.ToString("dd-MMM-yyyy"), createdBy, customerWiseWbNumbers);
                             }
                         }
 
-                        scope.Complete();
-                        result = "Success";
+                        if (result != "")
+                        {
+                            scope.Complete();
+                            result = "Success";
+                        }
 
                     }
                 }
             }
             catch (Exception ex)
             {
-
+                result = "";
             }
 
             return Json(result);
@@ -615,7 +618,7 @@ namespace LogisticsManagement_Web.Controllers
 
 
 
-                           // _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, createdBy, customerWiseWbNumbers);
+                            // _invoiceLogic.GenerateInvoice(billerCustomerId, billerDepartment, createdBy, customerWiseWbNumbers);
 
                             orders.RemoveAll(c => c.BillToCustomerId == item.BillToCustomerId);
 

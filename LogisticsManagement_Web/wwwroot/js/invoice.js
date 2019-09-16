@@ -283,8 +283,11 @@ $('#frmInvoiceGenerationForm').unbind('submit').submit(function (event) {
                 $('#loadPendingInvoiceDataTable').load('Invoice/PartialPendingInvoiceDataTable');
                 $('#loadInvoicedDataTable').load('Invoice/PartialViewDataTable');
                 location.reload();
-
                 wayBillNumberArray = [];
+
+            } else {
+                bootbox.alert('Failed! There was an unknowned error occured during generating invoice/s. Please try again or contact support.');
+                return;
             }
         }
     });
