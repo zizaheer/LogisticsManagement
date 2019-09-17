@@ -43,7 +43,7 @@
             <th style="width:50px">Wgt.</th>
             <th style="width:150px">Bill to</th>
             <th style="width:80px">Ord. By</th>
-            <th style="width:70px">Ord. Cost</th>
+            <th style="width:80px">Cost</th>
             <th style="width:30px">Print/Undo</th>
         </tr>
     </thead>
@@ -137,7 +137,7 @@
                 @item.OrderedBy
             </td>
             <td>
-                @item.TotalOrderCost
+                @item.TotalOrderCost 
             </td>
             <td>
                 <button class="btn-primary smallGridIcon btnPrintWaybill" data-waybillnumber="@item.WayBillNumber" title="Print waybill" type="button"><i class="fa fa-print"></i></button>
