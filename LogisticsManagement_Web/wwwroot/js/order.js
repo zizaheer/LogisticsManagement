@@ -897,6 +897,8 @@ $('#btnDispatch').unbind().on('click', function (event) {
     $('#dispatchOrder').draggable();
     $('#dispatchOrder').modal('show');
 
+    $('#lblOrderNumbers').text(selectedOrdersForDispatch);
+
     $('#txtEmployeeName').val('');
     $('#hfDispatchToEmployeeId').val('');
     $('#txtOrderPortionForNewOrders').val('');

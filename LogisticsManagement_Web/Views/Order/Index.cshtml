@@ -373,6 +373,18 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
+                        <div class="col-sm-8">
+                            <small>
+                                <b><label for="txtEmployeeName" style="text-transform:uppercase;">Orders: </label></b>
+                                <b>
+                                    <label id="lblOrderNumbers" style="color:#ed5e00"></label>
+                                    <br />
+                                </b>
+                            </small>
+                        </div>
+                    
+                    </div>
+                    <div class="row">
                         <div class="col-sm-4">
                             <small><b><label for="txtEmployeeName">Select employee/driver</label></b></small>
                             <input type="search" id="txtEmployeeName" name="txtEmployeeName" class="form-control form-control-sm txtEmployeeName" placeholder="Select employee/driver" list="dlEmployees" />
@@ -399,8 +411,8 @@
                                 </b>
                             </small>
                             <div class="input-group">
-                                <select class=" col-sm-5 form-control form-control-sm" id="ddlShareType" ><option value="0">Fixed</option><option value="1">Pct.(%)</option></select>
-                                <input class="form-control form-control-sm  form-group" id="txtOrderPortionForNewOrders" type="number" name="txtOrderPortionForNewOrders" >
+                                <select class=" col-sm-5 form-control form-control-sm" id="ddlShareType"><option value="0">Fixed</option><option value="1">Pct.(%)</option></select>
+                                <input class="form-control form-control-sm  form-group" id="txtOrderPortionForNewOrders" type="number" name="txtOrderPortionForNewOrders">
                             </div>
 
                         </div>
@@ -416,7 +428,7 @@
                             <datalist id="dlVehicles"></datalist>
                         </div>
                     </div>
-                   
+
                     <div class="row">
                         <div class="col-sm-5">
                             <small>
@@ -425,20 +437,20 @@
                                 </b>
                             </small>
                             <div class="input-group">
-                                <input class="form-control form-control-sm  form-group" id="txtEmailAddressForDispatch" type="text" name="txtEmailAddressForDispatch" >
+                                <input class="form-control form-control-sm  form-group" id="txtEmailAddressForDispatch" type="text" name="txtEmailAddressForDispatch">
                             </div>
 
                         </div>
                         <div class="col-sm-5">
                             <div class="input-group" style="padding-top:34px">
                                 <div class="form-check-inline">
-                                    <input type="checkbox" id="chkSendEmail" class="form-check-input"  />
-                                    <small><b><label class="form-check-label"> Send email</label></b></small>
+                                    <input type="checkbox" id="chkSendEmail" class="form-check-input" />
+                                    <small><b><label class="form-check-label" for="chkSendEmail"> Send email</label></b></small>
                                 </div>
                             </div>
                         </div>
                     </div>
-                   
+
                     <hr />
                     <div class="row">
                         <div class="col-sm-2">
