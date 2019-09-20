@@ -375,14 +375,14 @@
                     <div class="row">
                         <div class="col-sm-8">
                             <small>
-                                <b><label for="txtEmployeeName" style="text-transform:uppercase;">Orders: </label></b>
+                                <b><label for="txtEmployeeName" style="text-transform:uppercase;">WB#: &nbsp; </label></b>
                                 <b>
-                                    <label id="lblOrderNumbers" style="color:#ed5e00"></label>
+                                    <label id="lblOrderNumbers" style="color:#c70101; font-size:1.2em"></label>
                                     <br />
                                 </b>
                             </small>
                         </div>
-                    
+
                     </div>
                     <div class="row">
                         <div class="col-sm-4">
@@ -530,24 +530,20 @@
                                         <input type="text" class="form-control form-control-sm" placeholder="Ordered by" id="txtOrderedBy" name="txtOrderedBy" title="Ordered by">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblPickupRefNo" for="txtPickupRefNo"><b>PU/DL ref#</b></label>
-                                    </small>
-                                    <div class="col-sm-1">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Pickup ref" id="txtPickupRefNo" name="txtPickupRefNo" title="Pickup ref #" style="width:107px">
-                                    </div>
-                                </div>
-                                <div class="row" style="margin-top:8px">
-                                    <small>
                                         <label style="margin-top:5px" id="lblDeliveryOptionId" for="ddlDeliveryOptionId"><b>Service</b></label>
                                     </small>
-                                    <div class="col-sm-2">
-                                        <select class="form-control form-control-sm" id="ddlDeliveryOptionId" name="ddlDeliveryOptionId">
+                                    <div class="col-sm-1">
+                                        <select class="form-control form-control-sm" id="ddlDeliveryOptionId" name="ddlDeliveryOptionId" style="width:135px">
                                             @foreach (var deliveryOption in Model.DeliveryOptions)
                                             {
                                                 <option value="@deliveryOption.Id">@deliveryOption.OptionName - (@deliveryOption.ShortCode) </option>
                                             }
                                         </select>
                                     </div>
+
+
+                                </div>
+                                <div class="row" style="margin-top:8px">
                                     <small>
                                         <label style="margin-top:5px" id="lblWayBillNo" for="txtWayBillNo"><b>W/B #</b></label>
                                     </small>
@@ -555,23 +551,48 @@
                                         <input class="form-control form-control-sm" placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNo" type="number" name="txtWayBillNo" disabled>
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblCustomerRefNo" for="txtCustomerRefNo"><b>Cust. ref#</b></label>
+                                        <label style="margin-top:5px" id="lblCustomerRefNo" for="txtCustomerRefNo"><b>CUST. REF#</b></label>
                                     </small>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control form-control-sm" placeholder="Cust Ref" id="txtCustomerRefNo" name="txtCustomerRefNo" title="Customer ref #">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblCargoCtlNo" for="txtCargoCtlNo"><b>Cargo ctl#</b></label>
-                                    </small>
-                                    <div class="col-sm-2">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
-                                    </div>
-                                    <small>
-                                        <label style="margin-top:5px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>AWB CTN#</b></label>
+                                        <label style="margin-top:5px" id="lblPickupRefNo" for="txtPickupRefNo"><b>PU/DL REF#</b></label>
                                     </small>
                                     <div class="col-sm-1">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Awb Ctn#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Pickup ref" id="txtPickupRefNo" name="txtPickupRefNo" title="Pickup ref #" style="width:107px">
                                     </div>
+
+                                    <small>
+                                        <label style="margin-top:5px; margin-left:50px" id="lblVehicleTypeId" for="ddlVehicleTypeId"><b>Transport</b></label>
+                                    </small>
+                                    <div class="col-sm-2">
+                                        <select class="form-control form-control-sm" id="ddlVehicleTypeId" name="ddlVehicleTypeId">
+                                            <option value="1">Truck</option>
+                                            <option value="2">Car</option>
+                                            <option value="3">Van</option>
+                                        </select>
+                                    </div>
+
+                                    <small>
+                                        <label style="margin-top:5px; " id="lblVehicleTypeId" for="ddlVehicleTypeId"><b>Order date</b></label>
+                                    </small>
+                                    <div class="col-sm-1">
+                                        <input class="form-control form-control-sm" id="txtSchedulePickupDate" type="datetime-local" title="Schedule pickup date" name="txtSchedulePickupDate">
+                                    </div>
+
+                                    @*<small>
+                                            <label style="margin-top:5px" id="lblCargoCtlNo" for="txtCargoCtlNo"><b>Cargo ctl#</b></label>
+                                        </small>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
+                                        </div>
+                                        <small>
+                                            <label style="margin-top:5px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>AWB CTN#</b></label>
+                                        </small>
+                                        <div class="col-sm-1">
+                                            <input type="text" class="form-control form-control-sm" placeholder="Awb Ctn#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
+                                        </div>*@
                                 </div>
                                 <div class="row">
                                     <hr style="border-top:1px solid #e0e0e0; padding:0px; width:100%; margin-top:9px;margin-bottom:1px" />
@@ -667,19 +688,32 @@
 
                                     <div class="col-4">
                                         <div class="row mb-1">
-                                            <small class="col-sm-4" style="color:#000; font-weight:bold">Transport</small>
-                                            <small class="col-sm-8" style="color:#000; font-weight:bold">Order date</small>
+                                            <small class="col-sm-6" style="color:#000; font-weight:bold">CARGO CTL#</small>
+                                            <small class="col-sm-6" style="color:#000; font-weight:bold">AWB CTN#</small>
                                         </div>
-                                        <div class="row mb-1">
-                                            <div class="form-group col-md-4 input-group">
-                                                <select class="form-control form-control-sm" id="ddlVehicleTypeId" name="ddlVehicleTypeId">
-                                                    <option value="1">Truck</option>
-                                                    <option value="2">Car</option>
-                                                    <option value="3">Van</option>
-                                                </select>
+
+
+                                        @*<small>
+                                                <label style="margin-top:5px" id="lblCargoCtlNo" for="txtCargoCtlNo"><b>Cargo ctl#</b></label>
+                                            </small>
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
                                             </div>
-                                            <div class="form-group col-md-8 input-group">
-                                                <input class="form-control form-control-sm" id="txtSchedulePickupDate" type="datetime-local" title="Schedule pickup date" name="txtSchedulePickupDate">
+                                            <small>
+                                                <label style="margin-top:5px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>AWB CTN#</b></label>
+                                            </small>
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Awb Ctn#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
+                                            </div>*@
+
+
+
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6 input-group">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
+                                            </div>
+                                            <div class="form-group col-md-6 input-group">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Awb Ctn#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
                                             </div>
                                         </div>
                                         <div class="row mb-1">
@@ -930,7 +964,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div style="display:block; height:272px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; font-size:.7em; background-color:#022f67" id="loadDispatchedOrders">
+        <div style="display:block; height:272px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; font-size:.7em; background-color:#acb5bc" id="loadDispatchedOrders">
             <partial name="_PartialViewDispatchedOrders" />
         </div>
     </div>

@@ -118,19 +118,25 @@ namespace LogisticsManagement_Web.Controllers
                         orderPoco.CreatedBy = sessionData.UserId;
                         orderPoco.OrderTypeId = 3;  //3 for misc. order
 
-                        if (orderPoco.OrderShareAmount <= 0) {
+                        if (orderPoco.OrderShareAmount <= 0)
+                        {
                             orderPoco.OrderShareAmount = null;
                             orderPoco.IsSharingOnPercent = null;
                         }
 
-                        var newWbNumber = _orderLogic.GetList().OrderByDescending(c => c.WayBillNumber).Take(1).FirstOrDefault().WayBillNumber;
-                        if (!(newWbNumber.Length > 0))
+                        var newWbNumber = _orderLogic.GetList().Max(c => c.WayBillNumber);
+                        if (!string.IsNullOrEmpty(newWbNumber) && Convert.ToInt32(newWbNumber) > 0)
                         {
-                            newWbNumber = _configurationLogic.GetSingleById(1).DeliveryWBNoStartFrom;
+                            newWbNumber = (Convert.ToInt32(newWbNumber) + 1).ToString();
+
                         }
                         else
                         {
-                            newWbNumber = (Convert.ToInt16(newWbNumber) + 1).ToString();
+                            newWbNumber = _configurationLogic.GetSingleById(1).DeliveryWBNoStartFrom;
+                            if (string.IsNullOrEmpty(newWbNumber) && Convert.ToInt32(newWbNumber) < 1)
+                            {
+                                newWbNumber = "1";
+                            }
                         }
 
                         orderPoco.WayBillNumber = newWbNumber;
@@ -401,7 +407,6 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-
         public JsonResult GetOrderDetailsByWayBillId(string id)
         {
             ValidateSession();
@@ -655,7 +660,7 @@ namespace LogisticsManagement_Web.Controllers
             _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
             miscOrderViewModel.Employees = _employeeLogic.GetList().Where(c => c.EmployeeTypeId == 5).ToList(); // Load employees 'Broker'
 
-            var orders = _orderLogic.GetList().Where(c => c.OrderTypeId == 3 && c.IsInvoiced==false).ToList(); // Load only misc. orders
+            var orders = _orderLogic.GetList().Where(c => c.OrderTypeId == 3 && c.IsInvoiced == false).ToList(); // Load only misc. orders
 
             List<ViewModel_OrderDispatched> viewModelOrders = new List<ViewModel_OrderDispatched>();
             foreach (var item in orders)

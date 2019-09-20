@@ -43,7 +43,8 @@ function waitLoading() {
 
 //#region Local Variables
 var employeeData;
-var paidByValue = '1';
+var paidByValue = $('input[name=rdoPaidBy]').val();
+//alert(paidByValue);
 var isNewEntry = false;
 
 // global tax amount
@@ -211,11 +212,9 @@ $('#txtBillToCustomerName').on('keypress', function (event) {
 $('#txtBillToCustomerName').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $(this).val();
-
     var billerCustomerId = $('#dlBillers option').filter(function () {
         return this.value === valueSelected;
     }).data('customerid');
-
     if (billerCustomerId > 0) {
         var billerInfo = GetCustomerInfo(billerCustomerId);
         if (billerInfo != null && billerInfo != '') {
@@ -226,7 +225,6 @@ $('#txtBillToCustomerName').on('input', function (event) {
             else if (paidByValue === '2') {
                 FillConsigneeInformation(billerInfo);
             }
-
             CalculateOrderBaseCost();
         }
     }
@@ -303,7 +301,6 @@ $('#txtConsigneeCustomerName').on('input', function (event) {
     var consigneeCustomerId = $('#dlConsigneeCustomers option').filter(function () {
         return this.value === valueSelected;
     }).data('customerid');
-
     if (consigneeCustomerId > 0) {
         var consigneeInfo = GetCustomerInfo(consigneeCustomerId);
         if (consigneeInfo != null && consigneeInfo != '') {
@@ -1492,12 +1489,15 @@ function FillOrderDetails(orderRelatedData) {
         if (orderRelatedData.ShipperCustomerId != null && orderRelatedData.BillToCustomerId != null && orderRelatedData.ConsigneeCustomerId != null) {
             if (orderRelatedData.ShipperCustomerId === orderRelatedData.BillToCustomerId) {
                 $('#rdoShipper').prop('checked', true);
+                paidByValue = '1';
             }
             else if (orderRelatedData.ConsigneeCustomerId === orderRelatedData.BillToCustomerId) {
                 $('#rdoConsignee').prop('checked', true);
+                paidByValue = '2';
             }
             else {
                 $('#rdoThirdParty').prop('checked', true);
+                paidByValue = '3';
             }
         }
 

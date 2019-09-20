@@ -69,7 +69,7 @@
                         </table>
                     </td>
                 </tr>
-                <tr>
+                <tr style="font-family: Arial">
                     <td style="width: 180px; vertical-align:top" colspan="2"><b>TO</b></td>
                     <td style="width: 214px; vertical-align:top">
                         <span>
@@ -80,10 +80,12 @@
                             }
                         </span>
                     </td>
-                    <td style="width: 215px; vertical-align:top">
+                    <td style="width: 215px; vertical-align:top;">
                         <b>
-                            <span>
+                            <span style="margin-right:20px !important">
                                 INVOICE #:
+                            </span>
+                            <span>
                                 @{
                                     var invNo = item.InvoiceNo > 0 ? item.InvoiceNo.ToString() : "";
                                     @invNo;
@@ -92,8 +94,8 @@
                         </b>
                     </td>
                 </tr>
-                <tr>
-                    <td style="width: 180px; vertical-align:top" colspan="2">
+                <tr style="font-family: Arial">
+                    <td style="width: 180px; vertical-align:top;" colspan="2">
                         <span style="font-size:1.2em; font-weight:bold">@item.BillerCustomerName.ToUpper()</span><br />
                         <span>@item.BillerCustomerAddressLine.ToUpper()</span><br />
                         <span>@item.BillerCustomerCityLine.ToUpper()</span><br />
@@ -101,21 +103,24 @@
                     </td>
                     <td style="width: 214px; vertical-align:top">&nbsp;</td>
                     <td style="width: 215px; vertical-align: top;">
+                        <br />
                         <b>
-                            <span>
+                            <span style="margin-right:55px !important">
                                 DATE:
+                            </span>
+                            <span>
                                 @{
                                     var dateString = item.InvoiceDate > DateTime.Now.AddYears(-20) ? item.InvoiceDate.ToString("dd-MMM-yyyy") : "";
                                     @dateString.ToUpper();
                                 }
                             </span>
                         </b>
-                        <br />
-                        <b><span>TERM (days): @item.Term</span></b>
+                        <br /><br />
+                        <b><span style="margin-right:55px !important">TERM: </span><span>@item.Term</span></b>
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 180px; height:35px" colspan="2">
+                    <td style="width: 180px; height:35px; font-family: Arial" colspan="2">
                         ATTN: ACCOUNT PAYABLE
                     </td>
 
@@ -139,15 +144,18 @@
                                         <span>Cust ref#</span><br />
                                         <span>Ordered by</span>
                                     </td>
-                                    <td class="tdStyle"><span>Shipper</span></td>
-                                    <td class="tdStyle"><span>Receiver</span></td>
+                                    <td class="tdStyle">
+                                        <br />
+                                        <span>Shipper</span>
+                                    </td>
+                                    <td class="tdStyle"> <br /><span>Receiver</span></td>
                                     <td class="tdStyle">
                                         <span>Unit/Qty</span><br />
                                         <span>Weight</span>
                                     </td>
                                     <td class="tdStyle">Rate</td>
                                     <td class="tdStyle">
-                                        <span>Fuel surcharg</span><br />
+                                        <span>Fuel sur.</span><br />
                                         <span>Add. Chrg</span>
                                     </td>
                                     <td class="tdStyle">Net</td>
@@ -168,7 +176,7 @@
 
                                 @foreach (var bill in wayBills)
                                 {
-                                    <tr style="font-size:11px">
+                                    <tr style="font-size:11px; font-family: 'Courier New'">
                                         <td class="tdStyle">
                                             <span>@{ serial = serial + 1; @serial}</span>
                                         </td>
@@ -193,13 +201,15 @@
                                             <span>@bill.ConsigneeCustomerAddressLine2</span>
                                         </td>
                                         <td class="tdStyle">
-                                            <span>@bill.UnitQuantity @bill.UnitTypeShortCode</span>
+                                            @if (bill.UnitQuantity > 0)
+                                            {
+                                                <span>@bill.UnitQuantity @bill.UnitTypeShortCode</span><br />
+                                            }
                                             <span>
                                                 @{
                                                     var skidStr = "";
                                                     if (bill.SkidQuantity > 0)
                                                     {
-                                                        <br />
                                                         skidStr = "SKD";
                                                     }
                                                 }
@@ -218,37 +228,37 @@
 
                                     if (!string.IsNullOrEmpty(bill.CargoCtlNo) || !string.IsNullOrEmpty(bill.AwbContainerNo) || !string.IsNullOrEmpty(bill.PickupRefNo))
                                     {
-                                    <tr style="font-size:10px">
-                                        <td class="tdStyle" colspan="3"></td>
-                                        <td class="tdStyle">
-                                            @{
-                                                if (!string.IsNullOrEmpty(bill.CargoCtlNo))
-                                                {
-                                                    <span>CC: @bill.CargoCtlNo &nbsp;&nbsp; </span>
+                                        <tr style="font-size:11px; font-family: 'Courier New'">
+                                            <td class="tdStyle" colspan="3"></td>
+                                            <td class="tdStyle">
+                                                @{
+                                                    if (!string.IsNullOrEmpty(bill.CargoCtlNo))
+                                                    {
+                                                        <span>CC: @bill.CargoCtlNo &nbsp;&nbsp; </span>
+                                                    }
                                                 }
-                                            }
-                                        </td>
-                                        <td class="tdStyle" colspan="2">
-                                            @{
-                                                if (!string.IsNullOrEmpty(bill.AwbContainerNo))
-                                                {
-                                                    <span>AWB/CTN: @bill.AwbContainerNo &nbsp;&nbsp; </span>
+                                            </td>
+                                            <td class="tdStyle" colspan="2">
+                                                @{
+                                                    if (!string.IsNullOrEmpty(bill.AwbContainerNo))
+                                                    {
+                                                        <span>AWB/CTN: @bill.AwbContainerNo &nbsp;&nbsp; </span>
+                                                    }
                                                 }
-                                            }
-                                        </td>
-                                        <td class="tdStyle" colspan="3">
-                                            @{
-                                                if (!string.IsNullOrEmpty(bill.PickupRefNo))
-                                                {
-                                                    <span>PU/DL: @bill.PickupRefNo</span>
+                                            </td>
+                                            <td class="tdStyle" colspan="3">
+                                                @{
+                                                    if (!string.IsNullOrEmpty(bill.PickupRefNo))
+                                                    {
+                                                        <span>PU/DL: @bill.PickupRefNo</span>
+                                                    }
                                                 }
-                                            }
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     }
                                     if (!string.IsNullOrEmpty(bill.AdditionalServicesComments))
                                     {
-                                        <tr style="font-size:10px">
+                                        <tr style="font-size:11px; font-family: 'Courier New'">
                                             <td class="tdStyle" colspan="9">
                                                 @{
                                                     if (!string.IsNullOrEmpty(bill.AdditionalServicesComments))
@@ -261,7 +271,7 @@
                                     }
                                     if (bill.InvoiceComments.Length > 0)
                                     {
-                                        <tr style="font-size:10px">
+                                        <tr style="font-size:11px; font-family: 'Courier New'">
                                             <td class="tdStyle" colspan="9">
                                                 <span>@bill.InvoiceComments</span>
                                             </td>
@@ -333,7 +343,7 @@
                                         <span>@accumulatedTotalDue.ToString("0.00")</span>
                                     </td>
                                 </tr>
-                                <tr style="font-size:9px">
+                                <tr style="font-size:10px;  font-family: 'Courier New'; font-weight:normal">
                                     <td colspan="7" style="border-right:none; border-bottom:none; border-left:none">
                                         <span>ALL INVOICES ARE DUE WHEN RENDERED UNLESS AGREED OTHERWISE</span><br />
                                         <span>INTEREST CHARGED ON OUTSTANDING BALANCE AT THE RATE OF 2% PER MONTH</span>

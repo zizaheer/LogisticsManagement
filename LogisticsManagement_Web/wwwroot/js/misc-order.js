@@ -48,6 +48,7 @@ function waitLoading() {
 
 var selectedAdditionalServiceArray = [];
 var selectedOrdersForPrint = [];
+var isNewEntry = false;
 
 //$('#chkCheckAllOrders').prop('checked', true);
 //$('.chkWaybillNumber').prop('checked', true);
@@ -72,6 +73,7 @@ $('#btnNewMiscOrder').unbind().on('click', function () {
     ClearForm();
 
     var addressLinesForAutoComplete = GetList('Address/GetAddressForAutoComplete');
+    var maxWayBill = GetSingleById('Order/GetNextWaybillNumber', 0);
 
     if (addressLinesForAutoComplete !== null) {
         var addressLines = JSON.parse(addressLinesForAutoComplete);
@@ -81,6 +83,11 @@ $('#btnNewMiscOrder').unbind().on('click', function () {
             });
         }
     }
+
+    isNewEntry = true;
+
+    $('#txtWayBillNo').prop('disabled', false);
+    $('#txtWayBillNo').val(maxWayBill);
 
     $('#newMiscOrder').modal({
         backdrop: 'static',
@@ -462,16 +469,32 @@ $('#frmMiscOrderForm').unbind('submit').submit(function (event) {
 function SubmitOrderForm(dataArray) {
     var result;
 
-    if (dataArray[0].wayBillNumber > 0) {
+    if (dataArray[0].wayBillNumber > 0 && isNewEntry === false) {
         result = PerformPostActionWithObject('MiscellaneousOrder/Update', dataArray);
-        if (result.length !== '') {
-            bootbox.alert('Order updated successfully.');
+        if (result !== '') {
+            //bootbox.alert('Order updated successfully.');
+            location.reload();
+        } else {
+            bootbox.alert('Failed! An error occured updating order.');
+            return;
         }
     }
     else {
+        if (dataArray[0].wayBillNumber > 0 && isNewEntry === true) {
+            var duplicateWaybill = GetSingleById('Order/FindDuplicateWayBill', dataArray[0].wayBillNumber);
+            if (duplicateWaybill !== '') {
+                bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number or keep it blank to create auto.');
+                return;
+            }
+        }
+
         result = PerformPostActionWithObject('MiscellaneousOrder/Add', dataArray);
-        if (result.length !== '') {
-            bootbox.alert('Order saved successfully.');
+        if (result !== '') {
+            //bootbox.alert('Order saved successfully.');
+            location.reload();
+        } else {
+            bootbox.alert('Failed! An error occured saving order.');
+            return;
         }
     }
     selectedAdditionalServiceArray = null;
@@ -491,6 +514,9 @@ $('#misc-order-list').on('click', '.btnEdit', function (event) {
     if (wbNumber > 0) {
         GetAndFillOrderDetailsByWayBillNumber(wbNumber, 3);
     }
+
+    $('#txtWayBillNo').prop('disabled', true);
+    isNewEntry = false;
 
     $('#newMiscOrder').modal({
         backdrop: 'static',

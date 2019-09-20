@@ -5,7 +5,7 @@ var cityData;
 var provinceData;
 var countryData;
 var addressLineForAutocomplete;
-var defaultObjectLoadCount = 20;
+var defaultObjectLoadCount = 25;
 
 $(document).ready(function () {
 
@@ -36,6 +36,28 @@ $(document).ready(function () {
     }
 
 });
+
+$('#btnCloseModal').on('click', function () {
+    $('#customerInformation').modal('hide');
+});
+
+$('#btnNewCustomer').on('click', function () {
+    $('#txtCustomerId').prop('readonly', true);
+    $('#txtCustomerId').val('');
+    $('#btnAddAddress').prop('disabled', true);
+
+    $('#frmCustomerForm').trigger('reset');
+
+    $('#customerInformation').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+
+    $('#customerInformation').draggable();
+    $('#customerInformation').modal('show');
+
+});
+
 
 $('#txtCustomerId').unbind('keypress').keypress(function (event) {
     if (event.keyCode === 13) {
@@ -88,8 +110,9 @@ $('#frmCustomerForm').unbind('submit').submit(function () {
     if (dataArray[0].id > 0) {
         result = PerformPostActionWithObject('Customer/Update', dataArray);
         if (result.length > 0) {
-            bootbox.alert('Customer information updated successfully.');
-            $('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + defaultObjectLoadCount);
+            //bootbox.alert('Customer information updated successfully.');
+            //$('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + defaultObjectLoadCount);
+            location.reload();
         } else {
             bootbox.alert('Failed! Something went wrong during adding the customer. Please check your data and try again.');
         }
@@ -97,9 +120,10 @@ $('#frmCustomerForm').unbind('submit').submit(function () {
     else {
         result = PerformPostActionWithObject('Customer/Add', dataArray);
         if (result.length > 0) {
-            bootbox.alert('Customer information added successfully.');
-            $('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + defaultObjectLoadCount);
-            $('#frmCustomerForm').trigger('reset');
+            //bootbox.alert('Customer information added successfully.');
+            //$('#loadCustomerDataTable').load('Customer/LoadCustomerData/' + defaultObjectLoadCount);
+            //$('#frmCustomerForm').trigger('reset');
+            location.reload();
         } else {
             bootbox.alert('Failed! Something went wrong during adding the customer. Please check your data and try again.');
         }
@@ -108,8 +132,8 @@ $('#frmCustomerForm').unbind('submit').submit(function () {
 });
 
 $('#customer-list').on('click', '.btnEdit', function () {
-    //$('#txtCustomerId').prop('readonly', true);
-
+    $('#txtCustomerId').prop('readonly', true);
+    $('#btnAddAddress').prop('disabled', false);
     var customerId = $(this).data('customerid');
 
     if (customerId !== '') {
@@ -117,6 +141,15 @@ $('#customer-list').on('click', '.btnEdit', function () {
         if (customerInfo != null && customerInfo !== '') {
             FillCustomerInformation(JSON.parse(customerInfo));
             FillMainFormAddressByCustomer(customerId);
+
+            $('#customerInformation').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+
+            $('#customerInformation').draggable();
+            $('#customerInformation').modal('show');
+
         }
         else {
             bootbox.alert('The customer was not found. Please check and try again.');
@@ -124,6 +157,7 @@ $('#customer-list').on('click', '.btnEdit', function () {
             return;
         }
     }
+
 
 });
 
@@ -154,6 +188,8 @@ $('#btnAddAddress').unbind().on('click', function (event) {
         bootbox.alert('Please select a customer to add/view address');
     }
     else {
+        $('#customerInformation').modal('hide');
+
         $('#addAddress').modal({
             backdrop: 'static',
             keyboard: false

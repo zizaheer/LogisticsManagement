@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Customer";
+    ViewData["Title"] = "Customers";
 }
 
 <style>
@@ -8,6 +8,34 @@
         margin-bottom: 8px !important;
     }
 </style>
+
+
+
+<div class="row">
+    <div class="col-sm-2">
+        <h3>
+            @ViewData["Title"]
+        </h3>
+    </div>
+    <div class="col-sm-4 input-group">
+        <select class="col-2 form-control form-control-sm" id="ddlLoadCustomerCount">
+            <option value="0">All</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+        <button style="margin-left:10px;margin-right:15px; height:27px" class="col-6 btn btn-sm btn-dark" id="btnLoadCustomerData"><i class="fa fa-download"></i> Load customer </button>
+        <span id="spinnerLoadingDataTable" style="display:none">
+            <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+            <span style="margin-right:20px">Loading...</span>
+        </span>
+    </div>
+    <div class="col-sm-2 offset-4">
+        <button id="btnNewCustomer" type="button" class="btn btn-sm btn-danger form-control" title="Add New Customer" data-toggle="modal"><i class="fa fa-plus-circle"></i> New Customer </button>
+    </div>
+</div>
+
+<hr style="margin-bottom:20px" />
+
 
 <div class="modal fade bd-example-modal-xl" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -158,170 +186,215 @@
     </div>
 </div>
 
-<h3>
-    @ViewData["Title"]
-</h3>
-<hr style="margin-bottom:40px" />
-
-
-
 <form id="frmCustomerForm">
-    <div class="row">
-        <div class="col-sm-12 form-group">
-            <input type="hidden" id="hfMailingAddressId" name="hfMailingAddressId" />
-            <input type="hidden" id="hfBillingAddressId" name="hfBillingAddressId" />
-            <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Customer id" style="font-family:Arial, FontAwesome" id="txtCustomerId" type="number" min="1" name="txtCustomerId" readonly>
+    <div class="modal fade bd-example-modal-xl" id="customerInformation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content bg-light">
+                <div class="modal-header" style="justify-content:initial;padding-top:9px;padding-bottom:9px; padding-right:0px">
+                    <img src="~/images/flaticons-64x64/add-friend.png" style="height:25px; padding-left:14px; padding-right:10px" />
+                    <b id="exampleModalCenterTitle">Customer</b>
+                    <div class="col-sm-3 offset-7" style="padding-right:0px;text-align:right">
+                        <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-check"></i> Save </button>
+                        <button type="button" style="margin-right:-8px" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+
+                        <div class="row">
+                            <div class="col-sm-2 form-group">
+                                <input type="hidden" id="hfMailingAddressId" name="hfMailingAddressId" />
+                                <input type="hidden" id="hfBillingAddressId" name="hfBillingAddressId" />
+                                <input class="col-11 form-control form-control-sm" placeholder="&#xF002; Cust. id" style="font-family:Arial, FontAwesome" id="txtCustomerId" type="number" min="1" name="txtCustomerId" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input-group col-sm-11">
+                                <small>
+                                    <label for="txtCustomerName" class="input-group-addon form-control-sm" style="background-color:#e4e7ea">
+                                        <strong>
+                                            Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </strong>
+                                    </label>
+                                </small>
+                                <input class="form-control form-control-sm" id="txtCustomerName" placeholder="Customer name" type="text" name="txtCustomerName" title="Customer name" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input-group col-sm-3">
+                                <small>
+                                    <label for="txtFuelSurcharge" class="input-group-addon form-control-sm" style="background-color:#e4e7ea">
+                                        <strong>
+                                            Fuel (%) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </strong>
+                                    </label>
+                                </small>
+                                <input class="form-control form-control-sm" id="txtFuelSurcharge" placeholder="Fuel (%)" type="number" max="100" step=".01" name="txtFuelSurcharge" value="@ViewBag.DefaultFuelSurcharge" title="Fuel surcharge" />
+                            </div>
+                            <div class="input-group col-sm-3">
+                                <small>
+                                    <label for="txtSpecialDiscount" class="input-group-addon form-control-sm" style="background-color:#e4e7ea">
+                                        <strong>
+                                            Disc. (%)
+                                        </strong>
+                                    </label>
+                                </small>
+                                <input class="form-control form-control-sm" id="txtSpecialDiscount" placeholder="Disc. (%)" type="number" max="100" step=".01" name="txtSpecialDiscount" title="Discount (%)" />
+                            </div>
+                            <div class="input-group col-sm-3">
+                                <small>
+                                    <label for="txtInvoiceDueDays" class="input-group-addon form-control-sm" style="background-color:#e4e7ea">
+                                        <strong>
+                                            Inv. Due Days
+                                        </strong>
+                                    </label>
+                                </small>
+                                <input class="form-control form-control-sm" id="txtInvoiceDueDays" placeholder="Days" type="text" name="txtInvoiceDueDays" title="Invoice due days" />
+                            </div>
+                            <div class="input-group col-sm-3">
+
+                                <small>
+                                    <label for="isGstApplicable" style="margin-top:7px">
+                                        <strong>
+                                            Apply GST? &nbsp;&nbsp;
+                                        </strong>
+                                    </label>
+                                </small>
+                                <input id="isGstApplicable" style="width:14px;height:14px; margin-top:8px" type="checkbox" name="isGstApplicable" title="Apply GST" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-11" id="divAddress0">
+                                <div class="row m-0 input-group">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBothForMain" value="0" checked />
+                                        <small>
+                                            <label class="form-check-label" for="rdoBothForMain"><strong>Billing/Shipping same</strong></label>
+                                        </small>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBillingForMain" value="1" />
+                                        <small>
+                                            <label class="form-check-label" for="rdoBillingForMain"><strong>Billing only</strong></label>
+                                        </small>
+
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoShippingForMain" value="2" />
+                                        <small><label class="form-check-label" for="rdoShippingForMain"><strong>Shipping/Receiving only</strong></label></small>
+                                    </div>
+
+                                    <br /><br /><br />
+                                </div>
+                                <div class="row m-0 input-group">
+                                    <input type="hidden" id="hfAddressIdForMain" />
+                                    <input class="col-8 form-control form-control-sm" id="txtAddressLineForMain" name="txtAddressLineForMain" placeholder="Address Line" list="addresses" type="search" />
+                                    <datalist id="addresses">
+                                        @*<option data-addressid="@item.AddressId" value="@item.AddressLine"></option>*@
+                                    </datalist>
+                                    <input class="col-4 form-control form-control-sm addressBox" id="txtAddressUnitForMain" type="text" name="txtAddressUnitForMain" placeholder="Unit " />
+                                </div>
+                                <div class="row m-0 input-group">
+                                    <select class="col-5 form-control form-control-sm" id="ddlCityIdForMain" name="ddlCityIdForMain">
+                                        <option value="0">City </option>
+                                        @foreach (var city in ViewBag.Cities)
+                                        {
+                                            var selected = false;
+                                            if (city.Id == 335)
+                                            {
+                                                selected = true;
+                                            }
+                                            <option value="@city.Id" selected="@selected">@city.CityName</option>
+                                        }
+                                    </select>
+                                    <select class="col-2 form-control form-control-sm addressBox" id="ddlProvinceIdForMain" name="ddlProvinceIdForMain">
+                                        <option value="0">Province</option>
+                                        @foreach (var province in ViewBag.Provinces)
+                                        {
+                                            var selected = false;
+                                            if (province.Id == 7)
+                                            {
+                                                selected = true;
+                                            }
+                                            <option value="@province.Id" selected="@selected">@province.ShortCode</option>
+                                        }
+                                    </select>
+                                    <select class="col-3 form-control form-control-sm addressBox" id="ddlCountryIdForMain" name="ddlCountryIdForMain">
+                                        <option value="0">Country</option>
+                                        @foreach (var country in ViewBag.Countries)
+                                        {
+                                            var selected = false;
+                                            if (country.Id == 41)
+                                            {
+                                                selected = true;
+                                            }
+                                            <option value="@country.Id" selected="@selected">@country.CountryName</option>
+                                        }
+                                    </select>
+                                    <input class="col-2 form-control form-control-sm addressBox" id="txtPostCodeForMain" name="txtPostCodeForMain" placeholder="Postcode" />
+                                </div>
+
+                                <div class="row m-0 input-group">
+                                    <input class="col-6 form-control form-control-sm " id="txtContactPersonForMain" type="text" name="txtContactPersonForMain" placeholder="Contact person" />
+                                    <input class="col-6 form-control form-control-sm addressBox" id="txtEmailAddressForMain" type="email" name="txtEmailAddressForMain" placeholder="Email address" />
+                                </div>
+                                <div class="row m-0 input-group">
+                                    <input class="col-6 form-control form-control-sm " id="txtPrimaryPhoneNumberForMain" type="tel" name="txtPrimaryPhoneNumberForMain" placeholder="Phone" />
+                                    <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumberForMain" type="tel" name="txtFaxNumberForMain" placeholder="Fax" />
+                                </div>
+                                <div class="row m-0 input-group">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="chkMakeDefaultAddressForMain" id="chkMakeDefaultAddressForMain" checked />
+                                        <label class="form-check-label" for="chkMakeDefaultAddressForMain">Make default address</label>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 input-group" style="margin-bottom:10px !important; margin-top:20px !important">
+                                    <div class="form-check-inline">
+                                        <input class="form-check-input" id="chkIsActive" type="checkbox" checked />
+                                        <label class="form-check-label" for="chkIsActive">Active customer</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <hr />
+                        @*<button type="reset" class="col-1 btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>*@
+                        @*<button type="submit" class="col-1 btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>*@
+                        <button style="float:right" type="button" class="col-3 btn btn-sm btn-secondary" id="btnAddAddress"><i class="fa fa-envelope"></i> Manage addresses</button>
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="form-group col-sm-6">
-            <label for="txtCustomerName" class="form-group">Customer name</label>
-            <input class="form-control form-control-sm" id="txtCustomerName" placeholder="Name" type="text" name="txtCustomerName" title="Customer name" />
-        </div>
-        <div class="form-group col-sm-2">
-            <label for="txtInvoiceDueDays">Apply GST?</label>
-            <span class="col-12 form-control form-control-sm">
-                <input id="isGstApplicable" type="checkbox" name="isGstApplicable"> YES
-            </span>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="form-group col-sm-3">
-            <label for="txtFuelSurcharge" class="form-group">Fuel sur-charge(%)</label>
-            <input class="form-control form-control-sm" id="txtFuelSurcharge" placeholder="Fuel (%)" type="number" max="100" step=".01" name="txtFuelSurcharge" value="@ViewBag.DefaultFuelSurcharge" title="Fuel surcharge" />
-        </div>
-        <div class="form-group col-sm-3">
-            <label for="txtSpecialDiscount">Discount</label>
-            <input class="form-control form-control-sm" id="txtSpecialDiscount" placeholder="Discount (%)" type="number" max="100" step=".01" name="txtSpecialDiscount" title="Discount (%)" />
-        </div>
-        <div class="form-group col-sm-2">
-            <label for="txtInvoiceDueDays">Invoice due days</label>
-            <input class="form-control form-control-sm" id="txtInvoiceDueDays" placeholder="Invoice Due Days" type="text" name="txtInvoiceDueDays" title="Invoice due days" />
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-8" id="divAddress0">
-            <div class="row m-0 input-group">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBothForMain" value="0" checked />
-                    <label class="form-check-label" for="rdoBothForMain">Billing/Shipping same</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBillingForMain" value="1" />
-                    <label class="form-check-label" for="rdoBillingForMain">Billing only</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoShippingForMain" value="2" />
-                    <label class="form-check-label" for="rdoShippingForMain">Shipping/Receiving only</label>
-                </div>
-                
-                <br /><br /><br />
-            </div>
-            <div class="row m-0 input-group">
-                <input type="hidden" id="hfAddressIdForMain" />
-                <input class="col-8 form-control form-control-sm" id="txtAddressLineForMain" name="txtAddressLineForMain" placeholder="Address Line" list="addresses" type="search" />
-                <datalist id="addresses">
-                    @*<option data-addressid="@item.AddressId" value="@item.AddressLine"></option>*@
-                </datalist>
-                <input class="col-4 form-control form-control-sm addressBox" id="txtAddressUnitForMain" type="text" name="txtAddressUnitForMain" placeholder="Unit " />
-            </div>
-            <div class="row m-0 input-group">
-                <select class="col-5 form-control form-control-sm" id="ddlCityIdForMain" name="ddlCityIdForMain">
-                    <option value="0">City </option>
-                    @foreach (var city in ViewBag.Cities)
-                    {
-                        var selected = false;
-                        if (city.Id == 335)
-                        {
-                            selected = true;
-                        }
-                        <option value="@city.Id" selected="@selected">@city.CityName</option>
-                    }
-                </select>
-                <select class="col-2 form-control form-control-sm addressBox" id="ddlProvinceIdForMain" name="ddlProvinceIdForMain">
-                    <option value="0">Province</option>
-                    @foreach (var province in ViewBag.Provinces)
-                    {
-                        var selected = false;
-                        if (province.Id == 7)
-                        {
-                            selected = true;
-                        }
-                        <option value="@province.Id" selected="@selected">@province.ShortCode</option>
-                    }
-                </select>
-                <select class="col-3 form-control form-control-sm addressBox" id="ddlCountryIdForMain" name="ddlCountryIdForMain">
-                    <option value="0">Country</option>
-                    @foreach (var country in ViewBag.Countries)
-                    {
-                        var selected = false;
-                        if (country.Id == 41)
-                        {
-                            selected = true;
-                        }
-                        <option value="@country.Id" selected="@selected">@country.CountryName</option>
-                    }
-                </select>
-                <input class="col-2 form-control form-control-sm addressBox" id="txtPostCodeForMain" name="txtPostCodeForMain" placeholder="Postcode" />
-            </div>
-
-            <div class="row m-0 input-group">
-                <input class="col-6 form-control form-control-sm " id="txtContactPersonForMain" type="text" name="txtContactPersonForMain" placeholder="Contact person" />
-                <input class="col-6 form-control form-control-sm addressBox" id="txtEmailAddressForMain" type="email" name="txtEmailAddressForMain" placeholder="Email address" />
-            </div>
-            <div class="row m-0 input-group">
-                <input class="col-6 form-control form-control-sm " id="txtPrimaryPhoneNumberForMain" type="tel" name="txtPrimaryPhoneNumberForMain" placeholder="Phone" />
-                <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumberForMain" type="tel" name="txtFaxNumberForMain" placeholder="Fax" />
-            </div>
-            <div class="row m-0 input-group">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" name="chkMakeDefaultAddressForMain" id="chkMakeDefaultAddressForMain" checked />
-                    <label class="form-check-label" for="chkMakeDefaultAddressForMain">Make default address</label>
-                </div>
-            </div>
-
-            <div class="row m-0 input-group" style="margin-bottom:10px !important; margin-top:20px !important">
-                <div class="form-check-inline">
-                    <input class="form-check-input" id="chkIsActive" type="checkbox" checked />
-                    <label class="form-check-label" for="chkIsActive">Active customer</label>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <hr />
-    <button type="reset" class="col-1 btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
-    <button type="submit" class="col-1 btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>
-    <button style="float:right" type="button" class="col-1 btn btn-sm btn-danger" id="btnAddAddress"><i class="fa fa-envelope"></i> Manage address</button>
-
 </form>
 
 
-<div class="row">
-    <div class="col-md-12 input-group" style="margin-top:40px">
-        <h3>Existing customers</h3>
+@*<div class="row">
+        <div class="col-md-12 input-group" style="margin-top:40px">
+            <h3>Existing customers</h3>
 
-        <div style="margin-left:20px;margin-top:4px;">
-            <select class="form-control form-control-sm" id="ddlLoadCustomerCount">
-                <option value="0">All</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
+            <div style="margin-left:20px;margin-top:4px;">
+                <select class="form-control form-control-sm" id="ddlLoadCustomerCount">
+                    <option value="0">All</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <button style="margin-left:10px;margin-right:15px; margin-top:4px;height:27px" class="btn btn-sm btn-danger" id="btnLoadCustomerData"><i class="fa fa-download"></i> Load customer </button>
+            <div style="margin-top:5px">
+                <span id="spinnerLoadingDataTable" style="display:none">
+                    <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                    <span style="margin-right:20px">Loading...</span>
+                </span>
+            </div>
         </div>
-        <button style="margin-left:10px;margin-right:15px; margin-top:4px;height:27px" class="btn btn-sm btn-danger" id="btnLoadCustomerData"><i class="fa fa-download"></i> Load customer </button>
-        <div style="margin-top:5px">
-            <span id="spinnerLoadingDataTable" style="display:none">
-                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
-                <span style="margin-right:20px">Loading...</span>
-            </span>
-        </div>
-    </div>
-</div>
-<hr />
+    </div>*@
 
 <div class="row">
     <div class="col-sm-12">

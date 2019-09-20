@@ -1389,9 +1389,7 @@ namespace LogisticsManagement_Web.Controllers
                                 waybillPrintViewModel.NetTotalOrderCost = "";
                             }
 
-
                             waybillPrintViewModels.Add(waybillPrintViewModel);
-
                         }
                     }
                 }

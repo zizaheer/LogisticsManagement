@@ -144,7 +144,7 @@ namespace LogisticsManagement_Web.Controllers
                 customerWithPendingInvoice.CustomerName = customerInfo.CustomerName;
 
                 var addressMappInfo = new Lms_CustomerAddressMappingPoco();
-                addressMappInfo = _customerAddressMappingLogic.GetList().Where(c => c.AddressTypeId == 1 && c.CustomerId == customer.BillerCustomerId).FirstOrDefault();
+                addressMappInfo = _customerAddressMappingLogic.GetList().Where(c => c.AddressTypeId == (byte)Enum_AddressType.Billing && c.CustomerId == customer.BillerCustomerId).FirstOrDefault();
                 var addressInfo = new Lms_AddressPoco();
 
                 if (addressMappInfo != null)
@@ -156,7 +156,7 @@ namespace LogisticsManagement_Web.Controllers
                 }
                 else
                 {
-                    addressMappInfo = _customerAddressMappingLogic.GetList().Where(c => c.AddressTypeId == 2 && c.CustomerId == customer.BillerCustomerId).FirstOrDefault();
+                    addressMappInfo = _customerAddressMappingLogic.GetList().Where(c => c.AddressTypeId == (byte)Enum_AddressType.Shipping && c.CustomerId == customer.BillerCustomerId).FirstOrDefault();
                     if (addressMappInfo != null)
                     {
                         addressInfo = _addressLogic.GetSingleById(addressMappInfo.AddressId);
@@ -166,7 +166,7 @@ namespace LogisticsManagement_Web.Controllers
                     }
                     else
                     {
-                        addressMappInfo = _customerAddressMappingLogic.GetList().Where(c => c.AddressTypeId == 4 && c.CustomerId == customer.BillerCustomerId).FirstOrDefault();
+                        addressMappInfo = _customerAddressMappingLogic.GetList().Where(c => c.AddressTypeId == (byte)Enum_AddressType.Warehouse && c.CustomerId == customer.BillerCustomerId).FirstOrDefault();
                         if (addressMappInfo != null)
                         {
                             addressInfo = _addressLogic.GetSingleById(addressMappInfo.AddressId);
@@ -1251,7 +1251,7 @@ namespace LogisticsManagement_Web.Controllers
                         }
 
                         viewModelPrintInvoice.viewModelInvoiceBillers = invoiceBillerSortedList;
-                        viewModelPrintInvoice.viewModelWaybills = invoiceWaybillList;
+                        viewModelPrintInvoice.viewModelWaybills = invoiceWaybillList.OrderBy(c=>c.WayBillDate).ToList();
                     }
 
                 }
@@ -1299,15 +1299,19 @@ namespace LogisticsManagement_Web.Controllers
             //invoiceBiller.BillerDepartment = billerInfo.DepartmentName;
             invoiceBiller.BillerCustomerName = customers.Where(c => c.Id == billerCustomerId).FirstOrDefault().CustomerName;
             invoiceBiller.Term = customers.Where(c => c.Id == billerCustomerId).FirstOrDefault().InvoiceDueDays;
+            int outInt;
+            if (int.TryParse(invoiceBiller.Term, out outInt)) {
+                invoiceBiller.Term = "Net " + invoiceBiller.Term;
+            }
 
-            var addressInfo = addressMappings.Where(c => c.AddressTypeId == 2 && c.CustomerId == billerCustomerId).FirstOrDefault(); // first checking whether there is a billing address
+            var addressInfo = addressMappings.Where(c => c.AddressTypeId == (byte)Enum_AddressType.Billing && c.CustomerId == billerCustomerId).FirstOrDefault(); // first checking whether there is a billing address
             if (addressInfo == null)
             {
-                addressInfo = addressMappings.Where(c => c.AddressTypeId == 1 && c.CustomerId == billerCustomerId).FirstOrDefault(); // if not, second checking whether there is a shipping address
+                addressInfo = addressMappings.Where(c => c.AddressTypeId == (byte)Enum_AddressType.Shipping && c.CustomerId == billerCustomerId).FirstOrDefault(); // if not, second checking whether there is a shipping address
             }
             if (addressInfo == null)
             {
-                addressInfo = addressMappings.Where(c => c.AddressTypeId == 4 && c.CustomerId == billerCustomerId).FirstOrDefault(); // if not, third checking whether there is a warehouse address
+                addressInfo = addressMappings.Where(c => c.AddressTypeId == (byte)Enum_AddressType.Warehouse && c.CustomerId == billerCustomerId).FirstOrDefault(); // if not, third checking whether there is a warehouse address
             }
             if (addressInfo != null)
             {
