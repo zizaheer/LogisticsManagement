@@ -515,7 +515,7 @@
                                     </small>
                                     <div class="col-sm-3">
 
-                                        <input class="form-control form-control-sm" id="txtBillToCustomerName" name="txtBillToCustomerName" placeholder="Bill to" list="dlBillers" type="search" style="width:272px" />
+                                        <input class="form-control form-control-sm" id="txtBillToCustomerName" name="txtBillToCustomerName" placeholder="Bill to" list="dlBillers" type="search" style="width:217px" />
                                         <datalist id="dlBillers">
                                             @foreach (var item in Model.Customers)
                                             {
@@ -524,7 +524,7 @@
                                         </datalist>
                                     </div>
                                     <small>
-                                        <label id="lblOrderedBy" for="txtOrderedBy" style="margin-left:27px; margin-top:5px"><b>Ordered by</b></label>
+                                        <label id="lblOrderedBy" for="txtOrderedBy" style="margin-left:-27px; margin-top:5px"><b>Ordered by</b></label>
                                     </small>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control form-control-sm" placeholder="Ordered by" id="txtOrderedBy" name="txtOrderedBy" title="Ordered by">
@@ -533,7 +533,7 @@
                                         <label style="margin-top:5px" id="lblDeliveryOptionId" for="ddlDeliveryOptionId"><b>Service</b></label>
                                     </small>
                                     <div class="col-sm-1">
-                                        <select class="form-control form-control-sm" id="ddlDeliveryOptionId" name="ddlDeliveryOptionId" style="width:135px">
+                                        <select class="form-control form-control-sm" id="ddlDeliveryOptionId" name="ddlDeliveryOptionId" style="width:184px">
                                             @foreach (var deliveryOption in Model.DeliveryOptions)
                                             {
                                                 <option value="@deliveryOption.Id">@deliveryOption.OptionName - (@deliveryOption.ShortCode) </option>
@@ -545,13 +545,13 @@
                                 </div>
                                 <div class="row" style="margin-top:8px">
                                     <small>
-                                        <label style="margin-top:5px" id="lblWayBillNo" for="txtWayBillNo"><b>W/B #</b></label>
+                                        <label style="margin-top:5px;" id="lblWayBillNo" for="txtWayBillNo"><b>W/B #</b></label>
                                     </small>
-                                    <div class="col-sm-2">
-                                        <input class="form-control form-control-sm" placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNo" type="number" name="txtWayBillNo" disabled>
+                                    <div class="col-sm-1">
+                                        <input class="form-control form-control-sm" placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome; width:100px" id="txtWayBillNo" type="number" name="txtWayBillNo" disabled>
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblCustomerRefNo" for="txtCustomerRefNo"><b>CUST. REF#</b></label>
+                                        <label style="margin-top:5px; margin-left: 35px;" id="lblCustomerRefNo" for="txtCustomerRefNo"><b>CUST. REF#</b></label>
                                     </small>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control form-control-sm" placeholder="Cust Ref" id="txtCustomerRefNo" name="txtCustomerRefNo" title="Customer ref #">
@@ -560,13 +560,13 @@
                                         <label style="margin-top:5px" id="lblPickupRefNo" for="txtPickupRefNo"><b>PU/DL REF#</b></label>
                                     </small>
                                     <div class="col-sm-1">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Pickup ref" id="txtPickupRefNo" name="txtPickupRefNo" title="Pickup ref #" style="width:107px">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Pickup ref" id="txtPickupRefNo" name="txtPickupRefNo" title="Pickup ref #" style="width:116px">
                                     </div>
 
                                     <small>
                                         <label style="margin-top:5px; margin-left:50px" id="lblVehicleTypeId" for="ddlVehicleTypeId"><b>Transport</b></label>
                                     </small>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2" style="margin-left: 9px;">
                                         <select class="form-control form-control-sm" id="ddlVehicleTypeId" name="ddlVehicleTypeId">
                                             <option value="1">Truck</option>
                                             <option value="2">Car</option>
@@ -575,10 +575,10 @@
                                     </div>
 
                                     <small>
-                                        <label style="margin-top:5px; " id="lblVehicleTypeId" for="ddlVehicleTypeId"><b>Order date</b></label>
+                                        <label style="margin-top:5px; " id="lblVehicleTypeId" for="ddlVehicleTypeId"><b>Date</b></label>
                                     </small>
-                                    <div class="col-sm-1">
-                                        <input class="form-control form-control-sm" id="txtSchedulePickupDate" type="datetime-local" title="Schedule pickup date" name="txtSchedulePickupDate">
+                                    <div class="col-sm-1" style="margin-left:13px">
+                                        <input class="form-control form-control-sm" style="width:184px" id="txtSchedulePickupDate" type="datetime-local" title="Schedule pickup date" name="txtSchedulePickupDate">
                                     </div>
 
                                     @*<small>

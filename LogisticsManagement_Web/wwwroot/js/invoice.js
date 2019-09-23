@@ -298,7 +298,7 @@ $('input[name="orderType"]').on('change', function () {
     wayBillNumberArray = [];
 });
 
-$('#btnFilter').on('click', function (event) {
+$('#btnFilter').unbind().on('click', function (event) {
     event.preventDefault();
 
     var startDate = $('#txtStartDate').val();

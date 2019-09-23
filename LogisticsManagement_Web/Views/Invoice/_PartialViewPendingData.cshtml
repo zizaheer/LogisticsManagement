@@ -25,7 +25,8 @@
                     @{
                         var wayBillArray = Model.Select(c => c.WayBillNumber).ToArray();
                         string wayBillArrayString = "";
-                        foreach (var wb in wayBillArray) {
+                        foreach (var wb in wayBillArray)
+                        {
                             wayBillArrayString += wb + ",";
                         }
                     }
@@ -51,99 +52,104 @@
     <tbody>
         @foreach (var item in Model.OrderByDescending(c => c.WayBillNumber))
         {
-        <tr>
-            <td>
-                <div class="form-check-inline">
-                    <input type="checkbox" name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
-                    @{ 
-                        var routingUrl = "";
-                        if (item.OrderTypeId == 3)
+            <tr>
+                <td>
+                    <div class="form-check-inline">
+                        <input type="checkbox" name="chkOrderSelected" class="form-check-input chkOrderSelected" data-waybillnumber='@item.WayBillNumber' />
+                        @{
+                            var routingUrl = "";
+                            if (item.OrderTypeId == 3)
+                            {
+                                routingUrl = "MiscellaneousOrder/RoutingAction/" + item.WayBillNumber;
+                            }
+                            else
+                            {
+                                routingUrl = "Order/RoutingAction/" + item.WayBillNumber;
+                            }
+                        }
+                        <a href="@routingUrl" style="cursor:pointer" title="Modify order">
+                            <label class="form-check-label" style="cursor:pointer">@item.WayBillNumber</label>
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    @item.WaybillDate.ToString("dd-MMM-yy")
+                </td>
+                <td>
+                    @item.CustomerReferenceNo
+                </td>
+
+                <td title="@item.ShipperName">
+                    @{
+                        var shipper = "";
+                        if (item.ShipperName.Length > 25)
                         {
-                            routingUrl = "MiscellaneousOrder/RoutingAction/" + item.WayBillNumber;
+                            shipper = item.ShipperName.Substring(0, 22) + "...";
                         }
-                        else {
-                            routingUrl = "Order/RoutingAction/" + item.WayBillNumber;
+                        else
+                        {
+                            shipper = item.ShipperName;
                         }
+                        @shipper
                     }
-                    <a href="@routingUrl" style="cursor:pointer" title="Modify order">
-                        <label class="form-check-label" style="cursor:pointer">@item.WayBillNumber</label>
-                    </a>
-                </div>
-            </td>
-            <td>
-                @item.WaybillDate.ToString("dd-MMM-yy")
-            </td>
-            <td>
-                @item.CustomerReferenceNo
-            </td>
+                </td>
 
-            <td title="@item.ShipperName">
-                @{ 
-                    var shipper = "";
-                    if (item.ShipperName.Length > 25)
-                    {
-                        shipper = item.ShipperName.Substring(0, 22) + "...";
+                <td>
+                    @{
+                        var consignee = "";
+                        if (item.ConsigneeName != null)
+                        {
+                            if (item.ConsigneeName.Length > 25)
+                            {
+                                consignee = item.ConsigneeName.Substring(0, 22) + "...";
+                            }
+                            else
+                            {
+                                consignee = item.ConsigneeName;
+                            }
+                        }
+                        @consignee
                     }
-                    else {
-                        shipper = item.ShipperName;
+                </td>
+
+                <td>
+                    @item.UnitQty @item.UnitTypeName
+                </td>
+
+                <td>
+                    @item.SkidQty
+                </td>
+
+                <td>
+                    @item.WeightTotal @item.WeightShortName
+                </td>
+
+                <td>
+                    @{
+                        var billerName = "";
+                        if (item.BillerName.Length > 25)
+                        {
+                            billerName = item.BillerName.Substring(0, 22) + "...";
+                        }
+                        else
+                        {
+                            billerName = item.BillerName;
+                        }
+                        @billerName
                     }
-                    @shipper
-                }
-            </td>
+                </td>
 
-            <td>
-                @{
-                    var consignee = "";
-                    if (item.ConsigneeName.Length > 25)
-                    {
-                        consignee = item.ConsigneeName.Substring(0, 22) + "...";
-                    }
-                    else
-                    {
-                        consignee = item.ConsigneeName;
-                    }
-                    @consignee
-                }
-            </td>
-
-            <td>
-                @item.UnitQty @item.UnitTypeName
-            </td>
-
-            <td>
-                @item.SkidQty
-            </td>
-
-            <td>
-                @item.WeightTotal @item.WeightShortName
-            </td>
-
-            <td>
-                @{
-                    var billerName = "";
-                    if (item.BillerName.Length > 25)
-                    {
-                        billerName = item.BillerName.Substring(0, 22) + "...";
-                    }
-                    else
-                    {
-                        billerName = item.BillerName;
-                    }
-                    @billerName
-                }
-            </td>
-
-            <td>
-                @item.OrderedBy
-            </td>
-            <td>
-                @item.TotalOrderCost 
-            </td>
-            <td>
-                <button class="btn-primary smallGridIcon btnPrintWaybill" data-waybillnumber="@item.WayBillNumber" title="Print waybill" type="button"><i class="fa fa-print"></i></button>
-                <button class="btn-danger smallGridIcon btnUndoDelivery" data-waybillnumber="@item.WayBillNumber" title="Undo delivery" type="button"><i class="fa fa-undo"></i></button>
-            </td>
-        </tr>
+                <td>
+                    @item.OrderedBy
+                </td>
+                <td>
+                    @item.TotalOrderCost
+                </td>
+                <td>
+                    <button class="btn-primary smallGridIcon btnPrintWaybill" data-waybillnumber="@item.WayBillNumber" title="Print waybill" type="button"><i class="fa fa-print"></i></button>
+                    <button class="btn-danger smallGridIcon btnUndoDelivery" data-waybillnumber="@item.WayBillNumber" title="Undo delivery" type="button"><i class="fa fa-undo"></i></button>
+                </td>
+            </tr>
         }
     </tbody>
 

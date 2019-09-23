@@ -114,7 +114,9 @@ namespace LogisticsManagement_Web.Controllers
                         orderPoco.ShipperAddressId = customerAddressId == "" ? 0 : Convert.ToInt32(customerAddressId);
                         orderPoco.ShipperCustomerId = customerId == "" ? 0 : Convert.ToInt32(customerId);
                         orderPoco.IsInvoiced = false;
-                        orderPoco.CreateDate = orderDate == "" ? DateTime.Today : Convert.ToDateTime(orderDate);
+                        orderPoco.ScheduledPickupDate = orderDate == "" ? DateTime.Today : Convert.ToDateTime(orderDate);
+                        orderPoco.ExpectedDeliveryDate = orderDate == "" ? DateTime.Today : Convert.ToDateTime(orderDate);
+                        orderPoco.CreateDate = Convert.ToDateTime(DateTime.Now.ToString("dd-MMM-yyyy")); 
                         orderPoco.CreatedBy = sessionData.UserId;
                         orderPoco.OrderTypeId = 3;  //3 for misc. order
 
