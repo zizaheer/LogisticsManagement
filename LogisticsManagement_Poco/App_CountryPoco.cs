@@ -14,7 +14,8 @@ namespace LogisticsManagement_Poco
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string CountryName { get; set; }
-        public string CountryCode { get; set; }
+        public string Alpha2CountryCode { get; set; }
+        public string Alpha3CountryCode { get; set; }
         public string FlagIcon { get; set; }
         public bool IsDefault { get; set; }
         public bool IsActive { get; set; }

@@ -10,7 +10,8 @@
     .form-control {
         padding: 4px 4px 4px 8px;
         height: 29px;
-        text-transform: uppercase
+        text-transform: uppercase;
+        font-size: 11px;
     }
 
     .form-group {
@@ -490,7 +491,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <div class="row ">
+                        <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
                                     <small>
@@ -631,14 +632,18 @@
                                                         <option value="@item.Id">@item.CityName</option>
                                                     }
                                                 </select>
-                                                <select class="col-3 form-control form-control-sm" id="ddlShipperProvinceId" name="ddlShipperProvinceId" style="-webkit-appearance: none;">
-                                                    <option value="0"> Province </option>
+
+                                                <select class="col-2 form-control form-control-sm" id="ddlShipperProvinceId" name="ddlShipperProvinceId" style="-webkit-appearance: none;">
+                                                    <option value="0"> Prov </option>
                                                     @foreach (var item in Model.Provinces)
                                                     {
                                                         <option value="@item.Id">@item.ShortCode</option>
                                                     }
                                                 </select>
-                                                <input type="text" class="col-3 form-control form-control-sm" placeholder="Postcode" id="txtShipperPostcode" name="txtShipperPostcode">
+                                                <input type="text" class="col-2 form-control form-control-sm" placeholder="P.C." id="txtShipperPostcode" name="txtShipperPostcode">
+
+                                                <select class="col-2 form-control form-control-sm" id="ddlShipperCountries" name="ddlShipperCountries" style="-webkit-appearance: none;">
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -673,14 +678,16 @@
                                                         <option value="@item.Id">@item.CityName</option>
                                                     }
                                                 </select>
-                                                <select class="col-3 form-control form-control-sm" id="ddlConsigneeProvinceId" name="ddlConsigneeProvinceId" style="-webkit-appearance: none;">
-                                                    <option value="0"> Province </option>
+                                                <select class="col-2 form-control form-control-sm" id="ddlConsigneeProvinceId" name="ddlConsigneeProvinceId" style="-webkit-appearance: none;">
+                                                    <option value="0"> Prov </option>
                                                     @foreach (var item in Model.Provinces)
                                                     {
                                                         <option value="@item.Id">@item.ShortCode</option>
                                                     }
                                                 </select>
-                                                <input type="text" class="col-3 form-control form-control-sm" placeholder="Postcode" id="txtConsigneePostcode" name="txtConsigneePostcode">
+                                                <input type="text" class="col-2 form-control form-control-sm" placeholder="P.C." id="txtConsigneePostcode" name="txtConsigneePostcode">
+
+                                                <select class="col-2 form-control form-control-sm" id="ddlConsigneeCountries" name="ddlConsigneeCountries" style="-webkit-appearance: none;"></select>
                                             </div>
                                         </div>
                                     </div>

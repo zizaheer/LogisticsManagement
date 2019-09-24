@@ -114,13 +114,14 @@ namespace LogisticsManagement_Web.Controllers
                     var shipperCityId = orderAddressData.SelectToken("shipperCityId").ToString();
                     var shipperProvinceId = orderAddressData.SelectToken("shipperProvinceId").ToString();
                     var shipperPostcode = orderAddressData.SelectToken("shipperPostcode").ToString();
+                    var shipperCountryId = orderAddressData.SelectToken("shipperCountryId").ToString();
 
                     newAddress = new Lms_AddressPoco();
                     newAddress.AddressLine = shipperAddressline.Trim().ToUpper();
                     newAddress.UnitNumber = shipperUnitNo.Trim().ToUpper();
                     newAddress.CityId = Convert.ToInt16(shipperCityId);
                     newAddress.ProvinceId = Convert.ToInt16(shipperProvinceId);
-                    newAddress.CountryId = 41; // default Canada
+                    newAddress.CountryId = Convert.ToInt16(shipperCountryId); // default Canada
                     newAddress.PostCode = shipperPostcode.Trim().ToUpper();
                     newAddress.CreatedBy = sessionData.UserId;
 
@@ -151,13 +152,14 @@ namespace LogisticsManagement_Web.Controllers
                     var consigneeCityId = orderAddressData.SelectToken("consigneeCityId").ToString();
                     var consigneeProvinceId = orderAddressData.SelectToken("consigneeProvinceId").ToString();
                     var consigneePostcode = orderAddressData.SelectToken("consigneePostcode").ToString();
+                    var consigneeCountryId = orderAddressData.SelectToken("consigneeCountryId").ToString();
 
                     newAddress = new Lms_AddressPoco();
                     newAddress.AddressLine = consigneeAddressline.Trim().ToUpper();
                     newAddress.UnitNumber = consigneeUnitNo.Trim().ToUpper();
                     newAddress.CityId = Convert.ToInt16(consigneeCityId);
                     newAddress.ProvinceId = Convert.ToInt16(consigneeProvinceId);
-                    newAddress.CountryId = 41; // default Canada
+                    newAddress.CountryId = Convert.ToInt16(consigneeCountryId); // default Canada
                     newAddress.PostCode = consigneePostcode.Trim().ToUpper();
                     newAddress.CreatedBy = sessionData.UserId;
 

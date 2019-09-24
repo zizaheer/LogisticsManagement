@@ -1,8 +1,8 @@
 ﻿@using LogisticsManagement_Web.Models;
-@model ViewModel_City
+@model ViewModel_Province
 
 @{
-    ViewData["Title"] = "City";
+    ViewData["Title"] = "Province";
 }
 
 <div class="row">
@@ -11,9 +11,9 @@
             @ViewData["Title"]
         </h3>
     </div>
-   
+
     <div class="col-sm-2 offset-8">
-        <button id="btnNewCity" type="button" class="btn btn-sm btn-danger form-control" title="Add New City" data-toggle="modal"><i class="fa fa-plus-circle"></i> New City </button>
+        <button id="btnNewProvince" type="button" class="btn btn-sm btn-danger form-control" title="Add New City" data-toggle="modal"><i class="fa fa-plus-circle"></i> New Province </button>
     </div>
 </div>
 
@@ -21,53 +21,43 @@
 <div class="row">
     <div class="col-sm-12">
         <div style="display: block; max-height: 240px; min-height: 80px; padding:10px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadCustomerDataTable">
-            <partial name="_PartialViewCityData" />
+            <partial name="_PartialViewProvinceData" />
         </div>
     </div>
 
 </div>
 
 
-<form id="frmCityForm">
-    <div class="modal fade bd-example-modal-xl" id="cityInformation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<form id="frmProvinceForm">
+    <div class="modal fade bd-example-modal-xl" id="provinceInformation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content bg-light">
                 <div class="modal-header" style="justify-content:initial;padding-top:9px;padding-bottom:9px; padding-right:0px">
                     <img src="~/images/flaticons-64x64/location-pin.png" style="height:25px; padding-left:14px; padding-right:10px" />
-                    <b id="exampleModalCenterTitle">City</b>
+                    <b id="exampleModalCenterTitle">Province</b>
                     <div class="col-sm-3 offset-7" style="padding-right:0px;text-align:right">
                         <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-check"></i>Save</button>
-                        <button type="button" style="margin-right:-46px" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
+                        <button type="button" style="margin-right:-13px" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
                     </div>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="form-group col-sm-3">
-                                <input class="form-control form-control-sm" id="txtCityId" placeholder="Id" name="txtCityId" type="text" maxlength="10" disabled />
+                                <input class="form-control form-control-sm" id="txtProvinceId" placeholder="Id" name="txtProvinceId" type="text" maxlength="10" disabled />
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-12">
-                                <input class="form-control form-control-sm" id="txtCityName" placeholder="City name" name="txtCityName" type="text" maxlength="150" />
+                                <input class="form-control form-control-sm" id="txtProvinceName" placeholder="Province name" name="txtProvinceName" type="text" maxlength="150" />
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="form-group col-sm-2">
-                                <select class="form-control form-control-sm" id="ddlProvinceId" name="ddlProvinceId">
-                                    <option value="0">Province</option>
-                                    @foreach (var prov in Model.Provinces)
-                                    {
-                                        var selected = false;
-                                        if (prov.Id == 7)
-                                        {
-                                            selected = true;
-                                        }
-                                        <option value="@prov.Id" selected="@selected">@prov.ShortCode</option>
-                                    }
-                                </select>
+                                <input class="form-control form-control-sm" id="txtShortCode" placeholder="Short code" name="txtShortCode" type="text" maxlength="2" />
                             </div>
+
                             <div class="form-group col-sm-4">
                                 <select class="form-control form-control-sm" id="ddlCountryId" name="ddlCountryId">
                                     <option value="0">Country</option>
@@ -92,4 +82,4 @@
 </form>
 
 
-<script src="~/js/city.js"></script>
+<script src="~/js/province.js"></script>

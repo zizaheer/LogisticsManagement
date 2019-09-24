@@ -29,8 +29,30 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var customerList = _countryLogic.GetList();
+            var countryList = _countryLogic.GetList();
             return View();
         }
+
+        [HttpGet]
+        public JsonResult GetAllCountries()
+        {
+            string result = "";
+            try
+            {
+                var countryList = _countryLogic.GetList();
+                if (countryList != null && countryList.Count > 0)
+                {
+                    result = JsonConvert.SerializeObject(countryList);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
     }
 }

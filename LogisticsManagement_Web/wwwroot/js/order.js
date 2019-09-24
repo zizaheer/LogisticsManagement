@@ -79,6 +79,13 @@ $('#btnNewOrder').unbind().on('click', function () {
     $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(new Date));
 
     var addressLinesForAutoComplete = GetList('Address/GetAddressForAutoComplete');
+    //var cities = GetList('City/GetAllCities');
+    //var provinces = GetList('Province/GetAllProvinces');
+    var countries = GetList('Country/GetAllCountries');
+
+    //var cities = GetListById('City/GetCitiesByProvince', provinceId);
+    //var cities = GetListById('City/GetCitiesByCountry', countryId);
+
     var maxWayBill = GetSingleById('Order/GetNextWaybillNumber', 0);
 
     if (addressLinesForAutoComplete !== null) {
@@ -87,6 +94,19 @@ $('#btnNewOrder').unbind().on('click', function () {
         $.each(addressLines, function (i, item) {
             $('#dlShipperAddressLines').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
             $('#dlConsigneeAddressLines').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
+        });
+    }
+
+    if (countries !== '') {
+        var parsedCountries = JSON.parse(countries);
+        $.each(parsedCountries, function (i, item) {
+            if (item.Alpha3CountryCode === 'CAN') {
+                $('#ddlShipperCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode).attr('selected', true));
+                $('#ddlConsigneeCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode).attr('selected', true));
+            } else {
+                $('#ddlShipperCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+                $('#ddlConsigneeCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+            }
         });
     }
 
@@ -377,7 +397,7 @@ $('#txtEmployeeName').keypress(function (event) {
         var employeeId = $('#txtEmployeeName').val();
 
         $('#hfDispatchToEmployeeId').val('');
-      
+
         var empInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
         if (empInfo !== '') {
             var emp = JSON.parse(empInfo);
@@ -401,7 +421,7 @@ $('#txtEmployeeName').on('input', function (event) {
     }).data('employeeid');
 
     $('#hfDispatchToEmployeeId').val('');
-   
+
     var empInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
 
     if (empInfo !== '') {
@@ -563,6 +583,7 @@ $('#txtOverriddenOrderCost').keypress(function (event) {
 $('#txtOverriddenOrderCost').on('change', function (event) {
     CalculateOrderBaseCost();
 });
+
 
 
 $(document).on('input', '#service-list .txtAdditionalServiceName', function () {
@@ -1088,6 +1109,35 @@ $('#btnTrialPrintWaybill').unbind().on('click', function (event) {
 
 });
 
+$('#ddlShipperCityId').on('change', function () {
+
+});
+$('#ddlShipperCountries').on('change', function () {
+    var countryId = $('#ddlShipperCountries').val();
+    var cities = GetListById('City/GetCitiesByCountry', countryId);
+    $('#ddlShipperCityId').empty();
+    $('#ddlShipperCityId').append($('<option></option>').val('0').html('City'));
+    if (cities !== '') {
+        var parsedCities = JSON.parse(cities);
+        $.each(parsedCities, function (i, item) {
+            $('#ddlShipperCityId').append($('<option></option>').val(item.Id).html(item.CityName).attr('selected', true));
+        });
+    } 
+});
+$('#ddlConsigneeCountries').on('change', function () {
+    var countryId = $('#ddlConsigneeCountries').val();
+    var cities = GetListById('City/GetCitiesByCountry', countryId);
+    $('#ddlConsigneeCityId').empty();
+    $('#ddlConsigneeCityId').append($('<option></option>').val('0').html('City'));
+    if (cities !== '') {
+        var parsedCities = JSON.parse(cities);
+        $.each(parsedCities, function (i, item) {
+            $('#ddlConsigneeCityId').append($('<option></option>').val(item.Id).html(item.CityName).attr('selected', true));
+        });
+    } 
+});
+
+
 //#endregion
 
 
@@ -1191,6 +1241,8 @@ function FillShipperAddress(addressId) {
             $('#hfShipperAddressId').val(parsedAddress.Id);
             $('#txtShipperAddressLine').val(parsedAddress.AddressLine);
             $('#txtShipperUnitNo').val(parsedAddress.UnitNumber);
+            $('#ddlShipperCountries').val(parsedAddress.CountryId);
+            $('#ddlShipperCountries').trigger('change');
             $('#ddlShipperCityId').val(parsedAddress.CityId);
             $('#ddlShipperProvinceId').val(parsedAddress.ProvinceId);
             $('#txtShipperPostcode').val(parsedAddress.PostCode);
@@ -1201,6 +1253,7 @@ function FillShipperAddress(addressId) {
         $('#ddlShipperCityId').val('335');
         $('#ddlShipperProvinceId').val('7');
         $('#txtShipperPostcode').val('');
+        $('#ddlShipperCountries').val('41');
         bootbox.alert('Shipper address not found. Please try again.');
     }
 
@@ -1214,6 +1267,8 @@ function FillConsigneeAddress(addressId) {
             $('#hfConsigneeAddressId').val(parsedAddress.Id);
             $('#txtConsigneeAddressLine').val(parsedAddress.AddressLine);
             $('#txtConsigneeUnitNo').val(parsedAddress.UnitNumber);
+            $('#ddlConsigneeCountries').val(parsedAddress.CountryId);
+            $('#ddlConsigneeCountries').trigger('change');
             $('#ddlConsigneeCityId').val(parsedAddress.CityId);
             $('#ddlConsigneeProvinceId').val(parsedAddress.ProvinceId);
             $('#txtConsigneePostcode').val(parsedAddress.PostCode);
@@ -1224,6 +1279,7 @@ function FillConsigneeAddress(addressId) {
         $('#ddlConsigneeCityId').val('335');
         $('#ddlConsigneeProvinceId').val('7');
         $('#txtConsigneePostcode').val('');
+        $('#ddlConsigneeCountries').val('41');
         bootbox.alert('Consignee address not found. Please try again.');
     }
 }
@@ -1704,11 +1760,13 @@ function GetFormData() {
         shipperCityId: $('#ddlShipperCityId').val() === "" ? 0 : parseInt($('#ddlShipperCityId').val()),
         shipperProvinceId: $('#ddlShipperProvinceId').val() === "" ? 0 : parseInt($('#ddlShipperProvinceId').val()),
         shipperPostcode: $('#txtShipperPostcode').val(),
+        shipperCountryId: $('#ddlShipperCountries').val(),
         consigneeAddressline: $('#txtConsigneeAddressLine').val(),
         consigneeUnitNo: $('#txtConsigneeUnitNo').val(),
         consigneeCityId: $('#ddlConsigneeCityId').val() === "" ? 0 : parseInt($('#ddlConsigneeCityId').val()),
         consigneeProvinceId: $('#ddlConsigneeProvinceId').val() === "" ? 0 : parseInt($('#ddlConsigneeProvinceId').val()),
         consigneePostcode: $('#txtConsigneePostcode').val(),
+        consigneeCountryId: $('#ddlConsigneeCountries').val(),
 
 
         scheduledPickupDate: date,
