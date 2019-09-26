@@ -1131,7 +1131,7 @@ $('#ddlShipperCountries').on('change', function () {
     if (cities !== '') {
         var parsedCities = JSON.parse(cities);
         $.each(parsedCities, function (i, item) {
-            $('#ddlShipperCityId').append($('<option></option>').val(item.Id).html(item.CityName).attr('selected', true));
+            $('#ddlShipperCityId').append($('<option></option>').val(item.Id).html(item.CityName));
         });
     }
 });
@@ -1143,7 +1143,7 @@ $('#ddlConsigneeCountries').on('change', function () {
     if (cities !== '') {
         var parsedCities = JSON.parse(cities);
         $.each(parsedCities, function (i, item) {
-            $('#ddlConsigneeCityId').append($('<option></option>').val(item.Id).html(item.CityName).attr('selected', true));
+            $('#ddlConsigneeCityId').append($('<option></option>').val(item.Id).html(item.CityName));
         });
     }
 });

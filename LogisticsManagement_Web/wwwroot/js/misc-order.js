@@ -23,13 +23,19 @@ $(document).ready(function () {
 //#region Local Variables
 
 function waitLoading() {
+    var countries = GetList('Country/GetAllCountries');
+    if (countries !== '') {
+        var parsedCountries = JSON.parse(countries);
+        $.each(parsedCountries, function (i, item) {
+                $('#ddlCustomerCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+        });
+    }
+
     setTimeout(function () {
         var routingOrderId = $('#hfRoutingOrderId').val();
         if (routingOrderId !== '') {
             var isTriggerModify = $('#hfIsTriggerModify').val();
             if (isTriggerModify === "1" || isTriggerModify === 1) {
-                $('#btnExistingInvoicedOrder').trigger('click');
-
                 if (routingOrderId > 0) {
                     GetAndFillOrderDetailsByWayBillNumber(routingOrderId, 3);
 
@@ -82,6 +88,18 @@ $('#btnNewMiscOrder').unbind().on('click', function () {
                 $('#dlCustomerAddressLines').append($('<option>').attr('data-addressid', item.AddressId).val(item.AddressLine));
             });
         }
+    }
+
+    var countries = GetList('Country/GetAllCountries');
+    if (countries !== '') {
+        var parsedCountries = JSON.parse(countries);
+        $.each(parsedCountries, function (i, item) {
+            if (item.Alpha3CountryCode === 'CAN') {
+                $('#ddlCustomerCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode).attr('selected', true));
+            } else {
+                $('#ddlCustomerCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+            }
+        });
     }
 
     isNewEntry = true;
@@ -161,7 +179,7 @@ $('#txtBillToCustomerName').on('input', function (event) {
         } else {
             bootbox.alert('Customer not found with provided number.');
         }
-    } 
+    }
 });
 
 $('#txtCustomerName').keypress(function (event) {
@@ -229,9 +247,9 @@ $('#txtEmployeeName').on('input', function (event) {
                 $('#ddlShareTypeId').prop('disabled', false);
                 $('#txtShareAmount').prop('disabled', false);
             }
-        } 
+        }
     }
-    
+
 });
 
 
@@ -510,6 +528,14 @@ $('#misc-order-list').on('click', '.btnEdit', function (event) {
     ClearForm();
     $('#frmMiscOrderForm').trigger('reset');
 
+    var countries = GetList('Country/GetAllCountries');
+    if (countries !== '') {
+        var parsedCountries = JSON.parse(countries);
+        $.each(parsedCountries, function (i, item) {
+            $('#ddlCustomerCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+        });
+    }
+
     var wbNumber = $(this).data('waybillnumber');
     if (wbNumber > 0) {
         GetAndFillOrderDetailsByWayBillNumber(wbNumber, 3);
@@ -602,6 +628,18 @@ $('#btnTrialPrintWaybill').unbind().on('click', function (event) {
 
 });
 
+$('#ddlCustomerCountries').on('change', function () {
+    var countryId = $('#ddlCustomerCountries').val();
+    var cities = GetListById('City/GetCitiesByCountry', countryId);
+    $('#ddlCustomerCityId').empty();
+    $('#ddlCustomerCityId').append($('<option></option>').val('0').html('City'));
+    if (cities !== '') {
+        var parsedCities = JSON.parse(cities);
+        $.each(parsedCities, function (i, item) {
+            $('#ddlCustomerCityId').append($('<option></option>').val(item.Id).html(item.CityName));
+        });
+    }
+});
 //#endregion
 
 
@@ -645,7 +683,7 @@ function GetAddressInfo(addressId) {
 function GetEmployeeById(employeeId) {
     if (employeeId != null && employeeId !== '') {
         var empInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
-        if (empInfo != null && empInfo!=='') {
+        if (empInfo != null && empInfo !== '') {
             var employee = JSON.parse(empInfo);
         }
         return employee;
@@ -820,7 +858,7 @@ function FillOrderDetails(orderRelatedData) {
         $('#txtWeightTotal').val(orderRelatedData.WeightTotal);
 
         $('#txtDiscountPercent').val(orderRelatedData.DiscountPercentOnOrderCost);
-        
+
 
         $('#chkIsPrintOnWayBill').prop('checked', orderRelatedData.IsPrintedOnWayBill);
         $('#txtCommentsForWayBill').val(orderRelatedData.CommentsForWayBill);
@@ -846,7 +884,7 @@ function FillOrderDetails(orderRelatedData) {
         if (orderRelatedData.DiscountPercentOnOrderCost != null && orderRelatedData.DiscountPercentOnOrderCost > 0) {
             discountPercent = orderRelatedData.DiscountPercentOnOrderCost;
         }
-        
+
         if (selectedAdditionalServiceArray.length > 0) {
             for (var i = 0; i < selectedAdditionalServiceArray.length; i++) {
                 if (selectedAdditionalServiceArray[i].additionalServiceFee > 0) {
@@ -937,6 +975,7 @@ function GetFormData() {
         customerCityId: $('#ddlCustomerCityId').val() === "" ? 0 : parseInt($('#ddlCustomerCityId').val()),
         customerProvinceId: $('#ddlCustomerProvinceId').val() === "" ? 0 : parseInt($('#ddlCustomerProvinceId').val()),
         customerPostcode: $('#txtCustomerPostcode').val(),
+        customerCountry: $('#ddlCustomerCountries').val(),
         cityId: $('#ddlCustomerCityId').val() === "" ? 0 : parseInt($('#ddlCustomerCityId').val()),
         serviceProviderEmployeeId: $('#hfEmployeeId').val() === "" ? null : parseInt($('#hfEmployeeId').val()),
 
@@ -987,13 +1026,13 @@ function ClearForm() {
     $('#txtOrderedBy').val('');
     $('#txtPhoneNo').val('');
     $('#txtDepartment').val('');
-    
+
     $('#txtCustomerAddressLine').val('');
     $('#txtCustomerUnitNo').val('');
     $('#ddlCustomerCityId').val('0');
     $('#ddlCustomerProvinceId').val('0');
     $('#txtCustomerPostcode').val('');
-    
+
     $('#txtEmployeeName').val('');
     $('#txtDeliveredBy').val('');
     $('#txtBolRefNumber').val('');

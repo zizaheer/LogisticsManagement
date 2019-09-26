@@ -10,7 +10,8 @@
     .form-control {
         padding: 4px 4px 4px 8px;
         height: 29px;
-        text-transform: uppercase
+        text-transform: uppercase;
+        font-size: 11px;
     }
 
     .form-group {
@@ -60,7 +61,6 @@
             <input type="checkbox" id="chkIgnorePricingInformation" class="form-check-input" checked />
             <label for="chkIgnorePricingInformation" class="form-check-label">Ignore price</label>
         </div>
-
         <button class="col-4 btn btn-sm btn-warning" id="btnTrialPrintWaybill"> <i class="fa fa-print"></i> Waybill trial print</button>&nbsp;
     </div>
 </div>
@@ -91,11 +91,11 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <small>
-                                        <label style="margin-top:5px" id="lblBillTo" for="txtBillToCustomerName"><b>Bill to</b></label>
+                                        <label style="margin-top:5px" id="lblBillTo" for="txtBillToCustomerName"><b>BILL TO</b></label>
                                     </small>
-                                    <div class="col-sm-4" style="margin-right:50px">
+                                    <div class="col-sm-3" style="margin-right:105px">
 
-                                        <input class="form-control form-control-sm" id="txtBillToCustomerName" name="txtBillToCustomerName" placeholder="Bill to" list="dlBillers" type="search" style="width:381px" />
+                                        <input class="form-control form-control-sm" id="txtBillToCustomerName" name="txtBillToCustomerName" placeholder="Bill to" list="dlBillers" type="search" style="width:340px" />
                                         <datalist id="dlBillers">
                                             @foreach (var item in Model.Customers)
                                             {
@@ -104,19 +104,19 @@
                                         </datalist>
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblOrderDate" for="txtOrderDate"><b>Order date</b></label>
+                                        <label style="margin-top:5px" id="lblOrderDate" for="txtOrderDate"><b>ORDER DATE</b></label>
                                     </small>
                                     <div class="col-sm-2">
                                         <input class="form-control form-control-sm" id="txtOrderDate" name="txtOrderDate" type="date" />
                                     </div>
                                     <small>
-                                        <label id="lblOrderedBy" for="txtOrderedBy" style="margin-top:5px"><b>Ordered by</b></label>
+                                        <label id="lblOrderedBy" for="txtOrderedBy" style="margin-top:5px"><b>ORDERED BY</b></label>
                                     </small>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control form-control-sm" placeholder="Ordered by" id="txtOrderedBy" name="txtOrderedBy" title="Ordered by">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblPhoneNo" for="txtPhoneNo"><b>Phone #</b></label>
+                                        <label style="margin-top:5px" id="lblPhoneNo" for="txtPhoneNo"><b>PHONE #</b></label>
                                     </small>
                                     <div class="col-sm-1">
                                         <input type="text" class="form-control form-control-sm" placeholder="Phone" id="txtPhoneNo" name="txtPhoneNo" title="Phone #" style="width:102px">
@@ -124,35 +124,35 @@
                                 </div>
                                 <div class="row" style="margin-top:8px">
                                     <small>
-                                        <label style="margin-top:5px" id="lblWayBillNo" for="txtWayBillNo"><b>W/B #</b></label>
+                                        <label style="margin-top:5px;margin-right:7px" id="lblWayBillNo" for="txtWayBillNo"><b>W/B #</b></label>
                                     </small>
-                                    <div class="col-sm-2">
-                                        <input class="form-control form-control-sm" placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome" id="txtWayBillNo" type="number" name="txtWayBillNo" >
+                                    <div class="col-sm-1" style="margin-right:42px">
+                                        <input class="form-control form-control-sm" placeholder="&#xF002; W/B No." style="font-family:Arial, FontAwesome; width:100px" id="txtWayBillNo" type="number" name="txtWayBillNo" >
                                     </div>
 
 
                                     <small>
-                                        <label style="margin-top:5px" id="lblCustomerRefNo" for="txtCustomerRefNo"><b>Cust. ref#</b></label>
+                                        <label style="margin-top:5px" id="lblCustomerRefNo" for="txtCustomerRefNo"><b>CUST. REF#</b></label>
                                     </small>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control form-control-sm" placeholder="Cust Ref" id="txtCustomerRefNo" name="txtCustomerRefNo" title="Customer ref #">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblCargoCtlNo" for="txtCargoCtlNo"><b>Cargo ctl#</b></label>
+                                        <label style="margin-top:5px; margin-left:5px" id="lblCargoCtlNo" for="txtCargoCtlNo"><b>CARGO CTL#</b></label>
                                     </small>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px; " id="lblAwbCtnNo" for="txtAwbCtnNo"><b>Awb/CTN#</b></label>
+                                        <label style="margin-top:5px; " id="lblAwbCtnNo" for="txtAwbCtnNo"><b>AWB/CTN#</b></label>
                                     </small>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2" style="margin-left:8px">
                                         <input type="text" class="form-control form-control-sm" placeholder="Awb/CTN#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px; margin-right:15px" id="lblDepartment" for="txtDepartment"><b>Dept.</b></label>
+                                        <label style="margin-top:5px; margin-right:15px" id="lblDepartment" for="txtDepartment"><b>DEPT.</b></label>
                                     </small>
-                                    <div class="col-sm-1">
+                                    <div class="col-sm-1" style="margin-left:3px">
                                         <input type="text" class="form-control form-control-sm" placeholder="Dept." id="txtDepartment" name="txtDepartment" title="Department" style="width:102px">
                                     </div>
                                 </div>
@@ -162,7 +162,7 @@
                                 <div class="row">
                                     <div class="col-4" style="padding-left:0px">
                                         <div class="row mb-1">
-                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Service location</small>
+                                            <small class="col-sm-12" style="color:#000; font-weight:bold">SERVICE LOCATION</small>
                                         </div>
                                         <div class="row mb-1">
 
@@ -192,22 +192,23 @@
                                                         <option value="@item.Id">@item.CityName</option>
                                                     }
                                                 </select>
-                                                <select class="col-3 form-control form-control-sm" id="ddlCustomerProvinceId" name="ddlCustomerProvinceId" style="-webkit-appearance: none;">
-                                                    <option value="0" selected> Province </option>
+                                                <select class="col-2 form-control form-control-sm" id="ddlCustomerProvinceId" name="ddlCustomerProvinceId" style="-webkit-appearance: none;">
+                                                    <option value="0" selected> PROV. </option>
                                                     @foreach (var item in Model.Provinces)
                                                     {
                                                         <option value="@item.Id">@item.ShortCode</option>
                                                     }
                                                 </select>
-                                                <input type="text" class="col-3 form-control form-control-sm" placeholder="Postcode" id="txtCustomerPostcode" name="txtCustomerPostcode">
+                                                <input type="text" class="col-2 form-control form-control-sm" placeholder="P.C." id="txtCustomerPostcode" name="txtCustomerPostcode">
+                                                <select class="col-2 form-control form-control-sm" id="ddlCustomerCountries" name="ddlCustomerCountries" style="-webkit-appearance: none;"></select>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="col-4" style="padding-left:0px">
                                         <div class="row mb-1 input-group">
-                                            <small class="col-sm-6" style="color:#000; font-weight:bold">Service provided by<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
-                                            <small class="col-sm-6" style="color:#000; font-weight:bold">Agreed rate<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
+                                            <small class="col-sm-6" style="color:#000; font-weight:bold">SERVICE PROVIDED BY<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
+                                            <small class="col-sm-6" style="color:#000; font-weight:bold">AGREED RATE<label style="margin-bottom:0px" id="lblEmployeeName" for="txtEmployeeName"></label></small>
                                         </div>
                                         <div class="row mb-1">
                                             <div class="form-group col-md-12 input-group">
@@ -242,7 +243,7 @@
 
                                     <div class="col-4">
                                         <div class="row mb-1">
-                                            <small class="col-sm-12" style="color:#000; font-weight:bold">Quantity and weight</small>
+                                            <small class="col-sm-12" style="color:#000; font-weight:bold">QTY. & WEIGHT</small>
                                         </div>
                                         <div class="row mb-1">
                                             <div class="col-12 input-group">
@@ -285,7 +286,7 @@
 
                                                     <div class="col-sm-2">
                                                         <small>
-                                                            <label style="margin-top:5px;" id="lblDiscountPercent" for="txtDiscountPercent"><b>Discount</b></label>
+                                                            <label style="margin-top:5px;" id="lblDiscountPercent" for="txtDiscountPercent"><b>DISCOUNT</b></label>
                                                         </small>
                                                     </div>
                                                     <div class="col-sm-4">
