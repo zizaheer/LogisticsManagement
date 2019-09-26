@@ -77,7 +77,7 @@ $('#btnNewOrder').unbind().on('click', function () {
     $('#frmOrderForm').trigger('reset');
 
     $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(new Date));
-
+    
     var maxWayBill = GetSingleById('Order/GetNextWaybillNumber', 0);
 
     var addressLinesForAutoComplete = GetList('Address/GetAddressForAutoComplete');
@@ -578,8 +578,6 @@ $('#txtOverriddenOrderCost').on('change', function (event) {
     CalculateOrderBaseCost();
 });
 
-
-
 $(document).on('input', '#service-list .txtAdditionalServiceName', function () {
     var valueSelected = $(this).val();
     var serviceId = '0';
@@ -1006,8 +1004,6 @@ $('#order-list').on('click', '.btnEdit', function (event) {
     $('#txtWayBillNo').prop('disabled', true);
     isNewEntry = false;
 
-   
-
     $('#newOrder').modal({
         backdrop: 'static',
         keyboard: false
@@ -1036,6 +1032,16 @@ function ModifyReleasedOrder(orderId) {
         if (orderInfo !== '') {
             ClearForm();
             $('#frmOrderForm').trigger('reset');
+
+            var countries = GetList('Country/GetAllCountries');
+            if (countries !== '') {
+                var parsedCountries = JSON.parse(countries);
+                $.each(parsedCountries, function (i, item) {
+                    $('#ddlShipperCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+                    $('#ddlConsigneeCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+                });
+            }
+
             GetAndFillOrderDetailsByWayBillNumber(orderId, 1);
 
             $('#txtWayBillNo').prop('disabled', true);
