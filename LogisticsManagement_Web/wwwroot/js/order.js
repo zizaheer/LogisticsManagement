@@ -77,17 +77,10 @@ $('#btnNewOrder').unbind().on('click', function () {
     $('#frmOrderForm').trigger('reset');
 
     $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(new Date));
-
-    var addressLinesForAutoComplete = GetList('Address/GetAddressForAutoComplete');
-    //var cities = GetList('City/GetAllCities');
-    //var provinces = GetList('Province/GetAllProvinces');
-    var countries = GetList('Country/GetAllCountries');
-
-    //var cities = GetListById('City/GetCitiesByProvince', provinceId);
-    //var cities = GetListById('City/GetCitiesByCountry', countryId);
-
+    
     var maxWayBill = GetSingleById('Order/GetNextWaybillNumber', 0);
 
+    var addressLinesForAutoComplete = GetList('Address/GetAddressForAutoComplete');
     if (addressLinesForAutoComplete !== null) {
         var addressLines = JSON.parse(addressLinesForAutoComplete);
 
@@ -97,6 +90,7 @@ $('#btnNewOrder').unbind().on('click', function () {
         });
     }
 
+    var countries = GetList('Country/GetAllCountries');
     if (countries !== '') {
         var parsedCountries = JSON.parse(countries);
         $.each(parsedCountries, function (i, item) {
@@ -584,8 +578,6 @@ $('#txtOverriddenOrderCost').on('change', function (event) {
     CalculateOrderBaseCost();
 });
 
-
-
 $(document).on('input', '#service-list .txtAdditionalServiceName', function () {
     var valueSelected = $(this).val();
     var serviceId = '0';
@@ -995,6 +987,15 @@ $('#order-list').on('click', '.btnEdit', function (event) {
     ClearForm();
     $('#frmOrderForm').trigger('reset');
 
+    var countries = GetList('Country/GetAllCountries');
+    if (countries !== '') {
+        var parsedCountries = JSON.parse(countries);
+        $.each(parsedCountries, function (i, item) {
+            $('#ddlShipperCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+            $('#ddlConsigneeCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+        });
+    }
+
     var wbNumber = $(this).data('waybillnumber');
     if (wbNumber > 0) {
         GetAndFillOrderDetailsByWayBillNumber(wbNumber, 1);
@@ -1031,6 +1032,16 @@ function ModifyReleasedOrder(orderId) {
         if (orderInfo !== '') {
             ClearForm();
             $('#frmOrderForm').trigger('reset');
+
+            var countries = GetList('Country/GetAllCountries');
+            if (countries !== '') {
+                var parsedCountries = JSON.parse(countries);
+                $.each(parsedCountries, function (i, item) {
+                    $('#ddlShipperCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+                    $('#ddlConsigneeCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+                });
+            }
+
             GetAndFillOrderDetailsByWayBillNumber(orderId, 1);
 
             $('#txtWayBillNo').prop('disabled', true);
@@ -1122,7 +1133,7 @@ $('#ddlShipperCountries').on('change', function () {
         $.each(parsedCities, function (i, item) {
             $('#ddlShipperCityId').append($('<option></option>').val(item.Id).html(item.CityName).attr('selected', true));
         });
-    } 
+    }
 });
 $('#ddlConsigneeCountries').on('change', function () {
     var countryId = $('#ddlConsigneeCountries').val();
@@ -1134,7 +1145,7 @@ $('#ddlConsigneeCountries').on('change', function () {
         $.each(parsedCities, function (i, item) {
             $('#ddlConsigneeCityId').append($('<option></option>').val(item.Id).html(item.CityName).attr('selected', true));
         });
-    } 
+    }
 });
 
 
