@@ -953,7 +953,7 @@ namespace LogisticsManagement_Web.Controllers
             var consigneeTariffInfo = tariffList.Where(c =>
                                                           c.CityId == consigneeCityId && c.DeliveryOptionId == deliveryOptionId
                                                           && c.VehicleTypeId == vehicleTypeId && c.UnitTypeId == unitTypeId
-                                                          && c.UptoWeight >= weightQuantity
+                                                          //&& c.UptoWeight >= weightQuantity
                                                           ).ToList().FirstOrDefault();
 
             if (consigneeTariffInfo != null)

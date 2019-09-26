@@ -39,33 +39,39 @@ namespace LogisticsManagement_BusinessLogic
         public override Lms_TariffPoco Add(Lms_TariffPoco poco)
         {
             poco.CreateDate = DateTime.Now;
+            _cache.Remove(App_CacheKeys.Tariffs);
             return base.Add(poco);
         }
 
         public override Lms_TariffPoco Update(Lms_TariffPoco poco)
         {
             poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
+            _cache.Remove(App_CacheKeys.Tariffs);
             return base.Update(poco);
         }
 
         public override void Remove(Lms_TariffPoco poco)
         {
+            _cache.Remove(App_CacheKeys.Tariffs);
             base.Remove(poco);
         }
 
 
         public override void Add(Lms_TariffPoco[] pocos)
         {
+            _cache.Remove(App_CacheKeys.Tariffs);
             base.Add(pocos);
         }
 
         public override void Update(Lms_TariffPoco[] pocos)
         {
+            _cache.Remove(App_CacheKeys.Tariffs);
             base.Update(pocos);
         }
 
         public override void Remove(Lms_TariffPoco[] pocos)
         {
+            _cache.Remove(App_CacheKeys.Tariffs);
             base.Remove(pocos);
         }
 
