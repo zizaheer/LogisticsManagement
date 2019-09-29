@@ -105,7 +105,7 @@ $('#btnNewOrder').unbind().on('click', function () {
     }
 
     isNewEntry = true;
-    $('#txtWayBillNo').prop('disabled', false);
+    //$('#txtWayBillNo').prop('disabled', false);
     $('#txtWayBillNo').val(maxWayBill);
 
     $('#newOrder').modal({
@@ -776,6 +776,12 @@ function SubmitOrderForm(dataArray) {
     var result;
     var parseData;
 
+    var duplicateWaybill = GetSingleById('Order/FindDuplicateWayBill', dataArray[0].wayBillNumber);
+    if (duplicateWaybill !== '') {
+        bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number or keep it blank to create auto.');
+        return;
+    }
+
     if (dataArray[0].wayBillNumber > 0 && isNewEntry === false) {
         result = PerformPostActionWithObject('Order/Update', dataArray);
         if (result.length > 0) {
@@ -784,18 +790,13 @@ function SubmitOrderForm(dataArray) {
     }
     else {
         if (dataArray[0].wayBillNumber > 0 && isNewEntry === true) {
-            var duplicateWaybill = GetSingleById('Order/FindDuplicateWayBill', dataArray[0].wayBillNumber);
-            if (duplicateWaybill !== '') {
-                bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number or keep it blank to create auto.');
-                return;
-            }
-        }
         result = PerformPostActionWithObject('Order/Add', dataArray);
         if (result !== null) {
             parseData = JSON.parse(result);
             $('#txtWayBillNo').val(parseData.waybillNumber);
             $('#hfOrderId').val(parseData.orderId);
             // bootbox.alert('The order has been created successfully');
+            }
         }
     }
     //selectedAdditionalServiceArray = null;
@@ -1001,7 +1002,7 @@ $('#order-list').on('click', '.btnEdit', function (event) {
         GetAndFillOrderDetailsByWayBillNumber(wbNumber, 1);
     }
 
-    $('#txtWayBillNo').prop('disabled', true);
+    //$('#txtWayBillNo').prop('disabled', true);
     isNewEntry = false;
 
     $('#newOrder').modal({
@@ -1044,7 +1045,7 @@ function ModifyReleasedOrder(orderId) {
 
             GetAndFillOrderDetailsByWayBillNumber(orderId, 1);
 
-            $('#txtWayBillNo').prop('disabled', true);
+            //$('#txtWayBillNo').prop('disabled', true);
             isNewEntry = false;
 
             $('#newOrder').modal({

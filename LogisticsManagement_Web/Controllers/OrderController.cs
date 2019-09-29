@@ -354,12 +354,13 @@ namespace LogisticsManagement_Web.Controllers
 
                     if (orderPoco != null && orderPoco.OrderTypeId > 0)
                     {
-                        existingOrder = _orderLogic.GetList().Where(c => c.OrderTypeId == orderPoco.OrderTypeId && c.WayBillNumber == orderPoco.WayBillNumber).FirstOrDefault();
+                        existingOrder = _orderLogic.GetSingleById(orderPoco.Id);// GetList().Where(c => c.OrderTypeId == orderPoco.OrderTypeId && c.WayBillNumber == orderPoco.WayBillNumber).FirstOrDefault();
                     }
 
                     if (existingOrder != null && existingOrder.Id > 0)
                     {
                         existingOrder.ReferenceNumber = orderPoco.ReferenceNumber;
+                        existingOrder.WayBillNumber = orderPoco.WayBillNumber;
                         existingOrder.CargoCtlNumber = orderPoco.CargoCtlNumber;
                         existingOrder.AwbCtnNumber = orderPoco.AwbCtnNumber;
                         existingOrder.PickupReferenceNumber = orderPoco.PickupReferenceNumber;

@@ -315,6 +315,7 @@ namespace LogisticsManagement_Web.Controllers
                                 existingOrder.TotalAdditionalServiceCost = orderPoco.TotalAdditionalServiceCost;
 
                                 existingOrder.BillToCustomerId = orderPoco.BillToCustomerId;
+                                existingOrder.WayBillNumber = orderPoco.WayBillNumber;
                                 existingOrder.ReferenceNumber = orderPoco.ReferenceNumber;
                                 existingOrder.AwbCtnNumber = orderPoco.AwbCtnNumber;
                                 existingOrder.CargoCtlNumber = orderPoco.CargoCtlNumber;
