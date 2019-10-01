@@ -1268,13 +1268,40 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     var custRefObject = (JObject)customerRefData;
                     var custRefNumber = custRefObject.SelectToken("custRef").ToString();
-                    var wayBill = custRefObject.SelectToken("wayBill").ToString();
+                    var orderId = custRefObject.SelectToken("orderId").ToString();
 
-                    var refCount = _orderLogic.GetList().Where(c => c.ReferenceNumber == Convert.ToString(custRefNumber) && c.WayBillNumber != wayBill).ToList();
-                    if (refCount != null && refCount.Count > 0)
+                    if (orderId != "" && Convert.ToInt32(orderId) > 0)
                     {
-                        result = refCount.Count;
+                        var existingOrder = _orderLogic.GetSingleById(Convert.ToInt32(orderId));
+                        if (existingOrder != null)
+                        {
+                            var orderList = _orderLogic.GetList().Where(c => c.ReferenceNumber.ToUpper() == Convert.ToString(custRefNumber).ToUpper()).ToList();
+                            if (orderList.Count == 1)
+                            {
+                                if (existingOrder.ReferenceNumber != orderList.FirstOrDefault().ReferenceNumber)
+                                {
+                                    result = orderList.Count;
+                                }
+                            }
+                            if (orderList.Count > 1)
+                            {
+                                if (existingOrder.ReferenceNumber != custRefNumber)
+                                {
+                                    result = orderList.Count;
+                                }
+                            }
+                        }
                     }
+                    else
+                    {
+                        var refCount = _orderLogic.GetList().Where(c => c.ReferenceNumber == Convert.ToString(custRefNumber)).ToList();
+                        if (refCount != null && refCount.Count > 0)
+                        {
+                            result = refCount.Count;
+                        }
+                    }
+
+
                 }
             }
             catch (Exception ex)
@@ -1296,12 +1323,37 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     var awbObject = (JObject)awbCtnData;
                     var awbCtnNumber = awbObject.SelectToken("awbCtn").ToString();
-                    var wayBill = awbObject.SelectToken("wayBill").ToString();
+                    var orderId = awbObject.SelectToken("orderId").ToString();
 
-                    var awbCtnCount = _orderLogic.GetList().Where(c => c.AwbCtnNumber == Convert.ToString(awbCtnNumber) && c.WayBillNumber != wayBill).ToList();
-                    if (awbCtnCount != null && awbCtnCount.Count > 0)
+                    if (orderId != "" && Convert.ToInt32(orderId) > 0)
                     {
-                        result = awbCtnCount.Count;
+                        var existingOrder = _orderLogic.GetSingleById(Convert.ToInt32(orderId));
+                        if (existingOrder != null)
+                        {
+                            var orderList = _orderLogic.GetList().Where(c => c.AwbCtnNumber.ToUpper() == Convert.ToString(awbCtnNumber).ToUpper()).ToList();
+                            if (orderList.Count == 1)
+                            {
+                                if (existingOrder.AwbCtnNumber != orderList.FirstOrDefault().AwbCtnNumber)
+                                {
+                                    result = orderList.Count;
+                                }
+                            }
+                            if (orderList.Count > 1)
+                            {
+                                if (existingOrder.AwbCtnNumber != awbCtnNumber) {
+                                    result = orderList.Count;
+                                }
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var refCount = _orderLogic.GetList().Where(c => c.AwbCtnNumber == Convert.ToString(awbCtnNumber)).ToList();
+                        if (refCount != null && refCount.Count > 0)
+                        {
+                            result = refCount.Count;
+                        }
                     }
                 }
             }
@@ -1324,13 +1376,41 @@ namespace LogisticsManagement_Web.Controllers
                 {
                     var cargoObject = (JObject)cargoCtlData;
                     var cargoCtlNumber = cargoObject.SelectToken("cargoCtl").ToString();
-                    var wayBill = cargoObject.SelectToken("wayBill").ToString();
+                    var orderId = cargoObject.SelectToken("orderId").ToString();
 
-                    var cargoCtlCount = _orderLogic.GetList().Where(c => c.CargoCtlNumber == Convert.ToString(cargoCtlNumber) && c.WayBillNumber != wayBill).ToList();
-                    if (cargoCtlCount != null && cargoCtlCount.Count > 0)
+                    if (orderId != "" && Convert.ToInt32(orderId) > 0)
                     {
-                        result = cargoCtlCount.Count;
+                        var existingOrder = _orderLogic.GetSingleById(Convert.ToInt32(orderId));
+                        if (existingOrder != null)
+                        {
+                            var orderList = _orderLogic.GetList().Where(c => c.CargoCtlNumber.ToUpper() == Convert.ToString(cargoCtlNumber).ToUpper()).ToList();
+                            if (orderList.Count == 1)
+                            {
+                                if (existingOrder.CargoCtlNumber != orderList.FirstOrDefault().CargoCtlNumber)
+                                {
+                                    result = orderList.Count;
+                                }
+                            }
+
+                            if (orderList.Count > 1)
+                            {
+                                if (existingOrder.CargoCtlNumber != cargoCtlNumber)
+                                {
+                                    result = orderList.Count;
+                                }
+                            }
+
+                        }
                     }
+                    else
+                    {
+                        var refCount = _orderLogic.GetList().Where(c => c.CargoCtlNumber == Convert.ToString(cargoCtlNumber)).ToList();
+                        if (refCount != null && refCount.Count > 0)
+                        {
+                            result = refCount.Count;
+                        }
+                    }
+
                 }
             }
             catch (Exception ex)
