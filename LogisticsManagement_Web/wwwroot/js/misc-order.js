@@ -432,10 +432,17 @@ $('#frmMiscOrderForm').unbind('submit').submit(function (event) {
     if (isValid === false) {
         return;
     }
+
+    var duplicateWaybill = GetObject('Order/FindDuplicateWayBillByOrderAndWaybillId?orderId=' + dataArray[0].id + '&waybillNo=' + dataArray[0].wayBillNumber);
+    if (duplicateWaybill !== '') {
+        bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number or keep it blank to create auto.');
+        return;
+    }
+
     if (dataArray[0].cargoCtlNumber !== '' || dataArray[0].awbCtnNumber !== '' || dataArray[0].referenceNumber !== '') {
-        var countCtl = PerformPostActionWithObject('Order/GetCargoCtlNumberCount', { cargoCtl: dataArray[0].cargoCtlNumber, wayBill: dataArray[0].wayBillNumber });
-        var countAwb = PerformPostActionWithObject('Order/GetAwbCtnNumberCount', { awbCtn: dataArray[0].awbCtnNumber, wayBill: dataArray[0].wayBillNumber });
-        var countRef = PerformPostActionWithObject('Order/GetCustomerReferenceNumberCount', { custRef: dataArray[0].referenceNumber, wayBill: dataArray[0].wayBillNumber });
+        var countCtl = PerformPostActionWithObject('Order/GetCargoCtlNumberCount', { cargoCtl: dataArray[0].cargoCtlNumber, orderId: dataArray[0].id });
+        var countAwb = PerformPostActionWithObject('Order/GetAwbCtnNumberCount', { awbCtn: dataArray[0].awbCtnNumber, orderId: dataArray[0].id });
+        var countRef = PerformPostActionWithObject('Order/GetCustomerReferenceNumberCount', { custRef: dataArray[0].referenceNumber, orderId: dataArray[0].id });
 
         if (countRef > 0 && countAwb > 0 && countCtl > 0) {
             bootbox.confirm("The Customer ref#, Cargo ctl# and Awb/ctn# are already exist. Do you want to use them for this order too?", function (result) {
@@ -486,12 +493,6 @@ $('#frmMiscOrderForm').unbind('submit').submit(function (event) {
 });
 function SubmitOrderForm(dataArray) {
     var result;
-
-    var duplicateWaybill = GetSingleById('Order/FindDuplicateWayBill', dataArray[0].wayBillNumber);
-    if (duplicateWaybill !== '') {
-        bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number or keep it blank to create auto.');
-        return;
-    }
 
     if (dataArray[0].wayBillNumber > 0 && isNewEntry === false) {
         result = PerformPostActionWithObject('MiscellaneousOrder/Update', dataArray);

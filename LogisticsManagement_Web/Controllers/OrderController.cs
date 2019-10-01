@@ -999,24 +999,24 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-        public JsonResult FindDuplicateWayBillByWayBillNumber(string id)
-        {
-            ValidateSession();
-            string result = "";
-            try
-            {
-                var orderPoco = _orderLogic.GetList().Where(c => c.WayBillNumber == id).FirstOrDefault();
-                if (orderPoco != null)
-                {
-                    result = orderPoco.WayBillNumber;
-                }
-            }
-            catch (Exception ex)
-            {
-            }
+        //public JsonResult FindDuplicateWayBillByWayBillNumber(string id)
+        //{
+        //    ValidateSession();
+        //    string result = "";
+        //    try
+        //    {
+        //        var orderPoco = _orderLogic.GetList().Where(c => c.WayBillNumber == id).FirstOrDefault();
+        //        if (orderPoco != null)
+        //        {
+        //            result = orderPoco.WayBillNumber;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //    }
 
-            return Json(result);
-        }
+        //    return Json(result);
+        //}
 
         public JsonResult FindDuplicateWayBillByOrderAndWaybillId(string orderId, string waybillNo)
         {
@@ -1271,11 +1271,11 @@ namespace LogisticsManagement_Web.Controllers
                     var orderId = custRefObject.SelectToken("orderId").ToString();
 
                     var orderList = _orderLogic.GetList().Where(c => !string.IsNullOrEmpty(c.ReferenceNumber)).ToList();
+                    orderList = orderList.Where(c => c.ReferenceNumber.ToUpper() == custRefNumber.ToUpper()).ToList();
 
                     if (Convert.ToInt32(orderId) > 0)
                     {
                         var existingOrder = _orderLogic.GetSingleById(Convert.ToInt32(orderId));
-                        orderList = orderList.Where(c => c.ReferenceNumber.ToUpper() == custRefNumber.ToUpper()).ToList();
                         if (orderList.Count == 1)
                         {
                             if (existingOrder.Id != orderList.FirstOrDefault().Id)
@@ -1321,10 +1321,12 @@ namespace LogisticsManagement_Web.Controllers
                     var awbCtnNumber = awbObject.SelectToken("awbCtn").ToString();
                     var orderId = awbObject.SelectToken("orderId").ToString();
 
-                    var orderList = _orderLogic.GetList().Where(c => c.AwbCtnNumber.ToUpper() == Convert.ToString(awbCtnNumber).ToUpper()).ToList();
+                    var orderList = _orderLogic.GetList().Where(c => !string.IsNullOrEmpty(c.AwbCtnNumber)).ToList();
+                    orderList = orderList.Where(c => c.AwbCtnNumber.ToUpper() == awbCtnNumber.ToUpper()).ToList();
+
                     if (Convert.ToInt32(orderId) > 0)
                     {
-                        var existingOrder = orderList.Where(c => c.Id == Convert.ToInt32(orderId)).FirstOrDefault();
+                        var existingOrder = _orderLogic.GetSingleById(Convert.ToInt32(orderId));
                         if (orderList.Count == 1)
                         {
                             if (existingOrder.Id != orderList.FirstOrDefault().Id)
@@ -1334,7 +1336,7 @@ namespace LogisticsManagement_Web.Controllers
                         }
                         if (orderList.Count > 1)
                         {
-                            if (existingOrder.AwbCtnNumber != awbCtnNumber)
+                            if (existingOrder.AwbCtnNumber.ToUpper() != awbCtnNumber.ToUpper())
                             {
                                 result = orderList.Count;
                             }
@@ -1370,10 +1372,12 @@ namespace LogisticsManagement_Web.Controllers
                     var cargoCtlNumber = cargoObject.SelectToken("cargoCtl").ToString();
                     var orderId = cargoObject.SelectToken("orderId").ToString();
 
-                    var orderList = _orderLogic.GetList().Where(c => c.CargoCtlNumber.ToUpper() == Convert.ToString(cargoCtlNumber).ToUpper()).ToList();
+                    var orderList = _orderLogic.GetList().Where(c => !string.IsNullOrEmpty(c.CargoCtlNumber)).ToList();
+                    orderList = orderList.Where(c => c.CargoCtlNumber.ToUpper() == cargoCtlNumber.ToUpper()).ToList();
+
                     if (Convert.ToInt32(orderId) > 0)
                     {
-                        var existingOrder = orderList.Where(c => c.Id == Convert.ToInt32(orderId)).FirstOrDefault();
+                        var existingOrder = _orderLogic.GetSingleById(Convert.ToInt32(orderId));
                         if (orderList.Count == 1)
                         {
                             if (existingOrder.Id != orderList.FirstOrDefault().Id)
@@ -1383,7 +1387,7 @@ namespace LogisticsManagement_Web.Controllers
                         }
                         if (orderList.Count > 1)
                         {
-                            if (existingOrder.CargoCtlNumber != cargoCtlNumber)
+                            if (existingOrder.CargoCtlNumber.ToUpper() != cargoCtlNumber.ToUpper())
                             {
                                 result = orderList.Count;
                             }
