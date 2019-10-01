@@ -37,8 +37,12 @@ $(document).ready(function () {
 
 });
 
-$('#btnCloseModal').on('click', function () {
+$('#btnCloseModalForMain').on('click', function () {
     $('#customerInformation').modal('hide');
+});
+
+$('#btnCloseModal').on('click', function () {
+    $('#addAddress').modal('hide');
 });
 
 $('#btnNewCustomer').on('click', function () {
@@ -252,16 +256,35 @@ $('#txtAddressLineForMain').on('input', function (event) {
 
 $('input[name=rdoAddressType]').on('change', function () {
 
-    var selectedValue = $('input[name=rdoAddressType]:checked').val();
+    var selectedValue = parseInt($('input[name=rdoAddressType]:checked').val());
+    var customerId = $('#txtCustomerIdForAddress').val();
 
-    if (selectedValue === '1') {
+    var shippingAddressId = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
+    var billingAddressId = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
+
+    ClearAddressForm();
+
+    if (selectedValue === 1) {
         $('#lblIsDefault').text('Default billing address');
+        if (billingAddressId !== '') {
+            $('#chkIsDefault').prop('checked', true);
+           FillAddress(billingAddressId);
+        }
     }
-    else if (selectedValue === '2') {
+    else if (selectedValue === 2) {
         $('#lblIsDefault').text('Default shipping address');
+        if (shippingAddressId !== '') {
+            $('#chkIsDefault').prop('checked', true);
+            FillAddress(shippingAddressId);
+        }
     }
-    else if (selectedValue === '4') {
-        $('#lblIsDefault').text('Default warehouse address');
+    else if (selectedValue === 0) {
+        $('#lblIsDefault').text('Default address');
+        if (shippingAddressId !== '') {
+            if (shippingAddressId === billingAddressId) {
+                FillAddress(shippingAddressId);
+            }
+        } 
     }
 });
 
@@ -382,10 +405,10 @@ $('#customer-address-list').unbind().on('click', '.btnEditAddress', function (ev
         $('#rdoShipping').prop('checked', true);
         $('#lblIsDefault').text('Default shipping address');
     }
-    else if (addressTypeId === 4) {
-        $('#rdoWarehouse').prop('checked', true);
-        $('#lblIsDefault').text('Default warehouse address');
-    }
+    //else if (addressTypeId === 4) {
+    //    $('#rdoWarehouse').prop('checked', true);
+    //    $('#lblIsDefault').text('Default warehouse address');
+    //}
     if (addressId !== '') {
         FillAddress(addressId);
     }
@@ -490,6 +513,8 @@ function FillAddress(addressId) {
         $('#txtFaxNumber').val(address.Fax);
         $('#txtPrimaryPhoneNumber').val(address.PrimaryPhoneNumber);
         $('#txtEmailAddress').val(address.EmailAddress1);
+       
+
     } else {
         ClearAddressForm();
         //bootbox.alert('Address not found. Please try again or select from the list.');
@@ -516,7 +541,7 @@ function FillMainFormAddressByCustomer(customerId) {
         $('#rdoBillingForMain').prop('checked', true);
         FillMainFormAddress(billingAddressId);
 
-    } else if (shippingAddressId != '') {
+    } else if (shippingAddressId !== '') {
         $('#rdoShippingForMain').prop('checked', true);
         FillMainFormAddress(shippingAddressId);
     }
@@ -567,7 +592,7 @@ function ClearMainFormAddress() {
 
 function ClearAddressForm() {
     $('#hfAddressId').val('');
-    //$('#txtAddressLine').val('');
+    $('#txtAddressLine').val('');
     $('#txtAddressUnit').val('');
     $('#ddlCityId').val('335');
     $('#ddlProvinceId').val('7');
@@ -578,6 +603,6 @@ function ClearAddressForm() {
     $('#txtPrimaryPhoneNumber').val('');
     $('#txtFaxNumber').val('');
     $('#chkIsDefault').prop('checked', false);
-    $('#rdoBilling').prop('checked', true);
+    //$('#rdoBillingShippingSame').prop('checked', true);
 
 }

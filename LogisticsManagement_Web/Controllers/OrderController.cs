@@ -1271,7 +1271,7 @@ namespace LogisticsManagement_Web.Controllers
                     var orderId = custRefObject.SelectToken("orderId").ToString();
 
                     var orderList = _orderLogic.GetList().Where(c => !string.IsNullOrEmpty(c.ReferenceNumber)).ToList();
-                    orderList = orderList.Where(c => c.ReferenceNumber.ToUpper() == custRefNumber.ToUpper()).ToList();
+                    orderList = orderList.Where(c =>  (!string.IsNullOrEmpty(c.ReferenceNumber) ? c.ReferenceNumber.ToUpper() : "") == custRefNumber.ToUpper()).ToList();
 
                     if (Convert.ToInt32(orderId) > 0)
                     {
@@ -1285,7 +1285,7 @@ namespace LogisticsManagement_Web.Controllers
                         }
                         if (orderList.Count > 1)
                         {
-                            existingOrder.ReferenceNumber = !string.IsNullOrEmpty(existingOrder.ReferenceNumber) ? "" : existingOrder.ReferenceNumber.ToUpper();
+                            existingOrder.ReferenceNumber = !string.IsNullOrEmpty(existingOrder.ReferenceNumber) ? existingOrder.ReferenceNumber.ToUpper() : "";
                             if (existingOrder.ReferenceNumber != custRefNumber.ToUpper())
                             {
                                 result = orderList.Count;
@@ -1323,7 +1323,7 @@ namespace LogisticsManagement_Web.Controllers
                     var orderId = awbObject.SelectToken("orderId").ToString();
 
                     var orderList = _orderLogic.GetList().Where(c => !string.IsNullOrEmpty(c.AwbCtnNumber)).ToList();
-                    orderList = orderList.Where(c => c.AwbCtnNumber.ToUpper() == awbCtnNumber.ToUpper()).ToList();
+                    orderList = orderList.Where(c => (!string.IsNullOrEmpty(c.AwbCtnNumber) ? c.AwbCtnNumber.ToUpper() : "")  == awbCtnNumber.ToUpper()).ToList();
 
                     if (Convert.ToInt32(orderId) > 0)
                     {
@@ -1337,7 +1337,7 @@ namespace LogisticsManagement_Web.Controllers
                         }
                         if (orderList.Count > 1)
                         {
-                            existingOrder.AwbCtnNumber = !string.IsNullOrEmpty(existingOrder.AwbCtnNumber) ? "" : existingOrder.AwbCtnNumber.ToUpper();
+                            existingOrder.AwbCtnNumber = !string.IsNullOrEmpty(existingOrder.AwbCtnNumber) ? existingOrder.AwbCtnNumber.ToUpper() : "";
                             if (existingOrder.AwbCtnNumber != awbCtnNumber.ToUpper())
                             {
                                 result = orderList.Count;
@@ -1375,7 +1375,7 @@ namespace LogisticsManagement_Web.Controllers
                     var orderId = cargoObject.SelectToken("orderId").ToString();
 
                     var orderList = _orderLogic.GetList().Where(c => !string.IsNullOrEmpty(c.CargoCtlNumber)).ToList();
-                    orderList = orderList.Where(c => c.CargoCtlNumber.ToUpper() == cargoCtlNumber.ToUpper()).ToList();
+                    orderList = orderList.Where(c => (!string.IsNullOrEmpty(c.CargoCtlNumber) ? c.CargoCtlNumber.ToUpper() : "") == cargoCtlNumber.ToUpper()).ToList();
 
                     if (Convert.ToInt32(orderId) > 0)
                     {
@@ -1389,7 +1389,7 @@ namespace LogisticsManagement_Web.Controllers
                         }
                         if (orderList.Count > 1)
                         {
-                            existingOrder.CargoCtlNumber = !string.IsNullOrEmpty(existingOrder.CargoCtlNumber) ? "" : existingOrder.CargoCtlNumber.ToUpper();
+                            existingOrder.CargoCtlNumber = !string.IsNullOrEmpty(existingOrder.CargoCtlNumber) ? existingOrder.CargoCtlNumber.ToUpper() : "";
                             if (existingOrder.CargoCtlNumber != cargoCtlNumber.ToUpper())
                             {
                                 result = orderList.Count;
