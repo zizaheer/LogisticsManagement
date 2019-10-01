@@ -1270,43 +1270,39 @@ namespace LogisticsManagement_Web.Controllers
                     var custRefNumber = custRefObject.SelectToken("custRef").ToString();
                     var orderId = custRefObject.SelectToken("orderId").ToString();
 
-                    if (orderId != "" && Convert.ToInt32(orderId) > 0)
+                    var orderList = _orderLogic.GetList().Where(c => !string.IsNullOrEmpty(c.ReferenceNumber)).ToList();
+
+                    if (Convert.ToInt32(orderId) > 0)
                     {
                         var existingOrder = _orderLogic.GetSingleById(Convert.ToInt32(orderId));
-                        if (existingOrder != null)
+                        orderList = orderList.Where(c => c.ReferenceNumber.ToUpper() == custRefNumber.ToUpper()).ToList();
+                        if (orderList.Count == 1)
                         {
-                            var orderList = _orderLogic.GetList().Where(c => c.ReferenceNumber.ToUpper() == Convert.ToString(custRefNumber).ToUpper()).ToList();
-                            if (orderList.Count == 1)
+                            if (existingOrder.Id != orderList.FirstOrDefault().Id)
                             {
-                                if (existingOrder.ReferenceNumber != orderList.FirstOrDefault().ReferenceNumber)
-                                {
-                                    result = orderList.Count;
-                                }
+                                result = orderList.Count;
                             }
-                            if (orderList.Count > 1)
+                        }
+                        if (orderList.Count > 1)
+                        {
+                            if (existingOrder.ReferenceNumber.ToUpper() != custRefNumber.ToUpper())
                             {
-                                if (existingOrder.ReferenceNumber != custRefNumber)
-                                {
-                                    result = orderList.Count;
-                                }
+                                result = orderList.Count;
                             }
                         }
                     }
                     else
                     {
-                        var refCount = _orderLogic.GetList().Where(c => c.ReferenceNumber == Convert.ToString(custRefNumber)).ToList();
-                        if (refCount != null && refCount.Count > 0)
+                        if (orderList.Count > 0)
                         {
-                            result = refCount.Count;
+                            result = orderList.Count;
                         }
                     }
-
-
                 }
             }
             catch (Exception ex)
             {
-
+               
             }
 
             return Json(result);
@@ -1325,34 +1321,30 @@ namespace LogisticsManagement_Web.Controllers
                     var awbCtnNumber = awbObject.SelectToken("awbCtn").ToString();
                     var orderId = awbObject.SelectToken("orderId").ToString();
 
-                    if (orderId != "" && Convert.ToInt32(orderId) > 0)
+                    var orderList = _orderLogic.GetList().Where(c => c.AwbCtnNumber.ToUpper() == Convert.ToString(awbCtnNumber).ToUpper()).ToList();
+                    if (Convert.ToInt32(orderId) > 0)
                     {
-                        var existingOrder = _orderLogic.GetSingleById(Convert.ToInt32(orderId));
-                        if (existingOrder != null)
+                        var existingOrder = orderList.Where(c => c.Id == Convert.ToInt32(orderId)).FirstOrDefault();
+                        if (orderList.Count == 1)
                         {
-                            var orderList = _orderLogic.GetList().Where(c => c.AwbCtnNumber.ToUpper() == Convert.ToString(awbCtnNumber).ToUpper()).ToList();
-                            if (orderList.Count == 1)
+                            if (existingOrder.Id != orderList.FirstOrDefault().Id)
                             {
-                                if (existingOrder.AwbCtnNumber != orderList.FirstOrDefault().AwbCtnNumber)
-                                {
-                                    result = orderList.Count;
-                                }
+                                result = orderList.Count;
                             }
-                            if (orderList.Count > 1)
+                        }
+                        if (orderList.Count > 1)
+                        {
+                            if (existingOrder.AwbCtnNumber != awbCtnNumber)
                             {
-                                if (existingOrder.AwbCtnNumber != awbCtnNumber) {
-                                    result = orderList.Count;
-                                }
-
+                                result = orderList.Count;
                             }
                         }
                     }
                     else
                     {
-                        var refCount = _orderLogic.GetList().Where(c => c.AwbCtnNumber == Convert.ToString(awbCtnNumber)).ToList();
-                        if (refCount != null && refCount.Count > 0)
+                        if (orderList.Count > 0)
                         {
-                            result = refCount.Count;
+                            result = orderList.Count;
                         }
                     }
                 }
@@ -1378,39 +1370,32 @@ namespace LogisticsManagement_Web.Controllers
                     var cargoCtlNumber = cargoObject.SelectToken("cargoCtl").ToString();
                     var orderId = cargoObject.SelectToken("orderId").ToString();
 
-                    if (orderId != "" && Convert.ToInt32(orderId) > 0)
+                    var orderList = _orderLogic.GetList().Where(c => c.CargoCtlNumber.ToUpper() == Convert.ToString(cargoCtlNumber).ToUpper()).ToList();
+                    if (Convert.ToInt32(orderId) > 0)
                     {
-                        var existingOrder = _orderLogic.GetSingleById(Convert.ToInt32(orderId));
-                        if (existingOrder != null)
+                        var existingOrder = orderList.Where(c => c.Id == Convert.ToInt32(orderId)).FirstOrDefault();
+                        if (orderList.Count == 1)
                         {
-                            var orderList = _orderLogic.GetList().Where(c => c.CargoCtlNumber.ToUpper() == Convert.ToString(cargoCtlNumber).ToUpper()).ToList();
-                            if (orderList.Count == 1)
+                            if (existingOrder.Id != orderList.FirstOrDefault().Id)
                             {
-                                if (existingOrder.CargoCtlNumber != orderList.FirstOrDefault().CargoCtlNumber)
-                                {
-                                    result = orderList.Count;
-                                }
+                                result = orderList.Count;
                             }
-
-                            if (orderList.Count > 1)
+                        }
+                        if (orderList.Count > 1)
+                        {
+                            if (existingOrder.CargoCtlNumber != cargoCtlNumber)
                             {
-                                if (existingOrder.CargoCtlNumber != cargoCtlNumber)
-                                {
-                                    result = orderList.Count;
-                                }
+                                result = orderList.Count;
                             }
-
                         }
                     }
                     else
                     {
-                        var refCount = _orderLogic.GetList().Where(c => c.CargoCtlNumber == Convert.ToString(cargoCtlNumber)).ToList();
-                        if (refCount != null && refCount.Count > 0)
+                        if (orderList.Count > 0)
                         {
-                            result = refCount.Count;
+                            result = orderList.Count;
                         }
                     }
-
                 }
             }
             catch (Exception ex)
