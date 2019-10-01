@@ -1285,7 +1285,8 @@ namespace LogisticsManagement_Web.Controllers
                         }
                         if (orderList.Count > 1)
                         {
-                            if (existingOrder.ReferenceNumber.ToUpper() != custRefNumber.ToUpper())
+                            existingOrder.ReferenceNumber = !string.IsNullOrEmpty(existingOrder.ReferenceNumber) ? "" : existingOrder.ReferenceNumber.ToUpper();
+                            if (existingOrder.ReferenceNumber != custRefNumber.ToUpper())
                             {
                                 result = orderList.Count;
                             }
@@ -1336,7 +1337,8 @@ namespace LogisticsManagement_Web.Controllers
                         }
                         if (orderList.Count > 1)
                         {
-                            if (existingOrder.AwbCtnNumber.ToUpper() != awbCtnNumber.ToUpper())
+                            existingOrder.AwbCtnNumber = !string.IsNullOrEmpty(existingOrder.AwbCtnNumber) ? "" : existingOrder.AwbCtnNumber.ToUpper();
+                            if (existingOrder.AwbCtnNumber != awbCtnNumber.ToUpper())
                             {
                                 result = orderList.Count;
                             }
@@ -1387,7 +1389,8 @@ namespace LogisticsManagement_Web.Controllers
                         }
                         if (orderList.Count > 1)
                         {
-                            if (existingOrder.CargoCtlNumber.ToUpper() != cargoCtlNumber.ToUpper())
+                            existingOrder.CargoCtlNumber = !string.IsNullOrEmpty(existingOrder.CargoCtlNumber) ? "" : existingOrder.CargoCtlNumber.ToUpper();
+                            if (existingOrder.CargoCtlNumber != cargoCtlNumber.ToUpper())
                             {
                                 result = orderList.Count;
                             }
