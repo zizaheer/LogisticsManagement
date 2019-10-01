@@ -776,7 +776,7 @@ function SubmitOrderForm(dataArray) {
     var result;
     var parseData;
 
-    var duplicateWaybill = GetSingleById('Order/FindDuplicateWayBill', dataArray[0].wayBillNumber);
+    var duplicateWaybill = GetObject('Order/FindDuplicateWayBillByOrderAndWaybillId?orderId=' + dataArray[0].id + '&waybillNo=' + dataArray[0].wayBillNumber);
     if (duplicateWaybill !== '') {
         bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number or keep it blank to create auto.');
         return;

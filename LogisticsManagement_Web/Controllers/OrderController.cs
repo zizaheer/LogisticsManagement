@@ -999,7 +999,7 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-        public JsonResult FindDuplicateWayBill(string id)
+        public JsonResult FindDuplicateWayBillByWayBillNumber(string id)
         {
             ValidateSession();
             string result = "";
@@ -1017,6 +1017,51 @@ namespace LogisticsManagement_Web.Controllers
 
             return Json(result);
         }
+
+        public JsonResult FindDuplicateWayBillByOrderAndWaybillId(string orderId, string waybillNo)
+        {
+            ValidateSession();
+            string result = "";
+            try
+            {
+                var existingOrderId = 0;
+                var suppliedOrderId = Convert.ToInt32(orderId);
+
+                var orderPocoList = _orderLogic.GetList().Where(c => c.WayBillNumber == waybillNo).ToList();
+                if (orderPocoList.Count == 1)
+                {
+                    existingOrderId = orderPocoList.FirstOrDefault().Id;
+                }
+                if (orderPocoList.Count > 1)
+                {
+                    result = orderPocoList.FirstOrDefault().WayBillNumber;
+                }
+
+                if (suppliedOrderId > 0)
+                {
+                    if (existingOrderId > 0)
+                    {
+                        if (suppliedOrderId != existingOrderId)
+                        {
+                            result = "Exists";
+                        }
+                    }
+                }
+                else
+                {
+                    if (existingOrderId > 0)
+                    {
+                        result = "Exists";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return Json(result);
+        }
+
 
         public JsonResult GetNextWaybillNumber(string id)
         {
