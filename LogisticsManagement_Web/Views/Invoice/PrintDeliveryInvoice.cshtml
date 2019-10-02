@@ -36,8 +36,9 @@
 
         <table style="height: 36px; border:0px solid black" width="900" border="0">
             <tbody>
+                <!-- Header Starts-->
                 <tr>
-                    <td style="width: 30%; vertical-align: top; text-align:right">
+                    <td style="width: 250px; vertical-align: top; text-align:right">
                         <img src="~/images/clients/mfi_logo.jpg" style="width:90px; height:70px" />
                     </td>
                     <td style="text-align: center; vertical-align: top;" colspan="3">
@@ -128,38 +129,51 @@
                     <td style="width: 215px;"></td>
                 </tr>
                 <tr>
+                    <td colspan="5">
+                        <table style="width:900px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
+                            <tr style="background-color: #cccccc; font-family:Arial; font-weight:bold; font-size:.8em; border-top:8px">
+                                <td class="tdStyle" style="width:10px">
+                                    <span></span>
+                                </td>
+                                <td class="tdStyle" style="width:75px">
+                                    <span>Date</span><br />
+                                    <span>Service</span>
+                                </td>
+                                <td class="tdStyle" style="width:110px">
+                                    <span>Waybill#</span><br />
+                                    <span>Cust ref#</span><br />
+                                    <span>Ordered by</span>
+                                </td>
+                                <td class="tdStyle" style="width:200px">
+                                    <br />
+                                    <span>Shipper</span>
+                                </td>
+                                <td class="tdStyle">
+                                    <br />
+                                    <span>Receiver</span>
+                                </td>
+                                <td class="tdStyle" style="width:80px">
+                                    <span>Unit/Qty</span><br />
+                                    <span>Weight</span>
+                                </td>
+                                <td class="tdStyle" style="width:60px">Rate</td>
+                                <td class="tdStyle" style="width:90px">
+                                    <span>Fuel sur.</span><br />
+                                    <span>Add. Chrg</span>
+                                </td>
+                                <td class="tdStyle" style="width:80px">Net</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                
+                <!-- Header Ends-->
+
+                <tr>
                     <td colspan="4" height="845" style="vertical-align:top">
-                        <table style="width:100%; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
+                        <table style="width:900px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
                             <tbody>
-                                <tr style="background-color: #cccccc; font-family:Arial; font-weight:bold; font-size:.8em; border-top:8px">
-                                    <td class="tdStyle">
-                                        <span></span>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <span>Date</span><br />
-                                        <span>Service</span>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <span>Waybill#</span><br />
-                                        <span>Cust ref#</span><br />
-                                        <span>Ordered by</span>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <br />
-                                        <span>Shipper</span>
-                                    </td>
-                                    <td class="tdStyle"> <br /><span>Receiver</span></td>
-                                    <td class="tdStyle">
-                                        <span>Unit/Qty</span><br />
-                                        <span>Weight</span>
-                                    </td>
-                                    <td class="tdStyle">Rate</td>
-                                    <td class="tdStyle">
-                                        <span>Fuel sur.</span><br />
-                                        <span>Add. Chrg</span>
-                                    </td>
-                                    <td class="tdStyle">Net</td>
-                                </tr>
+
                                 @{
                                     var wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId).ToList();
                                     var serial = 0;
@@ -177,30 +191,30 @@
                                 @foreach (var bill in wayBills)
                                 {
                                     <tr style="font-size:11px; font-family: 'Courier New'">
-                                        <td class="tdStyle">
+                                        <td class="tdStyle" style="width:10px">
                                             <span>@{ serial = serial + 1; @serial}</span>
                                         </td>
-                                        <td class="tdStyle">
+                                        <td class="tdStyle" style="width:75px">
                                             <span>@bill.WayBillDate</span><br />
                                             <span>@bill.DeliveryOptionShortCode</span>
                                         </td>
-                                        <td class="tdStyle">
+                                        <td class="tdStyle" style="width:110px">
                                             <span>@bill.WaybillNumber</span><br />
                                             <span>@bill.CustomerRefNo</span><br />
                                             <span>@bill.OrderedByName</span>
 
                                         </td>
-                                        <td class="tdStyle">
+                                        <td class="tdStyle" style="width:200px">
                                             <span>@bill.ShipperCustomerName</span><br />
                                             <span>@bill.ShipperCustomerAddressLine1</span><br />
                                             <span>@bill.ShipperCustomerAddressLine2</span>
                                         </td>
-                                        <td class="tdStyle">
+                                        <td class="tdStyle"  style="width:200px">
                                             <span>@bill.ConsigneeCustomerName</span><br />
                                             <span>@bill.ConsigneeCustomerAddressLine1</span><br />
                                             <span>@bill.ConsigneeCustomerAddressLine2</span>
                                         </td>
-                                        <td class="tdStyle">
+                                        <td class="tdStyle" style="width:80px">
                                             @if (bill.UnitQuantity > 0)
                                             {
                                                 <span>@bill.UnitQuantity @bill.UnitTypeShortCode</span><br />
@@ -218,12 +232,16 @@
 
                                             <span>@bill.WeightTotal @bill.WeightScaleShortCode</span>
                                         </td>
-                                        <td class="tdStyle">@bill.OrderBasePrice</td>
-                                        <td class="tdStyle">
+                                        <td class="tdStyle" style="width:60px">
+                                            @bill.OrderBasePrice
+                                        </td>
+                                        <td class="tdStyle" style="width:90px">
                                             <span>@bill.FuelSurcharge</span><br />
                                             <span>@bill.AdditionalServiceCost</span>
                                         </td>
-                                        <td class="tdStyle">@bill.NetTotalOrderCost</td>
+                                        <td class="tdStyle" style="width:80px">
+                                            @bill.NetTotalOrderCost
+                                        </td>
                                     </tr>
 
                                     if (!string.IsNullOrEmpty(bill.CargoCtlNo) || !string.IsNullOrEmpty(bill.AwbContainerNo) || !string.IsNullOrEmpty(bill.PickupRefNo))
@@ -299,6 +317,8 @@
                     </td>
                 </tr>
 
+
+                <!-- Footer Starts -->
                 <tr style="font-family:Arial; font-weight:bold; font-size:9px;">
                     <td class="tdStyle" colspan="4">
                         <span>*HST Applicable</span>
@@ -356,7 +376,7 @@
                         </table>
                     </td>
                 </tr>
-
+                <!-- Footer Ends -->
             </tbody>
         </table>
 
