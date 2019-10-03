@@ -8,6 +8,7 @@ using LogisticsManagement_DataAccess;
 using LogisticsManagement_Poco;
 using LogisticsManagement_Web.Models;
 using LogisticsManagement_Web.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -1267,9 +1268,12 @@ namespace LogisticsManagement_Web.Controllers
                     System.IO.Directory.CreateDirectory(directoryPath);
                 }
 
+                string customSwitches = String.Format("--print-media-type --allow {0} --footer-html {0} --footer-center [page]/[toPage] --footer-font-size 8", Url.Action("InvoiceFooter", "Invoice", new { area = "" }, "https"));
+
                 var pdfReport = new ViewAsPdf(viewName, viewModelPrintInvoice)
                 {
-                    CustomSwitches = "--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8",
+                    
+                    CustomSwitches = customSwitches, //"--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8",
                     PageSize = Rotativa.AspNetCore.Options.Size.Letter
                 };
 
@@ -1289,6 +1293,19 @@ namespace LogisticsManagement_Web.Controllers
             }
 
             return Json(result);
+        }
+
+        [AllowAnonymous]
+        public ActionResult InvoiceFooter() {
+
+            return View();
+        }
+
+        [AllowAnonymous]
+        public ActionResult InvoiceHeader()
+        {
+
+            return View();
         }
 
         private ViewModel_InvoiceBiller GetBillerInformation(int billerCustomerId)
