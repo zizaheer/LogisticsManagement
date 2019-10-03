@@ -397,6 +397,14 @@ $('.btnEdit').on('click', function (event) {
     ClearForm();
     $('#frmOrderForm').trigger('reset');
 
+    var countries = GetList('Country/GetAllCountries');
+    if (countries !== '') {
+        var parsedCountries = JSON.parse(countries);
+        $.each(parsedCountries, function (i, item) {
+            $('#ddlShipperCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+            $('#ddlConsigneeCountries').append($('<option></option>').val(item.Id).html(item.Alpha3CountryCode));
+        });
+    }
     var wbNumber = $(this).data('waybillnumber');
     if (wbNumber > 0) {
         GetAndFillOrderDetailsByWayBillNumber(wbNumber, 1);
