@@ -800,7 +800,7 @@
                                                         <th style="width:100px; text-align:center">Pay Driver</th>
                                                         <th style="width:110px; padding-right:5px">Srv. Charge</th>
                                                         <th style="width:110px;">Driver %</th>
-                                                        <th style="width:100px; text-align:center">Apply GST</th>
+                                                        <th style="width:100px; text-align:center">Apply HST</th>
                                                         <th style="width:100px; text-align:center; margin-bottom:10px"><button class="btn btn-sm btn-dark additionalServiceControl" id="btnAddAddtionalServiceRow"> <i class="fa fa-eyedropper"></i> Add service</button></th>
                                                     </tr>
                                                     <tr>
@@ -868,7 +868,7 @@
                                                 <div class="col-12 input-group">
                                                     <input class="col-4 form-control form-control-sm" placeholder="Order Cost" id="txtBaseOrderCost" type="number" min="0" name="txtBaseOrderCost" title="Order cost" required readonly>
                                                     <input class="col-4 form-control form-control-sm" placeholder="Surcharge" id="txtBaseOrderSurcharge" type="number" min="0" name="txtBaseOrderSurcharge" title="Order surcharge" readonly>
-                                                    <input class="col-4 form-control form-control-sm" placeholder="GST" id="txtBaseOrderGST" type="number" min="0" name="txtBaseOrderGST" title="Order GST amount" readonly>
+                                                    <input class="col-4 form-control form-control-sm" placeholder="HST" id="txtBaseOrderGST" type="number" min="0" name="txtBaseOrderGST" title="Order HST amount" readonly>
                                                 </div>
                                             </div>
                                         </div>
@@ -878,7 +878,7 @@
                                                 <div class="col-12 input-group">
                                                     <input class="col-4 form-control form-control-sm" placeholder="Order Cost" id="txtOverriddenOrderCost" type="number" min="0" name="txtOverriddenOrderCost" title="Overriden order cost">
                                                     <input class="col-4 form-control form-control-sm" placeholder="Surcharge" id="txtOverriddenOrderSurcharge" type="number" min="0" name="txtOverriddenOrderSurcharge" title="Overriden/final surcharge" readonly>
-                                                    <input class="col-4 form-control form-control-sm" placeholder="GST" id="txtOverriddenOrderGST" type="number" min="0" name="txtOverriddenOrderGST" title="Overriden/final GST amount" readonly>
+                                                    <input class="col-4 form-control form-control-sm" placeholder="HST" id="txtOverriddenOrderGST" type="number" min="0" name="txtOverriddenOrderGST" title="Overriden/final HST amount" readonly>
                                                 </div>
                                             </div>
                                         </div>
@@ -893,7 +893,7 @@
                                                         <td scope="col"><small>Basic Cost</small></td>
                                                         <td scope="col"><small>Fuel Surcharge</small></td>
                                                         <td scope="col"><small>Sp. Discount</small></td>
-                                                        <td scope="col"><small>GST</small></td>
+                                                        <td scope="col"><small>HST</small></td>
                                                         <td scope="col"><small>Total Cost</small></td>
                                                         <td scope="col"><small>Add. Charges</small></td>
                                                         <th scope="col">Grand Total</th>
@@ -911,7 +911,7 @@
                                                             <label id="lblGrandDiscountAmount" type="number" min="0" name="lblGrandDiscountAmount" title="Discount amount">0.00</label>
                                                         </td>
                                                         <td>
-                                                            <label id="lblGrandGstAmount" type="number" min="0" name="lblGrandGstAmount" title="GST amount">0.00</label>
+                                                            <label id="lblGrandGstAmount" type="number" min="0" name="lblGrandGstAmount" title="HST amount">0.00</label>
                                                         </td>
 
                                                         <td><label id="lblGrandTotalOrderCost" type="number" min="0" name="lblGrandTotalOrderCost" title="Total order cost">0.00</label></td>

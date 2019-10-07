@@ -52,6 +52,12 @@ namespace LogisticsManagement_Web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public JsonResult KeepMeAlive()
+        {
+            return Json("");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -5,9 +5,16 @@
 // Please refer to bundleconfig.json where the js files are being minified as site.min.js which is referenced on _Layout template.
 $(document).ready(function () {
     //displayClock();
+    
+    setInterval(CallServer, 10000);
 });
 
 
+function CallServer()
+{
+    PerformPostAction("Home/KeepMeAlive");
+    //console.log('call server');
+}
 
 $('#lnkEmployeeClockIn').on('click', function () {
     displayClock();
