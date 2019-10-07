@@ -143,7 +143,7 @@ $('#customer-list').on('click', '.btnEdit', function () {
     if (customerId !== '') {
         var customerInfo = GetSingleById('Customer/GetCustomerById', customerId);
         if (customerInfo != null && customerInfo !== '') {
-            FillCustomerInformation(JSON.parse(customerInfo));
+            FillCustomerInfoById(customerId);
             FillMainFormAddressByCustomer(customerId);
 
             var selectedValue = parseInt($('input[name="rdoAddressTypeForMain"]:checked').val());
@@ -524,11 +524,35 @@ function FillCustomerInfoById(customerId) {
     var customerDetail = GetSingleById('Customer/GetCustomerById', customerId);
     if (customerDetail != null && customerDetail !== '') {
         var customerInfo = JSON.parse(customerDetail);
-        $('#txtCustomerId').val(customerInfo.Id);
-        $('#txtCustomerName').val(customerInfo.CustomerName);
-        $('#txtFuelSurcharge').val(customerInfo.FuelSurChargePercentage);
-        $('#txtSpecialDiscount').val(customerInfo.DiscountPercentage);
-        $('#txtInvoiceDueDays').val(customerInfo.InvoiceDueDays);
+
+        var selectedValue = parseInt($('input[name="rdoAddressTypeForMain"]:checked').val());
+        if (selectedValue === 2) {
+            $('#txtFuelSurcharge').val('');
+            $('#txtFuelSurcharge').prop('disabled', true);
+            $('#txtSpecialDiscount').val('');
+            $('#txtSpecialDiscount').prop('disabled', true);
+            $('#txtInvoiceDueDays').val('');
+            $('#txtInvoiceDueDays').prop('disabled', true);
+            $('#isGstApplicable').prop('checked', false);
+            $('#isGstApplicable').prop('disabled', true);
+        } else {
+            $('#txtFuelSurcharge').prop('disabled', false);
+            $('#txtSpecialDiscount').prop('disabled', false);
+            $('#txtInvoiceDueDays').prop('disabled', false);
+            $('#isGstApplicable').prop('disabled', false);
+            $('#txtCustomerId').val(customerInfo.Id);
+            $('#txtCustomerName').val(customerInfo.CustomerName);
+            $('#txtFuelSurcharge').val(customerInfo.FuelSurChargePercentage);
+            $('#txtSpecialDiscount').val(customerInfo.DiscountPercentage);
+            $('#txtInvoiceDueDays').val(customerInfo.InvoiceDueDays);
+
+            if (customerInfo.IsGstApplicable === true) {
+                $('#isGstApplicable').prop('checked', true);
+            }
+            
+        }
+
+        
     }
 }
 
