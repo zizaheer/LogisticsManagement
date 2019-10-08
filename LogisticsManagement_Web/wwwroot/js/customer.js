@@ -51,6 +51,7 @@ $('#btnNewCustomer').on('click', function () {
     $('#btnAddAddress').prop('disabled', true);
 
     $('#frmCustomerForm').trigger('reset');
+    $('input[name=rdoAddressTypeForMain]').trigger('change');
 
     $('#customerInformation').modal({
         backdrop: 'static',
@@ -60,29 +61,6 @@ $('#btnNewCustomer').on('click', function () {
     $('#customerInformation').draggable();
     $('#customerInformation').modal('show');
 
-});
-
-
-$('#txtCustomerId').unbind('keypress').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-
-        var customerId = '';
-        customerId = $('#txtCustomerId').val();
-
-        if (customerId !== '') {
-            var customerInfo = GetSingleById('Customer/GetCustomerById', customerId);
-
-            if (customerInfo !== "" && customerInfo !== null && customerInfo !== undefined) {
-                FillCustomerInfo(JSON.parse(customerInfo));
-            }
-            else {
-                bootbox.alert('The customer was not found. Please check and try again.');
-                event.preventDefault();
-                return;
-            }
-        }
-    }
 });
 
 $('#btnLoadCustomerData').unbind().on('click', function (event) {
@@ -146,23 +124,6 @@ $('#customer-list').on('click', '.btnEdit', function () {
             FillCustomerInfoById(customerId);
             FillMainFormAddressByCustomer(customerId);
 
-            var selectedValue = parseInt($('input[name="rdoAddressTypeForMain"]:checked').val());
-            if (selectedValue === 2) {
-                $('#txtFuelSurcharge').val('');
-                $('#txtFuelSurcharge').prop('disabled', true);
-                $('#txtSpecialDiscount').val('');
-                $('#txtSpecialDiscount').prop('disabled', true);
-                $('#txtInvoiceDueDays').val('');
-                $('#txtInvoiceDueDays').prop('disabled', true);
-                $('#isGstApplicable').prop('checked', false);
-                $('#isGstApplicable').prop('disabled', true);
-            } else {
-                $('#txtFuelSurcharge').prop('disabled', false);
-                $('#txtSpecialDiscount').prop('disabled', false);
-                $('#txtInvoiceDueDays').prop('disabled', false);
-                $('#isGstApplicable').prop('disabled', false);
-            }
-
             $('#customerInformation').modal({
                 backdrop: 'static',
                 keyboard: false
@@ -177,8 +138,6 @@ $('#customer-list').on('click', '.btnEdit', function () {
             return;
         }
     }
-
-
 });
 
 $('.btnDelete').unbind().on('click', function () {
@@ -309,14 +268,11 @@ $('input[name=rdoAddressTypeForMain]').on('change', function () {
     var selectedValue = parseInt($('input[name="rdoAddressTypeForMain"]:checked').val());
     var customerId = $('#txtCustomerId').val();
 
+    FillCustomerInfoById(customerId);
+
     if (customerId !== '') {
         var shippingAddressId = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
         var billingAddressId = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
-
-        $('#txtFuelSurcharge').prop('disabled', false);
-        $('#txtSpecialDiscount').prop('disabled', false);
-        $('#txtInvoiceDueDays').prop('disabled', false);
-        $('#isGstApplicable').prop('disabled', false);
 
         if (selectedValue === 1) {
             if (billingAddressId !== '') {
@@ -326,16 +282,6 @@ $('input[name=rdoAddressTypeForMain]').on('change', function () {
                 $('#txtAddressLineForMain').val('');
             }
         } else if (selectedValue === 2) {
-
-            $('#txtFuelSurcharge').val('');
-            $('#txtFuelSurcharge').prop('disabled', true);
-            $('#txtSpecialDiscount').val('');
-            $('#txtSpecialDiscount').prop('disabled', true);
-            $('#txtInvoiceDueDays').val('');
-            $('#txtInvoiceDueDays').prop('disabled', true);
-            $('#isGstApplicable').prop('checked', false);
-            $('#isGstApplicable').prop('disabled', true);
-
             if (shippingAddressId !== '') {
                 FillMainFormAddress(shippingAddressId);
             } else {
@@ -354,7 +300,6 @@ $('input[name=rdoAddressTypeForMain]').on('change', function () {
             }
         }
     }
-
 });
 
 $('#txtCustomerIdForAddress ').unbind('keypress').keypress(function (event) {
@@ -412,7 +357,6 @@ $('#frmCustomerAddress').unbind('submit').submit(function () {
 
 });
 
-
 $('#customer-address-list').unbind().on('click', '.btnEditAddress', function (event) {
     //$('#txtCustomerId').prop('readonly', true);
     event.preventDefault();
@@ -445,7 +389,6 @@ $('#customer-address-list').unbind().on('click', '.btnEditAddress', function (ev
     }
 
 });
-
 $('.btnDeleteAddress').unbind().on('click', function () {
 
     var custId = $(this).data('customerid');
@@ -521,38 +464,42 @@ function GetAddressData() {
 }
 
 function FillCustomerInfoById(customerId) {
+
+    var selectedValue = parseInt($('input[name="rdoAddressTypeForMain"]:checked').val());
+    if (selectedValue === 2) {
+        $('#txtFuelSurcharge').val('');
+        $('#txtFuelSurcharge').prop('disabled', true);
+        $('#txtSpecialDiscount').val('');
+        $('#txtSpecialDiscount').prop('disabled', true);
+        $('#txtInvoiceDueDays').val('');
+        $('#txtInvoiceDueDays').prop('disabled', true);
+        $('#isGstApplicable').prop('checked', false);
+        $('#isGstApplicable').prop('disabled', true);
+    } else {
+        $('#txtFuelSurcharge').prop('disabled', false);
+        $('#txtFuelSurcharge').val('15');
+        $('#txtSpecialDiscount').prop('disabled', false);
+        $('#txtInvoiceDueDays').prop('disabled', false);
+        $('#isGstApplicable').prop('disabled', false);
+    }
+
     var customerDetail = GetSingleById('Customer/GetCustomerById', customerId);
     if (customerDetail != null && customerDetail !== '') {
         var customerInfo = JSON.parse(customerDetail);
-
-        var selectedValue = parseInt($('input[name="rdoAddressTypeForMain"]:checked').val());
-        if (selectedValue === 2) {
-            $('#txtFuelSurcharge').val('');
-            $('#txtFuelSurcharge').prop('disabled', true);
-            $('#txtSpecialDiscount').val('');
-            $('#txtSpecialDiscount').prop('disabled', true);
-            $('#txtInvoiceDueDays').val('');
-            $('#txtInvoiceDueDays').prop('disabled', true);
-            $('#isGstApplicable').prop('checked', false);
-            $('#isGstApplicable').prop('disabled', true);
-        } else {
-            $('#txtFuelSurcharge').prop('disabled', false);
-            $('#txtSpecialDiscount').prop('disabled', false);
-            $('#txtInvoiceDueDays').prop('disabled', false);
-            $('#isGstApplicable').prop('disabled', false);
-            $('#txtCustomerId').val(customerInfo.Id);
-            $('#txtCustomerName').val(customerInfo.CustomerName);
+        $('#txtCustomerId').val(customerInfo.Id);
+        $('#txtCustomerName').val(customerInfo.CustomerName);
+        
+        if (selectedValue !== 2) {
             $('#txtFuelSurcharge').val(customerInfo.FuelSurChargePercentage);
             $('#txtSpecialDiscount').val(customerInfo.DiscountPercentage);
             $('#txtInvoiceDueDays').val(customerInfo.InvoiceDueDays);
 
             if (customerInfo.IsGstApplicable === true) {
                 $('#isGstApplicable').prop('checked', true);
+            } else {
+                $('#isGstApplicable').prop('checked', false);
             }
-            
         }
-
-        
     }
 }
 
