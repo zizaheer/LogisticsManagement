@@ -215,128 +215,136 @@ namespace LogisticsManagement_Web.Controllers
                     CustomerAddressMapping customerAddress = JsonConvert.DeserializeObject<CustomerAddressMapping>(JsonConvert.SerializeObject(customerData[1]));
                     _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
                     _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
-
+                    var jAddressObject = (JObject)customerData[1];
+                    var shippingAddressMappingId = Convert.ToString(jAddressObject.SelectToken("shippingAddressMappingId"));
+                    var billingAddressMappingId = Convert.ToString(jAddressObject.SelectToken("billingAddressMappingId"));
                     //using (var scope = new TransactionScope())
                     //{
-                        if (customerPoco.Id > 0)
+                    if (customerPoco.Id > 0)
+                    {
+                        var customer = _customerLogic.GetSingleById(customerPoco.Id);
+                        customer.CustomerName = customerPoco.CustomerName;
+                        customer.DiscountPercentage = customerPoco.DiscountPercentage;
+                        customer.FuelSurChargePercentage = customerPoco.FuelSurChargePercentage;
+                        customer.InvoiceDueDays = customerPoco.InvoiceDueDays;
+                        customer.IsGstApplicable = customerPoco.IsGstApplicable;
+                        customer.IsActive = customerPoco.IsActive;
+
+                        var accountInfo = _chartOfAccountLogic.GetSingleById(customer.AccountId);
+                        accountInfo.AccountName = customerPoco.CustomerName;
+
+                        _chartOfAccountLogic.Update(accountInfo);
+                        result = _customerLogic.Update(customer).Id.ToString();
+
+                        if (customerAddress != null)
                         {
-                            var customer = _customerLogic.GetSingleById(customerPoco.Id);
-                            customer.CustomerName = customerPoco.CustomerName;
-                            customer.DiscountPercentage = customerPoco.DiscountPercentage;
-                            customer.FuelSurChargePercentage = customerPoco.FuelSurChargePercentage;
-                            customer.InvoiceDueDays = customerPoco.InvoiceDueDays;
-                            customer.IsGstApplicable = customerPoco.IsGstApplicable;
-                            customer.IsActive = customerPoco.IsActive;
+                            customerAddress.CustomerId = customerPoco.Id;
+                            customerAddress.IsDefault = true;
+                            _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
+                            var addressList = _addressLogic.GetList();
 
-                            var accountInfo = _chartOfAccountLogic.GetSingleById(customer.AccountId);
-                            accountInfo.AccountName = customerPoco.CustomerName;
+                            _customerAddressMappingLogic = new Lms_CustomerAddressMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerAddressMappingPoco>(_dbContext));
+                            var customerAddressList = _customerAddressMappingLogic.GetList().Where(c => c.CustomerId == customerAddress.CustomerId);
 
-                            _chartOfAccountLogic.Update(accountInfo);
-                            result = _customerLogic.Update(customer).Id.ToString();
-
-                            if (customerAddress != null)
+                            int addressId = 0;
+                            var existingAddress = addressList.Where(c => c.UnitNumber == customerAddress.UnitNumber && c.AddressLine == customerAddress.AddressLine && c.CityId == customerAddress.CityId).ToList().FirstOrDefault();
+                            if (existingAddress != null)
                             {
-                                customerAddress.CustomerId = customerPoco.Id;
-                                customerAddress.IsDefault = true;
-                                _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
-                                var addressList = _addressLogic.GetList();
+                                existingAddress.ProvinceId = customerAddress.ProvinceId;
+                                existingAddress.CountryId = customerAddress.CountryId;
+                                existingAddress.PostCode = customerAddress.PostCode;
+                                existingAddress.PrimaryPhoneNumber = customerAddress.PrimaryPhoneNumber;
+                                existingAddress.Fax = customerAddress.Fax;
+                                existingAddress.EmailAddress1 = customerAddress.EmailAddress1;
+                                existingAddress.EmailAddress2 = customerAddress.EmailAddress1;
+                                existingAddress.ContactPersonName = customerAddress.ContactPersonName;
 
-                                _customerAddressMappingLogic = new Lms_CustomerAddressMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerAddressMappingPoco>(_dbContext));
-                                var customerAddressList = _customerAddressMappingLogic.GetList().Where(c => c.CustomerId == customerAddress.CustomerId);
+                                addressId = _addressLogic.Update(existingAddress).Id;
+                            }
+                            else
+                            {
+                                Lms_AddressPoco addressPoco = new Lms_AddressPoco();
+                                addressPoco.UnitNumber = customerAddress.UnitNumber;
+                                addressPoco.AddressLine = customerAddress.AddressLine;
+                                addressPoco.CityId = customerAddress.CityId;
+                                addressPoco.ProvinceId = customerAddress.ProvinceId;
+                                addressPoco.CountryId = customerAddress.CountryId;
+                                addressPoco.PostCode = customerAddress.PostCode;
+                                addressPoco.PrimaryPhoneNumber = customerAddress.PrimaryPhoneNumber;
+                                addressPoco.Fax = customerAddress.Fax;
+                                addressPoco.EmailAddress1 = customerAddress.EmailAddress1;
+                                addressPoco.EmailAddress2 = customerAddress.EmailAddress1;
+                                addressPoco.ContactPersonName = customerAddress.ContactPersonName;
 
-                                int addressId = 0;
-                                var existingAddress = addressList.Where(c => c.UnitNumber == customerAddress.UnitNumber && c.AddressLine == customerAddress.AddressLine && c.CityId == customerAddress.CityId).ToList().FirstOrDefault();
-                                if (existingAddress != null)
+                                addressId = _addressLogic.Add(addressPoco).Id;
+                            }
+
+                            // This will ensure only one address is set as default address for the same type
+                            var typeWiseAddresses = new List<Lms_CustomerAddressMappingPoco>();
+                            if (customerAddress.IsDefault)
+                            {
+                                typeWiseAddresses = customerAddressList.Where(c => c.CustomerId == customerAddress.CustomerId && c.AddressTypeId == customerAddress.AddressTypeId).ToList();
+                                if (typeWiseAddresses.Count > 0)
                                 {
-                                    existingAddress.ProvinceId = customerAddress.ProvinceId;
-                                    existingAddress.CountryId = customerAddress.CountryId;
-                                    existingAddress.PostCode = customerAddress.PostCode;
-                                    existingAddress.PrimaryPhoneNumber = customerAddress.PrimaryPhoneNumber;
-                                    existingAddress.Fax = customerAddress.Fax;
-                                    existingAddress.EmailAddress1 = customerAddress.EmailAddress1;
-                                    existingAddress.EmailAddress2 = customerAddress.EmailAddress1;
-                                    existingAddress.ContactPersonName = customerAddress.ContactPersonName;
-
-                                    addressId = _addressLogic.Update(existingAddress).Id;
-                                }
-                                else
-                                {
-                                    Lms_AddressPoco addressPoco = new Lms_AddressPoco();
-                                    addressPoco.UnitNumber = customerAddress.UnitNumber;
-                                    addressPoco.AddressLine = customerAddress.AddressLine;
-                                    addressPoco.CityId = customerAddress.CityId;
-                                    addressPoco.ProvinceId = customerAddress.ProvinceId;
-                                    addressPoco.CountryId = customerAddress.CountryId;
-                                    addressPoco.PostCode = customerAddress.PostCode;
-                                    addressPoco.PrimaryPhoneNumber = customerAddress.PrimaryPhoneNumber;
-                                    addressPoco.Fax = customerAddress.Fax;
-                                    addressPoco.EmailAddress1 = customerAddress.EmailAddress1;
-                                    addressPoco.EmailAddress2 = customerAddress.EmailAddress1;
-                                    addressPoco.ContactPersonName = customerAddress.ContactPersonName;
-
-                                    addressId = _addressLogic.Add(addressPoco).Id;
-                                }
-
-                                // This will ensure only one address is set as default address for the same type
-                                var typeWiseAddresses = new List<Lms_CustomerAddressMappingPoco>();
-                                if (customerAddress.IsDefault)
-                                {
-                                    typeWiseAddresses = customerAddressList.Where(c => c.CustomerId == customerAddress.CustomerId && c.AddressTypeId == customerAddress.AddressTypeId).ToList();
-                                    if (typeWiseAddresses.Count > 0)
+                                    foreach (var item in typeWiseAddresses)
                                     {
-                                        foreach (var item in typeWiseAddresses)
-                                        {
-                                            item.IsDefault = false;
-                                            _customerAddressMappingLogic.Update(item);
-                                        }
+                                        item.IsDefault = false;
+                                        _customerAddressMappingLogic.Update(item);
                                     }
                                 }
+                            }
 
-                                var addressMappingList = _customerAddressMappingLogic.GetList();
-                                if (customerAddress.AddressTypeId == 0)
+                            var addressMappingList = _customerAddressMappingLogic.GetList();
+                            if (customerAddress.AddressTypeId == 0)
+                            {
+                                Lms_CustomerAddressMappingPoco customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
+
+                                if (billingAddressMappingId != "")
                                 {
-                                    Lms_CustomerAddressMappingPoco customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
-
-                                    customerAddressMappingPoco = addressMappingList.Where(c => c.CustomerId == customerAddress.CustomerId && c.AddressId == addressId && c.AddressTypeId == (byte)Enum_AddressType.Billing).ToList().FirstOrDefault();
-                                    if (customerAddressMappingPoco != null)
-                                    {
-                                        customerAddressMappingPoco.IsDefault = customerAddress.IsDefault;
-                                        _customerAddressMappingLogic.Update(customerAddressMappingPoco);
-                                    }
-                                    else
-                                    {
-                                        customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
-                                        customerAddressMappingPoco.CustomerId = customerAddress.CustomerId;
-                                        customerAddressMappingPoco.AddressId = addressId;
-                                        customerAddressMappingPoco.AddressTypeId = (byte)Enum_AddressType.Billing;
-                                        customerAddressMappingPoco.IsDefault = customerAddress.IsDefault;
-                                        _customerAddressMappingLogic.Add(customerAddressMappingPoco);
-                                    }
-
+                                    customerAddressMappingPoco = addressMappingList.Where(c => c.Id == Convert.ToInt32(billingAddressMappingId)).FirstOrDefault();
+                                    customerAddressMappingPoco.AddressTypeId = (byte)Enum_AddressType.Billing;
+                                    customerAddressMappingPoco.AddressId = addressId;
+                                    customerAddressMappingPoco.IsDefault = true;
+                                    _customerAddressMappingLogic.Update(customerAddressMappingPoco);
+                                }
+                                else {
                                     customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
-                                    customerAddressMappingPoco = addressMappingList.Where(c => c.CustomerId == customerAddress.CustomerId && c.AddressId == addressId && c.AddressTypeId == (byte)Enum_AddressType.Shipping).FirstOrDefault();
-                                    if (customerAddressMappingPoco != null)
-                                    {
-                                        customerAddressMappingPoco.IsDefault = customerAddress.IsDefault;
-                                        _customerAddressMappingLogic.Update(customerAddressMappingPoco);
-                                    }
-                                    else
-                                    {
-                                        customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
-                                        customerAddressMappingPoco.CustomerId = customerAddress.CustomerId;
-                                        customerAddressMappingPoco.AddressId = addressId;
-                                        customerAddressMappingPoco.AddressTypeId = (byte)Enum_AddressType.Shipping;
-                                        customerAddressMappingPoco.IsDefault = customerAddress.IsDefault;
-                                        _customerAddressMappingLogic.Add(customerAddressMappingPoco);
-                                    }
+                                    customerAddressMappingPoco.CustomerId = customerAddress.CustomerId;
+                                    customerAddressMappingPoco.AddressId = addressId;
+                                    customerAddressMappingPoco.AddressTypeId = (byte)Enum_AddressType.Billing;
+                                    customerAddressMappingPoco.IsDefault = customerAddress.IsDefault;
+                                    _customerAddressMappingLogic.Add(customerAddressMappingPoco);
+                                }
+
+                                if (shippingAddressMappingId != "")
+                                {
+                                    customerAddressMappingPoco = addressMappingList.Where(c => c.Id == Convert.ToInt32(shippingAddressMappingId)).FirstOrDefault();
+                                    customerAddressMappingPoco.AddressTypeId = (byte)Enum_AddressType.Shipping;
+                                    customerAddressMappingPoco.AddressId = addressId;
+                                    customerAddressMappingPoco.IsDefault = true;
+                                    _customerAddressMappingLogic.Update(customerAddressMappingPoco);
                                 }
                                 else
                                 {
-                                    Lms_CustomerAddressMappingPoco customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
-                                    customerAddressMappingPoco = addressMappingList.Where(c => c.CustomerId == customerAddress.CustomerId && c.AddressId == addressId && c.AddressTypeId == customerAddress.AddressTypeId).FirstOrDefault();
-                                    if (customerAddressMappingPoco != null)
+                                    customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
+                                    customerAddressMappingPoco.CustomerId = customerAddress.CustomerId;
+                                    customerAddressMappingPoco.AddressId = addressId;
+                                    customerAddressMappingPoco.AddressTypeId = (byte)Enum_AddressType.Shipping;
+                                    customerAddressMappingPoco.IsDefault = customerAddress.IsDefault;
+                                    _customerAddressMappingLogic.Add(customerAddressMappingPoco);
+                                }
+
+                            }
+                            else
+                            {
+                                Lms_CustomerAddressMappingPoco customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
+
+                                if (customerAddress.AddressTypeId == 1) {
+                                    if (billingAddressMappingId != "")
                                     {
-                                        customerAddressMappingPoco.IsDefault = customerAddress.IsDefault;
+                                        customerAddressMappingPoco = addressMappingList.Where(c => c.Id == Convert.ToInt32(billingAddressMappingId)).FirstOrDefault();
+                                        customerAddressMappingPoco.AddressId = addressId;
+                                        customerAddressMappingPoco.IsDefault = true;
                                         _customerAddressMappingLogic.Update(customerAddressMappingPoco);
                                     }
                                     else
@@ -349,12 +357,31 @@ namespace LogisticsManagement_Web.Controllers
                                         _customerAddressMappingLogic.Add(customerAddressMappingPoco);
                                     }
                                 }
+                                if (customerAddress.AddressTypeId == 2) {
+                                    if (shippingAddressMappingId != "")
+                                    {
+                                        customerAddressMappingPoco = addressMappingList.Where(c => c.Id == Convert.ToInt32(shippingAddressMappingId)).FirstOrDefault();
+                                        customerAddressMappingPoco.AddressId = addressId;
+                                        customerAddressMappingPoco.IsDefault = true;
+                                        _customerAddressMappingLogic.Update(customerAddressMappingPoco);
+                                    }
+                                    else {
+                                        customerAddressMappingPoco = new Lms_CustomerAddressMappingPoco();
+                                        customerAddressMappingPoco.CustomerId = customerAddress.CustomerId;
+                                        customerAddressMappingPoco.AddressId = addressId;
+                                        customerAddressMappingPoco.AddressTypeId = customerAddress.AddressTypeId;
+                                        customerAddressMappingPoco.IsDefault = customerAddress.IsDefault;
+                                        _customerAddressMappingLogic.Add(customerAddressMappingPoco);
 
+                                    }
+                                }
                             }
 
-                            //scope.Complete();
-
                         }
+
+                        //scope.Complete();
+
+                    }
 
                     //}
                 }
@@ -379,9 +406,19 @@ namespace LogisticsManagement_Web.Controllers
                     _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
                     var accPoco = _chartOfAccountLogic.GetSingleById(poco.AccountId);
                     _chartOfAccountLogic.Remove(accPoco);
-                }
 
-                _customerLogic.Remove(poco);
+                    _customerAddressMappingLogic = new Lms_CustomerAddressMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerAddressMappingPoco>(_dbContext));
+                    var mappingAddresses = _customerAddressMappingLogic.GetList().Where(c => c.CustomerId == poco.Id).ToList();
+
+                    if (mappingAddresses.Count > 0) {
+                        foreach(var item in mappingAddresses)
+                        {
+                            _customerAddressMappingLogic.Remove(item);
+                        }
+                    }
+
+                    _customerLogic.Remove(poco);
+                }
 
                 result = "Success";
             }
@@ -632,7 +669,7 @@ namespace LogisticsManagement_Web.Controllers
                 var customerDefaultShippingAddress = _customerAddressMappingLogic.GetList().Where(c => c.CustomerId == Convert.ToInt32(id) && c.AddressTypeId == (byte)Enum_AddressType.Shipping && c.IsDefault == true).FirstOrDefault();
                 if (customerDefaultShippingAddress != null)
                 {
-                    return Json(JsonConvert.SerializeObject(customerDefaultShippingAddress.AddressId));
+                    return Json(JsonConvert.SerializeObject(customerDefaultShippingAddress));
                 }
             }
 
@@ -648,7 +685,7 @@ namespace LogisticsManagement_Web.Controllers
                 var customerDefaultBillingAddress = _customerAddressMappingLogic.GetList().Where(c => c.CustomerId == Convert.ToInt32(id) && c.AddressTypeId == (byte)Enum_AddressType.Billing && c.IsDefault == true).FirstOrDefault();
                 if (customerDefaultBillingAddress != null)
                 {
-                    return Json(JsonConvert.SerializeObject(customerDefaultBillingAddress.AddressId));
+                    return Json(JsonConvert.SerializeObject(customerDefaultBillingAddress));
                 }
             }
 

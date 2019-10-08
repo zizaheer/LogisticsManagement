@@ -234,30 +234,30 @@ $('input[name=rdoAddressType]').on('change', function () {
     var selectedValue = parseInt($('input[name=rdoAddressType]:checked').val());
     var customerId = $('#txtCustomerIdForAddress').val();
 
-    var shippingAddressId = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
-    var billingAddressId = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
+    var shippingAddress = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
+    var billingAddress = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
 
     ClearAddressForm();
 
     if (selectedValue === 1) {
         $('#lblIsDefault').text('Default billing address');
-        if (billingAddressId !== '') {
+        if (billingAddress !== '') {
             $('#chkIsDefault').prop('checked', true);
-            FillAddress(billingAddressId);
+            FillAddress(billingAddress.AddressId);
         }
     }
     else if (selectedValue === 2) {
         $('#lblIsDefault').text('Default shipping address');
-        if (shippingAddressId !== '') {
+        if (shippingAddress !== '') {
             $('#chkIsDefault').prop('checked', true);
-            FillAddress(shippingAddressId);
+            FillAddress(shippingAddress.AddressId);
         }
     }
     else if (selectedValue === 0) {
         $('#lblIsDefault').text('Default address');
-        if (shippingAddressId !== '') {
-            if (shippingAddressId === billingAddressId) {
-                FillAddress(shippingAddressId);
+        if (shippingAddress !== '') {
+            if (shippingAddress.AddressId === billingAddress.AddressId) {
+                FillAddress(shippingAddress.AddressId);
             }
         }
     }
@@ -271,11 +271,22 @@ $('input[name=rdoAddressTypeForMain]').on('change', function () {
     FillCustomerInfoById(customerId);
 
     if (customerId !== '') {
-        var shippingAddressId = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
-        var billingAddressId = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
+        var shippingAddressId = '';
+        var billingAddressId = '';
+
+        var shippingAddress = GetDefaultShippingAddressByCustomer(customerId);
+        if (shippingAddress != null) {
+            shippingAddressId = shippingAddress.AddressId;
+        }
+
+        var billingAddress = GetDefaultBillingAddressByCustomer(customerId);
+        if (billingAddress != null) {
+            billingAddressId = billingAddress.AddressId;
+        }
 
         if (selectedValue === 1) {
             if (billingAddressId !== '') {
+                $('#hfBillingAddressMappingId').val(billingAddress.Id);
                 FillMainFormAddress(billingAddressId);
             } else {
                 ClearMainFormAddress();
@@ -283,6 +294,7 @@ $('input[name=rdoAddressTypeForMain]').on('change', function () {
             }
         } else if (selectedValue === 2) {
             if (shippingAddressId !== '') {
+                $('#hfShippingAddressMappingId').val(shippingAddress.Id);
                 FillMainFormAddress(shippingAddressId);
             } else {
                 ClearMainFormAddress();
@@ -290,6 +302,9 @@ $('input[name=rdoAddressTypeForMain]').on('change', function () {
             }
         }
         else if (selectedValue === 0) {
+            $('#hfBillingAddressMappingId').val(billingAddress.Id);
+            $('#hfShippingAddressMappingId').val(shippingAddress.Id);
+
             if (shippingAddressId !== '') {
                 FillMainFormAddress(shippingAddressId);
             } else if (billingAddressId !== '') {
@@ -435,7 +450,9 @@ function GetFormData() {
         emailAddress1: $('#txtEmailAddressForMain').val(),
         primaryPhoneNumber: $('#txtPrimaryPhoneNumberForMain').val(),
         fax: $('#txtFaxNumberForMain').val(),
-        isDefault: $('#chkMakeDefaultAddressForMain').is(':checked') === true ? 1 : 0
+        isDefault: $('#chkMakeDefaultAddressForMain').is(':checked') === true ? 1 : 0,
+        shippingAddressMappingId: $('#hfShippingAddressMappingId').val(),
+        billingAddressMappingId: $('#hfBillingAddressMappingId').val()
     };
 
     return [customerData, addressData];
@@ -488,7 +505,7 @@ function FillCustomerInfoById(customerId) {
         var customerInfo = JSON.parse(customerDetail);
         $('#txtCustomerId').val(customerInfo.Id);
         $('#txtCustomerName').val(customerInfo.CustomerName);
-        
+
         if (selectedValue !== 2) {
             $('#txtFuelSurcharge').val(customerInfo.FuelSurChargePercentage);
             $('#txtSpecialDiscount').val(customerInfo.DiscountPercentage);
@@ -528,14 +545,25 @@ function FillAddress(addressId) {
 
 function FillMainFormAddressByCustomer(customerId) {
 
-    var addressType = parseInt($('input[name="rdoAddressTypeForMain"]:checked').val());
+    var shippingAddressId = '';
+    var billingAddressId = '';
 
-    var shippingAddressId = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
-    var billingAddressId = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
+    var shippingAddress = GetDefaultShippingAddressByCustomer(customerId);
+    if (shippingAddress != null) {
+        shippingAddressId = shippingAddress.AddressId;
+    }
+
+    var billingAddress = GetDefaultBillingAddressByCustomer(customerId);
+    if (billingAddress != null) {
+        billingAddressId = billingAddress.AddressId;
+    }
 
     if (shippingAddressId === billingAddressId) {
         $('#rdoBothForMain').prop('checked', true);
         if (shippingAddressId !== '') {
+            $('#hfBillingAddressMappingId').val(billingAddress.Id);
+            $('#hfShippingAddressMappingId').val(shippingAddress.Id);
+
             FillMainFormAddress(shippingAddressId);
         } else {
             ClearMainFormAddress();
@@ -544,14 +572,14 @@ function FillMainFormAddressByCustomer(customerId) {
     }
     else if (billingAddressId !== '') {
         $('#rdoBillingForMain').prop('checked', true);
+        $('#hfBillingAddressMappingId').val(billingAddress.Id);
         FillMainFormAddress(billingAddressId);
 
     } else if (shippingAddressId !== '') {
         $('#rdoShippingForMain').prop('checked', true);
+        $('#hfShippingAddressMappingId').val(shippingAddress.Id);
         FillMainFormAddress(shippingAddressId);
     }
-
-
 }
 
 function FillMainFormAddress(addressId) {
@@ -580,6 +608,29 @@ function FillMainFormAddress(addressId) {
         //bootbox.alert('Address not found. Please try again or select from the list.');
     }
 }
+
+function GetDefaultShippingAddressByCustomer(customerId) {
+    var defaultShippingAddress = null;
+    if (customerId !== '') {
+        var shippingAddress = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
+        if (shippingAddress !== '') {
+            defaultShippingAddress = JSON.parse(shippingAddress);
+        }
+    }
+
+    return defaultShippingAddress;
+}
+function GetDefaultBillingAddressByCustomer(customerId) {
+    var defaultBillingAddress = null;
+    if (customerId !== '') {
+        var billingAddress = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
+        if (billingAddress !== '') {
+            defaultBillingAddress = JSON.parse(billingAddress);
+        }
+    }
+    return defaultBillingAddress;
+}
+
 
 function ClearMainFormAddress() {
     $('#hfAddressIdForMain').val('');

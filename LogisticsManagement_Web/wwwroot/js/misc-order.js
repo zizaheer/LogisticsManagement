@@ -690,14 +690,24 @@ function GetEmployeeById(employeeId) {
         return employee;
     }
 }
+
 function GetCustomerDefaultShippingAddress(customerId) {
-    var customerDefaultShippingAddressId = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
-    return customerDefaultShippingAddressId;
+    var shippingAddressId = '';
+    var shippingAddress = GetDefaultShippingAddressByCustomer(customerId);
+    if (shippingAddress != null) {
+        shippingAddressId = shippingAddress.AddressId;
+    }
+    return shippingAddressId;
 }
 function GetCustomerDefaultBillingAddress(customerId) {
-    var customerDefaultBillingAddressId = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
-    return customerDefaultBillingAddressId;
+    var billingAddressId = '';
+    var billingAddress = GetDefaultBillingAddressByCustomer(customerId);
+    if (billingAddress != null) {
+        billingAddressId = billingAddress.AddressId;
+    }
+    return billingAddressId;
 }
+
 function FillCustomerAddress(addressId) {
     ClearCustomerAddressArea();
     var customerAddress = GetAddressInfo(addressId);
@@ -1010,6 +1020,29 @@ function GetFormData() {
 
     return [orderData, selectedAdditionalServiceArray];
 }
+
+function GetDefaultShippingAddressByCustomer(customerId) {
+    var defaultShippingAddress = null;
+    if (customerId !== '') {
+        var shippingAddress = GetSingleById('Customer/GetCustomerDefaultShippingAddressById', customerId);
+        if (shippingAddress !== '') {
+            defaultShippingAddress = JSON.parse(shippingAddress);
+        }
+    }
+
+    return defaultShippingAddress;
+}
+function GetDefaultBillingAddressByCustomer(customerId) {
+    var defaultBillingAddress = null;
+    if (customerId !== '') {
+        var billingAddress = GetSingleById('Customer/GetCustomerDefaultBillingAddressById', customerId);
+        if (billingAddress !== '') {
+            defaultBillingAddress = JSON.parse(billingAddress);
+        }
+    }
+    return defaultBillingAddress;
+}
+
 
 function ClearForm() {
 
