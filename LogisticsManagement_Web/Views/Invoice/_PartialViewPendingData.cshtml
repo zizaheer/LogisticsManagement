@@ -8,7 +8,7 @@
         }
         $('#pending-list').DataTable({
             "order": [[0, "desc"]],
-            "columns": [{ "orderable": false }, null, null, null, null, null, null, null, null, null, null, null],
+            "columns": [{ "orderable": false }, null, null, null, null, null, null, null, null, null, null],
             "lengthChange": false,
             searching: false,
             paging: false,
@@ -39,11 +39,11 @@
             <th style="width:75px">Cust. ref#</th>
             <th style="width:150px">Shipper</th>
             <th style="width:150px">Consignee</th>
-            <th style="width:50px">Unt/qty.</th>
+            <th style="width:50px">Qty.</th>
             <th style="width:40px">SKD</th>
             <th style="width:50px">Wgt.</th>
             <th style="width:150px">Bill to</th>
-            <th style="width:80px">Ord. By</th>
+            @*<th style="width:80px">Ord. By</th>*@
             <th style="width:80px">Cost</th>
             <th style="width:30px">Print/Undo</th>
         </tr>
@@ -82,9 +82,9 @@
                 <td title="@item.ShipperName">
                     @{
                         var shipper = "";
-                        if (item.ShipperName.Length > 25)
+                        if (item.ShipperName.Length > 15)
                         {
-                            shipper = item.ShipperName.Substring(0, 22) + "...";
+                            shipper = item.ShipperName.Substring(0, 12) + "...";
                         }
                         else
                         {
@@ -94,14 +94,14 @@
                     }
                 </td>
 
-                <td>
+                <td title="@item.ConsigneeName">
                     @{
                         var consignee = "";
                         if (item.ConsigneeName != null)
                         {
-                            if (item.ConsigneeName.Length > 25)
+                            if (item.ConsigneeName.Length > 15)
                             {
-                                consignee = item.ConsigneeName.Substring(0, 22) + "...";
+                                consignee = item.ConsigneeName.Substring(0, 12) + "...";
                             }
                             else
                             {
@@ -113,23 +113,50 @@
                 </td>
 
                 <td>
-                    @item.UnitQty @item.UnitTypeName
-                </td>
-
-                <td>
-                    @item.SkidQty
-                </td>
-
-                <td>
-                    @item.WeightTotal @item.WeightShortName
+                    @{
+                        if (item.UnitQty > 0)
+                        {
+                            <label> @item.UnitQty (@item.UnitTypeShortCode)</label>
+                        }
+                        else
+                        {
+                            <label>-</label>
+                        }
+                    }
                 </td>
 
                 <td>
                     @{
-                        var billerName = "";
-                        if (item.BillerName.Length > 25)
+                        if (item.SkidQty > 0)
                         {
-                            billerName = item.BillerName.Substring(0, 22) + "...";
+                            <label> @item.SkidQty (SKD)</label>
+                        }
+                        else
+                        {
+                            <label>-</label>
+                        }
+                    }
+                </td>
+
+                <td>
+                    @{
+                        if (item.WeightTotal > 0)
+                        {
+                            <label> @item.WeightTotal (@item.WeightShortName)</label>
+                        }
+                        else
+                        {
+                            <label>-</label>
+                        }
+                    }
+                </td>
+
+                <td title="@item.BillerName">
+                    @{
+                        var billerName = "";
+                        if (item.BillerName.Length > 15)
+                        {
+                            billerName = item.BillerName.Substring(0, 12) + "...";
                         }
                         else
                         {
@@ -139,9 +166,9 @@
                     }
                 </td>
 
-                <td>
-                    @item.OrderedBy
-                </td>
+                @*<td>
+                        @item.OrderedBy
+                    </td>*@
                 <td>
                     @item.TotalOrderCost
                 </td>

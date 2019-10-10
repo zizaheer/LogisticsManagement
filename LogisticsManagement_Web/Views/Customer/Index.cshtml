@@ -36,38 +36,40 @@
 
 <hr style="margin-bottom:20px" />
 
-
-<div class="modal fade bd-example-modal-xl" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content bg-light">
-            <div class="modal-header" style="justify-content:initial;padding-top:9px;padding-bottom:9px; padding-right:0px">
-                <img src="~/images/flaticons-64x64/paper-plane.png" style="height:25px; padding-left:14px; padding-right:10px" />
-                <b id="exampleModalCenterTitle">Manage addresses</b>
-                <div class="col-sm-7 offset-2" style="padding-right:0px;text-align:right">
-                    <button type="reset" class="col-2 btn btn-sm btn-primary" id="btnNewAddress" name="btnNewAddress"><i class="fa fa-plus-circle"></i> Reset </button>
-                    <button type="submit" class="col-2 btn btn-sm btn-success" id="btnSaveAddress" name="btnSaveAddress"><i class="fa fa-save"></i> Save </button>
-                    <button type="button" style="margin-right:-8px" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-
-                    <div class="row">
-                        <div class="col-sm-3 form-group">
-                            <input class="col-11 form-control form-control-sm" placeholder="&#xF002; Cust. id" style="font-family:Arial, FontAwesome" id="txtCustomerIdForAddress" type="number" min="1" name="txtCustomerIdForAddress" readonly>
-                        </div>
-                        <div class="input-group col-sm-8">
-                            <small>
-                                <label for="txtCustomerNameForAddress" class="input-group-addon form-control-sm">
-                                    <strong>
-                                        Name
-                                    </strong>
-                                </label>
-                            </small>
-                            <input class="form-control form-control-sm" id="txtCustomerNameForAddress" placeholder="Customer name" type="text" name="txtCustomerNameForAddress" title="Customer name" />
-                        </div>
+<form id="frmCustomerAddress">
+    <div class="modal fade bd-example-modal-xl" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content bg-light">
+                <div class="modal-header" style="justify-content:initial;padding-top:9px;padding-bottom:9px; padding-right:0px">
+                    <img src="~/images/flaticons-64x64/paper-plane.png" style="height:25px; padding-left:14px; padding-right:10px" />
+                    <b id="exampleModalCenterTitle">Manage addresses</b>
+                    <div class="col-sm-7 offset-2" style="padding-right:0px;text-align:right">
+                        <button type="button" class="col-3 btn btn-sm btn-primary" id="btnNewAddress" name="btnNewAddress"><i class="fa fa-plus-circle"></i> New address </button>
+                        <button type="submit" class="col-2 btn btn-sm btn-success" id="btnSaveAddress" name="btnSaveAddress"><i class="fa fa-save"></i> Save </button>
+                        <button type="button" style="margin-right:-8px" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
                     </div>
-                    <form id="frmCustomerAddress">
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+
+                        <div class="row">
+                            <div class="col-sm-3 form-group">
+                                <input type="hidden" id="hfBillingAddressMappingId2" />
+                                <input type="hidden" id="hfShippingAddressMappingId2" />
+                                <input class="col-11 form-control form-control-sm" placeholder="&#xF002; Cust. id" style="font-family:Arial, FontAwesome" id="txtCustomerIdForAddress" type="number" min="1" name="txtCustomerIdForAddress" readonly>
+                            </div>
+                            <div class="input-group col-sm-8">
+                                <small>
+                                    <label for="txtCustomerNameForAddress" class="input-group-addon form-control-sm">
+                                        <strong>
+                                            Name
+                                        </strong>
+                                    </label>
+                                </small>
+                                <input class="form-control form-control-sm" id="txtCustomerNameForAddress" placeholder="Customer name" type="text" name="txtCustomerNameForAddress" title="Customer name" readonly />
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-sm-12" id="divAddress1">
                                 <div class="row m-0 input-group">
@@ -144,40 +146,38 @@
                                 <div class="row m-0 input-group" style="margin-top:12px !important; margin-bottom:10px !important">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input chkIsDefault" type="checkbox" id="chkIsDefault" name="chkIsDefault" />
-                                        <b><label class="form-check-label" for="chkIsDefault" id="lblIsDefault">Default billing address</label></b>
+                                        <label class="form-check-label" for="chkIsDefault" id="lblIsDefault">Use this on 'delivery order form' as default</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
 
-
-
-                    <div class="row">
-                        <div class="col-md-12 input-group" style="margin-top:10px">
-                            @*<h5>Existing address/s</h5>*@
-                            <div style="margin-left:15px">
-                                <span id="addressSpinnerLoadingDataTable" style="display:none">
-                                    <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
-                                    <span style="margin-right:20px">Loading...</span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div style="display:block; height:125px; padding:10px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadAddressDataTable">
-                                @* <partial name="_PartialViewCustomerAddress" />*@
+                        <div class="row">
+                            <div class="col-md-12 input-group" style="margin-top:10px">
+                                @*<h5>Existing address/s</h5>*@
+                                <div style="margin-left:15px">
+                                    <span id="addressSpinnerLoadingDataTable" style="display:none">
+                                        <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                                        <span style="margin-right:20px">Loading...</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div style="display:block; height:125px; padding:10px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadAddressDataTable">
+                                    @* <partial name="_PartialViewCustomerAddress" />*@
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 
 <form id="frmCustomerForm">
     <div class="modal fade bd-example-modal-xl" id="customerInformation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -206,20 +206,20 @@
                                 <small>
                                     <label for="txtCustomerName" class="input-group-addon form-control-sm">
                                         <strong>
-                                            Name 
+                                            Name
                                         </strong>
                                     </label>
                                 </small>
                                 <input class="form-control form-control-sm" id="txtCustomerName" placeholder="Customer name" type="text" name="txtCustomerName" title="Customer name" />
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="input-group col-sm-3">
                                 <small>
                                     <label for="txtFuelSurcharge" class="input-group-addon form-control-sm">
                                         <strong>
-                                            Fuel (%) 
+                                            Fuel (%)
                                         </strong>
                                     </label>
                                 </small>
@@ -227,7 +227,7 @@
                             </div>
                             <div class="input-group col-sm-3">
                                 <small>
-                                    <label for="txtSpecialDiscount" class="input-group-addon form-control-sm" >
+                                    <label for="txtSpecialDiscount" class="input-group-addon form-control-sm">
                                         <strong>
                                             Disc. (%)
                                         </strong>
@@ -338,11 +338,11 @@
                                     <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumberForMain" type="tel" name="txtFaxNumberForMain" placeholder="Fax" />
                                 </div>
                                 @*<div class="row m-0 input-group">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="chkMakeDefaultAddressForMain" id="chkMakeDefaultAddressForMain" checked />
-                                        <label class="form-check-label" for="chkMakeDefaultAddressForMain">Use on order form</label>
-                                    </div>
-                                </div>*@
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="chkMakeDefaultAddressForMain" id="chkMakeDefaultAddressForMain" checked />
+                                            <label class="form-check-label" for="chkMakeDefaultAddressForMain">Use on order form</label>
+                                        </div>
+                                    </div>*@
 
                                 <div class="row m-0 input-group" style="margin-bottom:10px !important; margin-top:20px !important">
                                     <div class="form-check-inline">

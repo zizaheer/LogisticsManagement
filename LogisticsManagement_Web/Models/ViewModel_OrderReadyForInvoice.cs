@@ -18,6 +18,7 @@ namespace LogisticsManagement_Web.Models
         public int ConsigneeId { get; set; }
         public string ConsigneeName { get; set; }
         public int UnitTypeId { get; set; }
+        public string UnitTypeShortCode { get; set; }
         public string UnitTypeName { get; set; }
         public int? UnitQty { get; set; }
         public int? SkidQty { get; set; }

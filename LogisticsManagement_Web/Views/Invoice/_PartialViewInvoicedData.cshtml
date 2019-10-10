@@ -14,7 +14,7 @@
         }
         $('#invoiced-list').DataTable({
             "order": [[0, "desc"]],
-            "columns": [{ "orderable": false }, null, null, null, null],
+            "columns": [{ "orderable": false }, null, null, null, null, null],
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
@@ -45,9 +45,10 @@
                     <label class="form-check-label">Invoice #</label>
                 </div>
             </th>
-            <th style="width:200px">Biller</th>
-            <th>W/B numbers</th>
+            <th style="width:100px">Date</th>
+            <th style="width:200px">Customer</th>
             <th style="width:100px">Total amnt.</th>
+            <th>W/B #</th>
             <th style="width:100px">Edit/Modify</th>
         </tr>
     </thead>
@@ -62,24 +63,35 @@
                     </div>
                 </td>
                 <td>
-                    @item.BillerName
+                    @item.InvoiceDateString
                 </td>
                 <td>
-                    @item.WayBillNumbers
+                    @item.BillerName
                 </td>
                 <td>
                     @item.TotalInvoiceAmnt
                 </td>
                 <td>
-                    @{ 
+                    @item.WayBillNumbers.Substring(0, 6)
+                    @{
+                        if (item.WayBillNumbers.Length > 10)
+                        {
+                            <label style="cursor:pointer; color:#129eef" title="@item.WayBillNumbers"> &nbsp; more>></label>
+                        }
+                    }
+                </td>
+                
+                <td>
+                    @{
                         var disabled = "";
-                        if (item.TotalInvoiceAmnt > 0) {
+                        if (item.TotalInvoiceAmnt > 0)
+                        {
                             disabled = "disabled";
                         }
 
                     }
                     <button id="btnEdit" data-invoiceid='@item.InvoiceId' data-billername="@item.BillerName" data-waybills="@item.WayBillNumbers" data-totalamount="@item.TotalInvoiceAmnt" class="btn-primary smallGridIcon btnEdit" title="Edit or modify an invoice" type="button"><i class="fa fa-pencil"></i> </button>
-                    <button id="btnEdit" data-invoiceid='@item.InvoiceId' data-waybills="@item.WayBillNumbers"  class="btn-danger smallGridIcon btnRegenerateInvoice" title="Regenerate invoice" type="button" @disabled><i class="fa fa-cogs"></i> </button>
+                    <button id="btnEdit" data-invoiceid='@item.InvoiceId' data-waybills="@item.WayBillNumbers" class="btn-danger smallGridIcon btnRegenerateInvoice" title="Regenerate invoice" type="button" @disabled><i class="fa fa-cogs"></i> </button>
                 </td>
             </tr>
         }

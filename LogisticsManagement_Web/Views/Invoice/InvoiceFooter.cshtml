@@ -4,13 +4,86 @@
 }
 
 <!DOCTYPE html>
+<style type="text/css">
+
+    .tdStyle {
+        padding: 4px;
+        vertical-align: top;
+        border-left: none;
+        border-right: none;
+    }
+
+    .pagebreak {
+        page-break-after: always;
+    }
+</style>
 
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>InvoiceFooter</title>
-</head>
+
 <body>
-    test footer
+    <table style="border:0px solid black; width:900px" border="0">
+        <tbody>
+
+            <!-- Footer Starts -->
+            <tr style="font-family:Arial; font-weight:bold; font-size:9px;">
+                <td class="tdStyle" colspan="4">
+                    <span>*HST Applicable</span>
+                </td>
+            </tr>
+            <tr style="font-family:Arial; font-weight:bold; font-size:.8em;">
+                <td class="tdStyle" colspan="4">
+                    <table style="width: 100%;border-collapse:collapse; border-left:none;border-bottom:none; border-right:none;text-transform:uppercase" border="1">
+                        <tbody>
+                            <tr>
+                                <td class="tdStyle" style="text-align:center">
+                                    <span>Basic chg:</span><br />
+                                    <span>{BasicCharge}</span>
+                                </td>
+                                <td class="tdStyle" style="text-align:center">
+                                    <span>Delivery chg:</span><br />
+                                    <span>{DeliveryCharge}</span>
+                                </td>
+                                <td class="tdStyle" style="text-align:center">
+                                    <span>Fuel surchg:</span><br />
+                                    <span>{FuelCharge}</span>
+                                </td>
+
+                                <td class="tdStyle" style="text-align:center">
+                                    <span>HST:</span><br />
+                                    <span>{TotalHst}</span>
+                                </td>
+                                <td class="tdStyle" style="text-align:center">
+                                    <span>Add. chg:</span><br />
+                                    <span>{TotalAddtionalCharge}</span>
+                                </td>
+                                <td class="tdStyle" style="text-align:center">
+                                    <span>Current TTL:</span><br />
+                                    <span>{CurrentTotal}</span>
+                                </td>
+                                <td class="tdStyle" style="text-align:center">
+                                    <span>Saving:</span><br />
+                                    <span>{TotalSaving}</span>
+                                </td>
+                                <td class="tdStyle" style="text-align:center">
+                                    <span>Total Amnt Due:</span><br />
+                                    <span>{TotalDue}</span>
+                                </td>
+                            </tr>
+                            <tr style="font-size:10px;  font-family: 'Courier New'; font-weight:normal">
+                                <td colspan="7" style="border-right:none; border-bottom:none; border-left:none">
+                                    <span>ALL INVOICES ARE DUE WHEN RENDERED UNLESS AGREED OTHERWISE</span><br />
+                                    <span>INTEREST CHARGED ON OUTSTANDING BALANCE AT THE RATE OF 2% PER MONTH</span>
+                                </td>
+                                <td style="border-right:none; border-left:none;border-bottom:none; padding-top:10px">
+                                    <span>HST: 886288521RT0001</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- Footer Ends -->
+        </tbody>
+    </table>
 </body>
 </html>

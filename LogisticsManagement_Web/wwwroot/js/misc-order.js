@@ -814,7 +814,7 @@ function FillOrderDetails(orderRelatedData) {
         $('#txtCustomerRefNo').val(orderRelatedData.ReferenceNumber);
         $('#txtCargoCtlNo').val(orderRelatedData.CargoCtlNumber);
         $('#txtAwbCtnNo').val(orderRelatedData.AwbCtnNumber);
-        $('#txtOrderDate').val(ConvertDateToUSFormat(orderRelatedData.CreateDate));
+        $('#txtOrderDate').val(ConvertDateToUSFormat(orderRelatedData.ScheduledPickupDate));
         $('#txtOrderedBy').val(orderRelatedData.OrderedBy);
         $('#txtPhoneNo').val(orderRelatedData.ContactPhoneNumber);
         $('#txtDepartment').val(orderRelatedData.DepartmentName);

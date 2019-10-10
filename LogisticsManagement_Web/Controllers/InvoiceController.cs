@@ -268,6 +268,7 @@ namespace LogisticsManagement_Web.Controllers
                     {
                         pendingInvoice.UnitTypeId = order.UnitTypeId;
                         pendingInvoice.UnitTypeName = unitTypes.Where(c => c.Id == pendingInvoice.UnitTypeId).FirstOrDefault().TypeName;
+                        pendingInvoice.UnitTypeShortCode = unitTypes.Where(c => c.Id == pendingInvoice.UnitTypeId).FirstOrDefault().ShortCode;
                         pendingInvoice.UnitQty = order.UnitQuantity;
                     }
 
@@ -1252,7 +1253,7 @@ namespace LogisticsManagement_Web.Controllers
                         }
 
                         viewModelPrintInvoice.viewModelInvoiceBillers = invoiceBillerSortedList;
-                        viewModelPrintInvoice.viewModelWaybills = invoiceWaybillList.OrderBy(c=>c.WayBillDate).ToList();
+                        viewModelPrintInvoice.viewModelWaybills = invoiceWaybillList.OrderBy(c => c.WayBillDate).ToList();
                     }
 
                 }
@@ -1268,12 +1269,29 @@ namespace LogisticsManagement_Web.Controllers
                     System.IO.Directory.CreateDirectory(directoryPath);
                 }
 
-                string customSwitches = String.Format("--print-media-type --allow {0} --footer-html {0} --footer-center [page]/[toPage] --footer-font-size 8", Url.Action("InvoiceFooter", "Invoice", new { area = "" }, "https"));
+
+                /* For header - footer; commented since it was not working for our purpose*/
+                //string headerSection = Url.Action("InvoiceHeader", "Invoice", new { area = "" }, "https");
+                //string footerSection = Url.Action("InvoiceFooter", "Invoice", new { area = "" }, "https");
+                //string customSwitches = String.Format("--header-html  \"{0}\" " +
+                //                   "--header-spacing \"0\" " +
+                //                   "--footer-html \"{1}\" " +
+                //                   "--footer-spacing \"10\" " +
+                //                   "--footer-font-size \"10\" " +
+                //                   "--header-font-size \"10\" ", headerSection, footerSection);
+
+                //var pdfReport = new ViewAsPdf(viewName, viewModelPrintInvoice)
+                //{
+                //    PageMargins = new Rotativa.AspNetCore.Options.Margins(80, 10, 40, 10),
+                //    CustomSwitches = customSwitches, //"--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8",
+                //    PageSize = Rotativa.AspNetCore.Options.Size.Letter
+                //};
+                /* For header - footer; commented since it was not working for our purpose*/
+
 
                 var pdfReport = new ViewAsPdf(viewName, viewModelPrintInvoice)
                 {
-                    
-                    CustomSwitches = customSwitches, //"--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8",
+                    CustomSwitches = "--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8",
                     PageSize = Rotativa.AspNetCore.Options.Size.Letter
                 };
 
@@ -1296,7 +1314,8 @@ namespace LogisticsManagement_Web.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult InvoiceFooter() {
+        public ActionResult InvoiceFooter()
+        {
 
             return View();
         }
@@ -1317,7 +1336,8 @@ namespace LogisticsManagement_Web.Controllers
             invoiceBiller.BillerCustomerName = customers.Where(c => c.Id == billerCustomerId).FirstOrDefault().CustomerName;
             invoiceBiller.Term = customers.Where(c => c.Id == billerCustomerId).FirstOrDefault().InvoiceDueDays;
             int outInt;
-            if (int.TryParse(invoiceBiller.Term, out outInt)) {
+            if (int.TryParse(invoiceBiller.Term, out outInt))
+            {
                 invoiceBiller.Term = "Net " + invoiceBiller.Term;
             }
 
@@ -1696,7 +1716,7 @@ namespace LogisticsManagement_Web.Controllers
                 invoiceList = (from invoice in invoiceList
                                join mapping in invoiceWbMappingList on invoice.Id equals mapping.InvoiceId
                                join order in orderList on mapping.WayBillNumber equals order.WayBillNumber
-                               where order.OrderTypeId == 3
+                               //where order.OrderTypeId == 3
                                select invoice).Distinct().ToList();
             }
             else
@@ -1704,7 +1724,7 @@ namespace LogisticsManagement_Web.Controllers
                 invoiceList = (from invoice in invoiceList
                                join mapping in invoiceWbMappingList on invoice.Id equals mapping.InvoiceId
                                join order in orderList on mapping.WayBillNumber equals order.WayBillNumber
-                               where order.OrderTypeId != 3
+                               //where order.OrderTypeId != 3
                                select invoice).Distinct().ToList();
             }
 
@@ -1715,6 +1735,7 @@ namespace LogisticsManagement_Web.Controllers
             {
                 ViewModel_GeneratedInvoice invoiceViewModel = new ViewModel_GeneratedInvoice();
                 invoiceViewModel.InvoiceId = invoice.Id;
+                invoiceViewModel.InvoiceDateString = invoice.CreateDate.ToString("dd-MMM-yyyy");
                 invoiceViewModel.BillerName = custoemrList.Where(c => c.Id == invoice.BillerCustomerId).FirstOrDefault().CustomerName;
                 invoiceViewModel.WayBillNumbers = invoice.WaybillNumbers;
                 invoiceViewModel.TotalInvoiceAmnt = (decimal)invoice.TotalInvoiceAmount;

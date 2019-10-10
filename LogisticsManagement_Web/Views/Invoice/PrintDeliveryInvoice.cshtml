@@ -34,7 +34,7 @@
     {
         count = count + 1;
 
-        <table style="height: 36px; border:0px solid black" width="900" border="0">
+        <table style="border:0px solid black" width="900" border="0">
             <tbody>
                 <!-- Header Starts-->
                 <tr>
@@ -144,20 +144,20 @@
                                     <span>Cust ref#</span><br />
                                     <span>Ordered by</span>
                                 </td>
-                                <td class="tdStyle" style="width:200px">
+                                <td class="tdStyle" style="width:190px">
                                     <br />
                                     <span>Shipper</span>
                                 </td>
-                                <td class="tdStyle">
+                                <td class="tdStyle" style="width:190px">
                                     <br />
                                     <span>Receiver</span>
                                 </td>
                                 <td class="tdStyle" style="width:80px">
-                                    <span>Unit/Qty</span><br />
+                                    <span>Qty</span><br />
                                     <span>Weight</span>
                                 </td>
                                 <td class="tdStyle" style="width:60px">Rate</td>
-                                <td class="tdStyle" style="width:90px">
+                                <td class="tdStyle" style="width:100px">
                                     <span>Fuel sur.</span><br />
                                     <span>Add. Chrg</span>
                                 </td>
@@ -166,11 +166,11 @@
                         </table>
                     </td>
                 </tr>
-                
+
                 <!-- Header Ends-->
 
                 <tr>
-                    <td colspan="4" height="845" style="vertical-align:top">
+                    <td colspan="5" height="785" style="vertical-align:top">
                         <table style="width:900px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
                             <tbody>
 
@@ -204,12 +204,12 @@
                                             <span>@bill.OrderedByName</span>
 
                                         </td>
-                                        <td class="tdStyle" style="width:200px">
+                                        <td class="tdStyle" style="width:190px">
                                             <span>@bill.ShipperCustomerName</span><br />
                                             <span>@bill.ShipperCustomerAddressLine1</span><br />
                                             <span>@bill.ShipperCustomerAddressLine2</span>
                                         </td>
-                                        <td class="tdStyle"  style="width:200px">
+                                        <td class="tdStyle" style="width:190px">
                                             <span>@bill.ConsigneeCustomerName</span><br />
                                             <span>@bill.ConsigneeCustomerAddressLine1</span><br />
                                             <span>@bill.ConsigneeCustomerAddressLine2</span>
@@ -217,17 +217,19 @@
                                         <td class="tdStyle" style="width:80px">
                                             @if (bill.UnitQuantity > 0)
                                             {
-                                                <span>@bill.UnitQuantity @bill.UnitTypeShortCode</span><br />
+                                                <label>@bill.UnitQuantity @bill.UnitTypeShortCode</label><br />
+                                                if (bill.SkidQuantity > 0)
+                                                {
+                                                    <label>(@bill.SkidQuantity SKD)</label>
+                                                }
                                             }
                                             <span>
                                                 @{
-                                                    var skidStr = "";
-                                                    if (bill.SkidQuantity > 0)
+                                                    if (bill.SkidQuantity > 0 && (bill.UnitQuantity == null || bill.UnitQuantity < 1))
                                                     {
-                                                        skidStr = "SKD";
+                                                        <label>@bill.SkidQuantity SKD</label>
                                                     }
                                                 }
-                                                @bill.SkidQuantity @skidStr
                                             </span><br />
 
                                             <span>@bill.WeightTotal @bill.WeightScaleShortCode</span>
@@ -235,7 +237,7 @@
                                         <td class="tdStyle" style="width:60px">
                                             @bill.OrderBasePrice
                                         </td>
-                                        <td class="tdStyle" style="width:90px">
+                                        <td class="tdStyle" style="width:100px">
                                             <span>@bill.FuelSurcharge</span><br />
                                             <span>@bill.AdditionalServiceCost</span>
                                         </td>

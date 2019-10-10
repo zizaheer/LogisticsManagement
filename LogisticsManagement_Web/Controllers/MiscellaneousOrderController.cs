@@ -261,7 +261,8 @@ namespace LogisticsManagement_Web.Controllers
                         var orderDate = orderAddressData.SelectToken("orderDate").ToString();
                         orderPoco.ShipperAddressId = customerAddressId == "" ? 0 : Convert.ToInt32(customerAddressId);
                         orderPoco.ShipperCustomerId = customerId == "" ? 0 : Convert.ToInt32(customerId);
-                        orderPoco.CreateDate = orderDate == "" ? DateTime.Today : Convert.ToDateTime(orderDate);
+                        orderPoco.ScheduledPickupDate = orderDate == "" ? DateTime.Today : Convert.ToDateTime(orderDate);
+                        orderPoco.CreateDate = Convert.ToDateTime(DateTime.Now.ToString("dd-MMM-yyyy"));
 
                         if (orderPoco.OrderShareAmount <= 0)
                         {
@@ -320,6 +321,7 @@ namespace LogisticsManagement_Web.Controllers
                                 existingOrder.AwbCtnNumber = orderPoco.AwbCtnNumber;
                                 existingOrder.CargoCtlNumber = orderPoco.CargoCtlNumber;
                                 existingOrder.CreateDate = orderPoco.CreateDate;
+                                existingOrder.ScheduledPickupDate = orderPoco.ScheduledPickupDate;
                                 existingOrder.OrderedBy = orderPoco.OrderedBy;
                                 existingOrder.ContactPhoneNumber = orderPoco.ContactPhoneNumber;
                                 existingOrder.DepartmentName = orderPoco.DepartmentName;
@@ -701,7 +703,7 @@ namespace LogisticsManagement_Web.Controllers
                     viewModelOrder.ServiceProviderEmployeeName = (miscOrderViewModel.Employees.Where(c => c.Id == item.ServiceProviderEmployeeId).FirstOrDefault()).FirstName;
                 }
                 viewModelOrder.WayBillNumber = item.WayBillNumber;
-                viewModelOrder.OrderDateString = item.CreateDate.ToString("dd-MMM-yy");
+                viewModelOrder.OrderDateString = ((DateTime)item.ScheduledPickupDate).ToString("dd-MMM-yy");
 
                 viewModelOrder.CustomerRefNumber = item.ReferenceNumber;
                 viewModelOrder.UnitTypeId = item.UnitTypeId;

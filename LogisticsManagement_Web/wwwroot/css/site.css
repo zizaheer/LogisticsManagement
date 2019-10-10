@@ -41,6 +41,10 @@ for details on configuring this project to bundle and minify static web assets. 
     margin-bottom: .5rem;
 }
 
+.form-control {
+    font-weight: bold;
+}
+
 .disable-div {
     pointer-events:none;
     opacity:0.6;
