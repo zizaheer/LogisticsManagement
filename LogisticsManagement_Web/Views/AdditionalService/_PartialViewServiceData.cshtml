@@ -1,0 +1,67 @@
+﻿@using LogisticsManagement_Poco;
+@model List<Lms_AdditionalServicePoco>
+
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.dataTable.isDataTable('#additional-service-list')) {
+            $('#additional-service-list').DataTable().destroy();
+        }
+        $('#additional-service-list').DataTable({
+            "order": [[0, "asc"]],
+            "paging": false,
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+            }
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-sm-12">
+        <table id="additional-service-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
+            <thead>
+                <tr>
+                    <th>Service name</th>
+                    <th>Code</th>
+                    <th>Is tax applicable</th>
+                    <th>Pay to driver</th>
+                    <th>Use for storage</th>
+                    <th>Active</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                           @item.ServiceName
+                        </td>
+                        <td>
+                            @item.ServiceCode
+                        </td>
+                        <td>
+                            @item.IsTaxApplicable
+                        </td>
+                        <td>
+                            @item.PayToDriver
+                        </td>
+                        <td>
+                            @item.IsApplicableForStorage
+                        </td>
+                        <td>
+                            @item.IsActive
+                        </td>
+                        <td>
+                            <button id="btnEdit" data-serviceid='@item.Id' class="btn-primary smallGridIcon btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                            <button id="btnDelete" data-serviceid='@item.Id' class="btn-danger smallGridIcon btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/additional-service.js"></script>
