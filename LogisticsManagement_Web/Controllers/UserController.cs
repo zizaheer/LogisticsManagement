@@ -186,7 +186,7 @@ namespace LogisticsManagement_Web.Controllers
                         user.CountryId = userPoco.CountryId;
                         user.PhoneNumber = userPoco.PhoneNumber;
 
-                        if (profileImageInfo != null && profileImageInfo != "")
+                        if (profileImageInfo != null && profileImageInfo != "" && profileImageInfo.Contains(","))
                         {
                             var base64String = profileImageInfo.Split(",")[1];
                             if (!string.IsNullOrEmpty(base64String))
