@@ -183,16 +183,16 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult CreateDatabaseBackup()
         {
 
-            string backupLocation = _hostingEnvironment.WebRootPath + "/contents/database/";
+            string backupLocation = _hostingEnvironment.WebRootPath + @"\contents\database\";
 
             if (!Directory.Exists(backupLocation))
             {
                 Directory.CreateDirectory(backupLocation);
             }
 
-            var fileName = "DbBackup_" + DateTime.Now.ToString("dd-MMM-yyyy hh:mm:ss") + ".bak";
+            var fileName = @"C:\live-db\DbBackup_" + DateTime.Now.ToString("dd-MMM-yyyy") + ".bak";
 
-            _configurationLogic.CreateDatabaseBackup(backupLocation, fileName);
+            _configurationLogic.CreateDatabaseBackup("", fileName);
 
             return null;
         }

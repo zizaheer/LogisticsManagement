@@ -78,7 +78,7 @@ namespace LogisticsManagement_BusinessLogic
             {
                 SqlParameter[] sqlParameters =
                     {
-                       new SqlParameter("@DbLocation", SqlDbType.VarChar) { Value = location+"/"+fileName }
+                       new SqlParameter("@DbLocation", SqlDbType.VarChar) { Value = location+fileName }
                     };
                 StringBuilder query = new StringBuilder();
                 query.Append("EXEC CreateDatabaseBackup @DbLocation");
