@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace LogisticsManagement_BusinessLogic
 {
@@ -67,6 +69,27 @@ namespace LogisticsManagement_BusinessLogic
         public override void Remove(Lms_ConfigurationPoco[] pocos)
         {
             base.Remove(pocos);
+        }
+
+
+        public string CreateDatabaseBackup(string location, string fileName)
+        {
+            try
+            {
+                SqlParameter[] sqlParameters =
+                    {
+                       new SqlParameter("@DbLocation", SqlDbType.VarChar) { Value = location+"/"+fileName }
+                    };
+                StringBuilder query = new StringBuilder();
+                query.Append("EXEC CreateDatabaseBackup @DbLocation");
+
+                base.CallStoredProcedure(query.ToString(), sqlParameters);
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return "";
         }
 
         #endregion

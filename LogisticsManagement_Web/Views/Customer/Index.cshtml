@@ -188,8 +188,8 @@
                     <img src="~/images/flaticons-64x64/add-friend.png" style="height:25px; padding-left:14px; padding-right:10px" />
                     <b id="exampleModalCenterTitle">Customer</b>
                     <div class="col-sm-3 offset-7" style="padding-right:0px;text-align:right">
-                        <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-check"></i> Save </button>
-                        <button type="button" style="margin-right:-8px" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModalForMain"><i class="fa fa-times"></i> Close </button>
+                        
+                        <button type="button" style="margin-right:-8px" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModalForMain"><i class="fa fa-times"></i></button>
                     </div>
                 </div>
                 <div class="modal-body">
@@ -339,11 +339,11 @@
                                     <input class="col-6 form-control form-control-sm addressBox" id="txtFaxNumberForMain" type="tel" name="txtFaxNumberForMain" placeholder="Fax" />
                                 </div>
                                 @*<div class="row m-0 input-group">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="chkMakeDefaultAddressForMain" id="chkMakeDefaultAddressForMain" checked />
-                                            <label class="form-check-label" for="chkMakeDefaultAddressForMain">Use on order form</label>
-                                        </div>
-                                    </div>*@
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="chkMakeDefaultAddressForMain" id="chkMakeDefaultAddressForMain" checked />
+                        <label class="form-check-label" for="chkMakeDefaultAddressForMain">Use on order form</label>
+                    </div>
+                </div>*@
 
                                 <div class="row m-0 input-group" style="margin-bottom:10px !important; margin-top:20px !important">
                                     <div class="form-check-inline">
@@ -356,10 +356,8 @@
                         </div>
 
                         <hr />
-                        @*<button type="reset" class="col-1 btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>*@
-                        @*<button type="submit" class="col-1 btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save</button>*@
-                        <button style="float:right" type="button" class="col-3 btn btn-sm btn-secondary" id="btnAddAddress"><i class="fa fa-envelope"></i> Add/Manage address</button>
-
+                        <button type="button" class="col-3 btn btn-sm btn-secondary" id="btnAddAddress"><i class="fa fa-envelope"></i> Add/Manage address</button>
+                        <button type="submit" style="float:right" class="col-1 offset-7 btn btn-sm btn-success" id="btnSave"><i class="fa fa-check"></i> Save </button>
                     </div>
                 </div>
             </div>

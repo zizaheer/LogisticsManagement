@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -25,10 +26,12 @@ namespace LogisticsManagement_Web.Controllers
         IMemoryCache _cache;
         SessionData sessionData = new SessionData();
         private IHostingEnvironment _hostingEnvironment;
+        private IConfiguration _configuration;
 
-        public ConfigurationController(IMemoryCache cache, IHostingEnvironment hostingEnvironment, LogisticsContext dbContext)
+        public ConfigurationController(IConfiguration configuration, IMemoryCache cache, IHostingEnvironment hostingEnvironment, LogisticsContext dbContext)
         {
             _cache = cache;
+            _configuration = configuration;
             _dbContext = dbContext;
             _hostingEnvironment = hostingEnvironment;
             _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
@@ -157,7 +160,8 @@ namespace LogisticsManagement_Web.Controllers
             try
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(_hostingEnvironment.WebRootPath + "/contents/invoices/");
-                foreach (FileInfo file in directoryInfo.GetFiles()) {
+                foreach (FileInfo file in directoryInfo.GetFiles())
+                {
                     file.Delete();
                 }
 
@@ -174,6 +178,23 @@ namespace LogisticsManagement_Web.Controllers
             }
 
             return Json(result);
+        }
+
+        public IActionResult CreateDatabaseBackup()
+        {
+
+            string backupLocation = _hostingEnvironment.WebRootPath + "/contents/database/";
+
+            if (!Directory.Exists(backupLocation))
+            {
+                Directory.CreateDirectory(backupLocation);
+            }
+
+            var fileName = "DbBackup_" + DateTime.Now.ToString("dd-MMM-yyyy hh:mm:ss") + ".bak";
+
+            _configurationLogic.CreateDatabaseBackup(backupLocation, fileName);
+
+            return null;
         }
 
         private void ValidateSession()

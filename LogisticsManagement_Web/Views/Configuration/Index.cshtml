@@ -271,6 +271,7 @@
         <div class="col-sm-4">
             <button class="col-7 btn btn-sm btn-warning" id="btnDeleteInvoiceWaybill"><i class="fa fa-trash"></i> Delete invoice/waybill files</button>
             <button class="btn btn-sm btn-warning" id="btnClearCache"><i class="fa fa-trash"></i> Clear cache</button>
+            <button class="btn btn-sm btn-warning" id="btnCreateDatabaseBackup"><i class="fa fa-save"></i> Db Backup</button>
             
         </div>
     </div>
@@ -329,6 +330,14 @@
     $('#btnClearCache').on('click', function (event) {
         event.preventDefault();
         var result = PerformPostAction('Configuration/ClearCache');
+        if (result.length > 0) {
+            bootbox.alert('Cache cleared!');
+        }
+    });
+
+    $('#btnCreateDatabaseBackup').on('click', function (event) {
+        event.preventDefault();
+        var result = PerformPostAction('Configuration/CreateDatabaseBackup');
         if (result.length > 0) {
             bootbox.alert('Cache cleared!');
         }

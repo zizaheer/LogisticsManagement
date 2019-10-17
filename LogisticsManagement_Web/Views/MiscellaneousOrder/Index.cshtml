@@ -77,8 +77,8 @@
                     <img src="~/images/flaticons-64x64/effort.png" style="height:25px; padding-left:14px; padding-right:10px" />
                     <b id="exampleModalCenterTitle">New Misc. Order</b>
                     <div class="col-sm-2 offset-8" style="padding-right:0px;text-align:right">
-                        <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-check"></i> Save </button>
-                        <button type="button" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
+                        @*<button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-check"></i> Save </button>*@
+                        <button type="button" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i></button>
                     </div>
                     @*<button type="button" class="close" id="btnCloseModal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -386,37 +386,46 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="card bg-info mr-auto" style="width:100%">
-                                        <table class="table table-sm table-striped table-dark mb-1 text-center">
-                                            <thead>
-                                                <tr>
-                                                    <td scope="col"><small>Basic Cost</small></td>
-                                                    <td scope="col"><small>Sp. Discount</small></td>
-                                                    <td scope="col"><small>HST</small></td>
-                                                    @*<td scope="col"><small>Total Cost</small></td>
-                                                        <td scope="col"><small>Add. Charges</small></td>*@
-                                                    <th scope="col">Grand Total</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr style="height:40px">
-                                                    <td scope="row">
-                                                        <label id="lblGrandBasicCost" name="lblGrandBasicCost" title="Basic total">0.00</label>
-                                                    </td>
-                                                    <td>
-                                                        <label id="lblGrandDiscountAmount" type="number" min="0" name="lblGrandDiscountAmount" title="Discount amount">0.00</label>
-                                                    </td>
-                                                    <td>
-                                                        <label id="lblGrandGstAmount" type="number" min="0" name="lblGrandGstAmount" title="HST amount">0.00</label>
-                                                    </td>
-                                                    @*<td><label id="lblGrandTotalOrderCost" type="number" min="0" name="lblGrandTotalOrderCost" title="Total order cost">0.00</label></td>
-                                                        <td><label id="lblGrandAddServiceAmount" type="number" min="0" name="lblGrandAddServiceAmount" title="Total additional service cost">0.00</label></td>*@
-                                                    <th class="bg-info">
-                                                        <label id="lblGrandTotalAmount" type="number" min="0" name="lblGrandTotalAmount" title="Grand total amount">0.00</label>
-                                                    </th>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    
+                                    <div class="col-sm-11" style="padding-left:0px">
+                                        <div class="card bg-info mr-auto" style="width:100%">
+                                            <table class="table table-sm table-striped table-dark mb-1 text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <td scope="col"><small>Basic Cost</small></td>
+                                                        <td scope="col"><small>Sp. Discount</small></td>
+                                                        <td scope="col"><small>HST</small></td>
+                                                        @*<td scope="col"><small>Total Cost</small></td>
+                    <td scope="col"><small>Add. Charges</small></td>*@
+                                                        <th scope="col">Grand Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr style="height:40px">
+                                                        <td scope="row">
+                                                            <label id="lblGrandBasicCost" name="lblGrandBasicCost" title="Basic total">0.00</label>
+                                                        </td>
+                                                        <td>
+                                                            <label id="lblGrandDiscountAmount" type="number" min="0" name="lblGrandDiscountAmount" title="Discount amount">0.00</label>
+                                                        </td>
+                                                        <td>
+                                                            <label id="lblGrandGstAmount" type="number" min="0" name="lblGrandGstAmount" title="HST amount">0.00</label>
+                                                        </td>
+                                                        @*<td><label id="lblGrandTotalOrderCost" type="number" min="0" name="lblGrandTotalOrderCost" title="Total order cost">0.00</label></td>
+                    <td><label id="lblGrandAddServiceAmount" type="number" min="0" name="lblGrandAddServiceAmount" title="Total additional service cost">0.00</label></td>*@
+                                                        <th class="bg-info">
+                                                            <label id="lblGrandTotalAmount" type="number" min="0" name="lblGrandTotalAmount" title="Grand total amount">0.00</label>
+                                                        </th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1" style="padding-left:0px">
+                                        <div>
+                                            <small class="mt-0" style="color:#000; font-weight:bold"></small>
+                                            <button type="submit" class="btn btn-sm btn-primary" id="btnSave" style="height:75px;width:90px"><i class="fa fa-check"></i> Save </button>
+                                        </div>
                                     </div>
                                 </div>
 
