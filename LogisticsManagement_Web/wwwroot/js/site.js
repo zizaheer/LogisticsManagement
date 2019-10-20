@@ -6,7 +6,7 @@
 $(document).ready(function () {
     //displayClock();
     
-    setInterval(CallServer, 10000);
+    //setInterval(CallServer, 10000);
 });
 
 

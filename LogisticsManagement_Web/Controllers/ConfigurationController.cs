@@ -190,9 +190,9 @@ namespace LogisticsManagement_Web.Controllers
                 Directory.CreateDirectory(backupLocation);
             }
 
-            var fileName = @"C:\live-db\DbBackup_" + DateTime.Now.ToString("dd-MMM-yyyy") + ".bak";
+            var fileName = @"DbBackup_" + DateTime.Now.ToString("dd-MMM-yyyy") + ".bak";
 
-            _configurationLogic.CreateDatabaseBackup("", fileName);
+            _configurationLogic.CreateDatabaseBackup(backupLocation, fileName);
 
             return null;
         }
