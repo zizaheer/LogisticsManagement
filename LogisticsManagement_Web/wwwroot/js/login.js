@@ -1,6 +1,6 @@
 ﻿var data;
 
-$('#btnLogin').on('click', function (event) {
+$('#btnLogin').unbind().on('click', function (event) {
 
     var userName = $('#txtUserName').val();
     var userPassword = $('#txtPassword').val();

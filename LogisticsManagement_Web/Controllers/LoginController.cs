@@ -55,9 +55,12 @@ namespace LogisticsManagement_Web.Controllers
                     HttpContext.Session.SetString("SessionData", JsonConvert.SerializeObject(sessionData));
                     return RedirectToAction("Index", "Home");
                 }
+                else {
+                    return RedirectToAction("Index");
+                }
             }
 
-            return RedirectToAction("Index");
+            return null;
         }
 
         public IActionResult Logout()

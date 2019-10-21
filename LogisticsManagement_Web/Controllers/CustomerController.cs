@@ -117,7 +117,7 @@ namespace LogisticsManagement_Web.Controllers
                             result = customerId.ToString();
                         }
 
-                        if (customerAddress != null)
+                        if (customerAddress != null && !string.IsNullOrEmpty(customerAddress.AddressLine))
                         {
                             customerAddress.CustomerId = newCustomerId;
                             customerAddress.IsDefault = true;
