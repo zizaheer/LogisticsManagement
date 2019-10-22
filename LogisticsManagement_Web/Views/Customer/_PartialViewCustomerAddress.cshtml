@@ -27,6 +27,7 @@
         <table id="customer-address-list" class="table table-sm  table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
             <thead>
                 <tr>
+                    <th>Add. Id</th>
                     <th>Add. Type</th>
                     <th>Address</th>
                     <th>Default?</th>
@@ -37,21 +38,24 @@
 
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>
-                            @item.AddressTypeName
-                        </td>
-                        <td>
-                            @item.MergedAddressLine
-                        </td>
-                        <td>
-                            @item.IsDefault
-                        </td>
-                        <td>
-                            <button id="btnEditAddress" data-addressid='@item.AddressId' data-customerid='@item.CustomerId' data-addresstypeid='@item.AddressTypeId' data-isdefault='@item.IsDefault' class="btn-primary smallGridIcon btnEditAddress" type="button"><i class="fa fa-pencil"></i> </button>
-                            <button id="btnDeleteAddress" data-addressid='@item.AddressId' data-customerid='@item.CustomerId' data-addresstypeid='@item.AddressTypeId' data-isdefault='@item.IsDefault' class="btn-danger smallGridIcon btnDeleteAddress" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>
+                        @item.AddressId
+                    </td>
+                    <td>
+                        @item.AddressTypeName
+                    </td>
+                    <td>
+                        @item.MergedAddressLine
+                    </td>
+                    <td>
+                        @item.IsDefault
+                    </td>
+                    <td>
+                        <button id="btnEditAddress" data-addressid='@item.AddressId' data-customerid='@item.CustomerId' data-addresstypeid='@item.AddressTypeId' data-isdefault='@item.IsDefault' class="btn-primary smallGridIcon btnEditAddress" type="button"><i class="fa fa-pencil"></i> </button>
+                        <button id="btnDeleteAddress" data-addressid='@item.AddressId' data-customerid='@item.CustomerId' data-addresstypeid='@item.AddressTypeId' data-isdefault='@item.IsDefault' class="btn-danger smallGridIcon btnDeleteAddress" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                    </td>
+                </tr>
                 }
 
 

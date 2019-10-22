@@ -790,7 +790,7 @@ function SubmitOrderForm(dataArray) {
         }
     }
     else {
-        if (dataArray[0].wayBillNumber > 0 && isNewEntry === true) {
+        if (dataArray[0].wayBillNumber >= 0 && isNewEntry === true) {
         result = PerformPostActionWithObject('Order/Add', dataArray);
         if (result !== null) {
             parseData = JSON.parse(result);
