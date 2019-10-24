@@ -291,67 +291,84 @@
 
                     </div>
                     <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-11 form-group">
+                                    <small>
+                                        <b>
+                                            <label for="txtReceivedByName">Received By </label>
+                                        </b>
+                                    </small>
+                                    <input type="text" id="txtReceivedByName" class="form-control form-control-sm txtReceivedByName" placeholder="Received by (Name)" title="Received by (Name)" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-11 form-group">
+                                    <small>
+                                        <b>
+                                            <label for="txtDeliveryDateTime">Delivery Date</label>
+                                        </b>
+                                    </small>
+                                    <input type="datetime-local" id="txtDeliveryDateTime" class="form-control form-control-sm txtDeliveryDateTime" />
 
-                        <div class="col-sm-4 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDeliveryDateTime">Delivery Date</label>
-                                </b>
-                            </small>
-                            <input type="datetime-local" id="txtDeliveryDateTime" class="form-control form-control-sm txtDeliveryDateTime" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-11 form-group">
+                                    <small>
+                                        <b>
+                                            <label for="txtDeliveryWaitTime">Wait time (hour)</label>
+                                        </b>
+                                    </small>
+                                    <input type="number" id="txtDeliveryWaitTime" class="form-control form-control-sm txtDeliveryWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
+                                </div>
+                            </div>
 
                         </div>
-                        <div class="col-sm-3 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtDeliveryWaitTime">Wait time (hour)</label>
-                                </b>
-                            </small>
-                            <input type="number" id="txtDeliveryWaitTime" class="form-control form-control-sm txtDeliveryWaitTime" placeholder="Wait time" min="0" step=".01" title="Wait time (in hours)" />
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <small>
+                                        <b><label for="txtDeliveryNote">Notes</label></b>
+                                    </small>
+                                    <textarea id="txtDeliveryNote" class="form-control form-control-sm txtDeliveryNote" placeholder="Delivery note" title="Delivery note" rows="3"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <small>
+                                        <b>
+                                            <label for="txtReceivedBySign">Signature </label>
+                                        </b>
+                                    </small>
+                                    <canvas id="signatureCanvas" class="card" height="80"></canvas>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span style="float:left">
+                                        <button type="button" class="btn btn-sm btn-secondary" id="btnOk"><i class="fa fa-check"></i> Accept </button>
+                                        <button type="button" class="btn btn-sm btn-secondary" id="btnCancel"><i class="fa fa-times"></i> Erase</button>
+                                        <input type="hidden" id="imgSignature" />
+                                    </span>
+                                    <span style="float:right">
+                                        <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
+                                    </span>
+                                </div>
+                            </div>
+
 
                         </div>
 
-                        <div class="col-sm-5 form-group">
-                            <small>
-                                <b>
-                                    <label for="txtReceivedByName">Received By </label>
-                                </b>
-                            </small>
-                            <input type="text" id="txtReceivedByName" class="form-control form-control-sm txtReceivedByName" placeholder="Received by (Name)" title="Received by (Name)" />
-                        </div>
+
+
 
 
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-6">
-                            <small>
-                                <b>
-                                    <label for="txtReceivedBySign">Signature </label>
-                                </b>
-                            </small>
-                            <canvas id="signatureCanvas" class="card"></canvas>
-                            <span style="float:left">
-                                <button type="button" class="btn btn-sm btn-secondary" id="btnOk"><i class="fa fa-check"></i> Accept signature </button>
-                                <button type="button" class="btn btn-sm btn-secondary" id="btnCancel"><i class="fa fa-times"></i> Erase signature</button>
-                                <input type="hidden" id="imgSignature" />
-                            </span>
-                        </div>
 
-                        <div class="col-sm-6">
-                            <small>
-                                <b><label for="txtDeliveryNote">Notes</label></b>
-                            </small>
-                            <textarea id="txtDeliveryNote" class="form-control form-control-sm txtDeliveryNote" placeholder="Delivery note" title="Delivery note" rows="6"></textarea>
-                            <div class="row" style="margin-bottom:47px">
-                            </div>
-                            <div class="row">
-                                <div class="offset-8">
-                                    <button type="button" class="btn btn-sm btn-success" id="btnSaveDeliver"><i class="fa fa-save"></i> Save delivery</button>
-                                    @*<button type="button" class="btn btn-sm btn-danger" id="btnRemoveDeliver"><i class="fa fa-trash"></i> Undo delivery </button>*@
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <hr />
@@ -534,7 +551,7 @@
                                         <label style="margin-top:5px" id="lblDeliveryOptionId" for="ddlDeliveryOptionId"><b>SERVICE</b></label>
                                     </small>
                                     <div class="col-sm-1">
-                                        <select class="form-control form-control-sm" id="ddlDeliveryOptionId" name="ddlDeliveryOptionId" style="width:184px">
+                                        <select class="form-control form-control-sm" id="ddlDeliveryOptionId" name="ddlDeliveryOptionId" style="width:166px">
                                             @foreach (var deliveryOption in Model.DeliveryOptions)
                                             {
                                                 <option value="@deliveryOption.Id">@deliveryOption.OptionName - (@deliveryOption.ShortCode) </option>
@@ -579,7 +596,7 @@
                                         <label style="margin-top:5px; " id="lblVehicleTypeId" for="ddlVehicleTypeId"><b>DATE</b></label>
                                     </small>
                                     <div class="col-sm-1" style="margin-left:15px">
-                                        <input class="form-control form-control-sm" style="width:184px" id="txtSchedulePickupDate" type="datetime-local" title="Schedule pickup date" name="txtSchedulePickupDate">
+                                        <input class="form-control form-control-sm" style="width:166px" id="txtSchedulePickupDate" type="date" title="Schedule pickup date" name="txtSchedulePickupDate">
                                     </div>
 
                                     @*<small>
@@ -694,34 +711,12 @@
 
                                     <div class="col-4">
                                         <div class="row mb-1">
-                                            <small class="col-sm-6" style="color:#000; font-weight:bold">CARGO CTL#</small>
-                                            <small class="col-sm-6" style="color:#000; font-weight:bold">AWB CTN#</small>
+                                            <small class="col-sm-6" style="color:#000; font-weight:bold">QUANTITY</small>
+                                            <small class="col-sm-6" style="color:#000; font-weight:bold">PC/WEIGHT</small>
                                         </div>
 
 
-                                        @*<small>
-                                                <label style="margin-top:5px" id="lblCargoCtlNo" for="txtCargoCtlNo"><b>Cargo ctl#</b></label>
-                                            </small>
-                                            <div class="col-sm-2">
-                                                <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
-                                            </div>
-                                            <small>
-                                                <label style="margin-top:5px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>AWB CTN#</b></label>
-                                            </small>
-                                            <div class="col-sm-1">
-                                                <input type="text" class="form-control form-control-sm" placeholder="Awb Ctn#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
-                                            </div>*@
 
-
-
-                                        <div class="row mb-1">
-                                            <div class="form-group col-md-6 input-group">
-                                                <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
-                                            </div>
-                                            <div class="form-group col-md-6 input-group">
-                                                <input type="text" class="form-control form-control-sm" placeholder="Awb Ctn#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
-                                            </div>
-                                        </div>
                                         <div class="row mb-1">
                                             <div class="col-md-12 input-group">
 
@@ -751,15 +746,25 @@
                                                 </select>
                                             </div>
                                         </div>
+
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6 input-group">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
+                                            </div>
+                                            <div class="form-group col-md-6 input-group">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Awb Ctn#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
+                                            </div>
+                                        </div>
+
                                         <div class="row">
                                             <div class="col-12 ">
-                                                <div class="row" style="border: 1px solid #92dcff;background-color: #e0f9ff;">
+                                                <div class="row" style="border: 1px solid #92dcff;background-color: #e0f9ff;margin-left:0px;margin-right:0px">
                                                     <div class="col-sm-1">
                                                         <small>
-                                                            <label style="margin-top:5px" id="lblFuelSurcharge" for="txtFuelSurchargePercent"><b>FUEL</b></label>
+                                                            <label style="margin-top:5px;margin-left:-8px" id="lblFuelSurcharge" for="txtFuelSurchargePercent"><b>FUEL</b></label>
                                                         </small>
                                                     </div>
-                                                    <div class="col-sm-2" style="padding-left: 14px;">
+                                                    <div class="col-sm-2" style="padding-left: 8px;">
                                                         <input class="form-control form-control-sm" style="width:60px; height:25px; margin-bottom:2px; margin-top:2px" placeholder="Sur." id="txtFuelSurchargePercent" type="number" name="txtFuelSurchargePercent">
                                                     </div>
                                                     <div class="col-sm-1" style="padding-left:25px">
@@ -767,15 +772,14 @@
                                                             <label style="margin-top:5px;" id="lblDiscountPercent" for="txtDiscountPercent"><b>DISC.</b></label>
                                                         </small>
                                                     </div>
-                                                    <div class="col-sm-2" style="padding-left:15px; margin-right:15px">
+                                                    <div class="col-sm-2" style="padding-left:17px; margin-right:5px">
                                                         <input class="form-control form-control-sm" style="width:60px; height:25px; margin-bottom:2px; margin-top:2px" placeholder="Disc." id="txtDiscountPercent" type="number" name="txtDiscountPercent">
                                                     </div>
-                                                    <div class="col-sm-5" style="padding-left:30px; padding-right:0px">
+                                                    <div class="col-sm-5" style="padding-left:51px; padding-right:0px">
                                                         <small>
                                                             <b>
-
                                                                 <input type="checkbox" class="form-check-inline form-check-input" id="chkIsGstApplicable" name="chkIsGstApplicable" />
-                                                                APPLY @Model.Configuration.TaxToCall-<label class="form-check-inline form-check-label" id="lblGstAmount">@Model.Configuration.TaxAmount</label>%
+                                                                 @Model.Configuration.TaxToCall-<label class="form-check-inline form-check-label" id="lblGstAmount">@Model.Configuration.TaxAmount</label>%
                                                             </b>
                                                         </small>
                                                     </div>

@@ -2,7 +2,7 @@
 
 $(document).ready(function () {
 
-    $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(new Date));
+    $('#txtSchedulePickupDate').val(ConvertDateToUSFormat(new Date));
     $('#txtDispatchDatetimeForNewOrders').val(ConvertDatetimeToUSDatetime(new Date));
 
     MaskPhoneNumber('#txtMobileNo');
@@ -76,7 +76,7 @@ $('#btnNewOrder').unbind().on('click', function () {
     ClearForm();
     $('#frmOrderForm').trigger('reset');
 
-    $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(new Date));
+    $('#txtSchedulePickupDate').val(ConvertDateToUSFormat(new Date));
     
     var maxWayBill = GetSingleById('Order/GetNextWaybillNumber', 0);
 

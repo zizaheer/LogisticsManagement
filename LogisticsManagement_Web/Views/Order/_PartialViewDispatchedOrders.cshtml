@@ -33,54 +33,71 @@
                         </tr>
                         <tr style="background-color:#e3f4f8">
                             <th style="text-align:center; width:60px">W/B #</th>
-                            <th style="text-align:center; width:30px">Type</th>
+
                             <th style="text-align:center; width:30px">SVC</th>
                             <th style="text-align:center; width:50px">Unit</th>
-                            <th>Shipper</th>
+                            <th style="width:80px">Shipper</th>
                             <th>Consignee</th>
+                            <th>Type</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in orders)
                         {
-                            <tr style="background-color:@item.RowColorCode">
-                                <td style="text-align:center; width:60px">
-                                    
-                                    <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="rdoWaybillNo" id="chkWayBillNumber" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber" />
-                                        <a class="btnEdit" href="#" data-waybillnumber='@item.WayBillNumber' data-toggle="modal" style="cursor:pointer"><label class="form-check-label" style="cursor:pointer">@item.WayBillNumber</label></a>
-                                    </div>
-                                </td>
-                                <td style="text-align:center; width:30px"><span title="S: Single Order; R: Return Order">@item.OrderTypeFlag</span></td>
-                                <td style="text-align:center; width:30px">@item.DeliveryOptionCode</td>
-                                <td style="text-align:center; width:50px">@item.UnitQuantity (@item.UnitTypeName)</td>
-                                <td title="@item.ShipperCustomerName">
-                                    @{
-                                        if (item.ShipperCustomerName.Length > 15)
-                                        {
-                                            @item.ShipperCustomerName.Substring(0, 15);
-                                        }
-                                        else
-                                        {
-                                            @item.ShipperCustomerName;
-                                        }
+                        <tr style="background-color:@item.RowColorCode">
+                            <td style="text-align:center; width:60px">
+
+                                <div class="form-check-inline">
+                                    <input class="form-check-input" type="radio" name="rdoWaybillNo" id="chkWayBillNumber" data-orderid="@item.OrderId" data-waybillnumber="@item.WayBillNumber" />
+                                    <a class="btnEdit" href="#" data-waybillnumber='@item.WayBillNumber' data-toggle="modal" style="cursor:pointer"><label class="form-check-label" style="cursor:pointer">@item.WayBillNumber</label></a>
+                                </div>
+                            </td>
+
+                            <td style="text-align:center; width:30px">@item.DeliveryOptionCode</td>
+                            <td style="text-align:center; width:50px">
+                                @{
+                                    if (item.SkidQuantity > 0)
+                                    {
+                                        @item.SkidQuantity;<span> (SKD);</span>
                                     }
-                                </td>
-                                <td title="@item.ConsigneeCustomerName">
-                                    @{
-                                        if (item.ConsigneeCustomerName.Length > 15)
-                                        {
-                                            @item.ConsigneeCustomerName.Substring(0, 12);
-                                        }
-                                        else
-                                        {
-                                            @item.ConsigneeCustomerName;
-                                        }
+
+                                    if (item.UnitQuantity > 0)
+                                    {
+                                        <span>
+                                            @item.UnitQuantity (@item.UnitTypeName)
+                                        </span>
                                     }
-                                </td>
-                                <td>@item.OrderStatus</td>
-                            </tr>
+                                }
+                                
+                            </td>
+                            <td  style="width:80px" title="@item.ShipperCustomerName">
+                                @{
+                                    if (item.ShipperCustomerName.Length > 12)
+                                    {
+                                        @item.ShipperCustomerName.Substring(0, 12);
+                                    }
+                                    else
+                                    {
+                                        @item.ShipperCustomerName;
+                                    }
+                                }
+                            </td>
+                            <td title="@item.ConsigneeCustomerName">
+                                @{
+                                    if (item.ConsigneeCustomerName.Length > 12)
+                                    {
+                                        @item.ConsigneeCustomerName.Substring(0, 12);
+                                    }
+                                    else
+                                    {
+                                        @item.ConsigneeCustomerName;
+                                    }
+                                }
+                            </td>
+                            <td><span title="S: Single Order; R: Return Order">@item.OrderTypeFlag</span></td>
+                            <td>@item.OrderStatus</td>
+                        </tr>
                         }
                     </tbody>
                 </table>

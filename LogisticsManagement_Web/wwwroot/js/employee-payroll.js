@@ -20,6 +20,15 @@ $(document).ready(function () {
 
 var wayBillNumberArray = [];
 
+$('#btnCloseModal').on('click', function () {
+    $('#changeDriver').modal('hide');
+    $('#changeOrderShare').modal('hide');
+    $('#changeAddService').modal('hide');
+});
+
+
+
+
 $('#frmPayrollGenerationForm').on('keyup keypress', function (e) {
     var keyCode = e.keyCode || e.which;
     if (keyCode === 13) {
@@ -105,7 +114,8 @@ $('#btnChangeOrderShare').unbind().on('click', function () {
     }
 
     var orderId = wayBillNumberArray[0];
-    
+
+    $('#changeOrderShare').modal('show');
    
 
 });
