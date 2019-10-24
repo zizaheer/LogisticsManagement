@@ -18,6 +18,7 @@ $(document).ready(function () {
     });
 });
 
+var wayBillNumberArray = [];
 
 $('#frmPayrollGenerationForm').on('keyup keypress', function (e) {
     var keyCode = e.keyCode || e.which;
@@ -92,8 +93,63 @@ $('#btnLoadDelivery').unbind().on('click', function () {
 
 });
 
+$('#btnChangeOrderShare').unbind().on('click', function () {
+
+    if (wayBillNumberArray.length > 1) {
+        bootbox.alert('Please select only one order to modify.');
+        return;
+    }
+    if (wayBillNumberArray.length < 1) {
+        bootbox.alert('Please select an order to modify.');
+        return;
+    }
+
+    var orderId = wayBillNumberArray[0];
+    
+   
+
+});
 
 
+
+$('#delivery-list .chkSelectedOrder').on('change', function (event) {
+    event.preventDefault();
+
+    var wbNumber =
+    {
+        wbillNumber: $(this).data('waybillnumber')
+    };
+
+    var isChecked = $(this).is(':checked');
+
+    var index = wayBillNumberArray.findIndex(c => c.wbillNumber === wbNumber.wbillNumber);
+    if (index >= 0) {
+        wayBillNumberArray.splice(index, 1);
+    }
+
+    if (isChecked) {
+        wayBillNumberArray.push(wbNumber);
+    }
+
+});
+$('#delivery-list .chkCheckAllOrders').on('change', function (event) {
+    event.preventDefault();
+    var isChecked = $(this).is(':checked');
+    if (isChecked === true) {
+        $('.chkSelectedOrder').prop('checked', true);
+        var wbArrayString = $('#hfWaybillArray').val();
+        wayBillNumberArray = [];
+        var wbArray = wbArrayString.split(',');
+        $.each(wbArray, function (i, item) {
+            if (item !== '') {
+                wayBillNumberArray.push({ wbillNumber: parseInt(item) });
+            }
+        });
+    } else {
+        $('.chkSelectedOrder').prop('checked', false);
+        wayBillNumberArray = [];
+    }
+});
 
 function GetFormData() {
 
