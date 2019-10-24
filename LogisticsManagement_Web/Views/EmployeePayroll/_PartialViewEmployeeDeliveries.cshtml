@@ -46,7 +46,7 @@
             <th style="width:40px">FUEL</th>
             <th style="width:30px">ADD.</th>
             <th style="width:30px">NET</th>
-            <th style="width:55px">WAITING</th>
+            <th style="width:60px">WAIT TIME</th>
         </tr>
     </thead>
     <tbody>
@@ -79,7 +79,7 @@
 
                 </td>
                 <td>
-                    <input type="number" style="height:22px" class="form-control form-control-sm txtOrderCommPercent" value="@item.OrderCommissionPercent" />
+                    <input type="number" style="height:22px" class="form-control form-control-sm txtOrderCommPercent" maxlength="5" value="@item.OrderCommissionPercent" />
                 </td>
                 <td>
                     <label class="lblOrderCommissionAmount">@item.OrderCommissionAmnt</label>
