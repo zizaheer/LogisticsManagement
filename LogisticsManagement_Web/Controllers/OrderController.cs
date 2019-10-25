@@ -1183,6 +1183,23 @@ namespace LogisticsManagement_Web.Controllers
             }
         }
 
+        public JsonResult GetOrderShareByWayBillId(string id)
+        {
+            ValidateSession();
+
+            try
+            {
+                var orderPocos = _orderLogic.GetList().Where(c => c.WayBillNumber == id).FirstOrDefault();
+
+                return Json(JsonConvert.SerializeObject(orderPocos));
+            }
+            catch (Exception ex)
+            {
+                return Json("");
+            }
+        }
+
+
         public JsonResult GetOrderInfoByOrderId(string id)
         {
             ValidateSession();

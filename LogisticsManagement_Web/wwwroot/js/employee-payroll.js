@@ -113,8 +113,15 @@ $('#btnChangeOrderShare').unbind().on('click', function () {
         return;
     }
 
-    var orderId = wayBillNumberArray[0];
+    var orderId = wayBillNumberArray[0].wbillNumber;
+    var existingShare = GetSingleById('Order/GetOrderShareByWayBillId', orderId);
+    if (existingShare !== '') {
+        var existingOrder = JSON.parse(existingShare);
+        $('#txtCurrentShareAmount').val(existingOrder.OrderShareAmount);
+        $('#txtCurrentShareAmount').val(existingOrder.IsSharingOnPercent);
 
+    }
+    $('#txtShareOrderNo').val(orderId);
     $('#changeOrderShare').modal('show');
    
 
