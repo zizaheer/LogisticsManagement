@@ -103,7 +103,6 @@ $('#btnLoadDelivery').unbind().on('click', function () {
 });
 
 $('#btnChangeOrderShare').unbind().on('click', function () {
-
     if (wayBillNumberArray.length > 1) {
         bootbox.alert('Please select only one order to modify.');
         return;
@@ -117,15 +116,99 @@ $('#btnChangeOrderShare').unbind().on('click', function () {
     var existingShare = GetSingleById('Order/GetOrderShareByWayBillId', orderId);
     if (existingShare !== '') {
         var existingOrder = JSON.parse(existingShare);
-        $('#txtCurrentShareAmount').val(existingOrder.OrderShareAmount);
-        $('#txtCurrentShareAmount').val(existingOrder.IsSharingOnPercent);
 
+        if (existingOrder.OrderShareAmount > 0) {
+            $('#txtCurrentShareAmount').val(existingOrder.OrderShareAmount);
+            if (existingOrder.IsSharingOnPercent === true) {
+                $('.lblIsPerct').text('(%)');
+            } else {
+                $('.lblIsPerct').text('(Fixed)');
+            }
+            $('#txtShareOrderNo').val(orderId);
+            $('#changeOrderShare').modal('show');
+        }
+    } else {
+        bootbox.alert('This order doesnot have any agreed share rate.');
+        return;
     }
-    $('#txtShareOrderNo').val(orderId);
-    $('#changeOrderShare').modal('show');
-   
-
 });
+
+
+$('#btnChangeDriver').unbind().on('click', function () {
+    if (wayBillNumberArray.length > 1) {
+        bootbox.alert('Please select only one order to modify.');
+        return;
+    }
+    if (wayBillNumberArray.length < 1) {
+        bootbox.alert('Please select an order to modify.');
+        return;
+    }
+
+    var orderId = wayBillNumberArray[0].wbillNumber;
+    var existingDriver = GetSingleById('Order/GetOrderStatusByWaybillId', orderId);
+    if (existingDriver !== '') {
+        var existingOrderStatus = JSON.parse(existingDriver);
+
+        if (existingOrderStatus.DispatchedToEmployeeId > 0) {
+
+            var employeeList = GetList('Employee/GetEmployeeList');
+            if (employeeList !== '') {
+                var employeeParsed = JSON.parse(employeeList);
+                $.each(employeeParsed, function (i, item) {
+                   // $('#ddlEmployeeList').append('<option></option>').val(item.)
+                });
+
+            }
+
+
+
+            $('#txtCurrentShareAmount').val(existingOrderStatus.OrderShareAmount);
+            if (existingOrderStatus.IsSharingOnPercent === true) {
+                $('.lblIsPerct').text('(%)');
+            } else {
+                $('.lblIsPerct').text('(Fixed)');
+            }
+            $('#txtDriverOrderNo').val(orderId);
+            $('#changeDriver').modal('show');
+        }
+    } else {
+        bootbox.alert('This order doesnot have any assigned driver.');
+        return;
+    }
+});
+
+
+$('#btnModifyAdditionalServices').unbind().on('click', function () {
+    if (wayBillNumberArray.length > 1) {
+        bootbox.alert('Please select only one order to modify.');
+        return;
+    }
+    if (wayBillNumberArray.length < 1) {
+        bootbox.alert('Please select an order to modify.');
+        return;
+    }
+
+    var orderId = wayBillNumberArray[0].wbillNumber;
+    //var existingDriver = GetSingleById('Order/GetOrderShareByWayBillId', orderId);
+    //if (existingDriver !== '') {
+    //    var existingOrderStatus = JSON.parse(existingDriver);
+
+    //    if (existingOrderStatus.DispatchedToEmployeeId > 0) {
+    //        $('#txtCurrentShareAmount').val(existingOrderStatus.OrderShareAmount);
+    //        if (existingOrderStatus.IsSharingOnPercent === true) {
+    //            $('.lblIsPerct').text('(%)');
+    //        } else {
+    //            $('.lblIsPerct').text('(Fixed)');
+    //        }
+    //        $('#txtShareOrderNo').val(orderId);
+    //        $('#changeOrderShare').modal('show');
+    //    }
+    //} else {
+    //    bootbox.alert('This order doesnot have any agreed share rate.');
+    //    return;
+    //}
+});
+
 
 
 

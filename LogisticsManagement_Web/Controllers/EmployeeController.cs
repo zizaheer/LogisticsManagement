@@ -56,6 +56,19 @@ namespace LogisticsManagement_Web.Controllers
             return PartialView("_PartialViewEmployeeData", GetEmployeeData());
         }
 
+        [HttpGet]
+        public IActionResult GetEmployeeList()
+        {
+            ValidateSession();
+            var employeeList = _employeeLogic.GetList();
+            if (employeeList.Count > 0) {
+
+                return Json(JsonConvert.SerializeObject(employeeList));
+            }
+            return Json("");
+        }
+
+
         public ViewModel_Employee GetEmployeeData()
         {
             ViewModel_Employee employeeViewModel = new ViewModel_Employee();

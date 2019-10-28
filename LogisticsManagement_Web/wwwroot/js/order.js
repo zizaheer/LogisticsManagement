@@ -1578,7 +1578,7 @@ function FillOrderDetails(orderRelatedData) {
             }
         }
 
-        $('#txtSchedulePickupDate').val(ConvertDatetimeToUSDatetime(orderRelatedData.ScheduledPickupDate));
+        $('#txtSchedulePickupDate').val(ConvertDateToUSFormat(orderRelatedData.ScheduledPickupDate));
 
         $('#ddlDeliveryOptionId').val(orderRelatedData.DeliveryOptionId);
         $('#ddlVehicleTypeId').val(orderRelatedData.VehicleTypeId);

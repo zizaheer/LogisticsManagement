@@ -1274,6 +1274,24 @@ namespace LogisticsManagement_Web.Controllers
             }
         }
 
+        public JsonResult GetOrderStatusByWaybillId(string id)
+        {
+            ValidateSession();
+
+            try
+            {
+                var orderId = _orderLogic.GetList().Where(c => c.WayBillNumber == id).FirstOrDefault().Id;
+                var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == Convert.ToInt32(orderId)).FirstOrDefault();
+
+                return Json(JsonConvert.SerializeObject(orderStatus));
+            }
+            catch (Exception ex)
+            {
+                return Json("");
+            }
+        }
+
+
         [HttpPost]
         public JsonResult GetCustomerReferenceNumberCount([FromBody]dynamic customerRefData)
         {

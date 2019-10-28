@@ -171,12 +171,13 @@
                                 Order# <input type="text" id="txtShareOrderNo" class="form-control form-control-sm" readonly/>
                             </div>
                             <div class="form-group col-sm-6">
-                                Current share: <input type="text" id="txtCurrentShareAmount" class="form-control form-control-sm" readonly />
+                                Existing: <label class="lblIsPerct"></label>
+                                <input type="text" id="txtCurrentShareAmount" class="form-control form-control-sm" readonly />
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-12">
-                                Modified share: <input type="text" id="txtModifiedShareAmount" class="form-control form-control-sm" />
+                                Modified: <label class="lblIsPerct"></label> <input type="text" id="txtModifiedShareAmount" class="form-control form-control-sm" />
                             </div>
                         </div>
                         <hr />
@@ -203,22 +204,18 @@
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="form-group col-sm-3">
-
+                            <div class="form-group col-sm-6">
+                                Order# <input type="text" id="txtDriverOrderNo" class="form-control form-control-sm" readonly />
+                            </div>
+                            <div class="form-group col-sm-6">
+                                Existing driver: 
+                                <select class="form-control form-control-sm ddlEmployeeList" id="ddlExistingDriver" disabled></select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-12">
-
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-sm-2">
-
-                            </div>
-                            <div class="form-group col-sm-4">
-
+                                Modified: 
+                                <select class="form-control form-control-sm ddlEmployeeList" id="ddlModifiedDriver"></select>
                             </div>
                         </div>
                         <hr />
