@@ -1418,17 +1418,29 @@ namespace LogisticsManagement_Web.Controllers
                 }
 
                 decimal orderTotalTax = 0; // for misc. orders
+                decimal additionalServiceCostBeforeTax = 0;
                 waybillPrintViewModel.AdditionalServicesComments = "";
                 waybillPrintViewModel.AdditionalServiceCost = "0.00";
                 if (order.TotalAdditionalServiceCost > 0)
                 {
                     waybillPrintViewModel.AdditionalServiceCost = Convert.ToDecimal(order.TotalAdditionalServiceCost).ToString("0.00");
+                    waybillPrintViewModel.AdditionalServiceCostBeforeTax = "0.00";
 
                     var addServices = orderAdditionalServices.Where(c => c.OrderId == order.Id).ToList();
+                    //foreach (var addservice in addServices)
+                    //{
+                    //    if (addservice.IsTaxAppliedOnAddionalService == true && addservice.TaxAmountOnAdditionalService != null && addservice.TaxAmountOnAdditionalService > 0)
+                    //    {
+                    //        waybillPrintViewModel.AdditionalServiceCostBeforeTax = ((decimal)(Convert.ToDecimal(order.TotalAdditionalServiceCost) * addservice.TaxAmountOnAdditionalService / 100)).ToString("0.00");
+
+                    //    }
+                    //}
+
                     foreach (var addservice in addServices)
                     {
                         var serviceCode = additionalServices.Where(c => c.Id == addservice.AdditionalServiceId).FirstOrDefault().ServiceCode;
                         var serviceCost = addservice.AdditionalServiceFee;
+                        additionalServiceCostBeforeTax += serviceCost;
 
                         if (isMiscellaneous == true)
                         {
@@ -1448,6 +1460,8 @@ namespace LogisticsManagement_Web.Controllers
                             waybillPrintViewModel.AdditionalServicesComments = waybillPrintViewModel.AdditionalServicesComments + (serviceCode + ": " + addservice.AdditionalServiceFee.ToString("0.00") + "; ");
                         }
                     }
+
+                    waybillPrintViewModel.AdditionalServiceCostBeforeTax = additionalServiceCostBeforeTax.ToString("0.00");
 
                 }
 
@@ -1514,7 +1528,7 @@ namespace LogisticsManagement_Web.Controllers
                             waybillPrintViewModel.OrderTaxAmountOnBasePrice = Convert.ToDecimal(taxAmnt).ToString("0.00");
                         }
                     }
-                    waybillPrintViewModel.NetTotalOrderCost = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString("0.00");
+                    waybillPrintViewModel.NetTotalOrderCost = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCostBeforeTax)).ToString("0.00");
                 }
 
                 waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == order.ShipperCustomerId).FirstOrDefault().CustomerName;

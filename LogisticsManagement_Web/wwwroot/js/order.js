@@ -1628,8 +1628,16 @@ function FillOrderDetails(orderRelatedData) {
         } else {
             $('#txtBaseOrderSurcharge').val('');
         }
+
+        
+        var fuelSurChargeAmnt = $('#txtBaseOrderSurcharge').val() > 0 ? parseFloat($('#txtBaseOrderSurcharge').val()) : 0;
+
         if (orderRelatedData.ApplicableGstPercent > 0 && orderRelatedData.OrderBasicCost > 0) {
-            $('#txtBaseOrderGST').val((orderRelatedData.ApplicableGstPercent * orderRelatedData.OrderBasicCost / 100).toFixed(2));
+            var discountAmnt = 0;
+            if (orderRelatedData.DiscountPercentOnOrderCost > 0) {
+                discountAmnt = orderRelatedData.DiscountPercentOnOrderCost * (orderRelatedData.OrderBasicCost + fuelSurChargeAmnt) / 100;
+            }
+            $('#txtBaseOrderGST').val((orderRelatedData.ApplicableGstPercent * (orderRelatedData.OrderBasicCost + fuelSurChargeAmnt - discountAmnt) / 100).toFixed(2));
         } else {
             $('#txtBaseOrderGST').val('');
         }
@@ -1645,22 +1653,30 @@ function FillOrderDetails(orderRelatedData) {
         } else {
             $('#txtOverriddenOrderSurcharge').val('');
         }
+
+
+        var fuelSurChargeOverriddenAmnt = $('#txtOverriddenOrderSurcharge').val() > 0 ? parseFloat($('#txtOverriddenOrderSurcharge').val()) : 0;
+
         if (orderRelatedData.ApplicableGstPercent > 0 && orderRelatedData.BasicCostOverriden > 0) {
-            $('#txtOverriddenOrderGST').val((orderRelatedData.ApplicableGstPercent * orderRelatedData.BasicCostOverriden / 100).toFixed(2));
+            var discountAmnt = 0;
+            if (orderRelatedData.DiscountPercentOnOrderCost > 0) {
+                discountAmnt = orderRelatedData.DiscountPercentOnOrderCost * (orderRelatedData.BasicCostOverriden + fuelSurChargeOverriddenAmnt) / 100;
+            }
+            $('#txtOverriddenOrderGST').val((orderRelatedData.ApplicableGstPercent * (orderRelatedData.BasicCostOverriden + fuelSurChargeOverriddenAmnt - discountAmnt) / 100).toFixed(2));
         } else {
             $('#txtOverriddenOrderGST').val('');
         }
 
 
-
         if (orderRelatedData.DiscountPercentOnOrderCost > 0 && orderRelatedData.BasicCostOverriden > 0) {
-            $('#lblGrandDiscountAmount').text((orderRelatedData.DiscountPercentOnOrderCost * orderRelatedData.BasicCostOverriden / 100).toFixed(2));
+            $('#lblGrandDiscountAmount').text((orderRelatedData.DiscountPercentOnOrderCost * (orderRelatedData.BasicCostOverriden + fuelSurChargeOverriddenAmnt) / 100).toFixed(2));
         } else if (orderRelatedData.DiscountPercentOnOrderCost > 0 && orderRelatedData.OrderBasicCost > 0) {
-            $('#lblGrandDiscountAmount').text((orderRelatedData.DiscountPercentOnOrderCost * orderRelatedData.OrderBasicCost / 100).toFixed(2));
+            $('#lblGrandDiscountAmount').text((orderRelatedData.DiscountPercentOnOrderCost * (orderRelatedData.OrderBasicCost + fuelSurChargeAmnt) / 100).toFixed(2));
         }
         else {
             $('#lblGrandDiscountAmount').text('0.00');
         }
+        
 
 
         if (orderRelatedData.BasicCostOverriden > 0) {
@@ -1855,6 +1871,7 @@ function ClearForm() {
     billerCustomerId = 0;
     shipperCustomerId = 0;
     consigneeCustomerId = 0;
+    selectedAdditionalServiceArray = [];
 
     $('#txtBillToCustomerName').val('');
 
