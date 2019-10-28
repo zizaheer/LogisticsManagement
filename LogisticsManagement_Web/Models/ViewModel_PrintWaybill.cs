@@ -33,6 +33,7 @@ namespace LogisticsManagement_Web.Models
         public string OrderTaxAmountOnBaseFuelAdditionalPrice { get; set; }
         //public string TotalOrderCost { get; set; }
         //public string TotalOrderCostWithoutTaxAndFuel { get; set; }
+        public string AdditionalServiceCostBeforeTax { get; set; }
         public string AdditionalServiceCost { get; set; }
         public string NetTotalOrderCost { get; set; }
 
