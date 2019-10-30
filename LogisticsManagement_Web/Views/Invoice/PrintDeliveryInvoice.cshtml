@@ -186,11 +186,16 @@
         </div>
 
         <div style="min-height: @minimumHeight">
+            @{
+                var tableHeight = 50;
+                var maxHeight = 450;
+            }
             @foreach (var bill in wayBills)
             {
+
                 <table style="width:898px; margin-left:4px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
                     <tbody>
-                        <tr style="font-size:11px; font-family: 'Courier New'">
+                        <tr style="font-size:11px; font-family: 'Courier New'; height:50px">
                             <td class="tdStyle" style="width:10px">
                                 <span>@{ serial = serial + 1; @serial}</span>
                             </td>
@@ -249,7 +254,8 @@
 
                         @if (!string.IsNullOrEmpty(bill.CargoCtlNo) || !string.IsNullOrEmpty(bill.AwbContainerNo) || !string.IsNullOrEmpty(bill.PickupRefNo))
                         {
-                            <tr style="font-size:11px; font-family: 'Courier New'">
+                            tableHeight += 25;
+                            <tr style="font-size:11px; font-family: 'Courier New'; height:25px">
                                 <td class="tdStyle" colspan="3"></td>
                                 <td class="tdStyle">
                                     @{
@@ -279,7 +285,8 @@
                         }
                         @if (!string.IsNullOrEmpty(bill.AdditionalServicesComments))
                         {
-                            <tr style="font-size:11px; font-family: 'Courier New'">
+                            tableHeight += 25;
+                            <tr style="font-size:11px; font-family: 'Courier New'; height:25px">
                                 <td class="tdStyle" colspan="9">
                                     @{
                                         if (!string.IsNullOrEmpty(bill.AdditionalServicesComments))
@@ -292,7 +299,8 @@
                         }
                         @if (bill.InvoiceComments.Length > 0)
                         {
-                            <tr style="font-size:11px; font-family: 'Courier New'">
+                            tableHeight += 25;
+                            <tr style="font-size:11px; font-family: 'Courier New'; height:25px">
                                 <td class="tdStyle" colspan="9">
                                     <span>@bill.InvoiceComments</span>
                                 </td>
@@ -311,7 +319,7 @@
                     </tbody>
                 </table>
 
-                if (serial == 7 || serial == 14)
+                if (tableHeight > maxHeight)
                 {
                     <p class="pagebreak"></p>
                     <table style="width:900px; border:0px solid black" border="0">
@@ -442,6 +450,8 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    tableHeight = 50;
                 }
             }
         </div>
@@ -452,16 +462,6 @@
                 accumulatedTotalDue = accumulatedCurrentTotal - accumulatedSavings;
             }
         </div>
-
-
-        @*<tr>
-                <td colspan="5" height="785" style="vertical-align:top">
-                    <table style="width:900px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
-                        <tbody></tbody>
-                    </table>
-                </td>
-            </tr>*@
-
 
 
         <table style="width:900px;border:0px solid black" border="0">
