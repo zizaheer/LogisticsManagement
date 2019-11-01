@@ -88,6 +88,8 @@ namespace LogisticsManagement_Web.Controllers
         {
             ValidateSession();
             var result = "";
+            string newWaybillNumber = "";
+            var waybillPrefix = "";
 
             try
             {
@@ -97,6 +99,10 @@ namespace LogisticsManagement_Web.Controllers
                     {
                         Lms_OrderPoco orderPoco = JsonConvert.DeserializeObject<Lms_OrderPoco>(JsonConvert.SerializeObject(orderData[0]));
                         _addressLogic = new Lms_AddressLogic(_cache, new EntityFrameworkGenericRepository<Lms_AddressPoco>(_dbContext));
+
+                        _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+                        var configInfo = _configurationLogic.GetSingleById(1);
+
                         var addressList = _addressLogic.GetList();
 
                         Lms_AddressPoco newAddress = new Lms_AddressPoco();
@@ -127,22 +133,29 @@ namespace LogisticsManagement_Web.Controllers
                             orderPoco.IsSharingOnPercent = null;
                         }
 
-                        var newWbNumber = _orderLogic.GetList().Max(c => c.WayBillNumber);
-                        if (!string.IsNullOrEmpty(newWbNumber) && Convert.ToInt32(newWbNumber) > 0)
-                        {
-                            newWbNumber = (Convert.ToInt32(newWbNumber) + 1).ToString();
+                        newWaybillNumber = orderPoco.WayBillNumber;
 
-                        }
-                        else
+                        if (string.IsNullOrEmpty(newWaybillNumber) || Convert.ToInt32(newWaybillNumber) < 1)
                         {
-                            newWbNumber = _configurationLogic.GetSingleById(1).DeliveryWBNoStartFrom;
-                            if (string.IsNullOrEmpty(newWbNumber) && Convert.ToInt32(newWbNumber) < 1)
+                            var maxWaybillNumber = _orderLogic.GetList().Select(c => c.WayBillNumber).OrderByDescending(c => c).FirstOrDefault();
+                            if (maxWaybillNumber != null)
                             {
-                                newWbNumber = "1";
+                                newWaybillNumber = Convert.ToString(Convert.ToInt32(maxWaybillNumber) + 1);
                             }
+                            else
+                            {
+                                newWaybillNumber = configInfo.DeliveryWBNoStartFrom;
+                                if (string.IsNullOrEmpty(newWaybillNumber))
+                                {
+                                    newWaybillNumber = "1";
+                                }
+                            }
+
+                            waybillPrefix = configInfo.WayBillPrefix;
+                            newWaybillNumber = waybillPrefix + newWaybillNumber;
                         }
 
-                        orderPoco.WayBillNumber = newWbNumber;
+                        orderPoco.WayBillNumber = newWaybillNumber;
 
                         newAddress = new Lms_AddressPoco();
                         newAddress.AddressLine = customerAddressline.Trim().ToUpper();
