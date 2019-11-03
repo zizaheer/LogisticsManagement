@@ -33,8 +33,15 @@
     @foreach (var item in Model.viewModelInvoiceBillers)
     {
         count = count + 1;
+        var pageMaxHeight = 1200;
+        var headerHeight = 330;
+        var footerHeight = 100;
+        var bodyDataHeight = 125;
+        var bodyMaxHeight = pageMaxHeight - headerHeight - footerHeight - bodyDataHeight;
 
-        <table style="width:900px; border:0px solid black" border="0">
+
+        <table style="width:900px; border:0px solid black; height:330px" border="0">
+            @{ headerHeight = 330;}
             <tbody>
                 <tr>
                     <td style="width: 250px; vertical-align: top; text-align:right">
@@ -184,17 +191,18 @@
 
         <div style="min-height: @minimumHeight">
             @{
-                var tableHeight = 0;
-                var maxHeight = 640;
+                var bodyHeight = 0;
                 var wbCount = 0;
             }
             @foreach (var bill in wayBills)
             {
                 wbCount += 1;
-                if (tableHeight > maxHeight)
+                if (bodyHeight > bodyMaxHeight)
                 {
                     <p class="pagebreak"></p>
-                    <table style="width:900px; border:0px solid black" border="0">
+                    bodyHeight = 0;
+
+                    <table style="width:900px; border:0px solid black; height:330px" border="0">
                         <tbody>
                             <tr>
                                 <td style="width: 250px; vertical-align: top; text-align:right">
@@ -322,11 +330,11 @@
                             </tr>
                         </tbody>
                     </table>
-                    tableHeight = 0;
+
                 }
                 <table style="width:898px; margin-left:4px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
                     <tbody>
-                        @{ tableHeight += 50;}
+                        @{ bodyHeight += 50;}
                         <tr style="font-size:11px; font-family: 'Courier New'; height:50px">
                             <td class="tdStyle" style="width:10px">
                                 <span>@{ serial = serial + 1; @serial}</span>
@@ -386,7 +394,7 @@
 
                         @if (!string.IsNullOrEmpty(bill.CargoCtlNo) || !string.IsNullOrEmpty(bill.AwbContainerNo) || !string.IsNullOrEmpty(bill.PickupRefNo))
                         {
-                            tableHeight += 25;
+                            bodyHeight += 25;
                             <tr style="font-size:11px; font-family: 'Courier New'; height:25px">
                                 <td class="tdStyle" colspan="3"></td>
                                 <td class="tdStyle">
@@ -417,7 +425,7 @@
                         }
                         @if (!string.IsNullOrEmpty(bill.AdditionalServicesComments))
                         {
-                            tableHeight += 25;
+                            bodyHeight += 25;
                             <tr style="font-size:11px; font-family: 'Courier New'; height:25px">
                                 <td class="tdStyle" colspan="9">
                                     @{
@@ -431,7 +439,7 @@
                         }
                         @if (bill.InvoiceComments.Length > 0)
                         {
-                            tableHeight += 25;
+                            bodyHeight += 25;
                             <tr style="font-size:11px; font-family: 'Courier New'; height:25px">
                                 <td class="tdStyle" colspan="9">
                                     <span>@bill.InvoiceComments</span>
@@ -454,7 +462,8 @@
 
                 if (wbCount == wayBills.Count)
                 {
-                    minimumHeight = (maxHeight - tableHeight).ToString() + "px";
+                    var pageHeight = pageMaxHeight - headerHeight - bodyHeight - footerHeight;
+                    minimumHeight = (pageHeight).ToString() + "px";
                     <div style="min-height: @minimumHeight">
                     </div>
                 }
@@ -469,7 +478,7 @@
         </div>
 
 
-        <table style="width:900px;border:0px solid black" border="0">
+        <table style="width:900px; border:0px solid black; height:100px" border="0">
             <tbody>
                 <tr style="font-family:Arial; font-weight:bold; font-size:9px;">
                     <td class="tdStyle" colspan="4">
@@ -478,7 +487,7 @@
                 </tr>
                 <tr style="font-family:Arial; font-weight:bold; font-size:.8em;">
                     <td class="tdStyle" colspan="4">
-                        <table style="width: 100%;border-collapse:collapse; border-left:none;border-bottom:none; border-right:none;text-transform:uppercase" border="1">
+                        <table style="width: 100%; border-collapse:collapse; border-left:none; border-bottom:none; border-right:none; text-transform:uppercase" border="1">
                             <tbody>
                                 <tr>
                                     <td class="tdStyle" style="text-align:center">
@@ -530,6 +539,9 @@
                 </tr>
             </tbody>
         </table>
+
+
+
 
         if (count < Model.viewModelInvoiceBillers.Count)
         {
