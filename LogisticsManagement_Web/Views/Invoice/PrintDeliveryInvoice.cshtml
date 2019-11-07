@@ -33,15 +33,12 @@
     @foreach (var item in Model.viewModelInvoiceBillers)
     {
         count = count + 1;
-        var pageMaxHeight = 1200;
+        var pageMaxHeight = 1150;
         var headerHeight = 330;
         var footerHeight = 100;
-        var bodyDataHeight = 125;
-        var bodyMaxHeight = pageMaxHeight - headerHeight - footerHeight - bodyDataHeight;
-
+        var maxBodyHeight = pageMaxHeight - headerHeight - footerHeight;
 
         <table style="width:900px; border:0px solid black; height:330px" border="0">
-            @{ headerHeight = 330;}
             <tbody>
                 <tr>
                     <td style="width: 250px; vertical-align: top; text-align:right">
@@ -197,11 +194,10 @@
             @foreach (var bill in wayBills)
             {
                 wbCount += 1;
-                if (bodyHeight > bodyMaxHeight)
+                if (bodyHeight > maxBodyHeight)
                 {
                     <p class="pagebreak"></p>
                     bodyHeight = 0;
-
                     <table style="width:900px; border:0px solid black; height:330px" border="0">
                         <tbody>
                             <tr>
@@ -462,10 +458,13 @@
 
                 if (wbCount == wayBills.Count)
                 {
-                    var pageHeight = pageMaxHeight - headerHeight - bodyHeight - footerHeight;
-                    minimumHeight = (pageHeight).ToString() + "px";
-                    <div style="min-height: @minimumHeight">
-                    </div>
+                    if (bodyHeight < maxBodyHeight)
+                    {
+                        var minBodyHeight = maxBodyHeight - bodyHeight;
+                        minimumHeight = (minBodyHeight).ToString() + "px";
+                        <div style="min-height: @minimumHeight">
+                        </div>
+                    }
                 }
             }
         </div>

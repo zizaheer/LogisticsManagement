@@ -33,11 +33,17 @@
     @foreach (var item in Model.viewModelInvoiceBillers)
     {
         count = count + 1;
+        var pageMaxHeight = 1200;
+        var headerHeight = 330;
+        var footerHeight = 100;
+        var bodyDataHeight = 125;
+        var bodyMaxHeight = pageMaxHeight - headerHeight - footerHeight - bodyDataHeight;
 
-        <table style="height: 36px; border:0px solid black" width="900" border="0">
+        <table style="width:900px; border:0px solid black; height:330px" border="0">
+            @{ headerHeight = 330;}
             <tbody>
                 <tr>
-                    <td style="width: 30%; vertical-align: top; text-align:right">
+                    <td style="width: 250px; vertical-align: top; text-align:right">
                         <img src="~/images/clients/mfi_logo.jpg" style="width:90px; height:70px" />
                     </td>
                     <td style="text-align: center; vertical-align: top;" colspan="3">
@@ -53,10 +59,7 @@
                                 </td>
                             </tr>
                         </table>
-
-
                     </td>
-
                 </tr>
                 <tr>
                     <td style="vertical-align:middle" colspan="4">
@@ -70,7 +73,7 @@
                     </td>
                 </tr>
                 <tr style="font-family: Arial">
-                    <td style="width: 214px; vertical-align:top" colspan="2"><b>To</b></td>
+                    <td style="width: 180px; vertical-align:top" colspan="2"><b>TO</b></td>
                     <td style="width: 214px; vertical-align:top">
                         <span>
                             A/C #:
@@ -80,7 +83,7 @@
                             }
                         </span>
                     </td>
-                    <td style="width: 215px; vertical-align:top">
+                    <td style="width: 215px; vertical-align:top;">
                         <b>
                             <span style="margin-right:20px !important">
                                 INVOICE #:
@@ -95,7 +98,7 @@
                     </td>
                 </tr>
                 <tr style="font-family: Arial">
-                    <td style="width: 180px; vertical-align:top" colspan="2">
+                    <td style="width: 180px; vertical-align:top;" colspan="2">
                         <span style="font-size:1.2em; font-weight:bold">@item.BillerCustomerName.ToUpper()</span><br />
                         <span>@item.BillerCustomerAddressLine.ToUpper()</span><br />
                         <span>@item.BillerCustomerCityLine.ToUpper()</span><br />
@@ -105,7 +108,7 @@
                     <td style="width: 215px; vertical-align: top;">
                         <br />
                         <b>
-                            <span style="margin-right:50px !important">
+                            <span style="margin-right:55px !important">
                                 DATE:
                             </span>
                             <span>
@@ -119,196 +122,361 @@
                         <b><span style="margin-right:55px !important">TERM: </span><span>@item.Term</span></b>
                     </td>
                 </tr>
-                <tr style="font-family: Arial">
-                    <td style="width: 214px; height:35px">
-                        ATT: ACCOUNT PAYABLE
+                <tr>
+                    <td style="width: 180px; height:35px; font-family: Arial" colspan="2">
+                        ATTN: ACCOUNT PAYABLE
                     </td>
-                    <td style="width: 214px;"></td>
+
                     <td style="width: 214px;"></td>
                     <td style="width: 215px;"></td>
                 </tr>
                 <tr>
-                    <td colspan="4" height="845" style="vertical-align:top">
-                        <table style="width:100%; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
-                            <tbody>
-                                <tr style="background-color: #ccc; font-family:Arial; font-weight:bold; font-size:.8em; border-top:8px">
-                                    <td class="tdStyle">
-                                        <span></span>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <span>Date</span><br />
-                                        <span>Service</span>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <span>Waybill#</span><br />
-                                        <span>Cust ref#</span><br />
-                                        <span>Ordered by</span>
-                                    </td>
-                                    <td class="tdStyle"><span>Location</span></td>
-
-                                    <td class="tdStyle">
-                                        <span>Unit/Qty</span><br />
-                                        <span>Weight</span>
-                                    </td>
-                                    <td class="tdStyle">Rate</td>
-                                    <td class="tdStyle">Net</td>
-                                </tr>
-                                @{
-                                    var wayBills = new List<ViewModel_PrintWaybill>();
-
-                                    wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId).ToList();
-
-                                    var serial = 0;
-                                    var accumulatedBasicChg = 0.00;
-
-                                    var accumulatedTaxAmnt = 0.00;
-                                    var accumulatedCurrentTotal = 0.00;
-                                    var accumulatedSavings = 0.00;
-                                    var accumulatedTotalDue = 0.00;
-                                }
-
-
-                                @foreach (var bill in wayBills)
-                                {
-                                    <tr style="font-size:11px; font-family: 'Courier New'">
-                                        <td class="tdStyle">
-                                            <span>@{ serial = serial + 1; @serial}</span>
-                                        </td>
-                                        <td class="tdStyle">
-                                            <span>@bill.WayBillDate</span><br />
-                                            @*<span>@bill.DeliveryOptionShortCode</span>*@
-                                        </td>
-                                        <td class="tdStyle">
-                                            <span>@bill.WaybillNumber</span><br />
-                                            <span>@bill.CustomerRefNo</span><br />
-                                            <span>@bill.OrderedByName</span>
-
-                                        </td>
-                                        <td class="tdStyle">
-                                            <span>@bill.ShipperCustomerName</span><br />
-                                            <span>@bill.ShipperCustomerAddressLine1</span><br />
-                                            <span>@bill.ShipperCustomerAddressLine2</span>
-                                        </td>
-
-                                        <td class="tdStyle">
-                                            <span>@bill.UnitQuantity @bill.UnitTypeShortCode</span>
-                                            <span>
-                                                @{
-                                                    var skidStr = "";
-                                                    if (bill.SkidQuantity > 0)
-                                                    {
-                                                        <br />
-                                                        skidStr = "SKD";
-                                                    }
-                                                }
-                                                @bill.SkidQuantity @skidStr
-                                            </span><br />
-
-                                            <span>@bill.WeightTotal @bill.WeightScaleShortCode</span>
-                                        </td>
-                                        <td class="tdStyle">@bill.OrderBasePrice</td>
-
-                                        <td class="tdStyle">@bill.NetTotalOrderCost</td>
-                                    </tr>
-
-                                    if (bill.AdditionalServicesComments.Length > 0)
-                                    {
-                                        <tr style="font-size:11px; font-family: 'Courier New'">
-                                            <td class="tdStyle" colspan="7">
-                                                <span>@bill.AdditionalServicesComments</span>
-                                            </td>
-                                        </tr>
-                                    }
-
-                                    if (!string.IsNullOrEmpty(bill.CargoCtlNo) || !string.IsNullOrEmpty(bill.AwbContainerNo))
-                                    {
-                                        <tr style="font-size:11px; font-family: 'Courier New'">
-                                            <td class="tdStyle" colspan="3"></td>
-                                            <td class="tdStyle">
-                                                @{
-                                                    if (!string.IsNullOrEmpty(bill.CargoCtlNo))
-                                                    {
-                                                        <span>CC: @bill.CargoCtlNo &nbsp;&nbsp; </span>
-                                                    }
-                                                }
-                                            </td>
-                                            <td class="tdStyle" colspan="3">
-                                                @{
-                                                    if (!string.IsNullOrEmpty(bill.AwbContainerNo))
-                                                    {
-                                                        <span>AWB/CTN: @bill.AwbContainerNo &nbsp;&nbsp; </span>
-                                                    }
-                                                }
-                                            </td>
-                                        </tr>
-                                    }
-                                    if (!string.IsNullOrEmpty(bill.DeliveredBy) || !string.IsNullOrEmpty(bill.BolReferenceNumber) || !string.IsNullOrEmpty(bill.ProReferenceNumber) || !string.IsNullOrEmpty(bill.ShipperName))
-                                    {
-                                        <tr style="font-size:11px; font-family: 'Courier New'">
-                                            <td class="tdStyle" colspan="3">
-                                                @{
-                                                    if (!string.IsNullOrEmpty(bill.DeliveredBy))
-                                                    {
-                                                        <span>@bill.DeliveredBy &nbsp;&nbsp; </span>
-                                                    }
-                                                }
-                                            </td>
-                                            <td class="tdStyle">
-                                                @{
-                                                    if (!string.IsNullOrEmpty(bill.BolReferenceNumber))
-                                                    {
-                                                        <span>@bill.BolReferenceNumber &nbsp;&nbsp;&nbsp;&nbsp; </span>
-                                                    }
-
-                                                    if (!string.IsNullOrEmpty(bill.ProReferenceNumber))
-                                                    {
-                                                        <span>@bill.ProReferenceNumber  &nbsp;&nbsp; </span>
-                                                    }
-                                                }
-                                            </td>
-
-                                            <td class="tdStyle" colspan="3">
-                                                @{
-                                                    if (!string.IsNullOrEmpty(bill.ShipperName))
-                                                    {
-                                                        <span>@bill.ShipperName  </span>
-                                                        if (!string.IsNullOrEmpty(bill.ShipperName))
-                                                        {
-                                                            <span>@bill.ShipperAddress</span>
-                                                        }
-                                                    }
-                                                }
-                                            </td>
-
-                                        </tr>
-                                    }
-                                    if (bill.InvoiceComments.Length > 0)
-                                    {
-                                        <tr style="font-size:11px; font-family: 'Courier New'">
-                                            <td class="tdStyle" colspan="7">
-                                                <span>@bill.InvoiceComments</span>
-                                            </td>
-                                        </tr>
-                                    }
-
-                                    accumulatedBasicChg += Convert.ToDouble(bill.OrderBasePrice);
-
-                                    accumulatedTaxAmnt += Convert.ToDouble(bill.OrderTaxAmountOnBasePrice);
-
-                                    accumulatedSavings += Convert.ToDouble(bill.OrderDiscountAmount);
-                                }
-                                @{
-
-                                    accumulatedCurrentTotal = accumulatedBasicChg - accumulatedSavings; ;
-                                    accumulatedTotalDue = accumulatedCurrentTotal + accumulatedTaxAmnt;
-                                }
-
-
-                            </tbody>
+                    <td colspan="5">
+                        <table style="width:900px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
+                            <tr style="background-color: #cccccc; font-family:Arial; font-weight:bold; font-size:.8em; border-top:8px">
+                                <td class="tdStyle" style="width:10px">
+                                    <span></span>
+                                </td>
+                                <td class="tdStyle" style="width:75px">
+                                    <span>Date</span><br />
+                                    <span>Service</span>
+                                </td>
+                                <td class="tdStyle" style="width:110px">
+                                    <span>Waybill#</span><br />
+                                    <span>Cust ref#</span><br />
+                                    <span>Ordered by</span>
+                                </td>
+                                <td class="tdStyle" style="width:380px"><span>Location</span></td>
+                                <td class="tdStyle" style="width:80px">
+                                    <span>Qty</span><br />
+                                    <span>Weight</span>
+                                </td>
+                                <td class="tdStyle"  style="width:80px">Rate</td>
+                                <td class="tdStyle" style="width:80px">Net</td>
+                            </tr>
                         </table>
                     </td>
                 </tr>
+            </tbody>
+        </table>
 
+        <div>
+            @{
+                var wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId).ToList();
+                var serial = 0;
+                var accumulatedBasicChg = 0.00;
+                var accumulatedDeliveryChg = 0.00;
+                var accumulatedFuelChg = 0.00;
+                var accumulatedAdditionalChg = 0.00;
+                var accumulatedTaxAmnt = 0.00;
+                var accumulatedCurrentTotal = 0.00;
+                var accumulatedSavings = 0.00;
+                var accumulatedTotalDue = 0.00;
+                var minimumHeight = "785px";
+
+            }
+        </div>
+
+        <div style="min-height: @minimumHeight">
+            @{
+                var bodyHeight = 0;
+                var wbCount = 0;
+            }
+            @foreach (var bill in wayBills)
+            {
+                wbCount += 1;
+                if (bodyHeight > bodyMaxHeight)
+                {
+                    <p class="pagebreak"></p>
+                    bodyHeight = 0;
+
+                    <table style="width:900px; border:0px solid black; height:330px" border="0">
+                        <tbody>
+                            <tr>
+                                <td style="width: 250px; vertical-align: top; text-align:right">
+                                    <img src="~/images/clients/mfi_logo.jpg" style="width:90px; height:70px" />
+                                </td>
+                                <td style="text-align: center; vertical-align: top;" colspan="3">
+                                    <table border="0" style="width:100%">
+                                        <tr>
+                                            <td>
+                                                <b><span style="font-size:1.5em"> Millenium Freightways Inc.</span></b><br />
+                                                <span>1981 BOYLEN ROAD # 11, MISSISSAUGA, ONTARIO, L5S 1R9</span><br />
+                                                <span>Tel: 905-7958686, Fax: 905-7958687, Email: accounts@milfrt.ca</span>
+                                            </td>
+                                            <td style="text-align: right; width:20%; vertical-align: top;">
+                                                @*<span>Pg. [page] / [toPage]</span>*@
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align:middle" colspan="4">
+                                    <table border="1" style="border-collapse:collapse; border-right:none; border-left:none" width="100%">
+                                        <tr>
+                                            <td style="border-right:none; border-left:none; text-align:center; height:30px; background-color:#cccccc">
+                                                <span style="font-size:1.2em; font-weight:bold">INVOICE / FACTURE</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr style="font-family: Arial">
+                                <td style="width: 180px; vertical-align:top" colspan="2"><b>TO</b></td>
+                                <td style="width: 214px; vertical-align:top">
+                                    <span>
+                                        A/C #:
+                                        @{
+                                            @customerNo;
+                                        }
+                                    </span>
+                                </td>
+                                <td style="width: 215px; vertical-align:top;">
+                                    <b>
+                                        <span style="margin-right:20px !important">
+                                            INVOICE #:
+                                        </span>
+                                        <span>
+                                            @{
+                                                @invNo;
+                                            }
+                                        </span>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr style="font-family: Arial">
+                                <td style="width: 180px; vertical-align:top;" colspan="2">
+                                    <span style="font-size:1.2em; font-weight:bold">@item.BillerCustomerName.ToUpper()</span><br />
+                                    <span>@item.BillerCustomerAddressLine.ToUpper()</span><br />
+                                    <span>@item.BillerCustomerCityLine.ToUpper()</span><br />
+                                    <span>@item.BillerPostCode.ToUpper()</span><br />
+                                </td>
+                                <td style="width: 214px; vertical-align:top">&nbsp;</td>
+                                <td style="width: 215px; vertical-align: top;">
+                                    <br />
+                                    <b>
+                                        <span style="margin-right:55px !important">
+                                            DATE:
+                                        </span>
+                                        <span>
+                                            @{
+                                                // var dateString = item.InvoiceDate > DateTime.Now.AddYears(-20) ? item.InvoiceDate.ToString("dd-MMM-yyyy") : "";
+                                                @dateString.ToUpper();
+                                            }
+                                        </span>
+                                    </b>
+                                    <br /><br />
+                                    <b><span style="margin-right:55px !important">TERM: </span><span>@item.Term</span></b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 180px; height:35px; font-family: Arial" colspan="2">
+                                    ATTN: ACCOUNT PAYABLE
+                                </td>
+
+                                <td style="width: 214px;"></td>
+                                <td style="width: 215px;"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                    <table style="width:900px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
+                                        <tr style="background-color: #cccccc; font-family:Arial; font-weight:bold; font-size:.8em; border-top:8px">
+                                            <td class="tdStyle" style="width:10px">
+                                                <span></span>
+                                            </td>
+                                            <td class="tdStyle" style="width:75px">
+                                                <span>Date</span><br />
+                                                <span>Service</span>
+                                            </td>
+                                            <td class="tdStyle" style="width:110px">
+                                                <span>Waybill#</span><br />
+                                                <span>Cust ref#</span><br />
+                                                <span>Ordered by</span>
+                                            </td>
+                                            <td class="tdStyle"  style="width:380px"><span>Location</span></td>
+                                            <td class="tdStyle" style="width:80px">
+                                                <span>Qty</span><br />
+                                                <span>Weight</span>
+                                            </td>
+                                            <td class="tdStyle"  style="width:80px">Rate</td>
+                                            <td class="tdStyle" style="width:80px">Net</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                }
+                <table style="width:898px; margin-left:4px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
+                    <tbody>
+                        @{ bodyHeight += 50;}
+                        <tr style="font-size:11px; font-family: 'Courier New'; height:50px">
+                            <td class="tdStyle" style="width:10px">
+                                <span>@{ serial = serial + 1; @serial}</span>
+                            </td>
+                            <td class="tdStyle" style="width:75px">
+                                <span>@bill.WayBillDate</span><br />
+                                <span>@bill.DeliveryOptionShortCode</span>
+                            </td>
+                            <td class="tdStyle" style="width:110px">
+                                <span>@bill.WaybillNumber</span><br />
+                                <span>@bill.CustomerRefNo</span><br />
+                                <span>@bill.OrderedByName</span>
+
+                            </td>
+                            <td class="tdStyle" style="width:380px">
+                                <span>@bill.ShipperCustomerName</span><br />
+                                <span>@bill.ShipperCustomerAddressLine1</span><br />
+                                <span>@bill.ShipperCustomerAddressLine2</span>
+                            </td>
+                            <td class="tdStyle" style="width:80px">
+                                @if (bill.UnitQuantity > 0)
+                                {
+                                    <label>@bill.UnitQuantity @bill.UnitTypeShortCode</label><br />
+                                    if (bill.SkidQuantity > 0)
+                                    {
+                                        <label>(@bill.SkidQuantity SKD)</label>
+                                    }
+                                }
+                                <span>
+                                    @{
+                                        if (bill.SkidQuantity > 0 && (bill.UnitQuantity == null || bill.UnitQuantity < 1))
+                                        {
+                                            <label>@bill.SkidQuantity SKD</label>
+                                        }
+                                    }
+                                </span><br />
+
+                                <span>@bill.WeightTotal @bill.WeightScaleShortCode</span>
+                            </td>
+                            <td class="tdStyle" style="width:80px">
+                                @bill.OrderBasePrice
+                            </td>
+                            <td class="tdStyle" style="width:80px">
+                                @bill.NetTotalOrderCost
+                            </td>
+                        </tr>
+
+                        @if (bill.AdditionalServicesComments.Length > 0)
+                        {
+                            bodyHeight += 25;
+                            <tr style="font-size:11px; font-family: 'Courier New'">
+                                <td class="tdStyle" colspan="7">
+                                    <span>@bill.AdditionalServicesComments</span>
+                                </td>
+                            </tr>
+                        }
+
+                        @if (!string.IsNullOrEmpty(bill.CargoCtlNo) || !string.IsNullOrEmpty(bill.AwbContainerNo))
+                        {
+                            bodyHeight += 25;
+                            <tr style="font-size:11px; font-family: 'Courier New'">
+                                <td class="tdStyle" colspan="3"></td>
+                                <td class="tdStyle">
+                                    @{
+                                        if (!string.IsNullOrEmpty(bill.CargoCtlNo))
+                                        {
+                                            <span>CC: @bill.CargoCtlNo &nbsp;&nbsp; </span>
+                                        }
+                                    }
+                                </td>
+                                <td class="tdStyle" colspan="3">
+                                    @{
+                                        if (!string.IsNullOrEmpty(bill.AwbContainerNo))
+                                        {
+                                            <span>AWB/CTN: @bill.AwbContainerNo &nbsp;&nbsp; </span>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                        }
+
+
+                        @if (!string.IsNullOrEmpty(bill.DeliveredBy) || !string.IsNullOrEmpty(bill.BolReferenceNumber) || !string.IsNullOrEmpty(bill.ProReferenceNumber) || !string.IsNullOrEmpty(bill.ShipperName))
+                        {
+                            bodyHeight += 25;
+                            <tr style="font-size:11px; font-family: 'Courier New'">
+                                <td class="tdStyle" colspan="3">
+                                    @{
+                                        if (!string.IsNullOrEmpty(bill.DeliveredBy))
+                                        {
+                                            <span>@bill.DeliveredBy &nbsp;&nbsp; </span>
+                                        }
+                                    }
+                                </td>
+                                <td class="tdStyle">
+                                    @{
+                                        if (!string.IsNullOrEmpty(bill.BolReferenceNumber))
+                                        {
+                                            <span>@bill.BolReferenceNumber &nbsp;&nbsp;&nbsp;&nbsp; </span>
+                                        }
+
+                                        if (!string.IsNullOrEmpty(bill.ProReferenceNumber))
+                                        {
+                                            <span>@bill.ProReferenceNumber  &nbsp;&nbsp; </span>
+                                        }
+                                    }
+                                </td>
+
+                                <td class="tdStyle" colspan="3">
+                                    @{
+                                        if (!string.IsNullOrEmpty(bill.ShipperName))
+                                        {
+                                            <span>@bill.ShipperName  </span>
+                                            if (!string.IsNullOrEmpty(bill.ShipperName))
+                                            {
+                                                <span>@bill.ShipperAddress</span>
+                                            }
+                                        }
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+
+                        @if (bill.InvoiceComments.Length > 0)
+                        {
+                            bodyHeight += 25;
+                            <tr style="font-size:11px; font-family: 'Courier New'">
+                                <td class="tdStyle" colspan="7">
+                                    <span>@bill.InvoiceComments</span>
+                                </td>
+                            </tr>
+                        }
+
+
+
+                        @{
+                            accumulatedBasicChg += Convert.ToDouble(bill.OrderBasePrice);
+
+                            accumulatedTaxAmnt += Convert.ToDouble(bill.OrderTaxAmountOnBasePrice);
+
+                            accumulatedSavings += Convert.ToDouble(bill.OrderDiscountAmount);}
+                    </tbody>
+                </table>
+
+
+                if (wbCount == wayBills.Count)
+                {
+                    var pageHeight = pageMaxHeight - headerHeight - bodyHeight - footerHeight;
+                    minimumHeight = (pageHeight).ToString() + "px";
+                    <div style="min-height: @minimumHeight">
+                    </div>
+                }
+            }
+        </div>
+
+        <div>
+            @{
+                accumulatedCurrentTotal = accumulatedBasicChg + accumulatedFuelChg + accumulatedAdditionalChg + accumulatedTaxAmnt;
+                accumulatedTotalDue = accumulatedCurrentTotal - accumulatedSavings;
+            }
+        </div>
+
+        <table style="width:900px; border:0px solid black; height:100px" border="0">
+            <tbody>
                 <tr style="font-family:Arial; font-weight:bold; font-size:9px;">
                     <td class="tdStyle" colspan="4">
                         <span>*HST Applicable</span>
@@ -357,7 +525,6 @@
                         </table>
                     </td>
                 </tr>
-
             </tbody>
         </table>
 
