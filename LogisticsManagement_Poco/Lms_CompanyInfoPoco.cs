@@ -22,7 +22,11 @@ namespace LogisticsManagement_Poco
         public int? ProvinceId { get; set; }
         public int CountryId { get; set; }
         public string TaxNumber { get; set; }
+        public string Telephone { get; set; }
+        public string Fax { get; set; }
         public string CompanyRegistrationNo { get; set; }
+        [Column(TypeName = "image")]
+        public byte[] CompanyLogo { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
 

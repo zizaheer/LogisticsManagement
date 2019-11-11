@@ -41,6 +41,7 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_OrderAdditionalServiceLogic _orderAdditionalServiceLogic;
         private Lms_AdditionalServiceLogic _additionalServiceLogic;
         private Lms_ConfigurationLogic _configurationLogic;
+        private Lms_CompanyInfoLogic _companyInfoLogic;
 
         private readonly LogisticsContext _dbContext;
 
@@ -1119,6 +1120,17 @@ namespace LogisticsManagement_Web.Controllers
             ValidateSession();
             var result = "";
 
+            _companyInfoLogic = new Lms_CompanyInfoLogic(_cache, new EntityFrameworkGenericRepository<Lms_CompanyInfoPoco>(_dbContext));
+            var companyInfo = _companyInfoLogic.GetSingleById(1);
+            if (companyInfo != null) {
+                TempData["CompanyName"] = !string.IsNullOrEmpty(companyInfo.CompanyName) ? companyInfo.CompanyName.ToUpper(): "";
+                TempData["CompanyAddress"] = !string.IsNullOrEmpty(companyInfo.MainAddress) ? companyInfo.MainAddress.ToUpper() : "";  
+                TempData["CompanyTelephone"] = !string.IsNullOrEmpty(companyInfo.Telephone) ? companyInfo.Telephone : "";
+                TempData["CompanyFax"] = companyInfo.Fax;
+                TempData["CompanyEmail"] = !string.IsNullOrEmpty(companyInfo.EmailAddress) ? companyInfo.EmailAddress : "";
+                TempData["CompanyTaxNumber"] = !string.IsNullOrEmpty(companyInfo.TaxNumber) ? companyInfo.TaxNumber : "";
+            }
+
             var viewModelPrintInvoice = new ViewModel_PrintInvoice();
             var viewName = "";
 
@@ -1258,6 +1270,7 @@ namespace LogisticsManagement_Web.Controllers
 
                 }
 
+                //ViewBag.CompanyName = companyInfo.CompanyName;
                 var webrootPath = _hostingEnvironment.WebRootPath;
                 var uniqueId = DateTime.Now.ToFileTime();
                 var fileName = "invoice_" + uniqueId + ".pdf";

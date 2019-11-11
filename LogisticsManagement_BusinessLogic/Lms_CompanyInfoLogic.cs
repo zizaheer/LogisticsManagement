@@ -10,8 +10,9 @@ namespace LogisticsManagement_BusinessLogic
     public class Lms_CompanyInfoLogic : BaseLogic<Lms_CompanyInfoPoco>
     {
         IMemoryCache _cache;
-        public Lms_CompanyInfoLogic(IMemoryCache cash, IDataRepository<Lms_CompanyInfoPoco> repository) : base(repository)
+        public Lms_CompanyInfoLogic(IMemoryCache cache, IDataRepository<Lms_CompanyInfoPoco> repository) : base(repository)
         {
+            _cache = cache;
         }
 
         #region Get Methods

@@ -48,9 +48,9 @@
                         <table border="0" style="width:100%">
                             <tr>
                                 <td>
-                                    <b><span style="font-size:1.5em"> Millenium Freightways Inc.</span></b><br />
-                                    <span>1981 BOYLEN ROAD # 11, MISSISSAUGA, ONTARIO, L5S 1R9</span><br />
-                                    <span>Tel: 905-7958686, Fax: 905-7958687, Email: accounts@milfrt.ca</span>
+                                    <b><span style="font-size:1.5em"> @TempData["CompanyName"] </span></b><br />
+                                    <span>@TempData["CompanyAddress"]</span><br />
+                                    <span>Tel: @TempData["CompanyTelephone"], Fax: @TempData["CompanyFax"], Email: @TempData["CompanyEmail"]</span>
                                 </td>
                                 <td style="text-align: right; width:20%; vertical-align: top;">
                                     @*<span>Pg. [page] / [toPage]</span>*@
@@ -208,9 +208,9 @@
                                     <table border="0" style="width:100%">
                                         <tr>
                                             <td>
-                                                <b><span style="font-size:1.5em"> Millenium Freightways Inc.</span></b><br />
-                                                <span>1981 BOYLEN ROAD # 11, MISSISSAUGA, ONTARIO, L5S 1R9</span><br />
-                                                <span>Tel: 905-7958686, Fax: 905-7958687, Email: accounts@milfrt.ca</span>
+                                                <b><span style="font-size:1.5em"> @TempData["CompanyName"] </span></b><br />
+                                                <span>@TempData["CompanyAddress"]</span><br />
+                                                <span>Tel: @TempData["CompanyTelephone"], Fax: @TempData["CompanyFax"], Email: @TempData["CompanyEmail"]</span>
                                             </td>
                                             <td style="text-align: right; width:20%; vertical-align: top;">
                                                 @*<span>Pg. [page] / [toPage]</span>*@
@@ -529,7 +529,7 @@
                                         <span>INTEREST CHARGED ON OUTSTANDING BALANCE AT THE RATE OF 2% PER MONTH</span>
                                     </td>
                                     <td style="border-right:none; border-left:none;border-bottom:none; padding-top:10px">
-                                        <span>HST: 886288521RT0001</span>
+                                        <span>HST: @TempData["CompanyTaxNumber"]</span>
                                     </td>
                                 </tr>
                             </tbody>
