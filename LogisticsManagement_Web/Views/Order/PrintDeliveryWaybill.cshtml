@@ -102,16 +102,16 @@
                     <tr>
                         <td class="tg-amwm" rowspan="2">
                             <div style="margin-bottom:15px">
-                                <b><span style="font-size:1.3em; text-transform:capitalize;"> @TempData["CompanyName"]</span></b>
+                                <b><span style="font-size:1.3em; text-transform:capitalize;"> @SessionData.CompanyName</span></b>
                             </div>
 
                             <table style="border-collapse:collapse; margin: 0 auto" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td rowspan="2"><img src="~/images/clients/mfi_logo.jpg" style="width:70px; height:50px;" /></td>
-                                    <td><b style="padding-left:15px;font-size:1.10em;text-transform:capitalize">Tel: @TempData["CompanyTelephone"]</b></td>
+                                    <td><b style="padding-left:15px;font-size:1.10em;text-transform:capitalize">TEL: @SessionData.CompanyTelephone</b></td>
                                 </tr>
                                 <tr>
-                                    <td><b style="padding-left:15px;border-style:none;font-size:1.10em;text-transform:capitalize">Fax: @TempData["CompanyFax"]</b></td>
+                                    <td><b style="padding-left:15px;border-style:none;font-size:1.10em;text-transform:capitalize">FAX: @SessionData.CompanyFax</b></td>
                                 </tr>
                             </table>
                         </td>

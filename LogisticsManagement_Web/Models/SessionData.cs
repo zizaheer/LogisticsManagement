@@ -25,12 +25,12 @@ namespace LogisticsManagement_Web.Models
 
         public int? LoggedInEmployeeId { get; set; }
 
-        public string CompanyName { get; set; }
-        public string CompanyAddress { get; set; }
-        public string CompanyTelephone { get; set; }
-        public string CompanyFax { get; set; }
-        public string CompanyEmail { get; set; }
-        public string CompanyTaxNumber { get; set; }
+        public static string CompanyName { get; set; }
+        public static string CompanyAddress { get; set; }
+        public static string CompanyTelephone { get; set; }
+        public static string CompanyFax { get; set; }
+        public static string CompanyEmail { get; set; }
+        public static string CompanyTaxNumber { get; set; }
 
     }
 }
