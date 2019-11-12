@@ -8,6 +8,7 @@ using LogisticsManagement_Poco;
 using LogisticsManagement_Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 
 namespace LogisticsManagement_Web.Controllers
@@ -15,13 +16,13 @@ namespace LogisticsManagement_Web.Controllers
     public class LoginController : Controller
     {
         private App_UserLogic _userLogic;
+        private IMemoryCache memoryCache;
         private readonly LogisticsContext _dbContext;
         public LoginController(LogisticsContext dbContext)
         {
             _dbContext = dbContext;
             _userLogic = new App_UserLogic(new EntityFrameworkGenericRepository<App_UserPoco>(_dbContext));
         }
-
 
         public IActionResult Index()
         {
@@ -34,6 +35,9 @@ namespace LogisticsManagement_Web.Controllers
             {
                 if (_userLogic.IsCredentialsValid(userName, userPassword, out App_UserPoco outUserData))
                 {
+
+                   
+
                     SessionData sessionData = new SessionData();
                     sessionData.UserId = outUserData.Id;
                     sessionData.GroupId = outUserData.GroupId;
@@ -51,6 +55,19 @@ namespace LogisticsManagement_Web.Controllers
                     sessionData.PhoneNumber = outUserData.PhoneNumber;
                     //sessionData.ProfilePicture = outUserData.ProfilePicture;
                     sessionData.LoggedInEmployeeId = outUserData.EmployeeId;
+
+
+                    var companyLogic = new Lms_CompanyInfoLogic(memoryCache, new EntityFrameworkGenericRepository<Lms_CompanyInfoPoco>(_dbContext));
+                    var companyInfo = companyLogic.GetSingleById(1);
+                    if (companyInfo != null)
+                    {
+                        sessionData.CompanyName = !string.IsNullOrEmpty(companyInfo.CompanyName) ? companyInfo.CompanyName.ToUpper() : "";
+                        sessionData.CompanyAddress = !string.IsNullOrEmpty(companyInfo.MainAddress) ? companyInfo.MainAddress.ToUpper() : "";
+                        sessionData.CompanyTelephone = !string.IsNullOrEmpty(companyInfo.Telephone) ? companyInfo.Telephone : "";
+                        sessionData.CompanyFax = companyInfo.Fax;
+                        sessionData.CompanyEmail = !string.IsNullOrEmpty(companyInfo.EmailAddress) ? companyInfo.EmailAddress : "";
+                        sessionData.CompanyTaxNumber = !string.IsNullOrEmpty(companyInfo.TaxNumber) ? companyInfo.TaxNumber : "";
+                    }
 
                     HttpContext.Session.SetString("SessionData", JsonConvert.SerializeObject(sessionData));
                     return RedirectToAction("Index", "Home");

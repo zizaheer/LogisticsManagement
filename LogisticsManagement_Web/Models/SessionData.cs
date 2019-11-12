@@ -23,6 +23,14 @@ namespace LogisticsManagement_Web.Models
         public string PhoneNumber { get; set; }
         public byte[] ProfilePicture { get; set; }
 
-        public int? LoggedInEmployeeId { get; set; } 
+        public int? LoggedInEmployeeId { get; set; }
+
+        public string CompanyName { get; set; }
+        public string CompanyAddress { get; set; }
+        public string CompanyTelephone { get; set; }
+        public string CompanyFax { get; set; }
+        public string CompanyEmail { get; set; }
+        public string CompanyTaxNumber { get; set; }
+
     }
 }

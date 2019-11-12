@@ -1,0 +1,97 @@
+﻿@using LogisticsManagement_Web.Models;
+@model List<LogisticsManagement_Poco.Lms_PayeePoco>
+
+@{
+    ViewData["Title"] = "Employee";
+}
+
+<h3>
+    @ViewData["Title"]
+</h3>
+<hr style="margin-bottom:40px" />
+
+
+<form id="frmPayeeForm">
+    <div class="row">
+        <div class="col-sm-12 form-group">
+            <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Payee id" style="font-family:Arial, FontAwesome" id="txtPayeeId" type="number" min="1" name="txtPayeeId" readonly>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-4">
+            <small>
+                <b>
+                    <label id="lblPayeeName" for="txtPayeeName">First name</label>
+                </b>
+            </small>
+            <input class="form-control form-control-sm" id="txtPayeeName" placeholder="Payee name" name="txtPayeeName" type="text" maxlength="30" required />
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-3">
+            <small>
+                <b>
+                    <label id="lblAddress" for="txtAddress">Address</label>
+                </b>
+            </small>
+            <input class="form-control form-control-sm" id="txtAddress" name="txtAddress" placeholder="Address" maxlength="150" type="text" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-3">
+            <small>
+                <b>
+                    <label id="lblEmailAddress" for="txtEmailAddress">Email</label>
+                </b>
+            </small>
+            <input class="form-control form-control-sm" id="txtEmailAddress" name="txtEmailAddress" placeholder="Email" maxlength="150" type="text" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-3">
+            <small>
+                <b>
+                    <label id="lblPhoneNumber" for="txtPhoneNumber">Phone</label>
+                </b>
+            </small>
+            <input class="form-control form-control-sm" id="txtPhoneNumber" name="txtPhoneNumber" placeholder="Phone" maxlength="20" type="text" />
+        </div>
+    </div>
+
+
+    <hr />
+    <button type="button" class="btn btn-sm btn-primary" id="btnNew"><i class="fa fa-plus-circle"></i> New</button>
+    <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save record</button>
+
+</form>
+
+<div class="row">
+    <div class="col-md-12 input-group" style="margin-top:40px">
+        <h3>Existing payees</h3>
+
+        <button style="margin-left:10px;margin-right:15px; margin-top:4px;height:27px" class="btn btn-sm btn-danger" id="btnDownloadData"><i class="fa fa-download"></i> Load payee </button>
+        <div style="margin-top:5px">
+            <span id="spinnerLoadingDataTable" style="display:none">
+                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                <span style="margin-right:20px">Loading...</span>
+            </span>
+        </div>
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-sm-12">
+        <div style="display: block; max-height: 240px; min-height: 80px; padding:10px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadDataTable">
+            <partial name="_PartialViewPayeeData" />
+        </div>
+    </div>
+
+</div>
+
+<script src="~/js/payee.js"></script>

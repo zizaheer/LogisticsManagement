@@ -67,36 +67,32 @@ namespace LogisticsManagement_Web.Controllers
                         _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
 
                         var parentGLForBillAccount = _configurationLogic.GetSingleById(1).OtherPayableAccount;
-                        var accounts = _chartOfAccountLogic.GetList().Where(c => c.ParentGLCode == parentGLForEmployeeAccount).ToList();
+                        var accounts = _chartOfAccountLogic.GetList().Where(c => c.ParentGLCode == parentGLForBillAccount).ToList();
                         var newAccountId = accounts.Max(c => c.Id) + 1;
-                        var newEmployeeId = _employeeLogic.GetMaxId() + 1;
 
                         using (var scope = new TransactionScope())
                         {
                             Lms_ChartOfAccountPoco accountPoco = new Lms_ChartOfAccountPoco();
                             accountPoco.Id = newAccountId;
-                            accountPoco.ParentGLCode = parentGLForEmployeeAccount;
-                            accountPoco.AccountName = employeePoco.FirstName + employeePoco.LastName;
+                            accountPoco.ParentGLCode = parentGLForBillAccount;
+                            accountPoco.AccountName = payeePoco.PayeeName;
                             accountPoco.BranchId = sessionData.BranchId == null ? 1 : (int)sessionData.BranchId;
                             accountPoco.CurrentBalance = 0;
                             accountPoco.IsActive = true;
-                            accountPoco.Remarks = "Employee Account Payable";
+                            accountPoco.Remarks = "Payee Account Payable";
                             accountPoco.CreateDate = DateTime.Now;
                             accountPoco.CreatedBy = sessionData.UserId;
 
                             var addedAcc = _chartOfAccountLogic.Add(accountPoco);
                             if (addedAcc.Id > 0)
                             {
-                                employeePoco.Id = newEmployeeId;
-                                employeePoco.AccountId = addedAcc.Id;
-                                employeePoco.CreateDate = DateTime.Now;
-                                employeePoco.CreatedBy = sessionData.UserId;
-                                var employeeId = _employeeLogic.Add(employeePoco).Id;
+                                payeePoco.AccountNo = addedAcc.Id.ToString();
+                                var payeeId = _payeeLogic.Add(payeePoco).Id;
 
-                                if (employeeId > 0)
+                                if (payeeId > 0)
                                 {
                                     scope.Complete();
-                                    result = employeeId.ToString();
+                                    result = payeeId.ToString();
                                 }
                             }
                         }
@@ -112,56 +108,35 @@ namespace LogisticsManagement_Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update([FromBody]dynamic employeeData)
+        public IActionResult Update([FromBody]dynamic payeeData)
         {
             ValidateSession();
             var result = "";
 
             try
             {
-                if (employeeData != null)
+                if (payeeData != null)
                 {
-                    Lms_EmployeePoco employeePoco = JsonConvert.DeserializeObject<Lms_EmployeePoco>(JsonConvert.SerializeObject(employeeData[0]));
+                    Lms_PayeePoco payeePoco = JsonConvert.DeserializeObject<Lms_PayeePoco>(JsonConvert.SerializeObject(payeeData[0]));
 
-                    if (employeePoco.Id > 0 && employeePoco.FirstName.Trim() != string.Empty)
+                    if (payeePoco.Id > 0 && payeePoco.PayeeName.Trim() != string.Empty)
                     {
-                        var employee = _employeeLogic.GetSingleById(employeePoco.Id);
-                        // it is required to pull existing data first, 
-                        // cause there are some data which do not come from UI
+                        using (var scope = new TransactionScope())
+                        {
+                            var existingPayee = _payeeLogic.GetSingleById(payeePoco.Id);
+                            if (existingPayee != null)
+                            {
+                                existingPayee.PayeeName = payeePoco.PayeeName;
+                                existingPayee.Address = payeePoco.Address;
+                                existingPayee.EmailAddress = payeePoco.EmailAddress;
+                                existingPayee.PhoneNumber = payeePoco.PhoneNumber;
+                                _payeeLogic.Update(existingPayee);
 
-                        employee.FirstName = employeePoco.FirstName;
-                        employee.LastName = employeePoco.LastName;
-                        employee.DriverLicenseNo = employeePoco.DriverLicenseNo;
-                        employee.SocialInsuranceNo = employeePoco.SocialInsuranceNo;
-                        employee.EmployeeTypeId = employeePoco.EmployeeTypeId;
-                        employee.IsHourlyPaid = employeePoco.IsHourlyPaid;
-                        employee.HourlyRate = employeePoco.HourlyRate;
+                                result = existingPayee.Id.ToString();
+                            }
 
-                        employee.IsSalaried = employeePoco.IsSalaried;
-                        employee.SalaryAmount = employeePoco.SalaryAmount;
-                        employee.IsCommissionProvided = employeePoco.IsCommissionProvided;
-                        employee.CommissionPercentage = employeePoco.CommissionPercentage;
-                        employee.IsFuelChargeProvided = employeePoco.IsFuelChargeProvided;
-                        employee.FuelPercentage = employeePoco.FuelPercentage;
-                        employee.RadioInsuranceAmount = employeePoco.RadioInsuranceAmount;
-                        employee.InsuranceAmount = employeePoco.InsuranceAmount;
-                        employee.SalaryTerm = employeePoco.SalaryTerm;
-                        employee.IsActive = employeePoco.IsActive;
-
-                        employee.UnitNumber = employeePoco.UnitNumber;
-                        employee.AddressLine = employeePoco.AddressLine;
-                        employee.CityId = employeePoco.CityId;
-                        employee.ProvinceId = employeePoco.ProvinceId;
-                        employee.CountryId = employeePoco.CountryId;
-                        employee.PostCode = employeePoco.PostCode;
-                        employee.EmailAddress = employeePoco.EmailAddress;
-                        employee.MobileNumber = employeePoco.MobileNumber;
-                        employee.FaxNumber = employeePoco.FaxNumber;
-                        employee.PhoneNumber = employeePoco.PhoneNumber;
-
-
-                        var poco = _employeeLogic.Update(employee);
-                        result = poco.Id.ToString();
+                            scope.Complete();
+                        }
                     }
                 }
             }
@@ -179,8 +154,8 @@ namespace LogisticsManagement_Web.Controllers
             var result = "";
             try
             {
-                var poco = _employeeLogic.GetSingleById(Convert.ToInt32(id));
-                _employeeLogic.Remove(poco);
+                var poco = _payeeLogic.GetSingleById(Convert.ToInt32(id));
+                _payeeLogic.Remove(poco);
 
                 result = "Success";
             }
@@ -191,14 +166,14 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
-        public JsonResult GetEmployeeById(string id)
+        public JsonResult GetPayeeById(string id)
         {
             if (!string.IsNullOrEmpty(id))
             {
-                var employee = _employeeLogic.GetSingleById(Convert.ToInt32(id));
-                if (employee != null)
+                var payee = _payeeLogic.GetSingleById(Convert.ToInt32(id));
+                if (payee != null)
                 {
-                    return Json(JsonConvert.SerializeObject(employee));
+                    return Json(JsonConvert.SerializeObject(payee));
                 }
             }
             return Json(string.Empty);
