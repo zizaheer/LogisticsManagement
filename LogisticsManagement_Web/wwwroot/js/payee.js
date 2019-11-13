@@ -84,10 +84,10 @@ $('.btnDelete').unbind().on('click', function () {
 function GetFormData() {
     var payeeData = {
         id: $('#txtPayeeId').val() === "" ? "0" : $('#txtPayeeId').val(),
-        payeeName: $('#txtFirstName').val(),
-        address: $('#txtLastName').val(),
-        emailAddress: $('#txtDrivingLicenseNo').val(),
-        phoneNumber: $('#txtSocialInsuranceNo').val(),
+        payeeName: $('#txtPayeeName').val(),
+        address: $('#txtAddress').val(),
+        emailAddress: $('#txtEmailAddress').val(),
+        phoneNumber: $('#txtPhoneNumber').val(),
     };
 
     return [payeeData];

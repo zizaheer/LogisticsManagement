@@ -20,12 +20,6 @@ namespace LogisticsManagement_Web.Controllers
     {
         private Lms_PayeeLogic _payeeLogic;
 
-        private Lms_EmployeeLogic _employeeLogic;
-        private Lms_EmployeeTypeLogic _employeeTypeLogic;
-        private App_CityLogic _cityLogic;
-        private App_ProvinceLogic _provinceLogic;
-        private App_CountryLogic _countryLogic;
-        private Lms_CustomerAddressMappingLogic _customerAddressLogic;
         private Lms_ChartOfAccountLogic _chartOfAccountLogic;
         private Lms_ConfigurationLogic _configurationLogic;
 
@@ -36,6 +30,7 @@ namespace LogisticsManagement_Web.Controllers
 
         public PayeeController(IMemoryCache cache, LogisticsContext dbContext)
         {
+            _cache = cache;
             _dbContext = dbContext;
             _payeeLogic = new Lms_PayeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_PayeePoco>(_dbContext));
         }
@@ -43,9 +38,15 @@ namespace LogisticsManagement_Web.Controllers
         public IActionResult Index()
         {
             var payeeList = _payeeLogic.GetList();
-            return View();
+            return View(payeeList);
         }
 
+        [HttpGet]
+        public IActionResult PartialViewDataTable()
+        {
+            ValidateSession();
+            return PartialView("_PartialViewPayeeData", _payeeLogic.GetList());
+        }
 
         [HttpPost]
         public IActionResult Add([FromBody]dynamic payeeData)
@@ -67,8 +68,11 @@ namespace LogisticsManagement_Web.Controllers
                         _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
 
                         var parentGLForBillAccount = _configurationLogic.GetSingleById(1).OtherPayableAccount;
+                        var newAccountId = (int)parentGLForBillAccount + 1;
                         var accounts = _chartOfAccountLogic.GetList().Where(c => c.ParentGLCode == parentGLForBillAccount).ToList();
-                        var newAccountId = accounts.Max(c => c.Id) + 1;
+                        if (accounts.Count > 0) {
+                            newAccountId = accounts.Max(c => c.Id) + 1;
+                        } 
 
                         using (var scope = new TransactionScope())
                         {
@@ -194,8 +198,5 @@ namespace LogisticsManagement_Web.Controllers
                 Response.Redirect("Login/InvalidLocation");
             }
         }
-
-
-
     }
 }
