@@ -95,7 +95,7 @@ function GetFormData() {
 
 function FillPayeeInfo(payeeInfo) {
 
-    $('#txtEmployeeId').val(payeeInfo.Id);
+    $('#txtPayeeId').val(payeeInfo.Id);
     $('#txtPayeeName').val(payeeInfo.PayeeName);
     $('#txtAddress').val(payeeInfo.Address);
     $('#txtEmailAddress').val(payeeInfo.EmailAddress);

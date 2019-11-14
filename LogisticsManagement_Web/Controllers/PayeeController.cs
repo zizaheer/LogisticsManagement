@@ -67,12 +67,14 @@ namespace LogisticsManagement_Web.Controllers
                         _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
                         _chartOfAccountLogic = new Lms_ChartOfAccountLogic(_cache, new EntityFrameworkGenericRepository<Lms_ChartOfAccountPoco>(_dbContext));
 
-                        var parentGLForBillAccount = _configurationLogic.GetSingleById(1).OtherPayableAccount;
-                        var newAccountId = (int)parentGLForBillAccount + 1;
+                        var parentGLForBillAccount = _configurationLogic.GetSingleById(1).ParentGLForBillPayable;
+                        var newAccountId = (int)parentGLForBillAccount;
                         var accounts = _chartOfAccountLogic.GetList().Where(c => c.ParentGLCode == parentGLForBillAccount).ToList();
                         if (accounts.Count > 0) {
-                            newAccountId = accounts.Max(c => c.Id) + 1;
-                        } 
+                            newAccountId = accounts.Max(c => c.Id);
+                        }
+
+                        newAccountId += 1;
 
                         using (var scope = new TransactionScope())
                         {
