@@ -41,8 +41,8 @@
         <table style="width:900px; border:0px solid black; height:330px" border="0">
             <tbody>
                 <tr>
-                    <td style="width: 250px; vertical-align: top; text-align:right">
-                        <img src="~/images/clients/mfi_logo.jpg" style="width:90px; height:70px" />
+                    <td style="width: 150px; vertical-align: top; text-align:right">
+                        <img src="data:image/png;base64, @SessionData.CompanyLogo" class="imgCompanyLogo" style="width:90px; height:70px" />
                     </td>
                     <td style="text-align: center; vertical-align: top;" colspan="3">
                         <table border="0" style="width:100%">
@@ -52,9 +52,7 @@
                                     <span>@SessionData.CompanyAddress</span><br />
                                     <span>TEL: @SessionData.CompanyTelephone, FAX: @SessionData.CompanyFax, Email: @SessionData.CompanyEmail</span>
                                 </td>
-                                <td style="text-align: right; width:20%; vertical-align: top;">
-                                    @*<span>Pg. [page] / [toPage]</span>*@
-                                </td>
+
                             </tr>
                         </table>
                     </td>
@@ -202,7 +200,7 @@
                         <tbody>
                             <tr>
                                 <td style="width: 250px; vertical-align: top; text-align:right">
-                                    <img src="~/images/clients/mfi_logo.jpg" style="width:90px; height:70px" />
+                                    <img src="" class="imgCompanyLogo" style="width:90px; height:70px" />
                                 </td>
                                 <td style="text-align: center; vertical-align: top;" colspan="3">
                                     <table border="0" style="width:100%">
@@ -482,6 +480,17 @@
                 <tr style="font-family:Arial; font-weight:bold; font-size:9px;">
                     <td class="tdStyle" colspan="4">
                         <span>*HST Applicable</span>
+
+                        @{
+                            if (SessionData.CompanyName.Contains("Daily"))
+                            {
+                                <span style="padding-left:200px; text-transform:uppercase">
+                                    <label> - Please make cheques payable to Millenium Freightways Inc. - </label>
+                                </span>
+                            }
+
+                        }
+
                     </td>
                 </tr>
                 <tr style="font-family:Arial; font-weight:bold; font-size:.8em;">
@@ -529,7 +538,7 @@
                                         <span>INTEREST CHARGED ON OUTSTANDING BALANCE AT THE RATE OF 2% PER MONTH</span>
                                     </td>
                                     <td style="border-right:none; border-left:none;border-bottom:none; padding-top:10px">
-                                        <span>HST: @TempData["CompanyTaxNumber"]</span>
+                                        <span>HST: @SessionData.CompanyTaxNumber</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -547,5 +556,9 @@
             <p class="pagebreak"></p>
         }
     }
+
+
+
 </body>
+
 </html>

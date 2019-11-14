@@ -29,8 +29,8 @@ namespace LogisticsManagement_Web.Controllers
 
         public IActionResult Index()
         {
-            var companyList = _companyInfoLogic.GetList();
-            return View(companyList);
+            var company = _companyInfoLogic.GetSingleById(1);
+            return View(company);
         }
 
         [HttpGet]
@@ -79,26 +79,37 @@ namespace LogisticsManagement_Web.Controllers
                 if (companyData != null)
                 {
                     Lms_CompanyInfoPoco companyPoco = JsonConvert.DeserializeObject<Lms_CompanyInfoPoco>(JsonConvert.SerializeObject(companyData[0]));
+                    var logoImageInfo = Convert.ToString(companyData[1]);
 
                     if (!string.IsNullOrEmpty(companyPoco.CompanyName) && companyPoco.Id > 0)
                     {
+                        if (logoImageInfo != null && logoImageInfo != "" && logoImageInfo.Contains(","))
+                        {
+                            var base64String = logoImageInfo.Split(",")[1];
+                            if (!string.IsNullOrEmpty(base64String))
+                            {
+                                companyPoco.CompanyLogo = Convert.FromBase64String(base64String);
+                            }
+
+                        }
+
                         var existingCompany = _companyInfoLogic.GetSingleById(companyPoco.Id);
                         if (existingCompany != null)
                         {
                             existingCompany.CompanyName = companyPoco.CompanyName;
-                            //existingCompany.MainAddress = companyPoco.MainAddress;
+                            existingCompany.MainAddress = companyPoco.MainAddress;
                             //existingCompany.CityId = companyPoco.CityId;
                             existingCompany.CompanyLogo = companyPoco.CompanyLogo;
-                            //existingCompany.CompanyRegistrationNo = companyPoco.CompanyRegistrationNo;
+                            //existingCompany.CompanyRegistrationNo = companyPoco.CompanyRegistrationNo; 
                             //existingCompany.ContactNumber = companyPoco.ContactNumber;
                             //existingCompany.ContactPerson = companyPoco.ContactPerson;
                             //existingCompany.CountryId = companyPoco.CountryId;
-                            //existingCompany.EmailAddress = companyPoco.EmailAddress;
+                            existingCompany.EmailAddress = companyPoco.EmailAddress;
                             //existingCompany.Fax = companyPoco.Fax;
                             //existingCompany.PostCode = companyPoco.PostCode;
                             //existingCompany.ProvinceId = companyPoco.ProvinceId;
                             //existingCompany.TaxNumber = companyPoco.TaxNumber;
-                            //existingCompany.Telephone = companyPoco.Telephone;
+                            existingCompany.Telephone = companyPoco.Telephone;
 
                             var companyInfo = _companyInfoLogic.Update(existingCompany);
                             result = companyInfo.Id.ToString();

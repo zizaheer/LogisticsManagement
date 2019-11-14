@@ -26,6 +26,7 @@ namespace LogisticsManagement_Web.Models
         public int? LoggedInEmployeeId { get; set; }
 
         public static string CompanyName { get; set; }
+        public static string CompanyLogo { get; set; }
         public static string CompanyAddress { get; set; }
         public static string CompanyTelephone { get; set; }
         public static string CompanyFax { get; set; }

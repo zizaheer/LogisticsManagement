@@ -57,17 +57,20 @@ namespace LogisticsManagement_Web.Controllers
                     sessionData.LoggedInEmployeeId = outUserData.EmployeeId;
 
 
-                    var companyLogic = new Lms_CompanyInfoLogic(memoryCache, new EntityFrameworkGenericRepository<Lms_CompanyInfoPoco>(_dbContext));
-                    var companyInfo = companyLogic.GetSingleById(1);
-                    if (companyInfo != null)
-                    {
-                        SessionData.CompanyName = !string.IsNullOrEmpty(companyInfo.CompanyName) ? companyInfo.CompanyName : "";
-                        SessionData.CompanyAddress = !string.IsNullOrEmpty(companyInfo.MainAddress) ? companyInfo.MainAddress.ToUpper() : "";
-                        SessionData.CompanyTelephone = !string.IsNullOrEmpty(companyInfo.Telephone) ? companyInfo.Telephone : "";
-                        SessionData.CompanyFax = companyInfo.Fax;
-                        SessionData.CompanyEmail = !string.IsNullOrEmpty(companyInfo.EmailAddress) ? companyInfo.EmailAddress : "";
-                        SessionData.CompanyTaxNumber = !string.IsNullOrEmpty(companyInfo.TaxNumber) ? companyInfo.TaxNumber : "";
-                    }
+                    //var companyLogic = new Lms_CompanyInfoLogic(memoryCache, new EntityFrameworkGenericRepository<Lms_CompanyInfoPoco>(_dbContext));
+                    //var companyInfo = companyLogic.GetSingleById(1);
+                    //if (companyInfo != null)
+                    //{
+                    //    SessionData.CompanyName = !string.IsNullOrEmpty(companyInfo.CompanyName) ? companyInfo.CompanyName : "";
+                    //    SessionData.CompanyLogo =  companyInfo.CompanyLogo;
+                    //    SessionData.CompanyAddress = !string.IsNullOrEmpty(companyInfo.MainAddress) ? companyInfo.MainAddress.ToUpper() : "";
+                    //    SessionData.CompanyTelephone = !string.IsNullOrEmpty(companyInfo.Telephone) ? companyInfo.Telephone : "";
+                    //    SessionData.CompanyFax = companyInfo.Fax;
+                    //    SessionData.CompanyEmail = !string.IsNullOrEmpty(companyInfo.EmailAddress) ? companyInfo.EmailAddress : "";
+                    //    SessionData.CompanyTaxNumber = !string.IsNullOrEmpty(companyInfo.TaxNumber) ? companyInfo.TaxNumber : "";
+                        
+
+                    //}
 
                     HttpContext.Session.SetString("SessionData", JsonConvert.SerializeObject(sessionData));
                     return RedirectToAction("Index", "Home");
