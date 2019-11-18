@@ -1257,7 +1257,8 @@ namespace LogisticsManagement_Web.Controllers
                                             isMiscellaneous = false;
                                             viewName = "PrintDeliveryInvoice";
                                         }
-                                        var waybillInfoForPrint = GetWaybillInformationForPrint(order, isMiscellaneous);
+                                        ViewModel_PrintWaybill waybillInfoForPrint = new ViewModel_PrintWaybill();
+                                        waybillInfoForPrint = GetWaybillInformationForPrint(order, isMiscellaneous);
                                         waybillInfoForPrint.InvoiceNumber = Convert.ToInt32(invNo);
                                         invoiceWaybillList.Add(waybillInfoForPrint);
                                     }

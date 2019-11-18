@@ -43,22 +43,15 @@
             @{ headerHeight = 330;}
             <tbody>
                 <tr>
-                    <td style="width: 250px; vertical-align: top; text-align:right">
-                        <img src="~/images/clients/mfi_logo.jpg" style="width:90px; height:70px" />
-                    </td>
-                    <td style="text-align: center; vertical-align: top;" colspan="3">
-                        <table border="0" style="width:100%">
-                            <tr>
-                                <td>
-                                    <b><span style="font-size:1.5em"> @SessionData.CompanyName </span></b><br />
-                                    <span>@SessionData.CompanyAddress</span><br />
-                                    <span>TEL: @SessionData.CompanyTelephone, FAX: @SessionData.CompanyFax, Email: @SessionData.CompanyEmail</span>
-                                </td>
-                                <td style="text-align: right; width:20%; vertical-align: top;">
-                                    @*<span>Pg. [page] / [toPage]</span>*@
-                                </td>
-                            </tr>
-                        </table>
+                    <td style="text-align: center; vertical-align: top;" colspan="4">
+                        <span style="display:inline-block; padding-right:40px">
+                            <img src="data:image/png;base64, @SessionData.CompanyLogo" class="imgCompanyLogo" style="width:90px; height:70px" />
+                        </span>
+                        <span style="display:inline-block">
+                            <b><label style="font-size:1.5em"> @SessionData.CompanyName </label></b><br />
+                            <label>@SessionData.CompanyAddress</label><br />
+                            <label>TEL: @SessionData.CompanyTelephone, FAX: @SessionData.CompanyFax, Email: @SessionData.CompanyEmail</label>
+                        </span>
                     </td>
                 </tr>
                 <tr>
@@ -193,22 +186,15 @@
                     <table style="width:900px; border:0px solid black; height:330px" border="0">
                         <tbody>
                             <tr>
-                                <td style="width: 250px; vertical-align: top; text-align:right">
-                                    <img src="~/images/clients/mfi_logo.jpg" style="width:90px; height:70px" />
-                                </td>
-                                <td style="text-align: center; vertical-align: top;" colspan="3">
-                                    <table border="0" style="width:100%">
-                                        <tr>
-                                            <td>
-                                                <b><span style="font-size:1.5em"> @SessionData.CompanyName </span></b><br />
-                                                <span>@SessionData.CompanyAddress</span><br />
-                                                <span>TEL: @SessionData.CompanyTelephone, FAX: @SessionData.CompanyFax, Email: @SessionData.CompanyEmail</span>
-                                            </td>
-                                            <td style="text-align: right; width:20%; vertical-align: top;">
-                                                @*<span>Pg. [page] / [toPage]</span>*@
-                                            </td>
-                                        </tr>
-                                    </table>
+                                <td style="text-align: center; vertical-align: top;" colspan="4">
+                                    <span style="display:inline-block; padding-right:40px">
+                                        <img src="data:image/png;base64, @SessionData.CompanyLogo" class="imgCompanyLogo" style="width:90px; height:70px" />
+                                    </span>
+                                    <span style="display:inline-block">
+                                        <b><label style="font-size:1.5em"> @SessionData.CompanyName </label></b><br />
+                                        <label>@SessionData.CompanyAddress</label><br />
+                                        <label>TEL: @SessionData.CompanyTelephone, FAX: @SessionData.CompanyFax, Email: @SessionData.CompanyEmail</label>
+                                    </span>
                                 </td>
                             </tr>
                             <tr>

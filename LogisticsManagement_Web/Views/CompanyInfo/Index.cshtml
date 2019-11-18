@@ -12,20 +12,20 @@
 
 
 <form id="frmCompanyForm">
-    <div class="row">
+    <div class="row" style="display:none">
         <div class="col-sm-12 form-group">
             <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Id" style="font-family:Arial, FontAwesome" id="txtCompanyId" type="number" name="txtCompanyId" value="@Model.Id" readonly>
         </div>
     </div>
 
     <div class="row">
-        <div class="form-group col-sm-4">
+        <div class="form-group col-sm-8">
             <small>
                 <b>
                     <label id="lblCompanyName" for="txtCompanyName">Company name</label>
                 </b>
             </small>
-            <input class="form-control form-control-sm" id="txtCompanyName" placeholder="Company name" name="txtCompanyName" type="text" maxlength="50" required />
+            <input class="form-control form-control-sm" id="txtCompanyName" placeholder="Company name" name="txtCompanyName" type="text" maxlength="70" required />
         </div>
 
 
@@ -66,13 +66,13 @@
         <div class="form-group col-sm-4">
             <small>
                 <b>
-                    <label for="fileCompanyLogo"> Profile pic</label>
+                    <label for="fileCompanyLogo"> Logo</label>
                 </b>
             </small>
             <input id="fileCompanyLogo" name="fileCompanyLogo" placeholder="Logo" type="file" class="form-control form-control-sm" style="height:35px" />
         </div>
         <div class="col-sm-3">
-            <img id="imgCompanyLogo" src="" alt="Logo pic" style="width:180px;height:200px; margin-top:50px; border:1px solid #c3c3c3; padding: 5px" />
+            <img id="imgCompanyLogo" src="" alt="Logo pic" style="width:180px;height:150px; margin-top:50px; border:1px solid #c3c3c3; padding: 5px" />
         </div>
     </div>
 
