@@ -20,8 +20,8 @@
         }
 
             .tg td {
-                font-family: Arial, sans-serif;
-                font-size: 16px;
+                font-family: Verdana, sans-serif;
+                font-size: 14px;
                 padding: 3px;
                 /*border-style: solid;*/
                 /*border-width: 1px;*/
@@ -41,18 +41,21 @@
                 text-align: center;
                 vertical-align: top;
                 padding: 0;
+                text-transform: capitalize
             }
 
             .tg .tg-7btt {
                 font-weight: bold;
                 border-color: inherit;
                 text-align: center;
-                vertical-align: top
+                vertical-align: top;
+                text-transform: capitalize
             }
 
             .tg .tg-0lax {
                 text-align: left;
-                vertical-align: top
+                vertical-align: top;
+                text-transform: capitalize
             }
 
         .pagebreak {
@@ -60,7 +63,7 @@
         }
 
         label {
-            text-transform: uppercase
+            text-transform: capitalize
         }
     </style>
 
@@ -99,15 +102,15 @@
                         <col style="width: 215px">
                         <col style="width: 220px">
                     </colgroup>
-                    <tr>
+                    <tr style="height:50px">
                         <td class="tg-amwm" rowspan="2">
-                            <div style="margin-bottom:15px">
+                            <div style="margin-bottom:5px">
                                 <b><span style="font-size:1.3em; text-transform:capitalize;"> @SessionData.CompanyName</span></b>
                             </div>
 
-                            <table style="border-collapse:collapse; margin: 0 auto" cellpadding="0" cellspacing="0">
+                            <table style="border-collapse:collapse; margin: 0 auto; height:50px" cellpadding="0" cellspacing="0">
                                 <tr>
-                                    <td rowspan="2"><img src="~/images/clients/mfi_logo.jpg" style="width:70px; height:50px;" /></td>
+                                    <td rowspan="2"><img src="~/images/clients/mfi_logo.jpg" style="width:70px; " /></td>
                                     <td><b style="padding-left:15px;font-size:1.10em;text-transform:capitalize">TEL: @SessionData.CompanyTelephone</b></td>
                                 </tr>
                                 <tr>
@@ -128,8 +131,8 @@
                             <label id="lblCustomerRefNo">@item.CustomerRefNo</label>
                         </td>
                         <td class="tg-amwm">
-                            <div style="font-size:1.2em;">WB#</div>
-                            <label id="lblWayBillNo" style="font-weight:bold; font-size:20px; float:right;padding-right:15px">@item.WaybillNumber</label>
+                            <span style="font-size:1.2em; float:left; padding-left:20px">WB#</span>
+                            <label id="lblWayBillNo" style="font-weight:bold; font-size:25px; float:right;padding-right:15px; padding-top:20px">@item.WaybillNumber</label>
                         </td>
                     </tr>
                     <tr>
@@ -153,10 +156,10 @@
                         </td>
 
                     </tr>
-                    <tr>
-                        <td class="tg-amwm" style="text-align:left" colspan="2">
-                            <div style="font-size:1.2em;padding-left:5px">Bill to:</div>
-                            <span style="font-size:1.1em;padding-left:5px"><label id="lblBillerName">@item.BillerCustomerName</label></span>
+                    <tr style="height:50px">
+                        <td class="tg-amwm" style="text-align:left; padding-top:5px" colspan="2">
+                            <span style="font-size:1.2em;padding-left:5px; float:left">Bill to:</span><br />
+                            <span ><label id="lblBillerName"  style="font-size:1.2em;">@item.BillerCustomerName</label></span>
                         </td>
                         <td colspan="2" style="padding:0">
                             <table border="1" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; height:100%; border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
@@ -166,7 +169,7 @@
                                         <div style="padding-top:10px"><label id="lblOrderByName">@item.OrderedByName</label></div>
                                     </td>
                                     <td class="tg-amwm" style="width: 100px;text-align:center;border-right:none;border-top:none;border-bottom:none">
-                                        <div style="font-size:1.2em;">SVC</div>
+                                        <div style="font-size:1.2em;">Svc</div>
                                         <div style="padding-top:10px"><label id="lblDeliveryOptionShortCode">@item.DeliveryOptionShortCode</label></div>
                                     </td>
                                 </tr>
@@ -211,38 +214,38 @@
                             </table>
                         </td>
                     </tr>
-                    <tr>
+                    <tr style="height:30px">
                         <td class="tg-7btt" colspan="2" style="text-align:center">
-                            <div><u>Pickup From</u></div>
+                            <div>Pickup From</div>
                             <div style="padding-top:10px; text-align:left;padding-left:5px"><label>@item.ShipperCustomerName</label></div>
                         </td>
                         <td class="tg-amwm" colspan="2" style="text-align:center">
-                            <div><u>Delivered To</u></div>
+                            <div>Delivered To</div>
                             <div style="padding-top:10px; text-align:left;padding-left:5px"><label>@item.ConsigneeCustomerName</label></div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="tg-amwm" colspan="2" style="text-align:left;padding-left:5px"><label id="lblPickupAddressLine">@item.ShipperCustomerAddressLine1</label></td>
-                        <td class="tg-amwm" colspan="2" style="text-align:left;padding-left:5px"><label id="lblDeliveryAddressLine">@item.ConsigneeCustomerAddressLine1</label></td>
+                        <td class="tg-amwm" colspan="2" style="text-align:left;vertical-align:middle; padding-left:5px"><label id="lblPickupAddressLine">@item.ShipperCustomerAddressLine1</label></td>
+                        <td class="tg-amwm" colspan="2" style="text-align:left;vertical-align:middle; padding-left:5px"><label id="lblDeliveryAddressLine">@item.ConsigneeCustomerAddressLine1</label></td>
                     </tr>
                     <tr>
-                        <td class="tg-amwm" colspan="2" style="text-align:left; height:35px;padding-left:5px"><label id="lblPickupCityAndProvince">@item.ShipperCustomerAddressLine2</label></td>
-                        <td class="tg-amwm" colspan="2" style="text-align:left;padding-left:5px"><label id="lblDeliveryCityAndProvince">@item.ConsigneeCustomerAddressLine2</label></td>
+                        <td class="tg-amwm" colspan="2" style="text-align:left; vertical-align:middle; height:35px;padding-left:5px"><label id="lblPickupCityAndProvince">@item.ShipperCustomerAddressLine2</label></td>
+                        <td class="tg-amwm" colspan="2" style="text-align:left;vertical-align:middle;padding-left:5px"><label id="lblDeliveryCityAndProvince">@item.ConsigneeCustomerAddressLine2</label></td>
                     </tr>
-                    <tr>
+                    <tr style="height:30px">
                         <td class="tg-0lax" colspan="4" style="padding:0px">
                             <table border="1" style="width:100%; border-collapse:collapse; height:100%; font-size:14px; font-weight:bold">
                                 <tr>
                                     <td style="vertical-align:top">
                                         <div style="text-align:center">Unit/Qty</div>
                                         <div style="padding-top:10px; text-align:center">
-                                            <span style="font-size:.8em"> <label id="lblNumberOfUnits">@item.UnitQuantity @item.UnitTypeShortCode</label></span>
+                                            <span > <label id="lblNumberOfUnits">@item.UnitQuantity @item.UnitTypeShortCode</label></span>
                                         </div>
                                     </td>
                                     <td style="vertical-align:top">
-                                        <div style="text-align:center">SKID</div>
+                                        <div style="text-align:center">Skid</div>
                                         <div style="padding-top:10px; text-align:center">
-                                            <span style="font-size:.8em"><label id="lblSkidQty">@item.SkidQuantity</label></span>
+                                            <span ><label id="lblSkidQty">@item.SkidQuantity</label></span>
                                         </div>
                                     </td>
                                     @*<td style="vertical-align:top">
@@ -254,25 +257,25 @@
                                     <td style="vertical-align:top">
                                         <div style="text-align:center">Wght. (<label id="lblWeightMeasurementShortCode">@item.WeightScaleShortCode</label>)</div>
                                         <div style="padding-top:10px; text-align:center">
-                                            <span style="font-size:.8em"><label id="lblWeightTotal">@item.WeightTotal</label></span>
+                                            <span ><label id="lblWeightTotal">@item.WeightTotal</label></span>
                                         </div>
                                     </td>
                                     <td style="vertical-align:top">
-                                        <div style="text-align:center">Deli. Date:</div>
+                                        <div style="text-align:center">Delv. Date:</div>
                                         <div style="padding-top:10px; text-align:center">
-                                            <span style="font-size:.8em"><label id="lblDeliveryDate">@item.DeliveryDate</label></span>
+                                            <span><label id="lblDeliveryDate">@item.DeliveryDate</label></span>
                                         </div>
                                     </td>
                                     <td style="vertical-align:top">
-                                        <div style="text-align:center">Deli. Time</div>
+                                        <div style="text-align:center">Delv. Time</div>
                                         <div style="padding-top:10px; text-align:center">
-                                            <span style="font-size:.8em"><label id="lblDeliveryTime">@item.DeliveryTime</label></span>
+                                            <span><label id="lblDeliveryTime">@item.DeliveryTime</label></span>
                                         </div>
                                     </td>
                                     <td style="vertical-align:top; width:110px">
                                         <div style="text-align:center">P/U: Drv.</div>
                                         <div style="padding-top:10px; text-align:center">
-                                            <span style="font-size:.8em"><label id="lblPUDriver">@item.PUDriverName</label></span>
+                                            <span><label id="lblPUDriver">@item.PUDriverName</label></span>
                                         </div>
                                     </td>
 
@@ -281,19 +284,18 @@
                             </table>
                         </td>
                     </tr>
-                    <tr>
+                    <tr style="height:30px">
                         <td colspan="4" style="padding:0">
-                            <table border="1" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; height:100%; border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
+                            <table border="1" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;  border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
                                 <tr>
-                                    <td class="tg-amwm" style="height:100px; vertical-align:top; text-align:center;border-left:none;border-top:none;border-bottom:none">
+                                    <td class="tg-amwm" style="height:60px;width:100px; vertical-align:top; text-align:center;border-left:none;border-top:none;border-bottom:none">
                                         <div style="text-align:center">Shipper print & sign</div>
+                                    </td>
+                                    <td class="tg-amwm" style="vertical-align:top; width:150px; text-align:left;border-right:none;border-top:none;border-bottom:none">
+                                        Receiver print & sign (Received in good)
 
                                     </td>
-                                    <td class="tg-amwm" style="vertical-align:top; text-align:center;border-right:none;border-top:none;border-bottom:none">
-                                        Receiver print & sign<br /><span style="font-size:.8em">(Received in good)</span>
-
-                                    </td>
-                                    <td class="tg-amwm" style="width:117px; vertical-align:top; text-align:center;border-right:none;border-top:none;border-bottom:none">
+                                    <td class="tg-amwm" style="width:43px; vertical-align:top; text-align:center;border-right:none;border-top:none;border-bottom:none">
                                         Deli. drv.<br>
                                         <label id="lblDeliveryDriverName">
                                             @item.DeliveryDriverName

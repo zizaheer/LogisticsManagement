@@ -1502,6 +1502,19 @@ namespace LogisticsManagement_Web.Controllers
                 var isMiscellaneous = Convert.ToBoolean(printOption.SelectToken("isMiscellaneous"));
                 var viewName = printOption.SelectToken("viewName").ToString();
 
+                _companyInfoLogic = new Lms_CompanyInfoLogic(_cache, new EntityFrameworkGenericRepository<Lms_CompanyInfoPoco>(_dbContext));
+                var companyInfo = _companyInfoLogic.GetSingleById(1);
+                if (companyInfo != null)
+                {
+                    SessionData.CompanyName = !string.IsNullOrEmpty(companyInfo.CompanyName) ? companyInfo.CompanyName : "";
+                    SessionData.CompanyLogo = companyInfo.CompanyLogo != null ? Convert.ToBase64String(companyInfo.CompanyLogo) : null;
+                    SessionData.CompanyAddress = !string.IsNullOrEmpty(companyInfo.MainAddress) ? companyInfo.MainAddress.ToUpper() : "";
+                    SessionData.CompanyTelephone = !string.IsNullOrEmpty(companyInfo.Telephone) ? companyInfo.Telephone : "";
+                    SessionData.CompanyFax = companyInfo.Fax;
+                    SessionData.CompanyEmail = !string.IsNullOrEmpty(companyInfo.EmailAddress) ? companyInfo.EmailAddress : "";
+                    SessionData.CompanyTaxNumber = !string.IsNullOrEmpty(companyInfo.TaxNumber) ? companyInfo.TaxNumber : "";
+                }
+
                 foreach (var item in wayBillNumberList)
                 {
                     var wbNumber = item.ToString().Trim();
