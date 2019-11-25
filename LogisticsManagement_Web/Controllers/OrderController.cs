@@ -383,6 +383,7 @@ namespace LogisticsManagement_Web.Controllers
                             existingOrder.UnitTypeId = orderPoco.UnitTypeId;
                             existingOrder.UnitQuantity = orderPoco.UnitQuantity;
                         }
+                        existingOrder.SkidQuantity = orderPoco.SkidQuantity;
                         existingOrder.OrderBasicCost = orderPoco.OrderBasicCost;
                         existingOrder.BasicCostOverriden = orderPoco.BasicCostOverriden;
                         existingOrder.FuelSurchargePercentage = orderPoco.FuelSurchargePercentage;
