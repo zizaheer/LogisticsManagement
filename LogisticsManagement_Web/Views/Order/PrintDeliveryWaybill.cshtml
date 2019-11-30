@@ -90,11 +90,11 @@
 
         for (int i = 0; i < numberOfCopyPerItem; i++)
         {
-            var paddingBottom = "265px";
-            if (itemCount == 1) {
-                paddingBottom = "0px";
+            if (itemCount == 1)
+            {
+                <hr style="width:100%;border-top:1px dotted #797979; margin-bottom:90px; margin-top:90px" />
             }
-            <div style="padding-bottom:@paddingBottom">
+            <div>
                 <table class="tg" style="table-layout: fixed; width: 1002px; height:600px; margin:0 auto;  text-transform:uppercase" border="1">
                     <colgroup>
                         <col style="width: 281px">
@@ -140,15 +140,15 @@
                         <td colspan="5" style="padding:0">
                             <table border="1" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; height:100%; border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
                                 <tr>
-                                    <td class="tg-amwm" style="border-left:none;border-top:none;border-bottom:none">
+                                    <td class="tg-amwm" style="width:285px; border-left:none;border-top:none;border-bottom:none">
                                         <div style="font-size:1.2em;">Cargo ctl#</div>
                                         <label id="lblCargoCtlNo">@item.CargoCtlNo</label>
                                     </td>
-                                    <td class="tg-amwm" style="width:270px; border-top:none; border-bottom:none">
+                                    <td class="tg-amwm" style="width:214px; border-top:none; border-bottom:none; ">
                                         <div style="font-size:1.2em;">AWB/Ctn#</div>
-                                        <label id="lblAwbContainerNo">@item.AwbContainerNo</label>
+                                        <label id="lblAwbContainerNo" style="padding:3px">@item.AwbContainerNo</label>
                                     </td>
-                                    <td class="tg-amwm" style="width:130px;  border-right:none;border-top:none;border-bottom:none">
+                                    <td class="tg-amwm" style="border-right:none;border-top:none;border-bottom:none">
                                         <div style="font-size:1.2em;">P/U ref#</div>
                                         <label id="lblPickupRefNo">@item.PickupRefNo</label>
                                     </td>
@@ -160,7 +160,7 @@
                     <tr style="height:50px">
                         <td class="tg-amwm" style="text-align:left; padding-top:5px" colspan="2">
                             <span style="font-size:1.2em;padding-left:5px; float:left">Bill to:</span><br />
-                            <span ><label id="lblBillerName"  style="font-size:1.2em;">@item.BillerCustomerName</label></span>
+                            <span><label id="lblBillerName" style="font-size:1.2em;">@item.BillerCustomerName</label></span>
                         </td>
                         <td colspan="2" style="padding:0">
                             <table border="1" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; height:100%; border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
@@ -240,13 +240,13 @@
                                     <td style="vertical-align:top">
                                         <div style="text-align:center">Unit/Qty</div>
                                         <div style="padding-top:10px; text-align:center">
-                                            <span > <label id="lblNumberOfUnits">@item.UnitQuantity @item.UnitTypeShortCode</label></span>
+                                            <span> <label id="lblNumberOfUnits">@item.UnitQuantity @item.UnitTypeShortCode</label></span>
                                         </div>
                                     </td>
                                     <td style="vertical-align:top">
                                         <div style="text-align:center">Skid</div>
                                         <div style="padding-top:10px; text-align:center">
-                                            <span ><label id="lblSkidQty">@item.SkidQuantity</label></span>
+                                            <span><label id="lblSkidQty">@item.SkidQuantity</label></span>
                                         </div>
                                     </td>
                                     @*<td style="vertical-align:top">
@@ -258,7 +258,7 @@
                                     <td style="vertical-align:top">
                                         <div style="text-align:center">Wght. (<label id="lblWeightMeasurementShortCode">@item.WeightScaleShortCode</label>)</div>
                                         <div style="padding-top:10px; text-align:center">
-                                            <span ><label id="lblWeightTotal">@item.WeightTotal</label></span>
+                                            <span><label id="lblWeightTotal">@item.WeightTotal</label></span>
                                         </div>
                                     </td>
                                     <td style="vertical-align:top">

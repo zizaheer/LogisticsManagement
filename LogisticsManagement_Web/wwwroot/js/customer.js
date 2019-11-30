@@ -499,7 +499,7 @@ function FillCustomerInfoById(customerId) {
         $('#isGstApplicable').prop('disabled', true);
     } else {
         $('#txtFuelSurcharge').prop('disabled', false);
-        $('#txtFuelSurcharge').val('15');
+        $('#txtFuelSurcharge').val('');
         $('#txtSpecialDiscount').prop('disabled', false);
         $('#txtInvoiceDueDays').prop('disabled', false);
         $('#isGstApplicable').prop('disabled', false);

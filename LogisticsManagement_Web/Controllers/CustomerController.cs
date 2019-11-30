@@ -225,7 +225,7 @@ namespace LogisticsManagement_Web.Controllers
                         var customer = _customerLogic.GetSingleById(customerPoco.Id);
                         customer.CustomerName = customerPoco.CustomerName;
                         customer.DiscountPercentage = customerPoco.DiscountPercentage;
-                        customer.FuelSurChargePercentage = customerPoco.FuelSurChargePercentage;
+                        customer.FuelSurChargePercentage = customerPoco.FuelSurChargePercentage > 0 ? customerPoco.FuelSurChargePercentage : null;
                         customer.InvoiceDueDays = customerPoco.InvoiceDueDays;
                         customer.IsGstApplicable = customerPoco.IsGstApplicable;
                         customer.IsActive = customerPoco.IsActive;

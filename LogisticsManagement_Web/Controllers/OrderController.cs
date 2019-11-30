@@ -544,7 +544,7 @@ namespace LogisticsManagement_Web.Controllers
                                 status.IsDispatched = true;
                                 status.DispatchedToEmployeeId = employeeNumber;
                                 status.VehicleId = vehicleId;
-                                status.DispatchedDatetime = dispatchDate == null ? DateTime.Now : dispatchDate;
+                                status.DispatchedDatetime = order.ScheduledPickupDate; //changed due to customer requested // dispatchDate == null ? DateTime.Now : dispatchDate;
                                 status.StatusLastUpdatedOn = DateTime.Now;
 
                                 _orderStatusLogic.Update(status);

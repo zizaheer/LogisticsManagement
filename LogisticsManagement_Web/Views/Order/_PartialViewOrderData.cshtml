@@ -20,7 +20,7 @@
 <table id="order-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
     <thead>
         <tr>
-            <th>
+            <th style="width:70px">
                 <div class="form-check-inline">
                     @{
                         var wayBillArray = Model.DispatchedOrders.Where(c => c.OrderStatus == "0" && c.OrderTypeId == 1).ToList().Select(c => c.WayBillNumber).Distinct().ToArray();
@@ -36,11 +36,11 @@
                 </div>
             </th>
 
-            <th>Date</th>
+            <th style="width:50px">Date</th>
             <th>Svc.</th>
-            <th>Ref #</th>
+            <th>Cust. Ref #</th>
             <th>Unit/Qty</th>
-            <th>Spc/Ins</th>
+            @*<th>Spc/Ins</th>*@
             <th>Shipper</th>
             <th>Consignee</th>
             <th>Biller</th>
@@ -51,55 +51,91 @@
     <tbody>
         @foreach (var item in Model.DispatchedOrders.Where(c => c.OrderStatus == "0" && c.OrderTypeId == 1).ToList().OrderByDescending(c => c.WayBillNumber))
         {
-            <tr>
-                <td>
-                    <div class="form-check-inline">
-                        <input type="checkbox" id="chkDispatchToEmployee" class="form-check-input chkDispatchToEmployee" name="chkDispatchToEmployee" data-waybillnumber="@item.WayBillNumber">
-                        <a class="btnEdit" href="#" data-waybillnumber='@item.WayBillNumber' data-toggle="modal" style="cursor:pointer"><label class="form-check-label" style="cursor:pointer">@item.WayBillNumber</label></a>
-                    </div>
-                </td>
-                <td>
-                    @item.OrderDateString
-                </td>
-                <td>
-                    @item.DeliveryOptionCode
-                </td>
-                <td>
-                    @item.CustomerRefNumber
-                </td>
-                <td>
-                    @{
-                        if (item.SkidQuantity > 0)
-                        {
-                            @item.SkidQuantity;<span> (SKD);</span>
-                        }
-
-                        if (item.UnitQuantity > 0)
-                        {
-                            <span>
-                                @item.UnitQuantity (@item.UnitTypeName)
-                            </span>
-                        }
+        <tr>
+            <td>
+                <div class="form-check-inline">
+                    <input type="checkbox" id="chkDispatchToEmployee" class="form-check-input chkDispatchToEmployee" name="chkDispatchToEmployee" data-waybillnumber="@item.WayBillNumber">
+                    <a class="btnEdit" href="#" data-waybillnumber='@item.WayBillNumber' data-toggle="modal" style="cursor:pointer"><label class="form-check-label" style="cursor:pointer">@item.WayBillNumber</label></a>
+                </div>
+            </td>
+            <td>
+                @item.OrderDateString
+            </td>
+            <td>
+                @item.DeliveryOptionCode
+            </td>
+            <td>
+                @item.CustomerRefNumber
+            </td>
+            <td>
+                @{
+                    if (item.SkidQuantity > 0)
+                    {
+                        @item.SkidQuantity;<span> (SKD);</span>
                     }
-                </td>
-                <td>
-                    @item.SpcIns
-                </td>
-                <td>
-                   @item.ShipperCustomerName
-                </td>
-                <td>
-                    @item.ConsigneeCustomerName
-                </td>
-                <td>
-                    @item.BillerCustomerName
-                </td>
 
-                <td>
-                    <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn-primary smallGridIcon btnEdit" type="button" title="Edit" data-target="#newOrder" data-toggle="modal"><i class="fa fa-pencil"></i></button>
-                    <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn-danger smallGridIcon btnDelete" data-toggle="modal" data-target="#alert-modal" type="button" title="Delete"><i class="fa fa-trash"></i> </button>
-                </td>
-            </tr>
+                    if (item.UnitQuantity > 0)
+                    {
+                        <span>
+                            @item.UnitQuantity (@item.UnitTypeName)
+                        </span>
+                    }
+                }
+            </td>
+            @*<td>
+            @item.SpcIns
+        </td>*@
+
+            <td title="@item.ShipperCustomerName">
+                @{
+                    var shipper = "";
+                    if (item.ShipperCustomerName.Length > 25)
+                    {
+                        shipper = item.ShipperCustomerName.Substring(0, 22) + "...";
+                    }
+                    else
+                    {
+                        shipper = item.ShipperCustomerName;
+                    }
+                    @shipper
+                }
+            </td>
+
+            <td title="@item.ConsigneeCustomerName">
+                @{
+                    var consignee = "";
+                    if (item.ConsigneeCustomerName.Length > 25)
+                    {
+                        consignee = item.ConsigneeCustomerName.Substring(0, 22) + "...";
+                    }
+                    else
+                    {
+                        consignee = item.ConsigneeCustomerName;
+                    }
+                    @consignee
+                }
+            </td>
+
+            <td title="@item.BillerCustomerName">
+                @{
+                    var biller = "";
+                    if (item.BillerCustomerName.Length > 25)
+                    {
+                        biller = item.BillerCustomerName.Substring(0, 22) + "...";
+                    }
+                    else
+                    {
+                        biller = item.BillerCustomerName;
+                    }
+                    @biller
+                }
+            </td>
+
+            <td>
+                <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn-primary smallGridIcon btnEdit" type="button" title="Edit" data-target="#newOrder" data-toggle="modal"><i class="fa fa-pencil"></i></button>
+                <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn-danger smallGridIcon btnDelete" data-toggle="modal" data-target="#alert-modal" type="button" title="Delete"><i class="fa fa-trash"></i> </button>
+            </td>
+        </tr>
         }
 
     </tbody>

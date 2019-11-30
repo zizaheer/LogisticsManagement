@@ -415,7 +415,7 @@
                             </datalist>
                             @*<input type="text" id="txtEmployeeTypeName" name="txtEmployeeTypeName" class="form-control form-control-sm txtEmployeeTypeName" placeholder="" readonly />*@
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-4" style="display:none">
                             <small>
                                 <b>
                                     <label for="txtDispatchDatetimeForNewOrders">Dispatch date</label>
@@ -530,7 +530,7 @@
                                         </div>
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblBillTo" for="txtBillToCustomerName"><b>BILLER</b></label>
+                                        <label style="margin-top:5px" id="lblBillTo" for="txtBillToCustomerName"><b>BILL TO</b></label>
                                     </small>
                                     <div class="col-sm-3">
 
@@ -555,7 +555,7 @@
                                         <select class="form-control form-control-sm" id="ddlDeliveryOptionId" name="ddlDeliveryOptionId" style="width:166px">
                                             @foreach (var deliveryOption in Model.DeliveryOptions)
                                             {
-                                                <option value="@deliveryOption.Id">@deliveryOption.OptionName - (@deliveryOption.ShortCode) </option>
+                                                <option value="@deliveryOption.Id" title="@deliveryOption.OptionName">@deliveryOption.OptionName - (@deliveryOption.ShortCode) </option>
                                             }
                                         </select>
                                     </div>
