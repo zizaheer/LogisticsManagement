@@ -11,6 +11,7 @@ namespace LogisticsManagement_Web.Models
         public Lms_ConfigurationPoco Configuration { get; set; }
         public List<Lms_OrderAdditionalServicePoco> OrderAdditionalServices { get; set; }
         public List<Lms_CustomerPoco> Customers { get; set; }
+        public List<Lms_CustomerPoco> BillingCustomers { get; set; }
         public List<Lms_EmployeePoco> Employees { get; set; }
         public List<Lms_AdditionalServicePoco> AdditionalServices { get; set; }
         public List<Lms_DeliveryOptionPoco> DeliveryOptions  { get; set; }

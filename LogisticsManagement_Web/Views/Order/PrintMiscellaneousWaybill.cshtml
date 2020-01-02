@@ -39,19 +39,22 @@
             .tg .tg-amwm {
                 font-weight: bold;
                 text-align: center;
-                vertical-align: top
+                vertical-align: top;
+                text-transform: capitalize
             }
 
             .tg .tg-7btt {
                 font-weight: bold;
                 border-color: inherit;
                 text-align: center;
-                vertical-align: top
+                vertical-align: top;
+                text-transform: capitalize
             }
 
             .tg .tg-0lax {
                 text-align: left;
-                vertical-align: top
+                vertical-align: top;
+                text-transform: capitalize
             }
 
         .pagebreak {
@@ -89,6 +92,10 @@
 
         for (int i = 0; i < numberOfCopyPerItem; i++)
         {
+            if (itemCount == 1)
+            {
+                <hr style="width:100%;border-top:1px dotted #797979; margin-bottom:90px; margin-top:90px" />
+            }
             <table class="tg" style="table-layout: fixed; width: 1002px; height:600px; margin:0 auto; text-transform:uppercase" border="1">
                 <colgroup>
                     <col style="width: 281px">
@@ -161,8 +168,29 @@
                             <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
                             <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
                             <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
-                            <tr><td style="height:18px; width:100px; border-left:none">Savings</td><td style="border-right:none">@item.OrderDiscountAmount</td></tr>
-                            <tr><td style="height:18px; width:100px; border-left:none; height:20px">Add. Srv.</td><td style="border-right:none"><label id="lblAdditionalServiceCost">@item.AdditionalServiceCost</label></td></tr>
+                            <tr>
+                                <td style="height:18px; width:100px; border-left:none">
+
+                                    @{
+                                        if (item.OrderDiscountAmount != "")
+                                        {
+                                            <label>Savings</label>
+                                        }
+                                    }
+                                </td>
+                                <td style="border-right:none">@item.OrderDiscountAmount</td>
+                            </tr>
+                            <tr>
+                                <td style="height:18px; width:100px; border-left:none; height:20px">
+                                    @{
+                                        if (item.AdditionalServiceCost != "")
+                                        {
+                                            <label>Add. Srv.</label>
+                                        }
+                                    }
+                                </td>
+                                <td style="border-right:none"><label id="lblAdditionalServiceCost">@item.AdditionalServiceCost</label></td>
+                            </tr>
 
                             <tr><td style="border-left:none">HST</td><td style="border-right:none; height:20px"><label id="lblOrderTaxAmount">@item.OrderTaxAmountOnBasePrice</label></td></tr>
                             <tr><td style="border-bottom:none; border-left:none; height:20px">Total</td><td style="border-bottom:none; border-right:none"><label id="lblTotalOrderCost">@item.NetTotalOrderCost</label></td></tr>
@@ -249,8 +277,6 @@
                     </td>
                 </tr>
             </table>
-            <br /><br />
-            <hr /><br /><br />
 
             itemCount = itemCount + 1;
         }

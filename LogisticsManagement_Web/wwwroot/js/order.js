@@ -77,7 +77,7 @@ $('#btnNewOrder').unbind().on('click', function () {
     $('#frmOrderForm').trigger('reset');
 
     $('#txtSchedulePickupDate').val(ConvertDateToUSFormat(new Date));
-    
+
     var maxWayBill = GetSingleById('Order/GetNextWaybillNumber', 0);
 
     var addressLinesForAutoComplete = GetList('Address/GetAddressForAutoComplete');
@@ -725,6 +725,8 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
         return;
     }
 
+
+
     if (dataArray[0].cargoCtlNumber !== '' || dataArray[0].awbCtnNumber !== '' || dataArray[0].referenceNumber !== '') {
         var countCtl = PerformPostActionWithObject('Order/GetCargoCtlNumberCount', { cargoCtl: dataArray[0].cargoCtlNumber, orderId: dataArray[0].id });
         var countAwb = PerformPostActionWithObject('Order/GetAwbCtnNumberCount', { awbCtn: dataArray[0].awbCtnNumber, orderId: dataArray[0].id });
@@ -791,12 +793,12 @@ function SubmitOrderForm(dataArray) {
     }
     else {
         if (dataArray[0].wayBillNumber >= 0 && isNewEntry === true) {
-        result = PerformPostActionWithObject('Order/Add', dataArray);
-        if (result !== null) {
-            parseData = JSON.parse(result);
-            $('#txtWayBillNo').val(parseData.waybillNumber);
-            $('#hfOrderId').val(parseData.orderId);
-            // bootbox.alert('The order has been created successfully');
+            result = PerformPostActionWithObject('Order/Add', dataArray);
+            if (result !== null) {
+                parseData = JSON.parse(result);
+                $('#txtWayBillNo').val(parseData.waybillNumber);
+                $('#hfOrderId').val(parseData.orderId);
+                // bootbox.alert('The order has been created successfully');
             }
         }
     }
@@ -813,6 +815,13 @@ function SubmitOrderForm(dataArray) {
 }
 
 function ValidateOrderForm(formData) {
+
+    var maxWaybillNo = GetSingleById('Order/GetNextWaybillNumber', 0);
+    if (parseInt(formData.wayBillNumber) > parseInt(maxWaybillNo)) {
+        bootbox.alert('Waybill number cannot exceed the maximum WB# ' + maxWaybillNo + '.');
+        return false;
+    }
+
     if (formData.unitQuantity < 1 && formData.skidQuantity < 1 && formData.totalPieces < 1) {
         bootbox.alert('Quantity required either for Unit or Skid!');
         return false;
@@ -1629,7 +1638,7 @@ function FillOrderDetails(orderRelatedData) {
             $('#txtBaseOrderSurcharge').val('');
         }
 
-        
+
         var fuelSurChargeAmnt = $('#txtBaseOrderSurcharge').val() > 0 ? parseFloat($('#txtBaseOrderSurcharge').val()) : 0;
 
         if (orderRelatedData.ApplicableGstPercent > 0 && orderRelatedData.OrderBasicCost > 0) {
@@ -1676,7 +1685,7 @@ function FillOrderDetails(orderRelatedData) {
         else {
             $('#lblGrandDiscountAmount').text('0.00');
         }
-        
+
 
 
         if (orderRelatedData.BasicCostOverriden > 0) {

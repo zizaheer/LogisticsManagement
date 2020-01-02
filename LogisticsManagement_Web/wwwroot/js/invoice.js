@@ -776,16 +776,16 @@ $('#btnMakePayment').unbind().on('click', function (event) {
     }
 
     var result = PerformPostActionWithObject('MakePayment', [data, wayBillNumberArrayForInvoicePayment]);
-    if (result.length > 0) {
+    //if (result.length > 0) {
         LoadDueInvoicesByCustomer(data.billerCustomerId);
         bootbox.alert('Payment successfully made.');
         $('#loadCustomersInvoiceDue').load('PartialCustomersInvoiceDueDataTable');
         wayBillNumberArrayForInvoicePayment = [];
 
-    } else {
-        bootbox.alert('Failed! There was an error occurred while making the payment.');
-        return;
-    }
+    //} else {
+    //bootbox.alert('' + result);
+    //    return;
+    //}
 
     ClearPaymentForm();
 
@@ -795,6 +795,40 @@ $('#btnMakePayment').unbind().on('click', function (event) {
         $('#txtChequeNo').val(data.chequeNo);
         $('#txtChequeDate').val(data.chequeDate);
     }
+});
+
+$('#customer-paid-invoices .btnUndoPayment').unbind().on('click', function () {
+
+    var invoiceId = $(this).data('invoiceid');
+    if (invoiceId !== '') {
+        var paymentList = GetListById('Invoice/GetPaymentListByInvoiceId', invoiceId);
+        $.each(paymentList, function (key, value) {
+            //$('#invoice-payment-list tbody').append('<tr><td>');
+        });
+    }
+
+    $('#paymentList').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#paymentList').draggable();
+    $('#paymentList').modal('show');
+
+
+    //var invoiceId = $(this).data('invoiceid');
+    //if (invoiceId !== '') {
+
+    //    var result = PerformPostActionWithId('Invoice/UndoPayment', invoiceId);
+    //    if (result.length > 0) {
+    //        LoadDueInvoicesByCustomer(data.billerCustomerId);
+    //        bootbox.alert('Payment has been deleted.');
+    //        $('#loadCustomersInvoiceDue').load('PartialCustomersInvoiceDueDataTable');
+    //        wayBillNumberArrayForInvoicePayment = [];
+    //    } else {
+    //        bootbox.alert('Failed! There was an error occurred. Please try again.');
+    //    }
+    //}
+
 });
 
 $('#btnCloseModal').unbind().on('click', function (event) {

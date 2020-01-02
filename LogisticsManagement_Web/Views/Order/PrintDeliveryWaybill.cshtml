@@ -92,7 +92,7 @@
         {
             if (itemCount == 1)
             {
-                <hr style="width:100%;border-top:1px dotted #797979; margin-bottom:90px; margin-top:90px" />
+                <hr style="width:100%;border-top:1px dotted #797979; margin-bottom:60px; margin-top:60px" />
             }
             <div>
                 <table class="tg" style="table-layout: fixed; width: 1002px; height:600px; margin:0 auto;  text-transform:uppercase" border="1">
@@ -120,15 +120,15 @@
                             </table>
                         </td>
                         <td class="tg-amwm">
-                            <div style="font-size:1.2em;">Date</div>
+                            <div style="font-size:1.2em;padding-bottom:6px">Date</div>
                             <label id="lblWayBillDate">@item.WayBillDate</label>
                         </td>
                         <td class="tg-amwm">
-                            <div style="font-size:1.2em;">Account#</div>
+                            <div style="font-size:1.2em;padding-bottom:6px">Account#</div>
                             <label id="lblBillerAccountNo">@item.BillerCustomerId</label>
                         </td>
                         <td class="tg-amwm">
-                            <div style="font-size:1.2em;">Cust Ref#</div>
+                            <div style="font-size:1.2em;padding-bottom:6px">Cust Ref#</div>
                             <label id="lblCustomerRefNo">@item.CustomerRefNo</label>
                         </td>
                         <td class="tg-amwm">
@@ -141,26 +141,30 @@
                             <table border="1" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; height:100%; border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
                                 <tr>
                                     <td class="tg-amwm" style="width:285px; border-left:none;border-top:none;border-bottom:none">
-                                        <div style="font-size:1.2em;">Cargo ctl#</div>
+                                        <div style="font-size:1.2em;padding-bottom:5px">Cargo ctl#</div>
                                         <label id="lblCargoCtlNo">@item.CargoCtlNo</label>
                                     </td>
                                     <td class="tg-amwm" style="width:214px; border-top:none; border-bottom:none; ">
-                                        <div style="font-size:1.2em;">AWB/Ctn#</div>
+                                        <div style="font-size:1.2em;padding-bottom:5px">AWB/Ctn#</div>
                                         <label id="lblAwbContainerNo" style="padding:3px">@item.AwbContainerNo</label>
                                     </td>
                                     <td class="tg-amwm" style="border-right:none;border-top:none;border-bottom:none">
-                                        <div style="font-size:1.2em;">P/U ref#</div>
+                                        <div style="font-size:1.2em;padding-bottom:5px">P/U ref#</div>
                                         <label id="lblPickupRefNo">@item.PickupRefNo</label>
                                     </td>
                                 </tr>
                             </table>
                         </td>
-
                     </tr>
                     <tr style="height:50px">
-                        <td class="tg-amwm" style="text-align:left; padding-top:5px" colspan="2">
-                            <span style="font-size:1.2em;padding-left:5px; float:left">Bill to:</span><br />
-                            <span><label id="lblBillerName" style="font-size:1.2em;">@item.BillerCustomerName</label></span>
+                        <td class="tg-amwm" style="text-align:left;" colspan="2">
+                            <div style="text-align:left; padding-bottom:5px">
+                                <span style="font-size:1.2em;padding-left:5px;">Bill to:</span><br />
+                            </div>
+                            <div>
+                                <span style="font-size:1.2em;padding-left:5px;"><label id="lblBillerName">@item.BillerCustomerName</label></span>
+                            </div>
+
                         </td>
                         <td colspan="2" style="padding:0">
                             <table border="1" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; height:100%; border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
@@ -191,9 +195,46 @@
                                             }
                                         }
                                     </td>
-                                    <td style="border-right:none">@item.OrderDiscountAmount</td>
+                                    <td style="border-right:none">
+                                        @item.OrderDiscountAmount
+                                    </td>
                                 </tr>
-                                <tr>
+
+                                @for (int serviceCount = 0; serviceCount < 5; serviceCount++)
+                                {
+                                    <tr>
+                                        <td style="height:18px; width:100px; border-left:none; height:20px">
+                                            @{
+                                                var itemCode = "";
+                                                var itemPrice = "";
+                                                if (item.OrderAdditionalServices !=null && item.OrderAdditionalServices.Count > serviceCount)
+                                                {
+                                                    var itemInfo = item.OrderAdditionalServices[serviceCount];
+                                                    if (itemInfo != null)
+                                                    {
+                                                        itemCode = itemInfo.AdditionalServiceId.ToString();
+                                                        itemCode = item.AdditionalServices.Where(c => c.Id == Convert.ToInt32(itemCode)).FirstOrDefault().ServiceCode;
+                                                        itemPrice= itemInfo.AdditionalServiceFee.ToString();
+                                                    }
+                                                }
+                                            }
+                                            <label>@itemCode</label>
+                                        </td>
+                                        <td style="border-right:none">
+                                            <label id="lblAdditionalServiceCost">@itemPrice</label>
+                                        </td>
+                                    </tr>
+
+                                }
+
+
+
+
+
+
+
+
+                                @*<tr>
                                     <td style="height:18px; width:100px; border-left:none; height:20px">
                                         @{
                                             if (item.AdditionalServiceCost != "")
@@ -209,7 +250,7 @@
                                 <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
                                 <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
                                 <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
-                                <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
+                                <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>*@
                                 <tr><td style="border-left:none">HST</td><td style="border-right:none; height:20px"><label id="lblOrderTaxAmount">@item.OrderTaxAmountOnBasePrice</label></td></tr>
                                 <tr><td style="border-bottom:none; border-left:none; height:20px">Total</td><td style="border-bottom:none; border-right:none"><label id="lblTotalOrderCost">@item.NetTotalOrderCost</label></td></tr>
                             </table>
@@ -276,7 +317,7 @@
                                     <td style="vertical-align:top; width:110px">
                                         <div style="text-align:center">P/U: Drv.</div>
                                         <div style="padding-top:10px; text-align:center">
-                                            <span><label id="lblPUDriver">@item.PUDriverName</label></span>
+                                            <span><label id="lblPUDriver">@item.PUDriverNum</label></span>
                                         </div>
                                     </td>
 
@@ -293,13 +334,13 @@
                                         <div style="text-align:center">Shipper print & sign</div>
                                     </td>
                                     <td class="tg-amwm" style="vertical-align:top; width:150px; padding-left:8px; text-align:left;border-right:none;border-top:none;border-bottom:none">
-                                        Receiver print & sign (Received in good)
-
+                                        Receiver print & sign (Received in good)<br /><br />
+                                        <label style="text-transform:uppercase;">@item.ReceivedBy</label>
                                     </td>
                                     <td class="tg-amwm" style="width:43px; vertical-align:top; text-align:center;border-right:none;border-top:none;border-bottom:none">
                                         Deli. drv.<br>
                                         <label id="lblDeliveryDriverName">
-                                            @item.DeliveryDriverName
+                                            @item.DeliveryDriverNum
                                         </label>
 
                                     </td>

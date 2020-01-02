@@ -19,6 +19,7 @@
             vertical-align: top;
             border-left: none;
             border-right: none;
+            color:#000000;
         }
 
         .pagebreak {
@@ -320,7 +321,7 @@
                     </table>
 
                 }
-                <table style="width:898px; margin-left:4px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
+                <table style="width:898px;font-weight:600; margin-left:4px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase" border="1" cellspacing="2" cellpadding="2">
                     <tbody>
                         @{ bodyHeight += 50;}
                         <tr style="font-size:11px; font-family: 'Courier New'; height:50px">
@@ -405,7 +406,7 @@
                                     @{
                                         if (!string.IsNullOrEmpty(bill.PickupRefNo))
                                         {
-                                            <span>PU/DL: @bill.PickupRefNo</span>
+                                            <span>PU/DL Ref: @bill.PickupRefNo</span>
                                         }
                                     }
                                 </td>

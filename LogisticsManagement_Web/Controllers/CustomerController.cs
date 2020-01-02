@@ -652,12 +652,12 @@ namespace LogisticsManagement_Web.Controllers
 
                 if (customer != null)
                 {
-                    if (customer.FuelSurChargePercentage == null || customer.FuelSurChargePercentage <= 0)
-                    {
-                        _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
-                        var defaultFuelSurcharge = _configurationLogic.GetSingleById(1).DefaultFuelSurcharge;
-                        customer.FuelSurChargePercentage = defaultFuelSurcharge;
-                    }
+                    //if (customer.FuelSurChargePercentage == null || customer.FuelSurChargePercentage <= 0)
+                    //{
+                    //    _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+                    //    var defaultFuelSurcharge = _configurationLogic.GetSingleById(1).DefaultFuelSurcharge;
+                    //    customer.FuelSurChargePercentage = defaultFuelSurcharge;
+                    //}
                     return Json(JsonConvert.SerializeObject(customer));
                 }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LogisticsManagement_Poco;
 
 namespace LogisticsManagement_Web.Models
 {
@@ -36,6 +37,8 @@ namespace LogisticsManagement_Web.Models
         public string AdditionalServiceCostBeforeTax { get; set; }
         public string AdditionalServiceCost { get; set; }
         public string NetTotalOrderCost { get; set; }
+        public List<Lms_OrderAdditionalServicePoco> OrderAdditionalServices { get; set; }
+        public List<Lms_AdditionalServicePoco> AdditionalServices { get; set; }
 
         public string ShipperCustomerName { get; set; }
         public string ShipperCustomerAddressLine1 { get; set; }
@@ -54,6 +57,9 @@ namespace LogisticsManagement_Web.Models
         public string DeliveryDate { get; set; }
         public string DeliveryTime { get; set; }
         public string PUDriverName { get; set; }
+        public string PUDriverNum { get; set; }
+        public string ReceivedBy { get; set; }
+        public string DeliveryDriverNum { get; set; }
         public string DeliveryDriverName { get; set; }
         public string WaybillComments { get; set; }
         public string InvoiceComments { get; set; }

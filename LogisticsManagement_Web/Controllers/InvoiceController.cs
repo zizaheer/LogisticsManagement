@@ -717,8 +717,8 @@ namespace LogisticsManagement_Web.Controllers
                         wbNumbers.Add(item.SelectToken("wbillNumber").ToString());
                     }
 
-                    using (var scope = new TransactionScope())
-                    {
+                    //using (var scope = new TransactionScope())
+                    //{
                         var transactionId = 0;
 
                         var mappingList = _invoiceWayBillMappingLogic.GetList();
@@ -801,6 +801,55 @@ namespace LogisticsManagement_Web.Controllers
                         invoiceInfo.PaidAmount = invoiceInfo.PaidAmount == null ? 0 + Convert.ToDecimal(paidAmnt) : invoiceInfo.PaidAmount + Convert.ToDecimal(paidAmnt);
                         _invoiceLogic.Update(invoiceInfo);
 
+                      //  scope.Complete();
+
+                        result = "Success";
+                    //}
+                }
+            }
+            catch (Exception ex)
+            {
+                result = "Message: " + ex.Message +". Inner exception: " + ex.InnerException;
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult UndoPayment([FromBody]dynamic paymentData)
+        {
+            ValidateSession();
+            var result = "";
+
+            try
+            {
+                if (paymentData != null)
+                {
+                    var payInfo = (JObject)paymentData[0];
+                    var invoiceNo = Convert.ToInt32(payInfo.SelectToken("invoiceNo"));
+                    
+
+                    var wbInfo = (JArray)paymentData[1];
+                    List<string> wbNumbers = new List<string>();
+
+                    foreach (var item in wbInfo)
+                    {
+                        wbNumbers.Add(item.SelectToken("wbillNumber").ToString());
+                    }
+
+                    using (var scope = new TransactionScope())
+                    {
+
+                        var invoiceInfo = _invoiceLogic.GetSingleById(Convert.ToInt32(invoiceNo));
+                        invoiceInfo.PaidAmount = null;
+                        _invoiceLogic.Update(invoiceInfo);
+
+                        var _paymentCollectionLogic = new Lms_InvoicePaymentCollectionLogic(_cache, new EntityFrameworkGenericRepository<Lms_InvoicePaymentCollectionPoco>(_dbContext));
+                        var paymentInfo = _paymentCollectionLogic.GetList().Where(c => c.InvoiceId == Convert.ToInt32(invoiceNo));
+
+                        var transInfo = new TransactionController(_cache, _dbContext);
+                        //transInfo.RemoveTransaction(invoiceInfo.);
+
                         scope.Complete();
 
                         result = "Success";
@@ -809,7 +858,7 @@ namespace LogisticsManagement_Web.Controllers
             }
             catch (Exception ex)
             {
-
+                result = "Message: " + ex.Message + ". Inner exception: " + ex.InnerException;
             }
 
             return Json(result);
@@ -965,6 +1014,7 @@ namespace LogisticsManagement_Web.Controllers
 
 
                         decimal totalInvoiceAmount = 0;
+                        var billToCustomerId = 0;
                         var waybillInfoList = _invoiceWayBillMappingLogic.GetList().Where(c => c.InvoiceId == invoicePoco.Id).ToList();
                         foreach (var waybill in waybillInfoList)
                         {
@@ -981,7 +1031,13 @@ namespace LogisticsManagement_Web.Controllers
                                 {
                                     orderPrice = orderPrice + order.TotalOrderCost + (decimal)order.TotalAdditionalServiceCost;
                                 }
+
+                                
                             }
+                            if (orderInfo.Count > 0) {
+                                billToCustomerId = orderInfo.FirstOrDefault().BillToCustomerId;
+                            }
+                            
                             totalInvoiceAmount = totalInvoiceAmount + orderPrice;
                             waybill.TotalWayBillAmount = orderPrice;
                             waybill.IsClear = false;
@@ -1008,6 +1064,8 @@ namespace LogisticsManagement_Web.Controllers
                         var transactionId = MakeTransaction(debitAccountDetailList, creditAccountDetailList, totalInvoiceAmount, DateTime.Now, DateTime.Now, "Invoice re-generated");
 
                         var invoiceInfo = _invoiceLogic.GetSingleById(invoicePoco.Id);
+
+                        invoiceInfo.BillerCustomerId = billToCustomerId;
                         invoiceInfo.InvoiceGenTxnId = transactionId;
                         invoiceInfo.TotalInvoiceAmount = totalInvoiceAmount;
                         _invoiceLogic.Update(invoiceInfo);
@@ -1032,6 +1090,30 @@ namespace LogisticsManagement_Web.Controllers
         //    return PartialView("_PartialViewCustomerPaidInvoices", GetDueInvoicesByCustomerId(id));
         //}
 
+        public IActionResult GetPaymentListByInvoiceId(string id) {
+
+            var result = "";
+            try
+            {
+                if (id != string.Empty) {
+                    var _paymentCollectionLogic = new Lms_InvoicePaymentCollectionLogic(_cache, new EntityFrameworkGenericRepository<Lms_InvoicePaymentCollectionPoco>(_dbContext));
+                    var paymentList = _paymentCollectionLogic.GetList().Where(c => c.InvoiceId == Convert.ToInt32(id)).ToList();
+
+                    if (paymentList.Count > 0) {
+                        result = JsonConvert.SerializeObject(paymentList);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(result);
+            }
+
+            return Json(result);
+
+
+        }
         [HttpGet]
         public IActionResult GetDueInvoicesByCustomerId(string id)
         {
@@ -1276,6 +1358,9 @@ namespace LogisticsManagement_Web.Controllers
                 var webrootPath = _hostingEnvironment.WebRootPath;
                 var uniqueId = DateTime.Now.ToFileTime();
                 var fileName = "invoice_" + uniqueId + ".pdf";
+                if (viewModelPrintInvoice.viewModelInvoiceBillers.Count == 1) {
+                    fileName = viewModelPrintInvoice.viewModelInvoiceBillers.FirstOrDefault().BillerCustomerName + "-INV-" + viewModelPrintInvoice.viewModelInvoiceBillers.FirstOrDefault().InvoiceNo + ".pdf";
+                }
                 var directoryPath = webrootPath + "/contents/invoices/";
                 var filePath = directoryPath + fileName;
 
@@ -1306,7 +1391,7 @@ namespace LogisticsManagement_Web.Controllers
 
                 var pdfReport = new ViewAsPdf(viewName, viewModelPrintInvoice)
                 {
-                    CustomSwitches = "--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8",
+                    //CustomSwitches = "--page-offset 0 --footer-center [page]/[toPage] --footer-font-size 8",
                     PageSize = Rotativa.AspNetCore.Options.Size.Letter
                 };
 
@@ -1369,6 +1454,9 @@ namespace LogisticsManagement_Web.Controllers
             {
                 var billerAddressInfo = addresses.Where(c => c.Id == addressInfo.AddressId).FirstOrDefault();
                 invoiceBiller.BillerCustomerAddressLine = string.IsNullOrEmpty(billerAddressInfo.UnitNumber) ? billerAddressInfo.AddressLine : billerAddressInfo.UnitNumber + ", " + billerAddressInfo.AddressLine;
+                if (invoiceBiller.BillerCustomerAddressLine.Length > 45) {
+                    invoiceBiller.BillerCustomerAddressLine = invoiceBiller.BillerCustomerAddressLine.Substring(0, 42) + "...";
+                }
                 invoiceBiller.BillerCustomerCityLine = cities.Where(c => c.Id == billerAddressInfo.CityId).FirstOrDefault().CityName + ", ";
                 invoiceBiller.BillerCustomerCityLine += provinces.Where(c => c.Id == billerAddressInfo.ProvinceId).FirstOrDefault().ShortCode;
                 invoiceBiller.BillerPostCode = billerAddressInfo.PostCode;
@@ -1547,16 +1635,40 @@ namespace LogisticsManagement_Web.Controllers
                 }
 
                 waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == order.ShipperCustomerId).FirstOrDefault().CustomerName;
+                if (waybillPrintViewModel.ShipperCustomerName.Length > 24) {
+                    waybillPrintViewModel.ShipperCustomerName = waybillPrintViewModel.ShipperCustomerName.Substring(0, 21) + "...";
+                }
                 var shippperAddress = addresses.Where(c => c.Id == order.ShipperAddressId).FirstOrDefault();
                 waybillPrintViewModel.ShipperCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber + ", " + shippperAddress.AddressLine : shippperAddress.AddressLine;
+                if (waybillPrintViewModel.ShipperCustomerAddressLine1.Length > 24)
+                {
+                    waybillPrintViewModel.ShipperCustomerAddressLine1 = waybillPrintViewModel.ShipperCustomerAddressLine1.Substring(0, 21) + "...";
+                }
                 waybillPrintViewModel.ShipperCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + shippperAddress.PostCode;
-
+                if (waybillPrintViewModel.ShipperCustomerAddressLine2.Length > 24)
+                {
+                    waybillPrintViewModel.ShipperCustomerAddressLine2 = waybillPrintViewModel.ShipperCustomerAddressLine2.Substring(0, 21) + "...";
+                }
                 if (isMiscellaneous == false)
                 {
                     waybillPrintViewModel.ConsigneeCustomerName = customers.Where(c => c.Id == order.ConsigneeCustomerId).FirstOrDefault().CustomerName;
+                    if (waybillPrintViewModel.ConsigneeCustomerName.Length > 24)
+                    {
+                        waybillPrintViewModel.ConsigneeCustomerName = waybillPrintViewModel.ConsigneeCustomerName.Substring(0, 21) + "...";
+                    }
                     var consigneeAddress = addresses.Where(c => c.Id == order.ConsigneeAddressId).FirstOrDefault();
                     waybillPrintViewModel.ConsigneeCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
+
+                    if (waybillPrintViewModel.ConsigneeCustomerAddressLine1.Length > 24)
+                    {
+                        waybillPrintViewModel.ConsigneeCustomerAddressLine1 = waybillPrintViewModel.ConsigneeCustomerAddressLine1.Substring(0, 21) + "...";
+                    }
+
                     waybillPrintViewModel.ConsigneeCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
+                    if (waybillPrintViewModel.ConsigneeCustomerAddressLine2.Length > 24)
+                    {
+                        waybillPrintViewModel.ConsigneeCustomerAddressLine2 = waybillPrintViewModel.ConsigneeCustomerAddressLine2.Substring(0, 21) + "...";
+                    }
                 }
 
                 waybillPrintViewModel.SkidQuantity = order.SkidQuantity;

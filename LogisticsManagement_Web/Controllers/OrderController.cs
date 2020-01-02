@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,7 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_OrderStatusLogic _orderStatusLogic;
         private Lms_AddressLogic _addressLogic;
         private Lms_CustomerLogic _customerLogic;
+        private Lms_CustomerAddressMappingLogic _customerAddressLogic;
         private Lms_EmployeeLogic _employeeLogic;
         private App_CityLogic _cityLogic;
         private App_ProvinceLogic _provinceLogic;
@@ -697,7 +699,7 @@ namespace LogisticsManagement_Web.Controllers
                     var receivedByName = Convert.ToString(orderData[4]);
                     var receivedBySign = Convert.ToString(orderData[5]);
                     var orderId = Convert.ToInt16(orderData[6]);
-
+                   
                     byte[] imageByte = null;
                     if (receivedBySign != null && receivedBySign != "")
                     {
@@ -1072,7 +1074,7 @@ namespace LogisticsManagement_Web.Controllers
             string result = "";
             try
             {
-                var maxNumber = _orderLogic.GetSingleById(_orderLogic.GetList().Max(c => c.Id)).WayBillNumber;
+                var maxNumber = _orderLogic.GetList().Max(c => c.WayBillNumber);
                 if (maxNumber != null)
                 {
                     result = Convert.ToString(Convert.ToInt32(maxNumber) + 1);
@@ -1540,6 +1542,7 @@ namespace LogisticsManagement_Web.Controllers
                             waybillPrintViewModel.CustomerRefNo = orderInfo.ReferenceNumber;
                             waybillPrintViewModel.CargoCtlNo = orderInfo.CargoCtlNumber;
                             waybillPrintViewModel.AwbContainerNo = orderInfo.AwbCtnNumber;
+                            waybillPrintViewModel.PickupRefNo = orderInfo.PickupReferenceNumber;
                             waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == orderInfo.BillToCustomerId).FirstOrDefault().CustomerName;
                             waybillPrintViewModel.OrderedByName = orderInfo.OrderedBy;
                             if (orderInfo.DeliveryOptionId != null && orderInfo.DeliveryOptionId > 0)
@@ -1577,12 +1580,16 @@ namespace LogisticsManagement_Web.Controllers
 
                             decimal orderTotalTax = 0; // for misc. orders
                             waybillPrintViewModel.AdditionalServiceCost = "0.00";
+                            waybillPrintViewModel.AdditionalServices = additionalServices;
+                            waybillPrintViewModel.OrderAdditionalServices = null;
                             if (orderInfo.TotalAdditionalServiceCost > 0)
                             {
                                 waybillPrintViewModel.AdditionalServiceCost = Convert.ToDecimal(orderInfo.TotalAdditionalServiceCost).ToString("0.00");
+                                var addServices = orderAdditionalServices.Where(c => c.OrderId == orderInfo.Id).ToList();
+                                waybillPrintViewModel.OrderAdditionalServices = addServices;
+
                                 if (isMiscellaneous == true)
                                 {
-                                    var addServices = orderAdditionalServices.Where(c => c.OrderId == orderInfo.Id).ToList();
                                     foreach (var addservice in addServices)
                                     {
                                         var serviceCost = addservice.AdditionalServiceFee;
@@ -1604,7 +1611,7 @@ namespace LogisticsManagement_Web.Controllers
                             {
                                 waybillPrintViewModel.OrderTaxAmountOnBasePrice = Convert.ToDecimal(orderTotalTax).ToString("0.00");
                                 waybillPrintViewModel.NetTotalOrderCost = Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost).ToString("0.00");
-                                waybillPrintViewModel.AdditionalServiceCost = "0.00"; // For misc. waybill print 
+                                waybillPrintViewModel.AdditionalServiceCost = "0.00"; //For misc. waybill print 
                             }
                             else
                             {
@@ -1662,14 +1669,36 @@ namespace LogisticsManagement_Web.Controllers
                             var orderStatus = orderStatusList.Where(c => c.OrderId == orderInfo.Id).FirstOrDefault();
                             if (orderStatus != null)
                             {
+                                waybillPrintViewModel.PUDriverNum = orderStatus.DispatchedToEmployeeId.ToString();
+                                if (!string.IsNullOrEmpty(waybillPrintViewModel.PUDriverNum)) {
+                                    waybillPrintViewModel.PUDriverName = employeeList.Where(c => c.Id == Convert.ToInt32(waybillPrintViewModel.PUDriverNum)).FirstOrDefault().FirstName;
+                                }
+
                                 if (orderStatus.PassedOffToEmployeeId != null && orderStatus.PassedOffToEmployeeId > 0)
                                 {
                                     waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.PassedOffToEmployeeId).FirstOrDefault().FirstName;
+                                    waybillPrintViewModel.DeliveryDriverNum = orderStatus.PassedOffToEmployeeId.ToString();
                                 }
                                 else if (orderStatus.DispatchedToEmployeeId != null && orderStatus.DispatchedToEmployeeId > 0)
                                 {
                                     waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.DispatchedToEmployeeId).FirstOrDefault().FirstName;
+                                    waybillPrintViewModel.DeliveryDriverNum = orderStatus.DispatchedToEmployeeId.ToString();
                                 }
+                                waybillPrintViewModel.ReceivedBy = orderStatus.ReceivedByName;
+
+                                if (!string.IsNullOrEmpty(waybillPrintViewModel.ReceivedBy))
+                                {
+                                    if (waybillPrintViewModel.ReceivedBy.Length > 15)
+                                    {
+                                        waybillPrintViewModel.ReceivedBy = waybillPrintViewModel.ReceivedBy.Substring(0, 12) + "...";
+                                    }
+                                }
+
+                                if (orderStatus.DeliveredDatetime != null) {
+                                    waybillPrintViewModel.DeliveryDate = ((DateTime)orderStatus.DeliveredDatetime).ToString("dd-MMM-yyyy");
+                                    waybillPrintViewModel.DeliveryTime = ((DateTime)orderStatus.DeliveredDatetime).ToString("hh:mm tt");
+                                }
+
                             }
                             if (orderInfo.IsPrintedOnWayBill != null && orderInfo.IsPrintedOnWayBill == true)
                             {
@@ -1692,6 +1721,17 @@ namespace LogisticsManagement_Web.Controllers
                                 waybillPrintViewModel.AdditionalServiceCost = "";
                                 waybillPrintViewModel.OrderTaxAmountOnBasePrice = "";
                                 waybillPrintViewModel.NetTotalOrderCost = "";
+                                waybillPrintViewModel.OrderAdditionalServices = null;
+                            }
+                            else {
+                                if (Convert.ToDouble(waybillPrintViewModel.OrderDiscountAmount) <= 0) {
+                                    waybillPrintViewModel.OrderDiscountAmount = "";
+                                }
+
+                                if (Convert.ToDouble(waybillPrintViewModel.AdditionalServiceCost) <= 0)
+                                {
+                                    waybillPrintViewModel.AdditionalServiceCost = "";
+                                }
                             }
 
                             waybillPrintViewModels.Add(waybillPrintViewModel);
@@ -1710,8 +1750,10 @@ namespace LogisticsManagement_Web.Controllers
                     System.IO.Directory.CreateDirectory(directoryPath);
                 }
 
-
-                var pdfReport = new ViewAsPdf(viewName, waybillPrintViewModels);
+                var pdfReport = new ViewAsPdf(viewName, waybillPrintViewModels)
+                {
+                    PageSize = Rotativa.AspNetCore.Options.Size.Letter
+                }; 
                 var file = pdfReport.BuildFile(ControllerContext).Result;
 
                 System.IO.File.WriteAllBytes(filePath, file);
@@ -1825,6 +1867,13 @@ namespace LogisticsManagement_Web.Controllers
 
             _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
             deliveryOrderViewModel.Customers = _customerLogic.GetList();
+
+            _customerAddressLogic = new Lms_CustomerAddressMappingLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerAddressMappingPoco>(_dbContext));
+            var custWithBillingAddress = _customerAddressLogic.GetList().Where(c => c.AddressTypeId == (int)Enum_AddressType.Billing).ToList();
+
+            deliveryOrderViewModel.BillingCustomers = (from cust in deliveryOrderViewModel.Customers
+                                                       join add in custWithBillingAddress on cust.Id equals add.CustomerId
+                                                       select cust).ToList();
 
             _deliveryOptionLogic = new Lms_DeliveryOptionLogic(_cache, new EntityFrameworkGenericRepository<Lms_DeliveryOptionPoco>(_dbContext));
             deliveryOrderViewModel.DeliveryOptions = _deliveryOptionLogic.GetList();

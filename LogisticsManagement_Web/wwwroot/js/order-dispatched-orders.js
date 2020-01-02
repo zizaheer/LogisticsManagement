@@ -3,23 +3,24 @@
 $(document).ready(function () {
 
     $('#txtDispatchDatetimeForNewOrders').val(ConvertDatetimeToUSDatetime(new Date));
+    
 
-    $(function () {
-        var canvas = document.querySelector('#signatureCanvas');
-        var pad = new SignaturePad(canvas);
+    //$(function () {
+    //    var canvas = document.querySelector('#signatureCanvas');
+    //    var pad = new SignaturePad(canvas);
 
-        $('#btnOk').click(function () {
-            var data = pad.toDataURL();
-            $('#imgSignature').val(data);
-            pad.off();
-        });
+    //    $('#btnOk').click(function () {
+    //        var data = pad.toDataURL();
+    //        $('#imgSignature').val(data);
+    //        pad.off();
+    //    });
 
-        $('#btnCancel').click(function () {
-            pad.clear();
-            pad.on();
-            $('#imgSignature').val('');
-        });
-    });
+    //    $('#btnCancel').click(function () {
+    //        pad.clear();
+    //        pad.on();
+    //        $('#imgSignature').val('');
+    //    });
+    //});
 
 });
 
@@ -30,6 +31,8 @@ $(document).ready(function () {
 var passOnEmployeeId = 0;
 var orderId = 0;
 var wayBillNumber = 0;
+var selectedOrdersForDispatch = [];
+
 $('.btnPickup').unbind().on('click', function () {
 
     //console.log('teste');
@@ -306,8 +309,11 @@ $('.btnDeliver').unbind().on('click', function () {
 
         $('#txtDeliveryWaitTime').val(orderStatusInfo.DeliveryWaitTimeHour);
         $('#txtReceivedByName').val(orderStatusInfo.ReceivedByName);
+
+        
+
         $('#txtDeliveryNote').val(orderStatusInfo.ProofOfDeliveryNote);
-        DrawSignatureImage(orderStatusInfo.ReceivedBySignature);
+        //DrawSignatureImage(orderStatusInfo.ReceivedBySignature);
 
         $('#orderDeliver').modal({
             backdrop: 'static',
@@ -330,6 +336,7 @@ $('#btnSaveDeliver').unbind().on('click', function (event) {
     var receivedByName = $('#txtReceivedByName').val();
     var deliveryNote = $('#txtDeliveryNote').val();
     var receivedBySign = $('#imgSignature').val();
+    var printWaybill = $('#chkPrintWaybill').is(':checked');
 
     orderId = $('#hfOrderIdForOrderStatusUpdate').val();
 
@@ -348,6 +355,39 @@ $('#btnSaveDeliver').unbind().on('click', function (event) {
     var result = PerformPostActionWithObject('Order/UpdateDeliveryStatus', dataArray);
 
     if (result.length > 0) {
+        if (printWaybill === true) {
+            selectedOrdersForDispatch.push(parseInt(wayBillNumber));
+            var printUrl = 'Order/PrintWaybillAsPdf';
+            var printOption = {
+                numberOfcopyOnEachPage: 1,
+                numberOfcopyPerItem: 1,
+                ignorePrice: 0,
+                isMiscellaneous: 0,
+                viewName: 'PrintDeliveryWaybill',
+                printUrl: printUrl
+            };
+
+            var dataArray = [selectedOrdersForDispatch, printOption];
+
+            $.ajax({
+                'async': false,
+                url: "Order/PrintWaybillAsPdf",
+                type: 'POST',
+                data: JSON.stringify(dataArray),
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    if (result.length > 0) {
+                        window.open(result, "_blank");
+                    }
+                },
+                error: function (result) {
+                    bootbox.alert('Printing failed! There are some eror occurred while processing the printing.');
+                }
+            });
+
+        }
+        
         $('#loadDispatchedOrders').load('Order/LoadDispatchedOrdersForDispatchBoard');
         $('#orderDeliver').modal('hide');
         location.reload();
@@ -450,9 +490,10 @@ function ClearModal() {
     $('#txtDeliveryWaitTime').val('');
     $('#txtReceivedByName').val('');
     $('#txtDeliveryNote').val('');
+    setTimeout(function () { $('input[name="txtReceivedByName"]').focus() }, 1000);
 
-    var canvas = document.querySelector('#signatureCanvas');
-    var pad = new SignaturePad(canvas);
+    //var canvas = document.querySelector('#signatureCanvas');
+    //var pad = new SignaturePad(canvas);
 }
 
 function DrawSignatureImage(base64String) {
