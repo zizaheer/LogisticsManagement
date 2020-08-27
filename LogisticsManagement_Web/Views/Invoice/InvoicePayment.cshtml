@@ -35,8 +35,8 @@
                 <img src="~/images/flaticons-64x64/online-payment.png" style="height:25px; padding-left:14px; padding-right:10px" />
                 <b id="exampleModalCenterTitle">Collect payment</b>
                 <div class="col-sm-3 offset-7" style="padding-right:0px;text-align:right">
-                    <button type="button" class="btn btn-sm btn-primary" id="btnMakePayment"><i class="fa fa-money"></i> Make Payment</button>
-                    <button type="button" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
+                    @*<button type="button" class="btn btn-sm btn-primary" id="btnMakePayment"><i class="fa fa-money"></i> Apply Payment</button>
+                    <button type="button" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>*@
                 </div>
             </div>
             <div class="modal-body">
@@ -45,11 +45,11 @@
                     <div class="row">
                         <div class="col-sm-8 form-group input-group">
                             @*<small>
-                                    <b>
-                                        <label for="lblCustomerName">Customer:</label>
-                                        <label id="lblCustomerName" class="" style="margin-left:8px"></label>
-                                    </b>
-                                </small>*@
+                    <b>
+                        <label for="lblCustomerName">Customer:</label>
+                        <label id="lblCustomerName" class="" style="margin-left:8px"></label>
+                    </b>
+                </small>*@
                             @* <input type="text" id="txtCustomerName" class="form-control form-control-sm" style="margin-left:8px" readonly />*@
                         </div>
                     </div>
@@ -84,34 +84,34 @@
 
 
                     @*<div class="row">
-                            <div class="col-sm-12">
-                                <small><b><label for="txtCustomerName">Payment information</label></b></small>
-                                <hr style="margin-top:0px" />
-                            </div>
-                        </div>*@
+            <div class="col-sm-12">
+                <small><b><label for="txtCustomerName">Payment information</label></b></small>
+                <hr style="margin-top:0px" />
+            </div>
+        </div>*@
 
-                    <div class="row">
+                    <div class="row col-12">
                         <div class="col-sm-8" style="background-color:#91dcff">
                             <div class="row mb-1">
-                                <div class="col-sm-2">
+                                <div class="col-sm-2" style="padding-left:0">
                                     <small><b><label for="txtInvoiceNo">Invoice no:</label></b></small>
                                     <input type="text" id="txtInvoiceNo" class="form-control form-control-sm" style="font-weight:bolder" readonly />
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-3" style="padding-left:0">
                                     <small><b><label for="txtPaidAmount">Paid amnt.</label></b></small>
                                     <input type="text" id="txtPaidAmount" class="form-control form-control-sm" readonly />
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-3" style="padding-left:0">
                                     <small><b><label for="txtDueAmount">Due:</label></b></small>
                                     <input type="text" id="txtDueAmount" class="form-control form-control-sm" readonly />
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-4" style="padding-left:0">
                                     <small><b><label for="txtInvoiceDate">Invoice date:</label></b></small>
                                     <input type="date" id="txtInvoiceDate" class="form-control form-control-sm" readonly />
                                 </div>
                             </div>
                             <div class="row mb-1" style="margin-bottom:0px !important">
-                                <div class="col-sm-12">
+                                <div class="col-sm-12" style="padding-left:0">
                                     <div style="display:block; height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3;" id="loadPartialViewCustomerWiseDueInvoices">
                                         <table class="table table-sm table-striped waybill-list-for-invoice-payment" style="width:100%; margin-top: -1px !important; font-size:.75em">
                                             <thead>
@@ -139,7 +139,7 @@
                         <div class="col-sm-4" style="background-color:#d8f0fb">
 
                             <div class="row mb-1">
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="padding-right:0">
                                     <small><b><label for="ddlPaymentMethodId">Payment method:</label></b></small>
                                     <select class="form-control form-control-sm ddlPaymentMethodId" id="ddlPaymentMethodId">
                                         @foreach (var item in ViewBag.PaymentMethods)
@@ -153,7 +153,7 @@
 
                                     </select>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="padding-right:0">
                                     <small><b><label>Banking info</label></b></small>
                                     <div class="form-check-inline">
                                         <input type="checkbox" class="form-check-input" id="chkKeepBankingInformation" />
@@ -162,7 +162,7 @@
                                 </div>
                             </div>
                             <div class="row mb-1">
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="padding-right:0">
                                     <small><b><label for="ddlBankId">Bank name:</label></b></small>
                                     <select class="form-control form-control-sm ddlBankId" id="ddlBankId">
                                         <option value="0">-Select-</option>
@@ -173,38 +173,38 @@
 
                                     </select>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="padding-right:0">
                                     <small><b><label for="txtChequeNo">Cheque no:</label></b></small>
                                     <input type="text" id="txtChequeNo" class="form-control form-control-sm" />
                                 </div>
                             </div>
                             <div class="row mb-1">
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="padding-right:0">
                                     <small><b><label for="txtChequeAmount">Cheque amt.:</label></b></small>
                                     <input type="number" id="txtChequeAmount" class="form-control form-control-sm" />
                                 </div>
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="padding-right:0">
                                     <small><b><label for="txtChequeDate">Cheque date:</label></b></small>
                                     <input type="date" id="txtChequeDate" class="form-control form-control-sm" />
                                 </div>
                             </div>
                             <div class="row mb-1">
-                                <div class="col-sm-4">
+                                <div class="col-sm-4" style="padding-right:0">
                                     <small><b><label for="txtCashAmount">Cash amt.:</label></b></small>
                                     <input type="number" id="txtCashAmount" class="form-control form-control-sm" disabled />
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-4" style="padding-right:0">
                                     <small><b><label for="txtPaymentApplied">Applied</label></b></small>
                                     <input type="number" id="txtPaymentApplied" class="form-control form-control-sm" />
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-4" style="padding-right:0">
                                     <small><b><label for="txtRemainingAmount">Remaining</label></b></small>
                                     <input type="number" id="txtRemainingAmount" class="form-control form-control-sm" disabled />
                                 </div>
                             </div>
                             <div class="row mb-1">
-                                <div class="col-sm-12">
+                                <div class="col-sm-12" style="padding-right:0">
                                     <small><b><label for="txtPaymentRemarks">Remarks:</label></b></small>
                                     <textarea id="txtPaymentRemarks" class="form-control form-control-sm"></textarea>
                                 </div>
@@ -212,6 +212,19 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-sm-12">
+                          <hr />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-sm-3 offset-9" style="padding-right:0px; text-align:right">
+                                <button type="button" class="btn btn-sm btn-primary" id="btnMakePayment"><i class="fa fa-money"></i> Apply Payment</button>
+                                <button type="button" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i> Close </button>
+                            </div>
+                        </div>
+                    </div>
 
 
                 </div>

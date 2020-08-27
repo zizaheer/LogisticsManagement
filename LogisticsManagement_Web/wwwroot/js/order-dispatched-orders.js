@@ -359,7 +359,7 @@ $('#btnSaveDeliver').unbind().on('click', function (event) {
             selectedOrdersForDispatch.push(parseInt(wayBillNumber));
             var printUrl = 'Order/PrintWaybillAsPdf';
             var printOption = {
-                numberOfcopyOnEachPage: 1,
+                numberOfcopyOnEachPage: 2,
                 numberOfcopyPerItem: 1,
                 ignorePrice: 0,
                 isMiscellaneous: 0,

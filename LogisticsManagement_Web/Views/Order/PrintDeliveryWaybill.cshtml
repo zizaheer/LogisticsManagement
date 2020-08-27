@@ -125,7 +125,13 @@
                         </td>
                         <td class="tg-amwm">
                             <div style="font-size:1.2em;padding-bottom:6px">Account#</div>
-                            <label id="lblBillerAccountNo">@item.BillerCustomerId</label>
+                            <label id="lblBillerAccountNo">@{ 
+                                if (item.BillerCustomerId > 0)
+                                {
+                                    @item.BillerCustomerId
+                                }
+                            }
+                            </label>
                         </td>
                         <td class="tg-amwm">
                             <div style="font-size:1.2em;padding-bottom:6px">Cust Ref#</div>

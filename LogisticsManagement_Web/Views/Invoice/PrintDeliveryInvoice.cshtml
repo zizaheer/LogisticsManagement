@@ -165,9 +165,9 @@
 
         <div>
             @{
-                var wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId && c.InvoiceNumber == item.InvoiceNo).ToList();
+                var wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId && c.InvoiceNumber == item.InvoiceNo).OrderBy(c=> Convert.ToDateTime(c.WayBillDate)).ThenBy(c=>c.WaybillNumber).ToList();
                 if (wayBills!=null && wayBills.Count < 1) {
-                    wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId).ToList();
+                    wayBills = Model.viewModelWaybills.Where(c => c.BillerCustomerId == item.BillerCustomerId).OrderBy(c => Convert.ToDateTime(c.WayBillDate)).ThenBy(c => c.WaybillNumber).ToList();
                 }
 
 
@@ -440,9 +440,8 @@
                             accumulatedBasicChg += Convert.ToDouble(bill.OrderBasePrice);
                             accumulatedDeliveryChg = accumulatedBasicChg;
                             accumulatedFuelChg += Convert.ToDouble(bill.FuelSurcharge);
-                            accumulatedAdditionalChg += Convert.ToDouble(bill.AdditionalServiceCost);
-                            //accumulatedTaxAmnt += Convert.ToDouble(bill.OrderTaxAmountOnBasePrice);
-                            accumulatedTaxAmnt += Convert.ToDouble(bill.OrderTaxAmountOnBasePrice);
+                            accumulatedAdditionalChg += Convert.ToDouble(bill.AdditionalServiceCostBeforeTax);
+                            accumulatedTaxAmnt += Convert.ToDouble(bill.OrderTaxAmountOnBasePrice) + (Convert.ToDouble(bill.AdditionalServiceCost) - Convert.ToDouble(bill.AdditionalServiceCostBeforeTax));
 
                             accumulatedSavings += Convert.ToDouble(bill.OrderDiscountAmount);}
                     </tbody>

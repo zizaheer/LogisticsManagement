@@ -10,7 +10,7 @@ $(document).ready(function () {
     $('#txtToDate').val(ConvertDateToUSFormat(new Date));
     $('#txtInvoiceDate').val(ConvertDateToUSFormat(new Date));
 
-    $('#txtChequeDate').val(ConvertDateToUSFormat(new Date));
+    //$('#txtChequeDate').val(ConvertDateToUSFormat(new Date));
 
 
     $(document).ajaxStart(function () {
@@ -332,7 +332,7 @@ $('#btnTrialPrint').unbind().on('click', function (event) {
     printUrl = 'Invoice/PrintInvoiceAsPdf';
 
 
-    var printData = { wayBillNumberArray: wayBillNumberArray, invoiceNumberArray: null };
+    var printData = { wayBillNumberArray: wayBillNumberArray.sort(), invoiceNumberArray: null };
     var printOption = {
         isMiscellaneous: orderType === 3 ? 1 : 0,
         viewName: orderType === 3 ? 'PrintMiscellaneousInvoice' : 'PrintDeliveryInvoice',
@@ -704,6 +704,7 @@ function ClearPaymentForm() {
     $('#txtPaidAmount').val('');
     $('#txtDueAmount').val('');
     $('#txtInvoiceDate').val('');
+    $('#chkPayAllWaybill').prop('checked', false);
 
 
     //$('#ddlPaymentMethodId').val('0');
@@ -756,7 +757,7 @@ $('#btnMakePayment').unbind().on('click', function (event) {
         return;
     }
 
-    if (data.ddlBankId > 0 || data.chequeNo !== '' || data.chequeDate !== '' || data.chequeAmount > 0) {
+    if (data.paymentMethodId === 1) {
         if (data.ddlBankId < 1) {
             bootbox.alert('Please select bank information');
             return;
@@ -774,6 +775,8 @@ $('#btnMakePayment').unbind().on('click', function (event) {
             return;
         }
     }
+
+   
 
     var result = PerformPostActionWithObject('MakePayment', [data, wayBillNumberArrayForInvoicePayment]);
     //if (result.length > 0) {

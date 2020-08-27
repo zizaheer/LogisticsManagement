@@ -433,7 +433,7 @@ $('#frmMiscOrderForm').unbind('submit').submit(function (event) {
         return;
     }
 
-    var duplicateWaybill = GetObject('Order/FindDuplicateWayBillByOrderAndWaybillId?orderId=' + dataArray[0].id + '&waybillNo=' + dataArray[0].wayBillNumber);
+    var duplicateWaybill = GetObject('Order/FindDuplicateWayBillByOrderAndWaybillId?orderId=' + dataArray[0].id + '&orderTypeId=' + dataArray[0].orderTypeId + '&waybillNo=' + dataArray[0].wayBillNumber);
     if (duplicateWaybill !== '') {
         bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number or keep it blank to create auto.');
         return;
@@ -756,7 +756,7 @@ function CalculateOrderCost() {
     var currentGstTotal = 0.0;
     if (selectedAdditionalServiceArray.length > 0) {
         for (var i = 0; i < selectedAdditionalServiceArray.length; i++) {
-            if (selectedAdditionalServiceArray[i].additionalServiceFee > 0) {
+            if (selectedAdditionalServiceArray[i].additionalServiceFee > 0 || selectedAdditionalServiceArray[i].additionalServiceFee < 0) {
                 totalServiceCost = totalServiceCost + selectedAdditionalServiceArray[i].additionalServiceFee;
                 if (selectedAdditionalServiceArray[i].isTaxAppliedOnAddionalService && selectedAdditionalServiceArray[i].taxAmountOnAdditionalService > 0) {
                     var discountedServiceFee = selectedAdditionalServiceArray[i].additionalServiceFee - (discountPercentage * selectedAdditionalServiceArray[i].additionalServiceFee / 100);
@@ -1120,7 +1120,7 @@ function GenerateNewAdditionalServiceRow() {
     appendString += '</datalist>';
     appendString += '</td>';
     appendString += '<td style="width:190px; padding-right:5px">';
-    appendString += '<input type="number" class="form-control form-control-sm additionalServiceControl txtServiceFee " min="0" id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />';
+    appendString += '<input type="number" class="form-control form-control-sm additionalServiceControl txtServiceFee " id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />';
     appendString += '</td>';
     appendString += '<td style="width:160px; text-align:center">';
     appendString += '<input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" />';

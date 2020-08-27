@@ -385,6 +385,11 @@ namespace LogisticsManagement_Web.Controllers
                             existingOrder.UnitTypeId = orderPoco.UnitTypeId;
                             existingOrder.UnitQuantity = orderPoco.UnitQuantity;
                         }
+                        else
+                        {
+                            existingOrder.UnitTypeId = 0;
+                            existingOrder.UnitQuantity = null;
+                        }
                         existingOrder.SkidQuantity = orderPoco.SkidQuantity;
                         existingOrder.OrderBasicCost = orderPoco.OrderBasicCost;
                         existingOrder.BasicCostOverriden = orderPoco.BasicCostOverriden;
@@ -503,6 +508,55 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public IActionResult RemoveByOrderId(string id)
+        {
+            ValidateSession();
+            var result = "";
+            try
+            {
+                using (var scope = new TransactionScope())
+                {
+
+                    var order = _orderLogic.GetSingleById(Convert.ToInt32(id));
+
+                    _orderAdditionalServiceLogic = new Lms_OrderAdditionalServiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderAdditionalServicePoco>(_dbContext));
+                    _orderStatusLogic = new Lms_OrderStatusLogic(_cache, new EntityFrameworkGenericRepository<Lms_OrderStatusPoco>(_dbContext));
+
+                    var orderServices = _orderAdditionalServiceLogic.GetList().Where(c => c.OrderId == order.Id).ToList();
+                    if (orderServices.Count > 0)
+                    {
+                        foreach (var item in orderServices)
+                        {
+                            _orderAdditionalServiceLogic.Remove(item);
+                        }
+                    }
+
+                    var orderStatus = _orderStatusLogic.GetList().Where(c => c.OrderId == order.Id).ToList();
+
+                    if (orderStatus.Count > 0)
+                    {
+                        foreach (var item in orderStatus)
+                        {
+                            _orderStatusLogic.Remove(item);
+                        }
+                    }
+
+                    _orderLogic.Remove(order);
+
+
+                    scope.Complete();
+
+                    result = "Success";
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return Json(result);
+        }
         [HttpPost]
         public IActionResult UpdateDispatchStatus([FromBody]dynamic orderData)
         {
@@ -699,7 +753,7 @@ namespace LogisticsManagement_Web.Controllers
                     var receivedByName = Convert.ToString(orderData[4]);
                     var receivedBySign = Convert.ToString(orderData[5]);
                     var orderId = Convert.ToInt16(orderData[6]);
-                   
+
                     byte[] imageByte = null;
                     if (receivedBySign != null && receivedBySign != "")
                     {
@@ -980,25 +1034,117 @@ namespace LogisticsManagement_Web.Controllers
             var result = "";
             try
             {
-                var orders = _orderLogic.GetList();
-                var dispatchedList = _orderStatusLogic.GetList();
+                int wbTo = 0;
+                wbTo = Convert.ToInt32(toNumber);
 
-                dispatchedList = (from dispatch in dispatchedList
-                                  join order in orders on dispatch.OrderId equals order.Id
-                                  select dispatch).ToList();
+                int wbFrom = 0;
+                wbFrom = Convert.ToInt32(fromNumber);
 
-                using (var scope = new TransactionScope())
+                List<ViewModel_PrintWaybill> waybillPrintViewModels = new List<ViewModel_PrintWaybill>();
+
+                if (wbTo > 0 && wbFrom > 0)
                 {
+                    var orders = _orderLogic.GetList();
+                    for (int index = wbFrom; index <= wbTo; index++)
+                    {
+                        var orderByWaybill = orders.Where(c => c.WayBillNumber == index.ToString()).FirstOrDefault();
+                        if (orderByWaybill != null && !string.IsNullOrEmpty(orderByWaybill.WayBillNumber) && orderByWaybill.OrderTypeId == 1 && (orderByWaybill.TotalOrderCost + orderByWaybill.TotalAdditionalServiceCost) > 0)
+                        {
+                            continue;
+                        }
+                        using (var scope = new TransactionScope())
+                        {
+                            ViewModel_PrintWaybill waybillPrintViewModel = new ViewModel_PrintWaybill();
+                            waybillPrintViewModel.WaybillNumber = index.ToString();
+                            waybillPrintViewModel.OrderDiscountAmount = "";
+                            waybillPrintViewModel.NumberOfCopyOnEachPage = 2;
+                            waybillPrintViewModel.NumberOfCopyPerItem = 2;
+
+                            Lms_OrderPoco order = new Lms_OrderPoco();
+                            order.OrderTypeId = 1;
+                            order.WayBillNumber = index.ToString();
+                            order.ReferenceNumber = "";
+                            order.CargoCtlNumber = "";
+                            order.AwbCtnNumber = "";
+                            order.ShipperCustomerId = 0;
+                            order.ShipperAddressId = 0;
+                            order.DeliveryOptionId = 1;
+
+                            order.ConsigneeCustomerId = 0;
+                            order.ConsigneeAddressId = 0;
+
+                            order.BillToCustomerId = 0;
+                            order.ServiceProviderEmployeeId = null;
+                            order.UnitTypeId = 0;
+                            order.OrderBasicCost = 0;
+                            order.TotalAdditionalServiceCost = 0;
+                            order.TotalOrderCost = 0;
+                            order.IsInvoiced = false;
+                            order.IsPrePrinted = true;
+                            order.CreateDate = DateTime.Now;
+                            order.CreatedBy = sessionData.UserId;
+
+                            var orderInfo = _orderLogic.Add(order);
+
+                            Lms_OrderStatusPoco orderStatusPoco = new Lms_OrderStatusPoco();
+                            var trackingNumber = "";
+                            string sequecNo = DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0') + DateTime.Now.Year.ToString() + orderInfo.Id.ToString();
+                            trackingNumber = "TRK01-" + sequecNo;
+
+                            orderStatusPoco.OrderId = orderInfo.Id;
+                            orderStatusPoco.TrackingNumber = trackingNumber;
+                            orderStatusPoco.StatusLastUpdatedOn = DateTime.Now;
+                            orderStatusPoco.CreateDate = DateTime.Now;
+
+                            _orderStatusLogic.Add(orderStatusPoco);
+
+                            waybillPrintViewModels.Add(waybillPrintViewModel);
 
 
-                    scope.Complete();
+                            scope.Complete();
+                        }
+                    }
+                    _companyInfoLogic = new Lms_CompanyInfoLogic(_cache, new EntityFrameworkGenericRepository<Lms_CompanyInfoPoco>(_dbContext));
+                    var companyInfo = _companyInfoLogic.GetSingleById(1);
+                    if (companyInfo != null)
+                    {
+                        SessionData.CompanyName = !string.IsNullOrEmpty(companyInfo.CompanyName) ? companyInfo.CompanyName : "";
+                        SessionData.CompanyLogo = companyInfo.CompanyLogo != null ? Convert.ToBase64String(companyInfo.CompanyLogo) : null;
+                        SessionData.CompanyAddress = !string.IsNullOrEmpty(companyInfo.MainAddress) ? companyInfo.MainAddress.ToUpper() : "";
+                        SessionData.CompanyTelephone = !string.IsNullOrEmpty(companyInfo.Telephone) ? companyInfo.Telephone : "";
+                        SessionData.CompanyFax = companyInfo.Fax;
+                        SessionData.CompanyEmail = !string.IsNullOrEmpty(companyInfo.EmailAddress) ? companyInfo.EmailAddress : "";
+                        SessionData.CompanyTaxNumber = !string.IsNullOrEmpty(companyInfo.TaxNumber) ? companyInfo.TaxNumber : "";
+                    }
 
-                    result = "Success";
+                    var webrootPath = _hostingEnvironment.WebRootPath;
+                    var uniqueId = DateTime.Now.ToFileTime();
+                    var fileName = "waybill_" + uniqueId + ".pdf";
+                    var directoryPath = webrootPath + "/contents/waybills/";
+                    var filePath = directoryPath + fileName;
+
+                    if (!System.IO.Directory.Exists(directoryPath))
+                    {
+                        System.IO.Directory.CreateDirectory(directoryPath);
+                    }
+
+                    var pdfReport = new ViewAsPdf("PrintDeliveryWaybill", waybillPrintViewModels)
+                    {
+                        PageSize = Rotativa.AspNetCore.Options.Size.Letter
+                    };
+                    var file = pdfReport.BuildFile(ControllerContext).Result;
+
+                    System.IO.File.WriteAllBytes(filePath, file);
+
+                    string returnPath = "/contents/waybills/" + fileName;
+
+
+                    result = returnPath;
                 }
             }
             catch (Exception ex)
             {
-
+                //
             }
 
             return Json(result);
@@ -1023,7 +1169,7 @@ namespace LogisticsManagement_Web.Controllers
         //    return Json(result);
         //}
 
-        public JsonResult FindDuplicateWayBillByOrderAndWaybillId(string orderId, string waybillNo)
+        public JsonResult FindDuplicateWayBillByOrderAndWaybillId(string orderId, string orderTypeId, string waybillNo)
         {
             ValidateSession();
             string result = "";
@@ -1032,24 +1178,22 @@ namespace LogisticsManagement_Web.Controllers
                 var existingOrderId = 0;
                 var suppliedOrderId = Convert.ToInt32(orderId);
 
-                var orderPocoList = _orderLogic.GetList().Where(c => c.WayBillNumber == waybillNo).ToList();
-                if (orderPocoList.Count == 1)
+                //this is to filter out all orders excluding the preprinted waybills
+                var orderPocoList = _orderLogic.GetList().Where(c => c.WayBillNumber == waybillNo && c.OrderTypeId == Convert.ToInt32(orderTypeId) && c.BillToCustomerId > 0 && (c.TotalOrderCost + c.TotalAdditionalServiceCost) > 0).ToList();
+                if (orderPocoList.Count > 0)
                 {
                     existingOrderId = orderPocoList.FirstOrDefault().Id;
                 }
-                if (orderPocoList.Count > 1)
-                {
-                    result = orderPocoList.FirstOrDefault().WayBillNumber;
-                }
+                //if (orderPocoList.Count > 1)
+                //{
+                //    result = orderPocoList.FirstOrDefault().WayBillNumber;
+                //}
 
                 if (suppliedOrderId > 0)
                 {
-                    if (existingOrderId > 0)
+                    if (existingOrderId > 0 && suppliedOrderId != existingOrderId)
                     {
-                        if (suppliedOrderId != existingOrderId)
-                        {
-                            result = "Exists";
-                        }
+                        result = "Exists";
                     }
                 }
                 else
@@ -1067,6 +1211,24 @@ namespace LogisticsManagement_Web.Controllers
             return Json(result);
         }
 
+        public JsonResult IsPrePrintedWaybillForNewEntry(string orderTypeId, string waybillNo)
+        {
+            ValidateSession();
+            string result = "";
+            try
+            {
+                var orderPoco = _orderLogic.GetList().Where(c => c.WayBillNumber == waybillNo && c.OrderTypeId == Convert.ToInt32(orderTypeId) && c.BillToCustomerId <= 0 && (c.TotalOrderCost + c.TotalAdditionalServiceCost) <= 0 && c.IsPrePrinted == true).FirstOrDefault();
+                if (orderPoco != null && !string.IsNullOrEmpty(orderPoco.WayBillNumber))
+                {
+                    result = orderPoco.Id.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return Json(result);
+        }
 
         public JsonResult GetNextWaybillNumber(string id)
         {
@@ -1311,7 +1473,7 @@ namespace LogisticsManagement_Web.Controllers
                     var orderId = custRefObject.SelectToken("orderId").ToString();
 
                     var orderList = _orderLogic.GetList().Where(c => !string.IsNullOrEmpty(c.ReferenceNumber)).ToList();
-                    orderList = orderList.Where(c =>  (!string.IsNullOrEmpty(c.ReferenceNumber) ? c.ReferenceNumber.ToUpper() : "") == custRefNumber.ToUpper()).ToList();
+                    orderList = orderList.Where(c => (!string.IsNullOrEmpty(c.ReferenceNumber) ? c.ReferenceNumber.ToUpper() : "") == custRefNumber.ToUpper()).ToList();
 
                     if (Convert.ToInt32(orderId) > 0)
                     {
@@ -1343,7 +1505,7 @@ namespace LogisticsManagement_Web.Controllers
             }
             catch (Exception ex)
             {
-               
+
             }
 
             return Json(result);
@@ -1363,7 +1525,7 @@ namespace LogisticsManagement_Web.Controllers
                     var orderId = awbObject.SelectToken("orderId").ToString();
 
                     var orderList = _orderLogic.GetList().Where(c => !string.IsNullOrEmpty(c.AwbCtnNumber)).ToList();
-                    orderList = orderList.Where(c => (!string.IsNullOrEmpty(c.AwbCtnNumber) ? c.AwbCtnNumber.ToUpper() : "")  == awbCtnNumber.ToUpper()).ToList();
+                    orderList = orderList.Where(c => (!string.IsNullOrEmpty(c.AwbCtnNumber) ? c.AwbCtnNumber.ToUpper() : "") == awbCtnNumber.ToUpper()).ToList();
 
                     if (Convert.ToInt32(orderId) > 0)
                     {
@@ -1503,6 +1665,7 @@ namespace LogisticsManagement_Web.Controllers
                 var numberOfCopyPerItem = printOption.SelectToken("numberOfcopyPerItem").ToString();
                 var ignorePrice = Convert.ToBoolean(printOption.SelectToken("ignorePrice"));
                 var isMiscellaneous = Convert.ToBoolean(printOption.SelectToken("isMiscellaneous"));
+                var orderTypeId = Convert.ToBoolean(printOption.SelectToken("orderTypeId"));
                 var viewName = printOption.SelectToken("viewName").ToString();
 
                 _companyInfoLogic = new Lms_CompanyInfoLogic(_cache, new EntityFrameworkGenericRepository<Lms_CompanyInfoPoco>(_dbContext));
@@ -1527,6 +1690,14 @@ namespace LogisticsManagement_Web.Controllers
                         if (orderInfo != null)
                         {
                             ViewModel_PrintWaybill waybillPrintViewModel = new ViewModel_PrintWaybill();
+
+                            if (orderInfo.OrderTypeId == (int)OrderType.MiscellaneousOrder)
+                            {
+                                isMiscellaneous = true;
+                            }
+                            else {
+                                isMiscellaneous = false;
+                            }
 
                             waybillPrintViewModel.WaybillNumber = orderInfo.WayBillNumber;
                             if (orderInfo.ScheduledPickupDate != null)
@@ -1670,7 +1841,8 @@ namespace LogisticsManagement_Web.Controllers
                             if (orderStatus != null)
                             {
                                 waybillPrintViewModel.PUDriverNum = orderStatus.DispatchedToEmployeeId.ToString();
-                                if (!string.IsNullOrEmpty(waybillPrintViewModel.PUDriverNum)) {
+                                if (!string.IsNullOrEmpty(waybillPrintViewModel.PUDriverNum))
+                                {
                                     waybillPrintViewModel.PUDriverName = employeeList.Where(c => c.Id == Convert.ToInt32(waybillPrintViewModel.PUDriverNum)).FirstOrDefault().FirstName;
                                 }
 
@@ -1694,7 +1866,8 @@ namespace LogisticsManagement_Web.Controllers
                                     }
                                 }
 
-                                if (orderStatus.DeliveredDatetime != null) {
+                                if (orderStatus.DeliveredDatetime != null)
+                                {
                                     waybillPrintViewModel.DeliveryDate = ((DateTime)orderStatus.DeliveredDatetime).ToString("dd-MMM-yyyy");
                                     waybillPrintViewModel.DeliveryTime = ((DateTime)orderStatus.DeliveredDatetime).ToString("hh:mm tt");
                                 }
@@ -1723,8 +1896,10 @@ namespace LogisticsManagement_Web.Controllers
                                 waybillPrintViewModel.NetTotalOrderCost = "";
                                 waybillPrintViewModel.OrderAdditionalServices = null;
                             }
-                            else {
-                                if (Convert.ToDouble(waybillPrintViewModel.OrderDiscountAmount) <= 0) {
+                            else
+                            {
+                                if (Convert.ToDouble(waybillPrintViewModel.OrderDiscountAmount) <= 0)
+                                {
                                     waybillPrintViewModel.OrderDiscountAmount = "";
                                 }
 
@@ -1753,7 +1928,7 @@ namespace LogisticsManagement_Web.Controllers
                 var pdfReport = new ViewAsPdf(viewName, waybillPrintViewModels)
                 {
                     PageSize = Rotativa.AspNetCore.Options.Size.Letter
-                }; 
+                };
                 var file = pdfReport.BuildFile(ControllerContext).Result;
 
                 System.IO.File.WriteAllBytes(filePath, file);
@@ -1917,7 +2092,7 @@ namespace LogisticsManagement_Web.Controllers
             #region get datatable for dispatch board
 
             List<ViewModel_OrderDispatched> dispatchedOrders = new List<ViewModel_OrderDispatched>();
-            var orders = _orderLogic.GetList().Where(c => c.IsInvoiced == false).ToList(); //Load all orders 
+            var orders = _orderLogic.GetList().Where(c => c.IsInvoiced == false && (c.TotalOrderCost + c.TotalAdditionalServiceCost) > 0).ToList(); //Load all orders 
             var ordersStatus = _orderStatusLogic.GetList();
 
             var filteredOrdersForDispatchBoard = (from order in orders

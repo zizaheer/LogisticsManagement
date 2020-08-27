@@ -1,0 +1,120 @@
+﻿@using LogisticsManagement_Poco
+@model List<Lms_CustomerPoco>
+
+@{
+    ViewData["Title"] = "Sales report";
+}
+
+
+<div class="row">
+    <div class="col-sm-2">
+        <h3>
+            @ViewData["Title"]
+        </h3>
+
+    </div>
+
+</div>
+<hr />
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.dataTable.isDataTable('#customer-list')) {
+            $('#customer-list').DataTable().destroy();
+        }
+
+        $('#customer-list').DataTable({
+            "order": [[0, "asc"]],
+            "columns": [{ orderable: false }, null],
+            "paging": false,
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+
+            }
+        });
+
+    });
+</script>
+
+<div class="row">
+    <div class="col-3">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="txtStartDate" style="padding-right:20px"><b>From</b></label>
+                <input type="date" id="txtStartDate" class="col-8 form-control form-control-sm" />
+            </div>
+        </div>
+
+    </div>
+    <div class="col-3">
+        <div class="form-inline">
+            <div class="form-group">
+             
+                <label for="txtEndDate" style="padding-right:20px"><b>To</b></label>
+                <input type="date" id="txtEndDate" class="col-9 form-control form-control-sm" />
+            </div>
+        </div>
+    </div>
+    <div class="col-2 offset-4 text-right">
+        <button id="btnShowReport" class="btn btn-sm btn-secondary"><i class="fa fa-search"></i> Show report</button>
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-12">
+        <div style="display:block; max-height:250px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px; padding:10px 2px">
+            <table id="customer-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
+                <thead>
+                    <tr>
+                        <th style="width:300px">
+                            <div class="form-check-inline">
+                                @{
+                                    string customerArrayString = "";
+                                    foreach (var cust in Model)
+                                    {
+                                        customerArrayString += cust.Id + ",";
+                                    }
+                                }
+                                <input type="checkbox" class="form-check-inline" id="chkCheckAllCustomers" />
+                                <input type="hidden" id="hfcustomerArray" value="@customerArrayString" />
+                                <label class="form-check-label">Customer #</label>
+                            </div>
+                        </th>
+
+                        <th>Customer name</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="form-check-inline">
+                                    <input type="checkbox" class="form-check-input chkCustomerId" name="chkCustomerId" data-customerid="@item.Id">
+                                    <label class="form-check-label">@item.Id</label>
+                                </div>
+                            </td>
+                            <td>
+
+                                @item.CustomerName
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="~/js/report.js"></script>

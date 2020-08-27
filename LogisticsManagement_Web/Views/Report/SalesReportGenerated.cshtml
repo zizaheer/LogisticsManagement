@@ -1,0 +1,77 @@
+﻿@using LogisticsManagement_Web.Models
+@model List<ViewModel_SalesReport>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SalesReport</title>
+    <style>
+        body {
+        font-family: Arial, Helvetica, sans-serif
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <div class="row text-center">
+            <div class="col-12">
+                <h3>Millenium Freightways Inc.</h3>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-12">
+                <h5>@Model.First().ReportDuration.ToUpper()</h5>
+            </div>
+        </div>
+
+        <hr />
+        <div class="row"></div>
+        <table class="table table-sm table-striped" cellspacing="0" cellpadding="4" style="width:950px;">
+            <tr style="background-color:#cfcfcf; text-align:left">
+                <th>Customer</th>
+                <th style="text-align:right">Net</th>
+                <th style="text-align:right">GST</th>
+                <th style="text-align:right">Total</th>
+                @*<th>Total received</th>
+                <th>Balance</th>*@
+            </tr>
+            @{ 
+
+                decimal? totalNet = 0;
+                decimal? totalHst = 0;
+                decimal? totalSub = 0;
+            }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.BillToCustomerName</td>
+                    <td style="text-align:right">@item.TotalWithoutHst</td>
+                    <td style="text-align:right">@item.TotalHst</td>
+                    <td style="text-align:right">@item.TotalWithHst</td>
+                    @*<td>@item.TotalAmountRecieved</td>
+                    <td>@item.TotalAmountDue</td>*@
+                </tr>
+
+                totalNet = totalNet + item.TotalWithoutHst;
+                totalHst = totalHst + item.TotalHst;
+                totalSub = totalSub + item.TotalWithHst;
+            }
+
+            <tr style="background-color:#cfcfcf; text-align:left; padding-top:10px">
+                <td style="text-align:right; padding-right:10px"><b>Total</b></td>
+                <td style="text-align:right"><b>@totalNet</b></td>
+                <td style="text-align:right"><b>@totalHst</b></td>
+                <td style="text-align:right"><b>@totalSub</b></td>
+                @*<td>Total received</td>
+                <td>Balance</td>*@
+            </tr>
+        </table>
+
+    </center>
+</body>
+</html>

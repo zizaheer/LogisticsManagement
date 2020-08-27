@@ -182,11 +182,9 @@ $('input[name=chkIsReturnOrder]').on('change', function () {
     var wayBillNo = $('#txtWayBillNo').val();
     var isChecked = $(this).is(':checked');
 
-    var toggle = $(this).data('bs.toggle');
-
     if (isChecked) {
         if (wayBillNo === "" && wayBillNo < 1) {
-            toggle.off(true);
+            MakeReturnToggleOff();
             bootbox.alert("Return order can only be created for an existing order. Please enter way bill number.");
             return;
         }
@@ -267,6 +265,11 @@ $('#txtShipperCustomerName').on('keypress', function (event) {
 
     }
 });
+
+$('#ddlDeliveryOptionId').on('change', function () {
+    CalculateOrderBaseCost();
+});
+
 $('#txtShipperCustomerName').on('input', function (event) {
     event.preventDefault();
     var valueSelected = $('#txtShipperCustomerName').val();
@@ -719,12 +722,24 @@ $('#frmOrderForm').unbind('submit').submit(function (event) {
         return;
     }
 
-    var duplicateWaybill = GetObject('Order/FindDuplicateWayBillByOrderAndWaybillId?orderId=' + dataArray[0].id + '&waybillNo=' + dataArray[0].wayBillNumber);
+    var duplicateWaybill = GetObject('Order/FindDuplicateWayBillByOrderAndWaybillId?orderId=' + dataArray[0].id + '&orderTypeId=' + dataArray[0].orderTypeId + '&waybillNo=' + dataArray[0].wayBillNumber);
+    
     if (duplicateWaybill !== '') {
-        bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number or keep it blank to create auto.');
-        return;
+        if (isNewEntry == true) {
+            bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number or keep it blank to create auto.');
+            return;
+        } else {
+            bootbox.alert('This waybill was already used. Cannot create duplicate waybill. Try a different number.');
+            return;
+        }
     }
 
+    var isNewEntryForPreprinted = GetObject('Order/IsPrePrintedWaybillForNewEntry?orderTypeId=' + dataArray[0].orderTypeId + '&waybillNo=' + dataArray[0].wayBillNumber);
+    if (isNewEntryForPreprinted !== '') {
+        PerformPostActionWithId('Order/RemoveByOrderId', dataArray[0].id);
+        dataArray[0].id = isNewEntryForPreprinted;
+        isNewEntry = false;
+    }
 
 
     if (dataArray[0].cargoCtlNumber !== '' || dataArray[0].awbCtnNumber !== '' || dataArray[0].referenceNumber !== '') {
@@ -1105,6 +1120,7 @@ $('#btnTrialPrintWaybill').unbind().on('click', function (event) {
         numberOfcopyOnEachPage: $('#ddlCopyOnPage').val(),
         numberOfcopyPerItem: $('#ddlNumberOfCopies').val(),
         ignorePrice: $('#chkIgnorePricingInformation').is(':checked') === true ? 1 : 0,
+        orderTypeId: 3,
         isMiscellaneous: 0,
         viewName: 'PrintDeliveryWaybill',
         printUrl: printUrl
@@ -1159,6 +1175,38 @@ $('#ddlConsigneeCountries').on('change', function () {
     }
 });
 
+$('#btnPrePrintedWaybill').on('click', function (event) {
+    event.preventDefault();
+    $('#txtFromNo').val('');
+    $('#txtToNo').val('');
+
+    var result = GetObject('Order/GetNextWaybillNumber');
+    console.log(result);
+
+    $('#txtFromNo').val(result);
+    $('#txtToNo').val(parseInt(result) + 10);
+
+    $('#prePrintedWaybill').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#prePrintedWaybill').draggable();
+    $('#prePrintedWaybill').modal('show');
+
+});
+
+$('#btnPrintPrePrintedWaybill').unbind().on('click', function () {
+
+    var fromNumber = $('#txtFromNo').val();
+    var toNumber = $('#txtToNo').val();
+
+    var result = PerformPostActionWithObject('Order/AddPrePrintedWaybill?fromNumber=' + fromNumber + '&&toNumber=' + toNumber);
+    if (result !== "") {
+        $('#prePrintedWaybill').modal('hide');
+        bootbox.alert('Preprinted waybills pdf created.');
+        window.open(result, "_blank");
+    }
+});
 
 //#endregion
 
@@ -1168,7 +1216,7 @@ $('#ddlConsigneeCountries').on('change', function () {
 function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, orderTypeId) {
     var orderData = null;
     var orderAdditionalServiceData = null;
-
+    
     var orderInfo = GetSingleById('Order/GetOrderDetailsByWayBillId', wayBillNumber);
     var parseData = JSON.parse(orderInfo);
 
@@ -1177,6 +1225,8 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, orderTypeId) {
     })[0];
 
     if (orderData !== null && orderData !== undefined && orderData !== '') {
+        ClearForm();
+
         $('#hfOrderId').val(orderData.Id);
         $('#hfBillerCustomerId').val(orderData.BillToCustomerId);
 
@@ -1186,7 +1236,6 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, orderTypeId) {
 
         FillOrderAdditionalServices(orderAdditionalServiceData);
         FillOrderDetails(orderData);
-
     }
     else {
 
@@ -1196,19 +1245,30 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, orderTypeId) {
             selectedAdditionalServiceArray = [];
             $('#service-list').empty();
 
+            var billerId = $('#hfBillerCustomerId').val();
+
             var shippAccNo = $('#lblShipperAccountNo').text();
             var consigAccNo = $('#lblConsigneeAccountNo').text();
-            $('#lblShipperAccountNo').text(consigAccNo);
-            $('#lblConsigneeAccountNo').text(shippAccNo);
-            var billerId = $('#hfBillerCustomerId').val();
 
             var shippName = $('#txtShipperCustomerName').val();
             var consigName = $('#txtConsigneeCustomerName').val();
-            $('#txtShipperCustomerName').val(consigName);
-            $('#txtConsigneeCustomerName').val(shippName);
 
             var shipperAddressId = $('#hfShipperAddressId').val();
             var consigneeAddressId = $('#hfConsigneeAddressId').val();
+
+            if (shipperAddressId == '' || consigneeAddressId == '') {
+                MakeReturnToggleOff();
+                bootbox.alert('Shipper and/or consignee address was not found. Please make sure the waybill has valid order before placing a return order.');
+                return;
+            }
+
+            $('#lblShipperAccountNo').text(consigAccNo);
+            $('#lblConsigneeAccountNo').text(shippAccNo);
+
+            $('#txtShipperCustomerName').val(consigName);
+            $('#txtConsigneeCustomerName').val(shippName);
+
+            
             FillShipperAddress(consigneeAddressId);
             FillConsigneeAddress(shipperAddressId);
 
@@ -1235,8 +1295,8 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, orderTypeId) {
             $('#txtUnitQuantity').change();
             $('#txtOverriddenOrderCost').val('');
             $('#txtOverriddenOrderCost').change();
-
         }
+        
     }
 }
 
@@ -1364,21 +1424,22 @@ function CalculateAdditionalServiceCost() {
     var totalAdditionalServiceCost = 0.0;
     if (selectedAdditionalServiceArray.length > 0) {
         for (var i = 0; i < selectedAdditionalServiceArray.length; i++) {
-            if (selectedAdditionalServiceArray[i].additionalServiceFee > 0) {
+            //if (selectedAdditionalServiceArray[i].additionalServiceFee > 0) { //accept minus as per client to add discounts
                 totalAdditionalServiceCost = totalAdditionalServiceCost + selectedAdditionalServiceArray[i].additionalServiceFee;
                 if (selectedAdditionalServiceArray[i].isTaxAppliedOnAddionalService && selectedAdditionalServiceArray[i].taxAmountOnAdditionalService > 0) {
                     var addServiceTax = selectedAdditionalServiceArray[i].taxAmountOnAdditionalService * selectedAdditionalServiceArray[i].additionalServiceFee / 100;
                     totalAdditionalServiceCost = totalAdditionalServiceCost + addServiceTax;
                 }
 
-            }
+            //}
         }
     }
-    if (totalAdditionalServiceCost > 0) {
+    //if (totalAdditionalServiceCost > 0) {
         $('#lblGrandAddServiceAmount').text(totalAdditionalServiceCost.toFixed(2));
-    } else {
-        $('#lblGrandAddServiceAmount').text('0.00');
-    }
+    //} else {
+    //    $('#lblGrandAddServiceAmount').text('0.00');
+    //}
+
 
 }
 
@@ -1508,9 +1569,9 @@ function CalculateOrderBaseCost() {
 
     var totalAdditionalServiceCost = $('#lblGrandAddServiceAmount').text() === "" ? 0.0 : parseFloat($('#lblGrandAddServiceAmount').text());
 
-    if (totalAdditionalServiceCost > 0) {
+    //if (totalAdditionalServiceCost > 0) { // will accept minus figure as per client 
         grandTotal = grandTotal + totalAdditionalServiceCost;
-    }
+    //}
 
     if (grandTotal > 0) {
         $('#lblGrandTotalAmount').text(grandTotal.toFixed(2));
@@ -1587,7 +1648,12 @@ function FillOrderDetails(orderRelatedData) {
             }
         }
 
-        $('#txtSchedulePickupDate').val(ConvertDateToUSFormat(orderRelatedData.ScheduledPickupDate));
+        if (orderRelatedData.ScheduledPickupDate !== null) {
+            $('#txtSchedulePickupDate').val(ConvertDateToUSFormat(orderRelatedData.ScheduledPickupDate));
+        } else {
+            $('#txtSchedulePickupDate').val(ConvertDateToUSFormat(new Date));
+        }
+        
 
         $('#ddlDeliveryOptionId').val(orderRelatedData.DeliveryOptionId);
         $('#ddlVehicleTypeId').val(orderRelatedData.VehicleTypeId);
@@ -1900,6 +1966,7 @@ function ClearForm() {
     $('#txtShipperUnitNo').val('');
     $('#ddlShipperCityId').val(335);
     $('#ddlShipperProvinceId').val(7);
+    $('#ddlShipperCountries').val(41);
     $('#txtShipperPostcode').val('');
 
     $('#hfShipperAddressId').val('');
@@ -1911,6 +1978,7 @@ function ClearForm() {
     $('#txtConsigneeUnitNo').val('');
     $('#ddlConsigneeCityId').val(335);
     $('#ddlConsigneeProvinceId').val(7);
+    $('#ddlConsigneeCountries').val(41);
     $('#txtConsigneePostcode').val('');
 
     $('#ddlUnitTypeId').val('1');
@@ -1945,15 +2013,9 @@ function ClearForm() {
     $('#txtCommentsForWayBill').val('');
     $('#chkIsPrintOnInvoice').prop('checked', false);
     $('#txtCommentsForInvoice').val('');
-    $('#chkIsReturnOrder').is(':checked', false);
-
     $('#service-list').empty();
 
-    $('#chkIsReturnOrder').prop('checked', false);
-
-    //var toggle = $('#chkIsReturnOrder').data('bs.toggle');
-    //toggle.off(true);
-
+    MakeReturnToggleOff();
 }
 
 function ClearShipperAddressArea() {
@@ -1989,7 +2051,7 @@ function GenerateNewAdditionalServiceRow() {
     appendString += '<input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" />';
     appendString += '</td>';
     appendString += '<td style="width:110px; padding-right:5px">';
-    appendString += '<input type="number" class="form-control form-control-sm additionalServiceControl txtServiceFee " min="0" id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />';
+    appendString += '<input type="number" class="form-control form-control-sm additionalServiceControl txtServiceFee " id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />';
     appendString += '</td>';
     appendString += '<td style="width:110px;">';
     appendString += '<input type="number" class="form-control form-control-sm additionalServiceControl txtDriverPercentage" min="0" id="txtDriverPercentage" step=".01" name="txtDriverPercentage" placeholder="Percent" title="Driver portion of the fee" />';
@@ -2008,7 +2070,14 @@ function GenerateNewAdditionalServiceRow() {
     return appendString;
 }
 
-
+function MakeReturnToggleOn() {
+    var toggle = $('#chkIsReturnOrder').data('bs.toggle');
+    toggle.on(true);
+}
+function MakeReturnToggleOff() {
+    var toggle = $('#chkIsReturnOrder').data('bs.toggle');
+    toggle.off(true);
+}
 
 
 
