@@ -16,6 +16,7 @@ namespace LogisticsManagement_Web.Models
         public string CargoCtlNo { get; set; }
         public string AwbContainerNo { get; set; }
         public string PickupRefNo { get; set; }
+        public string DeliveryRefNo { get; set; }
         public int? ServiceProviderEmployeeId { get; set; }
         public string DeliveredBy { get; set; }
         public string BolReferenceNumber { get; set; }

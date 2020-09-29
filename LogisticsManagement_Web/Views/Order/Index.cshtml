@@ -630,22 +630,28 @@
                                         <input type="text" class="form-control form-control-sm  frmfontsize" placeholder="Cust Ref" id="txtCustomerRefNo" name="txtCustomerRefNo" title="Customer ref #">
                                     </div>
                                     <small>
-                                        <label style="margin-top:5px" id="lblPickupRefNo" for="txtPickupRefNo"><b>PU/DL REF#</b></label>
+                                        <label style="margin-top:5px" id="lblPickupRefNo" for="txtPickupRefNo"><b>PU REF#</b></label>
                                     </small>
-                                    <div class="col-sm-1">
-                                        <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Pickup ref" id="txtPickupRefNo" name="txtPickupRefNo" title="Pickup ref #" style="width:116px">
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Pickup ref" id="txtPickupRefNo" name="txtPickupRefNo" title="Pickup ref #" style="width:142px">
+                                    </div>
+                                    <small>
+                                        <label style="margin-top:5px" id="lblDeliveryRefNo" for="txtDeliveryRefNo"><b>DL REF#</b></label>
+                                    </small>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Delivery ref" id="txtDeliveryRefNo" name="txtDeliveryRefNo" title="Delivery ref#" style="width:148px">
                                     </div>
 
-                                    <small>
-                                        <label style="margin-top:5px; margin-left:50px" id="lblVehicleTypeId" for="ddlVehicleTypeId"><b>TRANSPORT</b></label>
+                                    @*<small>
+                                        <label style="margin-top:5px; margin-left:50px;display:none" id="lblVehicleTypeId" for="ddlVehicleTypeId"><b>TRANSPORT</b></label>
                                     </small>
-                                    <div class="col-sm-2" style="margin-left: -8px;">
+                                    <div class="col-sm-1" style="margin-left: -8px;display:none">
                                         <select class="form-control form-control-sm frmfontsize" id="ddlVehicleTypeId" name="ddlVehicleTypeId">
                                             <option value="1">Truck</option>
                                             <option value="2">Car</option>
                                             <option value="3">Van</option>
                                         </select>
-                                    </div>
+                                    </div>*@
 
                                     <small>
                                         <label style="margin-top:5px; " id="lblVehicleTypeId" for="ddlVehicleTypeId"><b>DATE</b></label>
@@ -657,17 +663,17 @@
                                     </div>
 
                                     @*<small>
-                                            <label style="margin-top:5px" id="lblCargoCtlNo" for="txtCargoCtlNo"><b>Cargo ctl#</b></label>
-                                        </small>
-                                        <div class="col-sm-2">
-                                            <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
-                                        </div>
-                                        <small>
-                                            <label style="margin-top:5px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>AWB CTN#</b></label>
-                                        </small>
-                                        <div class="col-sm-1">
-                                            <input type="text" class="form-control form-control-sm" placeholder="Awb Ctn#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
-                                        </div>*@
+            <label style="margin-top:5px" id="lblCargoCtlNo" for="txtCargoCtlNo"><b>Cargo ctl#</b></label>
+        </small>
+        <div class="col-sm-2">
+            <input type="text" class="form-control form-control-sm" placeholder="Cargo Ctl#" id="txtCargoCtlNo" name="txtCargoCtlNo" title="Cargo Ctl No">
+        </div>
+        <small>
+            <label style="margin-top:5px" id="lblAwbCtnNo" for="txtAwbCtnNo"><b>AWB CTN#</b></label>
+        </small>
+        <div class="col-sm-1">
+            <input type="text" class="form-control form-control-sm" placeholder="Awb Ctn#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:107px">
+        </div>*@
                                 </div>
                                 <div class="row">
                                     <hr style="border-top:1px solid #e0e0e0; padding:0px; width:100%; margin-top:9px;margin-bottom:1px" />

@@ -1383,7 +1383,7 @@ function GetTariffInfo() {
     var shipperCityId = $('#ddlShipperCityId').val();
     var consigneeCityId = $('#ddlConsigneeCityId').val();
     var deliveryOptionId = $('#ddlDeliveryOptionId').val();
-    var vehicleTypeId = $('#ddlVehicleTypeId').val();
+    var vehicleTypeId = 1; // $('#ddlVehicleTypeId').val();
     var unitTypeId = 0;
     var unitQuantity = 0;
 
@@ -1599,6 +1599,7 @@ function FillOrderDetails(orderRelatedData) {
         $('#txtCargoCtlNo').val(orderRelatedData.CargoCtlNumber);
         $('#txtAwbCtnNo').val(orderRelatedData.AwbCtnNumber);
         $('#txtPickupRefNo').val(orderRelatedData.PickupReferenceNumber);
+        $('#txtDeliveryRefNo').val(orderRelatedData.DeliveryReferenceNumber);
 
         $('#lblShipperAccountNo').text(orderRelatedData.ShipperCustomerId);
         if (orderRelatedData.ShipperCustomerId != '' && orderRelatedData.ShipperCustomerId != null) {
@@ -1882,6 +1883,7 @@ function GetFormData() {
         cargoCtlNumber: $('#txtCargoCtlNo').val() === "" ? null : $('#txtCargoCtlNo').val(),
         awbCtnNumber: $('#txtAwbCtnNo').val() === "" ? null : $('#txtAwbCtnNo').val(),
         pickupReferenceNumber: $('#txtPickupRefNo').val() === "" ? null : $('#txtPickupRefNo').val(),
+        deliveryReferenceNumber: $('#txtDeliveryRefNo').val() === "" ? null : $('#txtDeliveryRefNo').val(),
 
         shipperCustomerId: $('#lblShipperAccountNo').text() === "" ? 0 : parseInt($('#lblShipperAccountNo').text()),
         shipperAddressId: $('#hfShipperAddressId').val() === "" ? 0 : parseInt($('#hfShipperAddressId').val()),
@@ -1907,7 +1909,7 @@ function GetFormData() {
         expectedDeliveryDate: $('#txtSchedulePickupDate').val(),
         cityId: $('#ddlConsigneeCityId').val() === "" ? 0 : parseInt($('#ddlConsigneeCityId').val()),
         deliveryOptionId: parseInt($('#ddlDeliveryOptionId').val()),
-        vehicleTypeId: parseInt($("#ddlVehicleTypeId").val()),
+        vehicleTypeId: 1, //parseInt($("#ddlVehicleTypeId").val()),
         unitTypeId: parseInt($('#ddlUnitTypeId').val()),
         weightScaleId: parseInt($('#ddlWeightScaleId').val()),
         weightTotal: $('#txtWeightTotal').val() === "" ? null : $('#txtWeightTotal').val(),

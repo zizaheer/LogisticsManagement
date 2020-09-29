@@ -368,6 +368,7 @@ namespace LogisticsManagement_Web.Controllers
                         existingOrder.CargoCtlNumber = orderPoco.CargoCtlNumber;
                         existingOrder.AwbCtnNumber = orderPoco.AwbCtnNumber;
                         existingOrder.PickupReferenceNumber = orderPoco.PickupReferenceNumber;
+                        existingOrder.DeliveryReferenceNumber = orderPoco.DeliveryReferenceNumber;
                         existingOrder.ShipperCustomerId = orderPoco.ShipperCustomerId;
                         existingOrder.ShipperAddressId = orderPoco.ShipperAddressId;
                         existingOrder.ConsigneeCustomerId = orderPoco.ConsigneeCustomerId;
