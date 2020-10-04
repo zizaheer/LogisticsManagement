@@ -1715,6 +1715,7 @@ namespace LogisticsManagement_Web.Controllers
                             waybillPrintViewModel.CargoCtlNo = orderInfo.CargoCtlNumber;
                             waybillPrintViewModel.AwbContainerNo = orderInfo.AwbCtnNumber;
                             waybillPrintViewModel.PickupRefNo = orderInfo.PickupReferenceNumber;
+                            waybillPrintViewModel.DeliveryRefNo = orderInfo.DeliveryReferenceNumber;
                             waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == orderInfo.BillToCustomerId).FirstOrDefault().CustomerName;
                             waybillPrintViewModel.OrderedByName = orderInfo.OrderedBy;
                             if (orderInfo.DeliveryOptionId != null && orderInfo.DeliveryOptionId > 0)
