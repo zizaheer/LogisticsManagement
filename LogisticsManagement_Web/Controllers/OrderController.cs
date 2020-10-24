@@ -1696,14 +1696,15 @@ namespace LogisticsManagement_Web.Controllers
                             {
                                 isMiscellaneous = true;
                             }
-                            else {
+                            else
+                            {
                                 isMiscellaneous = false;
                             }
 
                             waybillPrintViewModel.WaybillNumber = orderInfo.WayBillNumber;
                             if (orderInfo.ScheduledPickupDate != null)
                             {
-                                waybillPrintViewModel.WayBillDate = ((DateTime)orderInfo.ScheduledPickupDate).ToString("dd-MMM-yy");
+                                waybillPrintViewModel.WayBillDate = ((DateTime)orderInfo.ScheduledPickupDate).ToString("dd-MMM-yy").ToUpper();
                             }
                             else
                             {
@@ -1711,16 +1712,16 @@ namespace LogisticsManagement_Web.Controllers
                             }
 
                             waybillPrintViewModel.BillerCustomerId = orderInfo.BillToCustomerId;
-                            waybillPrintViewModel.CustomerRefNo = orderInfo.ReferenceNumber;
-                            waybillPrintViewModel.CargoCtlNo = orderInfo.CargoCtlNumber;
-                            waybillPrintViewModel.AwbContainerNo = orderInfo.AwbCtnNumber;
-                            waybillPrintViewModel.PickupRefNo = orderInfo.PickupReferenceNumber;
-                            waybillPrintViewModel.DeliveryRefNo = orderInfo.DeliveryReferenceNumber;
-                            waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == orderInfo.BillToCustomerId).FirstOrDefault().CustomerName;
-                            waybillPrintViewModel.OrderedByName = orderInfo.OrderedBy;
+                            waybillPrintViewModel.CustomerRefNo = !string.IsNullOrEmpty(orderInfo.ReferenceNumber) ? orderInfo.ReferenceNumber.ToUpper() : orderInfo.ReferenceNumber;
+                            waybillPrintViewModel.CargoCtlNo = !string.IsNullOrEmpty(orderInfo.CargoCtlNumber) ? orderInfo.CargoCtlNumber.ToUpper() : orderInfo.CargoCtlNumber; 
+                            waybillPrintViewModel.AwbContainerNo = !string.IsNullOrEmpty(orderInfo.AwbCtnNumber) ? orderInfo.AwbCtnNumber.ToUpper() : orderInfo.AwbCtnNumber; 
+                            waybillPrintViewModel.PickupRefNo = !string.IsNullOrEmpty(orderInfo.PickupReferenceNumber) ? orderInfo.PickupReferenceNumber.ToUpper() : orderInfo.PickupReferenceNumber; 
+                            waybillPrintViewModel.DeliveryRefNo = !string.IsNullOrEmpty(orderInfo.DeliveryReferenceNumber) ? orderInfo.DeliveryReferenceNumber.ToUpper() : orderInfo.DeliveryReferenceNumber;
+                            waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == orderInfo.BillToCustomerId).FirstOrDefault().CustomerName.ToUpper();
+                            waybillPrintViewModel.OrderedByName = !string.IsNullOrEmpty(orderInfo.OrderedBy) ? orderInfo.OrderedBy.ToUpper() : orderInfo.OrderedBy; 
                             if (orderInfo.DeliveryOptionId != null && orderInfo.DeliveryOptionId > 0)
                             {
-                                waybillPrintViewModel.DeliveryOptionShortCode = deliveryOptions.Where(c => c.Id == orderInfo.DeliveryOptionId).FirstOrDefault().ShortCode;
+                                waybillPrintViewModel.DeliveryOptionShortCode = deliveryOptions.Where(c => c.Id == orderInfo.DeliveryOptionId).FirstOrDefault().ShortCode.ToUpper();
                             }
                             waybillPrintViewModel.NumberOfCopyOnEachPage = numberOfCopyOnPage == "" ? 0 : Convert.ToInt32(numberOfCopyOnPage);
                             waybillPrintViewModel.NumberOfCopyPerItem = numberOfCopyPerItem == "" ? 0 : Convert.ToInt32(numberOfCopyPerItem);
@@ -1800,17 +1801,17 @@ namespace LogisticsManagement_Web.Controllers
                                 waybillPrintViewModel.NetTotalOrderCost = (taxAmnt + Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) - Convert.ToDecimal(waybillPrintViewModel.OrderDiscountAmount) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString("0.00");
                             }
 
-                            waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName;
+                            waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName.ToUpper();
                             var shippperAddress = addresses.Where(c => c.Id == orderInfo.ShipperAddressId).FirstOrDefault();
-                            waybillPrintViewModel.ShipperCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber + ", " + shippperAddress.AddressLine : shippperAddress.AddressLine;
-                            waybillPrintViewModel.ShipperCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + shippperAddress.PostCode;
+                            waybillPrintViewModel.ShipperCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber.ToUpper() + ", " + shippperAddress.AddressLine.ToUpper() : shippperAddress.AddressLine.ToUpper();
+                            waybillPrintViewModel.ShipperCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName.ToUpper() + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode.ToUpper() + "  " + (!string.IsNullOrEmpty(shippperAddress.PostCode) ? shippperAddress.PostCode.ToUpper() : shippperAddress.PostCode); 
 
                             if (isMiscellaneous == false)
                             {
-                                waybillPrintViewModel.ConsigneeCustomerName = customers.Where(c => c.Id == orderInfo.ConsigneeCustomerId).FirstOrDefault().CustomerName;
+                                waybillPrintViewModel.ConsigneeCustomerName = customers.Where(c => c.Id == orderInfo.ConsigneeCustomerId).FirstOrDefault().CustomerName.ToUpper();
                                 var consigneeAddress = addresses.Where(c => c.Id == orderInfo.ConsigneeAddressId).FirstOrDefault();
-                                waybillPrintViewModel.ConsigneeCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber + ", " + consigneeAddress.AddressLine : consigneeAddress.AddressLine;
-                                waybillPrintViewModel.ConsigneeCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode + "  " + consigneeAddress.PostCode;
+                                waybillPrintViewModel.ConsigneeCustomerAddressLine1 = !string.IsNullOrEmpty(consigneeAddress.UnitNumber) ? consigneeAddress.UnitNumber.ToUpper() + ", " + consigneeAddress.AddressLine.ToUpper() : consigneeAddress.AddressLine.ToUpper();
+                                waybillPrintViewModel.ConsigneeCustomerAddressLine2 = cities.Where(c => c.Id == consigneeAddress.CityId).FirstOrDefault().CityName.ToUpper() + ", " + provinces.Where(c => c.Id == consigneeAddress.ProvinceId).FirstOrDefault().ShortCode.ToUpper() + "  " + (!string.IsNullOrEmpty(consigneeAddress.PostCode) ? consigneeAddress.PostCode.ToUpper() : consigneeAddress.PostCode);
                             }
 
                             waybillPrintViewModel.SkidQuantity = orderInfo.SkidQuantity;
@@ -1821,8 +1822,8 @@ namespace LogisticsManagement_Web.Controllers
                                 waybillPrintViewModel.UnitQuantity = orderInfo.UnitQuantity;
                                 if (orderInfo.UnitTypeId > 0)
                                 {
-                                    waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().TypeName;
-                                    waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().ShortCode;
+                                    waybillPrintViewModel.UnitTypeName = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().TypeName.ToUpper();
+                                    waybillPrintViewModel.UnitTypeShortCode = unitTypes.Where(c => c.Id == orderInfo.UnitTypeId).FirstOrDefault().ShortCode.ToUpper();
                                 }
                             }
 
@@ -1845,20 +1846,20 @@ namespace LogisticsManagement_Web.Controllers
                                 waybillPrintViewModel.PUDriverNum = orderStatus.DispatchedToEmployeeId.ToString();
                                 if (!string.IsNullOrEmpty(waybillPrintViewModel.PUDriverNum))
                                 {
-                                    waybillPrintViewModel.PUDriverName = employeeList.Where(c => c.Id == Convert.ToInt32(waybillPrintViewModel.PUDriverNum)).FirstOrDefault().FirstName;
+                                    waybillPrintViewModel.PUDriverName = employeeList.Where(c => c.Id == Convert.ToInt32(waybillPrintViewModel.PUDriverNum)).FirstOrDefault().FirstName.ToUpper();
                                 }
 
                                 if (orderStatus.PassedOffToEmployeeId != null && orderStatus.PassedOffToEmployeeId > 0)
                                 {
-                                    waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.PassedOffToEmployeeId).FirstOrDefault().FirstName;
+                                    waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.PassedOffToEmployeeId).FirstOrDefault().FirstName.ToUpper();
                                     waybillPrintViewModel.DeliveryDriverNum = orderStatus.PassedOffToEmployeeId.ToString();
                                 }
                                 else if (orderStatus.DispatchedToEmployeeId != null && orderStatus.DispatchedToEmployeeId > 0)
                                 {
-                                    waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.DispatchedToEmployeeId).FirstOrDefault().FirstName;
+                                    waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderStatus.DispatchedToEmployeeId).FirstOrDefault().FirstName.ToUpper();
                                     waybillPrintViewModel.DeliveryDriverNum = orderStatus.DispatchedToEmployeeId.ToString();
                                 }
-                                waybillPrintViewModel.ReceivedBy = orderStatus.ReceivedByName;
+                                waybillPrintViewModel.ReceivedBy = !string.IsNullOrEmpty(orderStatus.ReceivedByName) ? orderStatus.ReceivedByName.ToUpper() : orderStatus.ReceivedByName;
 
                                 if (!string.IsNullOrEmpty(waybillPrintViewModel.ReceivedBy))
                                 {
@@ -1870,21 +1871,21 @@ namespace LogisticsManagement_Web.Controllers
 
                                 if (orderStatus.DeliveredDatetime != null)
                                 {
-                                    waybillPrintViewModel.DeliveryDate = ((DateTime)orderStatus.DeliveredDatetime).ToString("dd-MMM-yyyy");
-                                    waybillPrintViewModel.DeliveryTime = ((DateTime)orderStatus.DeliveredDatetime).ToString("hh:mm tt");
+                                    waybillPrintViewModel.DeliveryDate = ((DateTime)orderStatus.DeliveredDatetime).ToString("dd-MMM-yyyy").ToUpper();
+                                    waybillPrintViewModel.DeliveryTime = ((DateTime)orderStatus.DeliveredDatetime).ToString("hh:mm tt").ToUpper();
                                 }
 
                             }
                             if (orderInfo.IsPrintedOnWayBill != null && orderInfo.IsPrintedOnWayBill == true)
                             {
-                                waybillPrintViewModel.WaybillComments = orderInfo.CommentsForWayBill;
+                                waybillPrintViewModel.WaybillComments = !string.IsNullOrEmpty(orderInfo.CommentsForWayBill) ? orderInfo.CommentsForWayBill.ToUpper() : orderInfo.CommentsForWayBill;
                             }
 
                             if (isMiscellaneous == true)
                             {
                                 if (orderInfo.ServiceProviderEmployeeId != null && orderInfo.ServiceProviderEmployeeId > 0)
                                 {
-                                    waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderInfo.ServiceProviderEmployeeId).FirstOrDefault().FirstName;
+                                    waybillPrintViewModel.DeliveryDriverName = employeeList.Where(c => c.Id == orderInfo.ServiceProviderEmployeeId).FirstOrDefault().FirstName.ToUpper();
                                 }
                             }
 

@@ -384,33 +384,34 @@
                         @if (!string.IsNullOrEmpty(bill.CargoCtlNo) || !string.IsNullOrEmpty(bill.AwbContainerNo) || !string.IsNullOrEmpty(bill.PickupRefNo))
                         {
                             bodyHeight += 25;
-                            <tr style="font-size:11px; font-family: 'Courier New'; height:25px">
-                                <td class="tdStyle" colspan="3"></td>
-                                <td class="tdStyle">
-                                    @{
-                                        if (!string.IsNullOrEmpty(bill.CargoCtlNo))
-                                        {
-                                            <span>CC: @bill.CargoCtlNo &nbsp;&nbsp; </span>
-                                        }
+                        <tr style="font-size:11px; font-family: 'Courier New'; height:25px">
+                            <td class="tdStyle" colspan="3"></td>
+                            <td class="tdStyle">
+                                @{
+                                    if (!string.IsNullOrEmpty(bill.CargoCtlNo))
+                                    {
+                                        <span>CC: @bill.CargoCtlNo &nbsp;&nbsp; </span>
                                     }
-                                </td>
-                                <td class="tdStyle" colspan="2">
-                                    @{
-                                        if (!string.IsNullOrEmpty(bill.AwbContainerNo))
-                                        {
-                                            <span>AWB/CTN: @bill.AwbContainerNo &nbsp;&nbsp; </span>
-                                        }
+                                }
+                            </td>
+                            <td class="tdStyle" colspan="2">
+                                @{
+                                    if (!string.IsNullOrEmpty(bill.AwbContainerNo))
+                                    {
+                                        <span>AWB/CTN: @bill.AwbContainerNo &nbsp;&nbsp; </span>
                                     }
-                                </td>
-                                <td class="tdStyle" colspan="3">
-                                    @{
-                                        if (!string.IsNullOrEmpty(bill.PickupRefNo))
-                                        {
-                                            <span>PU/DL Ref: @bill.PickupRefNo</span>
-                                        }
+                                }
+                            </td>
+                            <td class="tdStyle" colspan="2">
+                                @{
+                                    if (!string.IsNullOrEmpty(bill.PickupRefNo))
+                                    {
+                                        <span>PU Ref: @bill.PickupRefNo</span>
                                     }
-                                </td>
-                            </tr>
+                                }
+                            </td>
+                            
+                        </tr>
                         }
                         @if (!string.IsNullOrEmpty(bill.AdditionalServicesComments))
                         {

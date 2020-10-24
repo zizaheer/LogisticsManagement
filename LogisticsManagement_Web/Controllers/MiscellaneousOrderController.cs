@@ -533,6 +533,9 @@ namespace LogisticsManagement_Web.Controllers
                 _weightScaleLogic = new Lms_WeightScaleLogic(_cache, new EntityFrameworkGenericRepository<Lms_WeightScalePoco>(_dbContext));
                 var weightScales = _weightScaleLogic.GetList();
 
+                _employeeLogic = new Lms_EmployeeLogic(_cache, new EntityFrameworkGenericRepository<Lms_EmployeePoco>(_dbContext));
+                var employees = _employeeLogic.GetList();
+
                 if (orderData != null)
                 {
                     wayBillNumberList = JArray.Parse(JsonConvert.SerializeObject(orderData[0]));
@@ -612,6 +615,7 @@ namespace LogisticsManagement_Web.Controllers
                         }
 
                         waybillPrintViewModel.NetTotalOrderCost = (Convert.ToDecimal(waybillPrintViewModel.OrderBasePrice) + Convert.ToDecimal(waybillPrintViewModel.FuelSurcharge) + Convert.ToDecimal(waybillPrintViewModel.AdditionalServiceCost)).ToString();
+                        
                         waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName;
 
                         var shippperAddress = addresses.Where(c => c.Id == orderInfo.ShipperAddressId).FirstOrDefault();
@@ -636,7 +640,11 @@ namespace LogisticsManagement_Web.Controllers
                         waybillPrintViewModel.DeliveryDate = null;
                         waybillPrintViewModel.DeliveryTime = null;
                         waybillPrintViewModel.PUDriverName = "";
-                        waybillPrintViewModel.DeliveryDriverName = orderInfo.WayBillNumber;
+                        waybillPrintViewModel.DeliveryDriverName = orderInfo.DeliveredBy;
+                        if (orderInfo.ServiceProviderEmployeeId != null && orderInfo.ServiceProviderEmployeeId > 0) {
+                            waybillPrintViewModel.ServiceProviderEmployeeName = employees.Where(c => c.Id == orderInfo.ServiceProviderEmployeeId).FirstOrDefault().FirstName;
+                        }
+                        
                         if (orderInfo.IsPrintedOnWayBill != null && orderInfo.IsPrintedOnWayBill == true)
                         {
                             waybillPrintViewModel.WaybillComments = orderInfo.CommentsForWayBill;

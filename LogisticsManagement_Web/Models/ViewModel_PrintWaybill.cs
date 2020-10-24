@@ -18,6 +18,7 @@ namespace LogisticsManagement_Web.Models
         public string PickupRefNo { get; set; }
         public string DeliveryRefNo { get; set; }
         public int? ServiceProviderEmployeeId { get; set; }
+        public string ServiceProviderEmployeeName { get; set; }
         public string DeliveredBy { get; set; }
         public string BolReferenceNumber { get; set; }
         public string ProReferenceNumber { get; set; }
