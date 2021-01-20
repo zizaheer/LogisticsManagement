@@ -59,12 +59,42 @@ namespace LogisticsManagement_BusinessLogic
         public override Lms_OrderPoco Add(Lms_OrderPoco poco)
         {
             _cache.Remove(App_CacheKeys.Orders);
+            poco.CommentsForInvoice = !string.IsNullOrEmpty(poco.CommentsForInvoice) ? poco.CommentsForInvoice.ToUpper() : null;
+            poco.ReferenceNumber = !string.IsNullOrEmpty(poco.ReferenceNumber) ? poco.ReferenceNumber.ToUpper() : null;
+            poco.CargoCtlNumber = !string.IsNullOrEmpty(poco.CargoCtlNumber) ? poco.CargoCtlNumber.ToUpper() : null;
+            poco.AwbCtnNumber = !string.IsNullOrEmpty(poco.AwbCtnNumber) ? poco.AwbCtnNumber.ToUpper() : null;
+            poco.PickupReferenceNumber = !string.IsNullOrEmpty(poco.PickupReferenceNumber) ? poco.PickupReferenceNumber.ToUpper() : null;
+            poco.OrderedBy = !string.IsNullOrEmpty(poco.OrderedBy) ? poco.OrderedBy.ToUpper() : null;
+            poco.DepartmentName = !string.IsNullOrEmpty(poco.DepartmentName) ? poco.DepartmentName.ToUpper() : null;
+            poco.ContactName = !string.IsNullOrEmpty(poco.ContactName) ? poco.ContactName.ToUpper() : null;
+            poco.DeliveredBy = !string.IsNullOrEmpty(poco.DeliveredBy) ? poco.DeliveredBy.ToUpper() : null;
+            poco.BolReferenceNumber = !string.IsNullOrEmpty(poco.BolReferenceNumber) ? poco.BolReferenceNumber.ToUpper() : null;
+            poco.ProReferenceNumber = !string.IsNullOrEmpty(poco.ProReferenceNumber) ? poco.ProReferenceNumber.ToUpper() : null;
+            poco.ShipperName = !string.IsNullOrEmpty(poco.ShipperName) ? poco.ShipperName.ToUpper() : null;
+            poco.ShipperAddress = !string.IsNullOrEmpty(poco.ShipperAddress) ? poco.ShipperAddress.ToUpper() : null;
+            poco.CommentsForWayBill = !string.IsNullOrEmpty(poco.CommentsForWayBill) ? poco.CommentsForWayBill.ToUpper() : null;
+            poco.CommentsForInvoice = !string.IsNullOrEmpty(poco.CommentsForInvoice) ? poco.CommentsForInvoice.ToUpper() : null;
             return base.Add(poco);
         }
 
         public override Lms_OrderPoco Update(Lms_OrderPoco poco)
         {
             _cache.Remove(App_CacheKeys.Orders);
+            poco.CommentsForInvoice = !string.IsNullOrEmpty(poco.CommentsForInvoice) ? poco.CommentsForInvoice.ToUpper() : null;
+            poco.ReferenceNumber = !string.IsNullOrEmpty(poco.ReferenceNumber) ? poco.ReferenceNumber.ToUpper() : null;
+            poco.CargoCtlNumber = !string.IsNullOrEmpty(poco.CargoCtlNumber) ? poco.CargoCtlNumber.ToUpper() : null;
+            poco.AwbCtnNumber = !string.IsNullOrEmpty(poco.AwbCtnNumber) ? poco.AwbCtnNumber.ToUpper() : null;
+            poco.PickupReferenceNumber = !string.IsNullOrEmpty(poco.PickupReferenceNumber) ? poco.PickupReferenceNumber.ToUpper() : null;
+            poco.OrderedBy = !string.IsNullOrEmpty(poco.OrderedBy) ? poco.OrderedBy.ToUpper() : null;
+            poco.DepartmentName = !string.IsNullOrEmpty(poco.DepartmentName) ? poco.DepartmentName.ToUpper() : null;
+            poco.ContactName = !string.IsNullOrEmpty(poco.ContactName) ? poco.ContactName.ToUpper() : null;
+            poco.DeliveredBy = !string.IsNullOrEmpty(poco.DeliveredBy) ? poco.DeliveredBy.ToUpper() : null;
+            poco.BolReferenceNumber = !string.IsNullOrEmpty(poco.BolReferenceNumber) ? poco.BolReferenceNumber.ToUpper() : null;
+            poco.ProReferenceNumber = !string.IsNullOrEmpty(poco.ProReferenceNumber) ? poco.ProReferenceNumber.ToUpper() : null;
+            poco.ShipperName = !string.IsNullOrEmpty(poco.ShipperName) ? poco.ShipperName.ToUpper() : null;
+            poco.ShipperAddress = !string.IsNullOrEmpty(poco.ShipperAddress) ? poco.ShipperAddress.ToUpper() : null;
+            poco.CommentsForWayBill = !string.IsNullOrEmpty(poco.CommentsForWayBill) ? poco.CommentsForWayBill.ToUpper() : null;
+            poco.CommentsForInvoice = !string.IsNullOrEmpty(poco.CommentsForInvoice) ? poco.CommentsForInvoice.ToUpper() : null;
             return base.Update(poco);
         }
 

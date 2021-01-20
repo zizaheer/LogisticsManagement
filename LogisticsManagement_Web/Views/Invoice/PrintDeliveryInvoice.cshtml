@@ -381,7 +381,7 @@
                             </td>
                         </tr>
 
-                        @if (!string.IsNullOrEmpty(bill.CargoCtlNo) || !string.IsNullOrEmpty(bill.AwbContainerNo) || !string.IsNullOrEmpty(bill.PickupRefNo))
+                        @if (!string.IsNullOrEmpty(bill.CargoCtlNo) || !string.IsNullOrEmpty(bill.AwbContainerNo) || !string.IsNullOrEmpty(bill.PickupRefNo) || !string.IsNullOrEmpty(bill.DeliveryRefNo))
                         {
                             bodyHeight += 25;
                         <tr style="font-size:11px; font-family: 'Courier New'; height:25px">
@@ -402,15 +402,19 @@
                                     }
                                 }
                             </td>
-                            <td class="tdStyle" colspan="2">
+                            <td class="tdStyle" colspan="3">
                                 @{
                                     if (!string.IsNullOrEmpty(bill.PickupRefNo))
                                     {
                                         <span>PU Ref: @bill.PickupRefNo</span>
                                     }
+                                    if (!string.IsNullOrEmpty(bill.DeliveryRefNo))
+                                    {
+                                        <div>DLV Ref: @bill.DeliveryRefNo</div>
+                                    }
                                 }
                             </td>
-                            
+
                         </tr>
                         }
                         @if (!string.IsNullOrEmpty(bill.AdditionalServicesComments))

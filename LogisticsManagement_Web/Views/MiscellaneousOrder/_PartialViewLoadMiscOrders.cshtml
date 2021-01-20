@@ -8,16 +8,15 @@
         }
         $('#misc-order-list').DataTable({
             "order": [[0, "desc"]],
-            "lengthChange": false,
-            searching: false,
-            paging: false,
-            info: false
+            searching: true,
+            paging: true,
+            info: true
         });
     });
 </script>
 
-<table id="misc-order-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
-    <thead>
+<table id="misc-order-list" class="table table-sm table-bordered table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
+    <thead style="background-color:#e2e2e2">
         <tr>
             <th>
                 <div class="form-check-inline">
@@ -70,8 +69,8 @@
                     @item.BillerCustomerName (@item.BillerCustomerId)
                 </td>
                 <td>
-                    <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn-primary smallGridIcon btnEdit" type="button" title="Edit" data-toggle="modal"><i class="fa fa-pencil"></i></button>
-                    <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn-danger smallGridIcon btnDelete" type="button" title="Delete"><i class="fa fa-trash"></i> </button>
+                    <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn-primary btnEdit" type="button" title="Edit" data-toggle="modal"><i class="fa fa-pencil"></i></button>
+                    <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn-danger btnDelete" type="button" title="Delete"><i class="fa fa-trash"></i> </button>
                 </td>
             </tr>
         }

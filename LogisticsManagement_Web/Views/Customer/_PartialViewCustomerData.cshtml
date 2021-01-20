@@ -10,61 +10,59 @@
         }
         $('#customer-list').DataTable({
             "order": [[0, "desc"]],
-            "paging": false,
+            "paging": true,
+            info: true,
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
-                
+
             }
         });
     });
 </script>
 
 
-<div class="row">
-    <div class="col-sm-12">
-        <table id="customer-list" class="table table-sm  table-striped table-bordered lms_dataTable"  cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
-            <thead>
-                <tr>
-                    <th>Number</th>
-                    <th>Name</th>
-                    <th>Special Discount(%)</th>
-                    <th>Invoice Due(days)</th>
-                    <th>Active?</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="tBodyCustomer">
+<table id="customer-list" class="table table-sm table-bordered table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
+    <thead class="dtTheadBg">
+        <tr>
+            <th>Number</th>
+            <th>Name</th>
+            <th>Special Discount(%)</th>
+            <th>Invoice Due(days)</th>
+            <th>Active?</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="tBodyCustomer">
 
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @item.Id
-                        </td>
-                        <td>
-                            @item.CustomerName
-                        </td>
-                        <td>
-                            @(item.DiscountPercentage == null ? 0 : item.DiscountPercentage)
-                        </td>
-                        <td>
-                            @item.InvoiceDueDays
-                        </td>
-                        <td>
-                            @item.IsActive
-                        </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    @item.CustomerName
+                </td>
+                <td>
+                    @(item.DiscountPercentage == null ? 0 : item.DiscountPercentage)
+                </td>
+                <td>
+                    @item.InvoiceDueDays
+                </td>
+                <td>
+                    @item.IsActive
+                </td>
 
-                        <td>
-                            <button id="btnEdit" data-customerid='@item.Id' class=" btn-primary smallGridIcon btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
-                            <button id="btnDelete" data-customerid='@item.Id' class="btn-danger smallGridIcon btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                        </td>
-                    </tr>
-                }
+                <td>
+                    <button id="btnEdit" data-customerid='@item.Id' class=" btn-primary  btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                    <button id="btnDelete" data-customerid='@item.Id' class="btn-danger  btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                </td>
+            </tr>
+        }
 
 
-            </tbody>
-        </table>
-    </div>
-</div>
+    </tbody>
+</table>
+
 <script src="~/js/customer.js"></script>

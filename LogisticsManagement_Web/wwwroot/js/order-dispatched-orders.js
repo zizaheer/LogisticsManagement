@@ -215,6 +215,11 @@ $('#btnSavePassOn').unbind().on('click', function (event) {
         return;
     }
 
+    if (passOnEmployeeId == undefined || passOnEmployeeId == '' || passOnEmployeeId < 1) {
+        bootbox.alert('Please select a valid employee to pass-on the delivery.');
+        return;
+    }
+
     var dataArray = [wayBillNumber, waitTime, passOnEmployeeId, passOnDate, orderId];
 
     var result = PerformPostActionWithObject('Order/UpdatePassonStatus', dataArray);

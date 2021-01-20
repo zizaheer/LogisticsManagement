@@ -8,35 +8,25 @@
         }
         $('#customerdues-list').DataTable({
             "order": [[0, "asc"]],
-            "paging": false,
-            "info": false,
-            "searching": false
+            "paging": true,
+            "info": true,
+            "searching": true
         });
     });
 </script>
 
-<style>
-    .lnkCollectPayment {
-        padding: 2px 8px 2px 8px;
-        color: #fff;
-        border-radius: 3px
-    }
-    .lnkPaidInvoice {
-        padding: 2px 8px 2px 8px;
-        color: #fff;
-        border-radius: 3px
-    }
-</style>
-<table id="customerdues-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
-    <thead>
-        <tr style="background-color:#ebffad">
+
+<table id="customerdues-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em; text-transform:uppercase">
+    <thead style="background-color:#e2e2e2">
+        <tr>
             <th>Cust. Name</th>
             <th>Cust. Id</th>
             <th>Address</th>
             <th>Phone</th>
-            <th>Number of invoices</th>
+            <th># Invoices</th>
             <th>Total Due</th>
             <th>Apply payment</th>
+            <th>Paid Inv.</th>
         </tr>
     </thead>
 
@@ -74,14 +64,17 @@
                 @{
                     if (item.TotalDue == 0)
                     {
-                        <a data-toggle="modal" id="btnViewInvoice" class="btn-success lnkPaidInvoice" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Paid</a>
+                        <button data-toggle="modal" id="btnViewInvoice" class="btn-success lnkPaidInvoice" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" type="button">Paid</button>
                     }
                     else
                     {
-                        <a data-toggle="modal" id="btnCollectPayment" class="btn-danger lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" href="#">Apply payment</a>
+                        <button data-toggle="modal" id="btnCollectPayment" class="btn  btn-info btn-sm lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" type="button"><i class="fa fa-money"></i> Apply payment</button>
                     }
 
                 }
+            </td>
+            <td>
+                <button class="btn btn-secondary btn-sm btnViewInvoice" data-customerid="@item.CustomerId" type="button"><i class="fa fa-search"></i> Show</button>
             </td>
         </tr>
         }

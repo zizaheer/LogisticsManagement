@@ -64,6 +64,10 @@ namespace LogisticsManagement_BusinessLogic
         {
             poco.CreateDate = DateTime.Now;
 
+            poco.AddressLine = !string.IsNullOrEmpty(poco.AddressLine) ? poco.AddressLine.ToUpper() : null;
+            poco.ContactPersonName = !string.IsNullOrEmpty(poco.ContactPersonName) ? poco.ContactPersonName.ToUpper() : null;
+            poco.PostCode = !string.IsNullOrEmpty(poco.PostCode) ? poco.PostCode.ToUpper() : null;
+
             var addedPoco = base.Add(poco);
             _cache.Remove(App_CacheKeys.Addresses);
 
@@ -73,6 +77,10 @@ namespace LogisticsManagement_BusinessLogic
         public override Lms_AddressPoco Update(Lms_AddressPoco poco)
         {
             poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
+
+            poco.AddressLine = !string.IsNullOrEmpty(poco.AddressLine) ? poco.AddressLine.ToUpper() : null;
+            poco.ContactPersonName = !string.IsNullOrEmpty(poco.ContactPersonName) ? poco.ContactPersonName.ToUpper() : null;
+            poco.PostCode = !string.IsNullOrEmpty(poco.PostCode) ? poco.PostCode.ToUpper() : null;
 
             var updatedPoco = base.Update(poco);
             _cache.Remove(App_CacheKeys.Addresses);

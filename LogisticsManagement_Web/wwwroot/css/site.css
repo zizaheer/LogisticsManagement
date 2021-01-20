@@ -94,3 +94,101 @@ fieldset {
         margin-bottom: 0px;
         color: #900909
     }
+
+.custom-select-sm {
+    width:80px !important;
+}
+.modal-header {
+    padding: 1rem 1rem .5rem 1rem !important;
+}
+
+.orderFormCardBody {
+border:none !important;
+}
+
+.frmfontsize {
+    font-size: .9em !important;
+}
+
+.paidBy {
+    display: flex;
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+    border: 1px solid #acb5bc;
+    background-color: #dff5ff
+}
+
+.billToTextbox {
+    width: 245px !important;
+}
+
+.orderbyTextbox {
+    width: 155px !important;
+}
+
+.serviceDdl {
+    width: 150px !important;
+}
+
+.waybillNo {
+    width: 100px !important;
+}
+
+.refNumber {
+    width: 161px !important;
+}
+
+.delRefNumber {
+    width: 156px !important;
+}
+
+.form-group {
+    margin-bottom: .15rem;
+}
+
+#order-list tbody tr {
+    height: 35px; /* or whatever height you need to make them all consistent */
+}
+
+.additionalServiceControl {
+    height: 22px;
+    padding: 1px 6px 3px 6px;
+}
+
+.additionalServiceBg {
+    background-color: #dff5ff;
+}
+
+.toggleButtonByUnit {
+    float: left;
+}
+
+.toggleButtonReturnOrder {
+    margin-left: 18px;
+}
+
+.form-control {
+    padding: 4px 4px 4px 8px;
+    height: 29px;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: #000;
+}
+
+.col-no-padding {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+.col-no-margin {
+    margin-left: 0px !important;
+}
+
+.captionWeight {
+    font-weight: bold;
+}
+
+.dtTheadBg {
+    background-color: #e2e2e2;
+}
+

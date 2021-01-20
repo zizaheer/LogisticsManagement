@@ -204,23 +204,6 @@
 
                     <td class="tg-amwm" rowspan="6">
                         <table border="1" style="width:100%; border-collapse:collapse; height:100%; border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
-                            <tr><td style="height:18px; width:100px; border-left:none; border-top:none; height:20px">Base</td><td style="border-top:none;border-right:none"><label id="lblOrderBasePrice">@item.OrderBasePrice</label></td></tr>
-                            <tr><td style="height:18px; width:100px; border-left:none; height:20px">Fuel</td><td style="border-right:none"><label id="lblFuelSurcharge">@item.FuelSurcharge</label></td></tr>
-
-                            <tr>
-                                <td style="height:18px; width:100px; border-left:none">
-                                    @{
-                                        if (item.OrderDiscountAmount != "")
-                                        {
-                                            <label>Savings</label>
-                                        }
-                                    }
-                                </td>
-                                <td style="border-right:none">
-                                    @item.OrderDiscountAmount
-                                </td>
-                            </tr>
-
                             @for (int serviceCount = 0; serviceCount < 5; serviceCount++)
                             {
                                 <tr>
@@ -248,6 +231,33 @@
 
                             }
 
+                            <tr><td style="height:18px; width:100px; border-left:none; border-top:none; height:20px"></td><td style="border-top:none;border-right:none"><label id="lblOrderBasePrice"></label></td></tr>
+                            <tr><td style="height:18px; width:100px; border-left:none; height:20px"></td><td style="border-right:none"><label id="lblFuelSurcharge"></label></td></tr>
+
+                            <tr>
+                                <td style="height:18px; width:100px; border-left:none">
+                                    @{
+                                        if (item.OrderDiscountAmount != "")
+                                        {
+                                            <label>Savings</label>
+                                        }
+                                    }
+                                </td>
+                                <td style="border-right:none">
+                                    @{
+                                        if (item.OrderDiscountAmount != "")
+                                        {
+                                            <label>
+                                                @item.OrderDiscountAmount
+                                            </label>
+                                        }
+                                    }
+
+                                </td>
+                            </tr>
+
+
+
 
 
 
@@ -273,42 +283,40 @@
                                 <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
                                 <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>*@
                             <tr><td style="border-left:none">HST</td><td style="border-right:none; height:20px"><label id="lblOrderTaxAmount">@item.OrderTaxAmountOnBasePrice</label></td></tr>
-                            <tr><td style="border-bottom:none; border-left:none; height:20px">Total</td><td style="border-bottom:none; border-right:none"><label id="lblTotalOrderCost">@item.NetTotalOrderCost</label></td></tr>
+                            <tr><td style="border-bottom:none; border-left:none;">Total</td><td style="border-bottom:none; border-right:none"><label id="lblTotalOrderCost">@item.NetTotalOrderCost</label></td></tr>
                         </table>
                     </td>
                 </tr>
-                <tr style="height:50px">
+                <tr style="height:40px">
                     <td class="tg-7btt" colspan="2" style="text-align:left">
-                        <div>Service Location:-</div>
-                        <div style="text-align:left;padding:3px;"><label>@item.ShipperCustomerName</label></div>
+                        <div style="text-align:left;padding-left:3px;padding-top:5px">Location: <label>@item.ShipperCustomerName</label></div>
                     </td>
                     <td class="tg-7btt" colspan="2" style="text-align:left">
-                        <div>Service Provider:-</div>
-                        <div style="padding:3px; text-align:left;"><label>@item.ServiceProviderEmployeeName</label></div>
+                        <div style="padding-left:3px;padding-top:5px; text-align:left;">Provided by: <label>@item.ServiceProviderEmployeeName</label></div>
                     </td>
                 </tr>
                 <tr style="height:35px">
                     <td class="tg-7btt" colspan="2" style="text-align:left;vertical-align:middle; padding:3px"><label id="lblPickupCityAndProvince">@item.ShipperCustomerAddressLine2</label></td>
                     <td class="tg-7btt" colspan="2" style="text-align:left;vertical-align:middle; padding:3px">
-                        Delivered by:-
-                        <div style="padding:3px; text-align:left;"><label>@item.DeliveredBy</label></div>
+
+                        <div style="padding:3px; text-align:left;">Delivered by: <label>@item.DeliveredBy</label></div>
                     </td>
                 </tr>
                 <tr style="height:35px">
                     <td class="tg-7btt" colspan="2" style="text-align:left;vertical-align:middle; padding:3px">
-                        Shipper:-
-                        <div style="padding:3px; text-align:left;"><label>@item.ShipperName</label></div>
+
+                        <div style="padding:3px; text-align:left;">Shipper: <label>@item.ShipperName</label></div>
                     </td>
 
                     <td class="tg-7btt" colspan="2" style="text-align:left;vertical-align:middle; padding:3px">
-                        PRO#:-
-                        <div style="padding:3px; text-align:left;"><label>@item.ProReferenceNumber</label></div>
+
+                        <div style="padding:3px; text-align:left;">PRO#: <label>@item.ProReferenceNumber</label></div>
                     </td>
                 </tr>
                 <tr style="height:35px">
                     <td class="tg-7btt" colspan="2" style="text-align:left;vertical-align:middle; padding:3px">
-                        Address:-
-                        <div style="padding:3px; text-align:left;"><label>@item.ShipperAddress</label></div>
+
+                        <div style="padding:3px; text-align:left;">Address: <label>@item.ShipperAddress</label></div>
                     </td>
 
                     <td class="tg-7btt" colspan="2" style="text-align:left;vertical-align:middle; padding:3px">
@@ -316,14 +324,14 @@
                             <tr>
                                 <td style="vertical-align:top; border-right:1px solid">
                                     <div style="text-align:center">Unit/Qty</div>
-                                    <div style="padding-top:10px; text-align:center">
+                                    <div style="text-align:center">
                                         <span> <label id="lblNumberOfUnits">@item.UnitQuantity @item.UnitTypeShortCode</label></span>
                                     </div>
                                 </td>
                                 <td style="vertical-align:top; border-right:1px solid">
                                     <div style="text-align:center">Skid</div>
-                                    <div style="padding-top:10px; text-align:center">
-                                        <span><label id="lblSkidQty">@item.SkidQuantity 232</label></span>
+                                    <div style="text-align:center">
+                                        <span><label id="lblSkidQty">@item.SkidQuantity</label></span>
                                     </div>
                                 </td>
                                 @*<td style="vertical-align:top">
@@ -334,7 +342,7 @@
                                     </td>*@
                                 <td style="vertical-align:top; ">
                                     <div style="text-align:center">Wght. (<label id="lblWeightMeasurementShortCode">@item.WeightScaleShortCode</label>)</div>
-                                    <div style="padding-top:10px; text-align:center">
+                                    <div style="text-align:center">
                                         <span><label id="lblWeightTotal">@item.WeightTotal</label></span>
                                     </div>
                                 </td>
@@ -342,73 +350,22 @@
                         </table>
                     </td>
                 </tr>
-                <tr style="height:55px">
-                    <td class="tg-0lax" colspan="4" style="padding:0px">
-                        <table border="1" style="width:100%; border-collapse:collapse; height:100%; font-size:14px; font-weight:bold">
-                            <tr>
-                                <td style="vertical-align:top">
-                                    <div style="text-align:center">Unit/Qty</div>
-                                    <div style="padding-top:10px; text-align:center">
-                                        <span> <label id="lblNumberOfUnits">@item.UnitQuantity @item.UnitTypeShortCode</label></span>
-                                    </div>
-                                </td>
-                                <td style="vertical-align:top">
-                                    <div style="text-align:center">Skid</div>
-                                    <div style="padding-top:10px; text-align:center">
-                                        <span><label id="lblSkidQty">@item.SkidQuantity</label></span>
-                                    </div>
-                                </td>
-                                @*<td style="vertical-align:top">
-                                        <div style="text-align:center">PCs</div>
-                                        <div style="padding-top:10px; text-align:center">
-                                            <span style="font-size:.8em"><label id="lblTotalPiecesInSkids">@item.TotalSkidPieces</label></span>
-                                        </div>
-                                    </td>*@
-                                <td style="vertical-align:top">
-                                    <div style="text-align:center">Wght. (<label id="lblWeightMeasurementShortCode">@item.WeightScaleShortCode</label>)</div>
-                                    <div style="padding-top:10px; text-align:center">
-                                        <span><label id="lblWeightTotal">@item.WeightTotal</label></span>
-                                    </div>
-                                </td>
-                                <td style="vertical-align:top">
-                                    <div style="text-align:center">Delv. Date:</div>
-                                    <div style="padding-top:10px; text-align:center">
-                                        <span><label id="lblDeliveryDate">@item.DeliveryDate</label></span>
-                                    </div>
-                                </td>
-                                <td style="vertical-align:top">
-                                    <div style="text-align:center">Delv. Time</div>
-                                    <div style="padding-top:10px; text-align:center">
-                                        <span><label id="lblDeliveryTime">@item.DeliveryTime</label></span>
-                                    </div>
-                                </td>
-                                <td style="vertical-align:top; width:110px">
-                                    <div style="text-align:center">P/U: Drv.</div>
-                                    <div style="padding-top:10px; text-align:center">
-                                        <span><label id="lblPUDriver">@item.PUDriverNum</label></span>
-                                    </div>
-                                </td>
 
-                            </tr>
-
-                        </table>
-                    </td>
-                </tr>
                 <tr style="height:70px">
                     <td colspan="4" style="padding:0">
                         <table border="1" cellpadding="0" cellspacing="0" style="width:100%;height:100%; border-collapse:collapse;  border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
                             <tr>
                                 <td class="tg-amwm" style="width:100px; vertical-align:top; text-align:center;border-left:none;border-top:none;border-bottom:none">
-                                    <div style="text-align:center">Shipper print & sign</div>
+                                    @*<div style="text-align:center">Shipper print & sign</div>*@
                                 </td>
                                 <td class="tg-amwm" style="vertical-align:top; width:150px; padding-left:8px; text-align:left;border-right:none;border-top:none;border-bottom:none">
-                                    Receiver print & sign (Received in good)<br /><br />
-                                    <label style="text-transform:uppercase;">@item.ReceivedBy</label>
+                                    @*Receiver print & sign (Received in good)<br /><br />
+                                    <label style="text-transform:uppercase;">@item.ReceivedBy</label>*@
                                 </td>
                                 <td class="tg-amwm" style="width:43px; vertical-align:top; text-align:center;border-right:none;border-top:none;border-bottom:none">
-                                    Deli. drv.<br>
+                                    Delv Date<br>
                                     <label id="lblDeliveryDriverName">
-                                        @item.DeliveryDriverNum
+                                        @item.DeliveryDate
                                     </label>
 
                                 </td>
@@ -421,158 +378,12 @@
                     <td class="tg-0lax" colspan="5"><b>Comments:</b><br> <label id="lblWayBillComments">@item.WaybillComments</label></td>
                 </tr>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <tr>
-                    <td class="tg-1wig" style="vertical-align:middle">
-                        <span style="font-size:1.1em"><label id="lblBillerName">@item.BillerCustomerName</label></span>
-                    </td>
-                    <td class="tg-1wig" colspan="2" style="text-align:center">
-                        <div style="font-size:1.2em;">Ordered by:</div>
-                        <div style="padding-top:10px"><label id="lblOrderByName">@item.OrderedByName</label></div>
-                    </td>
-                    <td class="tg-amwm">
-                        <div style="font-size:1.2em;">Service</div>
-                        <div style="padding-top:10px"><label id="lblDeliveryOptionShortCode">@item.DeliveryOptionShortCode</label></div>
-                    </td>
-                    <td class="tg-amwm" rowspan="6">
-                        <table border="1" style="width:100%; border-collapse:collapse; height:100%; border-top:none; border-left:none; border-bottom:none; border-right:none; padding:0px">
-                            <tr><td style="height:18px; width:100px; border-left:none; border-top:none; height:20px">Base</td><td style="border-top:none;border-right:none"><label id="lblOrderBasePrice">@item.OrderBasePrice</label></td></tr>
-                            <tr><td style="height:18px; width:100px; border-left:none; height:20px">Fuel</td><td style="border-right:none"><label id="lblFuelSurcharge">@item.FuelSurcharge</label></td></tr>
-                            <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
-                            <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
-                            <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
-                            <tr><td style="height:18px; width:100px; border-left:none"></td><td style="border-right:none"></td></tr>
-                            <tr>
-                                <td style="height:18px; width:100px; border-left:none">
-
-                                    @{
-                                        if (item.OrderDiscountAmount != "")
-                                        {
-                                            <label>Savings</label>
-                                        }
-                                    }
-                                </td>
-                                <td style="border-right:none">@item.OrderDiscountAmount</td>
-                            </tr>
-                            <tr>
-                                <td style="height:18px; width:100px; border-left:none; height:20px">
-                                    @{
-                                        if (item.AdditionalServiceCost != "")
-                                        {
-                                            <label>Add. Srv.</label>
-                                        }
-                                    }
-                                </td>
-                                <td style="border-right:none"><label id="lblAdditionalServiceCost">@item.AdditionalServiceCost</label></td>
-                            </tr>
-
-                            <tr><td style="border-left:none">HST</td><td style="border-right:none; height:20px"><label id="lblOrderTaxAmount">@item.OrderTaxAmountOnBasePrice</label></td></tr>
-                            <tr><td style="border-bottom:none; border-left:none; height:20px">Total</td><td style="border-bottom:none; border-right:none"><label id="lblTotalOrderCost">@item.NetTotalOrderCost</label></td></tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="tg-7btt" colspan="4" style="text-align:left">
-                        <div><u>Service location</u></div>
-                        <div style="padding-top:10px; text-align:center"><label>@item.ShipperCustomerName</label></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="tg-amwm" colspan="4" style="text-align:center"><label id="lblPickupAddressLine">@item.ShipperCustomerAddressLine1</label></td>
-                </tr>
-                <tr>
-                    <td class="tg-amwm" colspan="4" style="text-align:center; height:35px"><label id="lblPickupCityAndProvince">@item.ShipperCustomerAddressLine2</label></td>
-                </tr>
-                <tr>
-                    <td class="tg-0lax" colspan="4" style="padding:0px">
-                        <table border="1" style="width:100%; border-collapse:collapse; height:100%; font-size:14px; font-weight:bold">
-                            <tr>
-                                <td style="vertical-align:top">
-                                    <div style="text-align:center">Unit/Qty</div>
-                                    <div style="padding-top:10px; text-align:center">
-                                        <span style="font-size:.8em"> <label id="lblNumberOfUnits">@item.UnitQuantity @item.UnitTypeShortCode</label></span>
-                                    </div>
-                                </td>
-                                <td style="vertical-align:top">
-                                    <div style="text-align:center">SKID</div>
-                                    <div style="padding-top:10px; text-align:center">
-                                        <span style="font-size:.8em"><label id="lblSkidQty">@item.SkidQuantity</label></span>
-                                    </div>
-                                </td>
-
-                                <td style="vertical-align:top">
-                                    <div style="text-align:center">Wght. (<label id="lblWeightMeasurementShortCode">@item.WeightScaleShortCode</label>)</div>
-                                    <div style="padding-top:10px; text-align:center">
-                                        <span style="font-size:.8em"><label id="lblWeightTotal">@item.WeightTotal</label></span>
-                                    </div>
-                                </td>
-                                @*<td style="vertical-align:top">
-                                        <div style="text-align:center">Delivery date:</div>
-                                        <div style="padding-top:10px; text-align:center">
-                                            <span style="font-size:.8em"><label id="lblDeliveryDate">@item.DeliveryDate</label></span>
-                                        </div>
-                                    </td>
-                                    <td style="vertical-align:top">
-                                        <div style="text-align:center">Time</div>
-                                        <div style="padding-top:10px; text-align:center">
-                                            <span style="font-size:.8em"><label id="lblDeliveryTime">@item.DeliveryTime</label></span>
-                                        </div>
-                                    </td>
-                                    <td style="vertical-align:top">
-                                        <div style="text-align:center">P/U: Drv.</div>
-                                        <div style="padding-top:10px; text-align:center">
-                                            <span style="font-size:.8em"><label id="lblPUDriver">@item.PUDriverName</label></span>
-                                        </div>
-                                    </td>*@
-
-                            </tr>
-
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="tg-amwm" style="height:100px; vertical-align:top">Shipper print & sign</td>
-                    <td class="tg-amwm" style="height:38px; vertical-align:top" colspan="2">
-                        Receiver print & sign<br /><span style="font-size:.8em">(Received in good)</span>
-                    </td>
-                    <td class="tg-amwm" style="height:38px; vertical-align:top">
-                        Service provider<br>
-                        <label id="lblDeliveryDriverName">
-                            @item.DeliveryDriverName
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="tg-0lax" colspan="5"><b>Comments:</b><br> <label id="lblWayBillComments">@item.WaybillComments</label></td>
-                </tr>
                 <tr>
                     <td class="tg-0lax" colspan="5" style="font-size:11px">
                         The amount of any loss, damage or injury for which the carrier may be liable shall not exceed the lesser of $2.00 per pound compounted on the total weight of the shipment or $50.00 for the entire shipment, unless all of the following terms have been met.: The consignor/consignee or their agent has received in writting acceptance from the carrier for an increase in liability for the shipment. The valuation requested must be declared in the space provided on this document. The consignor/consignee or their agent pays the carrier's fee for the declared valuation service. This carrier is not responsible for concealed damange nor pilferage from sealed containers.
                     </td>
                 </tr>
+
             </table>
 
             itemCount = itemCount + 1;

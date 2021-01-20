@@ -716,6 +716,8 @@ function FillCustomerAddress(addressId) {
         $('#hfCustomerAddressId').val(customerAddressParsed.Id);
         $('#txtCustomerAddressLine').val(customerAddressParsed.AddressLine);
         $('#txtCustomerUnitNo').val(customerAddressParsed.UnitNumber);
+        $('#ddlCustomerCountries').val(customerAddressParsed.CountryId);
+        $('#ddlCustomerCountries').trigger('change');
         $('#ddlCustomerCityId').val(customerAddressParsed.CityId);
         $('#ddlCustomerProvinceId').val(customerAddressParsed.ProvinceId);
         $('#txtCustomerPostcode').val(customerAddressParsed.PostCode);

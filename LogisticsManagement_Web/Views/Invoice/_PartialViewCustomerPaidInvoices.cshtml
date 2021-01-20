@@ -1,14 +1,6 @@
 ﻿@using LogisticsManagement_Poco;
 @model List<ViewModel_PaidInvoice>
 
-<style>
-    .lnkMorePayment {
-        padding: 2px 8px 2px 8px;
-        color: #fff;
-        border-radius: 3px
-    }
-</style>
-
 <script>
     $(document).ready(function () {
         if ($.fn.dataTable.isDataTable('#customer-paid-invoices')) {
@@ -16,58 +8,16 @@
         }
         $('#customer-paid-invoices').DataTable({
             "order": [[0, "asc"]],
-            "paging": false,
-            "info": false,
-            "searching": false
+            paging: true,
+            info: true,
+            searching: true
         });
     });
 </script>
 
-
-<div class="modal fade bd-example-modal-xl" id="paymentList" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content bg-light">
-            <div class="modal-header">
-                <b class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/online-payment.png" style="height:25px; padding-left:28px; padding-right:10px" />Payment info</b>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <table id="invoice-payment-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
-                            <thead>
-                                <tr style="background-color:#ebffad">
-                                    <th>Cust. Name</th>
-                                    <th>Inv. #</th>
-                                    <th>Inv. Date</th>
-                                    <th>Inv. Amnt</th>
-                                    <th>Paid Amnt</th>
-                                    <th>Cheque Amnt</th>
-                                    <th>Cheque No.</th>
-                                    <th>Cheque Date</th>
-                                    <th>Bank Name</th>
-
-                                    <th>Remove</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                            </tbody>
-
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<table id="customer-paid-invoices" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
-    <thead>
-        <tr style="background-color:#ebffad">
+<table id="customer-paid-invoices" class="table table-sm table-bordered table-striped lms_dataTable" cellspacing="0" style="width:100%; font-size:.75em">
+    <thead class="dtTheadBg">
+        <tr>
             <th>Cust. Name</th>
             <th>Inv. #</th>
             <th>Inv. Date</th>
@@ -77,83 +27,76 @@
             <th>Cheque No.</th>
             <th>Cheque Date</th>
             <th>Bank Name</th>
-
             <th>Print</th>
         </tr>
     </thead>
-
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                <b>@item.BillerName</b>
-            </td>
-            <td>
-                <div class="form-check-inline">
-                    <b>@item.InvoiceId</b>
-                </div>
-            </td>
-
-            <td>
-                @item.InvoiceDate
-            </td>
-            <td>
-                @item.InvoiceAmount
-            </td>
-            <td>
-                @item.PaidAmount
-            </td>
-            <td>
-                @item.ChequeAmount
-            </td>
-            <td>
-                @item.ChequeNo
-                @{
-                    if (!string.IsNullOrEmpty(item.MorePaymentInfo))
-                    {
-                        <div class="modal fade bd-example-modal-xl" id="morePaymentInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                <div class="modal-content bg-light">
-                                    <div class="modal-header">
-                                        <b class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/online-payment.png" style="height:25px; padding-left:28px; padding-right:10px" />Payment info</b>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="container-fluid">
-                                            <div class="row">
-                                                @Html.Raw(item.MorePaymentInfo.Replace("\r\n", "<br/>"))
+            <tr>
+                <td>
+                    <b>@item.BillerName</b>
+                </td>
+                <td>
+                    <div class="form-check-inline">
+                        <b>@item.InvoiceId</b>
+                    </div>
+                </td>
+                <td>
+                    @item.InvoiceDate
+                </td>
+                <td>
+                    @item.InvoiceAmount
+                </td>
+                <td>
+                    @item.PaidAmount
+                </td>
+                <td>
+                    @item.ChequeAmount
+                </td>
+                <td>
+                    @item.ChequeNo
+                    @{
+                        if (!string.IsNullOrEmpty(item.MorePaymentInfo))
+                        {
+                            <div class="modal fade bd-example-modal-xl" id="morePaymentInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                    <div class="modal-content bg-light">
+                                        <div class="modal-header">
+                                            <b class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/online-payment.png" style="height:25px; padding-left:28px; padding-right:10px" />Payment info</b>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    @Html.Raw(item.MorePaymentInfo.Replace("\r\n", "<br/>"))
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <a href="#" class="btn-success lnkMorePayment" data-toggle="modal" data-target="#morePaymentInfo" title="@item.MorePaymentInfo">
-                            <i class="fa fa-search-plus"></i> View more
-                        </a>
+                            <a href="#" class="btn-success lnkMorePayment" data-toggle="modal" data-target="#morePaymentInfo" title="@item.MorePaymentInfo">
+                                <i class="fa fa-search-plus"></i> View more
+                            </a>
+                        }
+
                     }
-
-                }
-            </td>
-            <td>
-                @item.ChequeDate
-            </td>
-            <td>
-                @item.BankName
-            </td>
-
-            <td>
-                <button class="btn-primary smallGridIcon btnPrintPaidInvoice" data-invoiceid="@item.InvoiceId" title="Print invoice" type="button"><i class="fa fa-print"></i></button>
-                <button class="btn-danger smallGridIcon btnUndoPayment" data-invoiceid="@item.InvoiceId" title="Undo payment" type="button" style="display:none"><i class="fa fa-undo"></i></button>
-            </td>
-            <td>
-                
-            </td>
-        </tr>
+                </td>
+                <td>
+                    @item.ChequeDate
+                </td>
+                <td>
+                    @item.BankName
+                </td>
+                <td>
+                    <button class="btn-primary smallGridIcon btnPrintPaidInvoice" data-invoiceid="@item.InvoiceId" title="Print invoice" type="button"><i class="fa fa-print"></i></button>
+                    <button class="btn-danger smallGridIcon btnUndoPayment" data-invoiceid="@item.InvoiceId" title="Undo payment" type="button" style="display:none"><i class="fa fa-undo"></i></button>
+                </td>
+            </tr>
         }
 
     </tbody>

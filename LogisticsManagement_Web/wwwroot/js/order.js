@@ -23,6 +23,7 @@ $(document).ready(function () {
     //        $('#btnExistingInvoicedOrder').trigger('click');
     //    }
     //}
+
     waitLoading();
 });
 
@@ -55,6 +56,7 @@ var isCustomerTaxApplicable = false;
 
 var selectedAdditionalServiceArray = [];
 var selectedOrdersForDispatch = [];
+var additionalServiceSerial = 0;
 
 //$('#chkCheckAllOrders').prop('checked', true);
 //$('.chkDispatchToEmployee').prop('checked', true);
@@ -145,7 +147,7 @@ $('input[type=radio][name=rdoPaidBy]').change(function () {
     paidByValue = this.value;
     var billerInfo = '';
     if (paidByValue === '1') {
-        var shipperCustomerId = $('#lblShipperAccountNo').text();
+        var shipperCustomerId = $('#txtShipperAccountNo').val();
         if (shipperCustomerId !== '') {
             billerInfo = GetCustomerInfo(shipperCustomerId);
             if (billerInfo != null && billerInfo != '') {
@@ -154,7 +156,7 @@ $('input[type=radio][name=rdoPaidBy]').change(function () {
         }
     }
     else if (paidByValue === '2') {
-        var consigneeCustomerId = $('#lblConsigneeAccountNo').text();
+        var consigneeCustomerId = $('#txtConsigneeAccountNo').val();
         if (consigneeCustomerId !== '') {
             billerInfo = GetCustomerInfo(consigneeCustomerId);
             if (billerInfo != null && billerInfo != '') {
@@ -256,7 +258,7 @@ $('#txtShipperCustomerName').on('keypress', function (event) {
                 }
                 CalculateOrderBaseCost();
             } else {
-                $('#lblShipperAccountNo').text('');
+                $('#txtShipperAccountNo').val('');
                 bootbox.alert('Customer information was not found for Id: ' + shipperCustomerId);
             }
 
@@ -286,7 +288,7 @@ $('#txtShipperCustomerName').on('input', function (event) {
             }
             CalculateOrderBaseCost();
         } else {
-            $('#lblShipperAccountNo').text('');
+            $('#txtShipperAccountNo').val('');
         }
 
     }
@@ -305,7 +307,7 @@ $('#txtConsigneeCustomerName').on('keypress', function (event) {
                 }
                 CalculateOrderBaseCost();
             } else {
-                $('#lblConsigneeAccountNo').text('');
+                $('#txtConsigneeAccountNo').val('');
                 bootbox.alert('Customer information was not found for Id: ' + consigneeCustomerId);
             }
 
@@ -327,7 +329,7 @@ $('#txtConsigneeCustomerName').on('input', function (event) {
             }
             CalculateOrderBaseCost();
         } else {
-            $('#lblConsigneeAccountNo').text('');
+            $('#txtConsigneeAccountNo').val('');
         }
 
     }
@@ -354,7 +356,7 @@ function FillShipperInformation(shipperInfo) {
     if (shipperInfo != null && shipperInfo != '') {
         var shipperCustomerInfo = JSON.parse(shipperInfo);
         $('#txtShipperCustomerName').val(shipperCustomerInfo.CustomerName);
-        $('#lblShipperAccountNo').text(shipperCustomerInfo.Id);
+        $('#txtShipperAccountNo').val(shipperCustomerInfo.Id);
 
         addressId = GetCustomerDefaultShippingAddress(shipperCustomerInfo.Id);
         if (addressId < 1 || addressId === '') {
@@ -373,7 +375,7 @@ function FillConsigneeInformation(consigneeInfo) {
     if (consigneeInfo != null && consigneeInfo != '') {
         var consigneeCustomerInfo = JSON.parse(consigneeInfo);
         $('#txtConsigneeCustomerName').val(consigneeCustomerInfo.CustomerName);
-        $('#lblConsigneeAccountNo').text(consigneeCustomerInfo.Id);
+        $('#txtConsigneeAccountNo').val(consigneeCustomerInfo.Id);
         addressId = GetCustomerDefaultShippingAddress(consigneeCustomerInfo.Id);
         if (addressId < 1 && addressId == '') {
             addressId = GetCustomerDefaultBillingAddress(consigneeCustomerInfo.Id);
@@ -581,22 +583,25 @@ $('#txtOverriddenOrderCost').on('change', function (event) {
     CalculateOrderBaseCost();
 });
 
-$(document).on('input', '#service-list .txtAdditionalServiceName', function () {
+$(document).on('input', '#service-list .txtAdditionalServiceName', function (event) {
     var valueSelected = $(this).val();
     var serviceId = '0';
     if (valueSelected !== '') {
         serviceId = $('.additionalServices option').filter(function () {
             return this.value === valueSelected;
         }).data('serviceid');
+
+        var currentRow = $(this).closest('div.row');
+
+        var serviceInfo = JSON.parse(GetSingleById('AdditionalService/GetAdditionalServiceInfoById', serviceId));
+        currentRow.find('.hfServiceId').val(serviceId);
+        currentRow.find('.chkPayToDriver').prop('checked', serviceInfo.PayToDriver);
+
+        currentRow.find('.chkIsGstApplicableForService').prop('checked', serviceInfo.IsTaxApplicable);
+        currentRow.find('.btnAddAdditionalService').attr('data-serviceid', serviceId);
+        currentRow.find('.btnDeleteAdditionalService').attr('data-serviceid', serviceId);
     }
-    var currentRow = $(this).closest('tr');
-
-    var serviceInfo = JSON.parse(GetSingleById('AdditionalService/GetAdditionalServiceInfoById', serviceId));
-    currentRow.find('td:eq(1) .chkPayToDriver').prop('checked', serviceInfo.PayToDriver);
-
-    currentRow.find('td:eq(4) .chkIsGstApplicableForService').prop('checked', serviceInfo.IsTaxApplicable);
-    currentRow.find('td:eq(5) .btnAddAdditionalService').attr('data-serviceid', serviceId);
-    currentRow.find('td:eq(5) .btnDeleteAdditionalService').attr('data-serviceid', serviceId);
+   
 });
 
 $('#btnAddAddtionalServiceRow').on('click', function (event) {
@@ -616,7 +621,7 @@ $('#service-list').unbind().on('click', '.btnDeleteAdditionalService', function 
     event.preventDefault();
     var serviceId = event.currentTarget.dataset.serviceid;
 
-    var selectedRow = $(this).closest('tr');
+    var selectedRow = $(this).closest("div.row");
     bootbox.confirm("Are you sure you want to remove this additional service?", function (result) {
         if (result === true) {
 
@@ -633,15 +638,15 @@ $('#service-list').unbind().on('click', '.btnDeleteAdditionalService', function 
     });
 });
 
-$('#service-list').on('click', '.btnAddAdditionalService', function (event) {
-    event.preventDefault();
-    var serviceId = event.currentTarget.dataset.serviceid;
-    var currentRow = $(this).closest('tr');
+function addAdditionalServiceRowData(currentRow) {
 
-    var payToDriver = currentRow.find('td:eq(1) .chkPayToDriver').is(':checked');
-    var serviceFee = currentRow.find('td:eq(2) .txtServiceFee').val();
-    var driverPercentage = currentRow.find('td:eq(3) .txtDriverPercentage').val();
-    var isGstApplicable = currentRow.find('td:eq(4) .chkIsGstApplicableForService').is(':checked');
+    var serviceId = currentRow.find('.hfServiceId').val();
+    var serialNo = parseInt(currentRow.find('.hfSerialNo').val());
+
+    var payToDriver = currentRow.find('.chkPayToDriver').is(':checked');
+    var serviceFee = currentRow.find('.txtServiceFee').val();
+    var driverPercentage = currentRow.find('.txtDriverPercentage').val();
+    var isGstApplicable = currentRow.find('.chkIsGstApplicableForService').is(':checked');
     var taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
 
     if (isGstApplicable === true) {
@@ -673,6 +678,7 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
     }
 
     var serviceData = {
+        serialNo: serialNo,
         orderId: $('#hfOrderId').val(),
         additionalServiceId: parseInt(serviceId),
         driverPercentageOnAddService: driverPercentage === "" ? 0 : parseFloat(driverPercentage),
@@ -681,8 +687,7 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
         taxAmountOnAdditionalService: taxPercentage
     };
 
-
-    var index = selectedAdditionalServiceArray.findIndex(c => c.additionalServiceId === serviceData.additionalServiceId);
+    var index = selectedAdditionalServiceArray.findIndex(c => c.serialNo === serviceData.serialNo);
     if (index >= 0) {
         selectedAdditionalServiceArray.splice(index, 1);
     }
@@ -691,11 +696,42 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
     CalculateAdditionalServiceCost();
     CalculateOrderBaseCost();
 
-    currentRow.find('td:eq(5) .btnAddAdditionalService').hide();
-    currentRow.find('td:eq(5) .btnServiceAdded').show();
-    currentRow.find('td:eq(5) .btnDeleteAdditionalService').removeAttr('disabled');
+    currentRow.find('.btnAddAdditionalService').prop("disabled", true);
+    currentRow.find('.chkIsUpdate').prop("disabled", false);
+    currentRow.find('.btnDeleteAdditionalService').removeAttr('disabled');
+
+    console.log("Additional service : " + JSON.stringify(selectedAdditionalServiceArray));
+
+}
+
+$('#service-list').on('click', '.btnAddAdditionalService', function (event) {
+    event.preventDefault();
+    var currentRow = $(this).closest('div.row');
+    addAdditionalServiceRowData(currentRow);
+});
+
+    
+$('#service-list').on('click', '.chkIsUpdate', function () {
+    var selectedRow = $(this).closest("div.row");
+    var isChecked = $(this).is(':checked');
+    if (isChecked == true) {
+        selectedRow.find('.btnEditService').prop("disabled", false);
+    } else {
+        selectedRow.find('.btnEditService').prop("disabled", true);
+    }
 
 });
+
+
+$('#service-list').on('click', '.btnEditService', function (event) {
+    event.preventDefault();
+
+    var currentRow = $(this).closest('div.row');
+
+    addAdditionalServiceRowData(currentRow);
+});
+
+
 
 $('.btnDelete').unbind().on('click', function () {
     var waybillNumber = $(this).data('waybillnumber');
@@ -992,22 +1028,57 @@ $('#btnDispatchToEmployee').unbind().on('click', function (event) {
 });
 $('#order-list .chkDispatchToEmployee').change(function (event) {
     //event.preventDefault();
-
     var isChecked = $(this).is(':checked');
     var orderId = $(this).data('waybillnumber');
+    getSelectedOrder(isChecked, orderId);
 
-    var index = selectedOrdersForDispatch.indexOf(orderId);
+});
+$('#orderdelivered-list .chkOrderToPrint').change(function (event) {
+    //event.preventDefault();
+    var isChecked = $(this).is(':checked');
+    var orderId = $(this).data('waybillnumber');
+    getSelectedOrder(isChecked, orderId);
+});
+
+function getSelectedOrder(isChecked, wbNumber) {
+    var index = selectedOrdersForDispatch.indexOf(wbNumber);
     if (index >= 0) {
         selectedOrdersForDispatch.splice(index, 1);
     }
 
     if (isChecked) {
-        selectedOrdersForDispatch.push(orderId);
+        selectedOrdersForDispatch.push(wbNumber);
+    }
+}
+
+$("#btnDeliveredOrder").click(function () {
+    var btnText = $("#lblShowHide").text();
+    if (btnText == "SHOW") {
+        $("#loadOrdersToBeDispatched").css("display", "none");
+        $("#loadOrdersDelivered").css("display", "block");
+        $("#lblShowHide").text("HIDE");
+        $("#btnDispatch").prop("disabled", true);
+        $('#order-list, #orderdelivered-list .chkDispatchToEmployee, .chkOrderToPrint, .chkCheckAllOrders, .chkCheckAllDelOrders').prop('checked', false);
+        selectedOrdersForDispatch = [];
+
+        $("#chkIgnorePricingInformation").prop("checked", false);
+        $("#ddlNumberOfCopies").val("1");
+        $("#ddlCopyOnPage").val("1");
+
+    }
+    else {
+        $("#loadOrdersToBeDispatched").css("display", "block");
+        $("#loadOrdersDelivered").css("display", "none");
+        $("#lblShowHide").text("SHOW");
+        $("#btnDispatch").prop("disabled", false);
+        $('#orderdelivered-list, #order-list .chkDispatchToEmployee, .chkOrderToPrint, .chkCheckAllOrders, .chkCheckAllDelOrders').prop('checked', false);
+        selectedOrdersForDispatch = [];
+        $("#chkIgnorePricingInformation").prop("checked", true);
+        $("#ddlNumberOfCopies").val("2");
+        $("#ddlCopyOnPage").val("2");
     }
 });
-
-
-$('#order-list').on('click', '.btnEdit', function (event) {
+$('#order-list, #orderdelivered-list').on('click', '.btnEdit', function (event) {
     event.preventDefault();
 
     ClearForm();
@@ -1086,15 +1157,28 @@ function ModifyReleasedOrder(orderId) {
     }
 }
 
-
-$('#order-list').on('change', '#chkCheckAllOrders', function (event) {
+$('#order-list').on('change', '.chkCheckAllOrders', function (event) {
     event.preventDefault();
-
     var isChecked = $(this).is(':checked');
+    var wbArrayString = $('.hfWaybillArray').val();
+    getSelectedOrders(isChecked, wbArrayString, false);
+});
+
+$('#orderdelivered-list').on('change', '.chkCheckAllDelOrders', function (event) {
+    event.preventDefault();
+    var isChecked = $(this).is(':checked');
+    var wbDelArrayString = $('.hfDelWaybillArray').val();
+    getSelectedOrders(isChecked, wbDelArrayString, true);
+});
+function getSelectedOrders(isChecked, wbArrayString, isDelivered) {
+    selectedOrdersForDispatch = [];
     if (isChecked === true) {
-        $('.chkDispatchToEmployee').prop('checked', true);
-        var wbArrayString = $('#hfWaybillArray').val();
-        selectedOrdersForDispatch = [];
+        if (isDelivered) {
+            $('.chkOrderToPrint').prop('checked', isChecked);
+        } else {
+            $('.chkDispatchToEmployee').prop('checked', isChecked);
+        }
+        
         var wbArray = wbArrayString.split(',');
         $.each(wbArray, function (i, item) {
             if (item !== '') {
@@ -1102,10 +1186,12 @@ $('#order-list').on('change', '#chkCheckAllOrders', function (event) {
             }
         });
     } else {
-        $('.chkDispatchToEmployee').prop('checked', false);
-        selectedOrdersForDispatch = [];
+        $('.chkDispatchToEmployee').prop('checked', isChecked);
+        $('.chkOrderToPrint').prop('checked', isChecked);
     }
-});
+}
+
+
 $('#btnTrialPrintWaybill').unbind().on('click', function (event) {
     event.preventDefault();
 
@@ -1247,8 +1333,8 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, orderTypeId) {
 
             var billerId = $('#hfBillerCustomerId').val();
 
-            var shippAccNo = $('#lblShipperAccountNo').text();
-            var consigAccNo = $('#lblConsigneeAccountNo').text();
+            var shippAccNo = $('#txtShipperAccountNo').val();
+            var consigAccNo = $('#txtConsigneeAccountNo').val();
 
             var shippName = $('#txtShipperCustomerName').val();
             var consigName = $('#txtConsigneeCustomerName').val();
@@ -1262,8 +1348,8 @@ function GetAndFillOrderDetailsByWayBillNumber(wayBillNumber, orderTypeId) {
                 return;
             }
 
-            $('#lblShipperAccountNo').text(consigAccNo);
-            $('#lblConsigneeAccountNo').text(shippAccNo);
+            $('#txtShipperAccountNo').val(consigAccNo);
+            $('#txtConsigneeAccountNo').val(shippAccNo);
 
             $('#txtShipperCustomerName').val(consigName);
             $('#txtConsigneeCustomerName').val(shippName);
@@ -1601,7 +1687,7 @@ function FillOrderDetails(orderRelatedData) {
         $('#txtPickupRefNo').val(orderRelatedData.PickupReferenceNumber);
         $('#txtDeliveryRefNo').val(orderRelatedData.DeliveryReferenceNumber);
 
-        $('#lblShipperAccountNo').text(orderRelatedData.ShipperCustomerId);
+        $('#txtShipperAccountNo').val(orderRelatedData.ShipperCustomerId);
         if (orderRelatedData.ShipperCustomerId != '' && orderRelatedData.ShipperCustomerId != null) {
             var shipperInfo = GetCustomerInfo(orderRelatedData.ShipperCustomerId);
             if (shipperInfo != '' && shipperInfo != null) {
@@ -1613,7 +1699,7 @@ function FillOrderDetails(orderRelatedData) {
             FillShipperAddress(orderRelatedData.ShipperAddressId);
         }
 
-        $('#lblConsigneeAccountNo').text(orderRelatedData.ConsigneeCustomerId);
+        $('#txtConsigneeAccountNo').val(orderRelatedData.ConsigneeCustomerId);
         if (orderRelatedData.ConsigneeCustomerId != '' && orderRelatedData.ConsigneeCustomerId != null) {
             var consigneeInfo = GetCustomerInfo(orderRelatedData.ConsigneeCustomerId);
             if (consigneeInfo != '' && consigneeInfo != null) {
@@ -1800,6 +1886,7 @@ function FillOrderAdditionalServices(orderAdditionalServiceData) {
     if (orderAdditionalServiceData !== null) {
         for (var i = 0; i < orderAdditionalServiceData.length; i++) {
             var serviceData = {
+                serialNo: i+1,
                 orderId: orderAdditionalServiceData[i].OrderId,
                 additionalServiceId: orderAdditionalServiceData[i].AdditionalServiceId,
                 driverPercentageOnAddService: orderAdditionalServiceData[i].DriverPercentageOnAddService === "" ? 0 : parseFloat(orderAdditionalServiceData[i].DriverPercentageOnAddService),
@@ -1813,9 +1900,6 @@ function FillOrderAdditionalServices(orderAdditionalServiceData) {
             var additionalServiceInfo = JSON.parse(GetSingleById('AdditionalService/GetAdditionalServiceInfoById', serviceData.additionalServiceId));
             if (additionalServiceInfo !== null && additionalServiceInfo !== undefined && additionalServiceInfo !== '') {
                 //$('#btnAddAddtionalServiceRow').trigger('click');
-
-
-
                 $('#service-list').append(GenerateNewAdditionalServiceRow());
                 var services = JSON.parse(GetList('AdditionalService/GetAdditionalServiceList'));
                 $.each(services, function (i, item) {
@@ -1823,22 +1907,24 @@ function FillOrderAdditionalServices(orderAdditionalServiceData) {
                 });
 
 
-                var currentRow = $('#service-list tr:eq(' + i + ')');
-                currentRow.find('td:eq(0) .txtAdditionalServiceName').val(additionalServiceInfo.ServiceName);
-                currentRow.find('td:eq(0) .txtAdditionalServiceName').prop('disabled', true);
-                currentRow.find('td:eq(1) .chkPayToDriver').prop('checked', additionalServiceInfo.PayToDriver);
-                currentRow.find('td:eq(1) .chkPayToDriver').prop('disabled', true);
-                currentRow.find('td:eq(2) .txtServiceFee').val(serviceData.additionalServiceFee);
-                currentRow.find('td:eq(2) .txtServiceFee').prop('disabled', true);
-                currentRow.find('td:eq(3) .txtDriverPercentage').val(serviceData.driverPercentageOnAddService);
-                currentRow.find('td:eq(3) .txtDriverPercentage').prop('disabled', true);
-                currentRow.find('td:eq(4) .chkIsGstApplicableForService').prop('checked', serviceData.isTaxAppliedOnAddionalService);
-                currentRow.find('td:eq(4) .chkIsGstApplicableForService').prop('disabled', true);
-                currentRow.find('td:eq(5) .btnAddAdditionalService').hide();
-                currentRow.find('td:eq(5) .btnServiceAdded').show();
-                currentRow.find('td:eq(5) .btnDeleteAdditionalService').attr('data-serviceid', serviceData.additionalServiceId);
+                var currentRow = $('#service-list').children('div.row').eq(i);
+                currentRow.find('.hfServiceId').val(serviceData.additionalServiceId);
+                currentRow.find('.txtAdditionalServiceName').val(additionalServiceInfo.ServiceName);
+                currentRow.find('.hfSerialNo').val(serviceData.serialNo);
+                currentRow.find('.chkPayToDriver').prop('checked', additionalServiceInfo.PayToDriver);
+                currentRow.find('.txtServiceFee').val(serviceData.additionalServiceFee);
+                currentRow.find('.txtDriverPercentage').val(serviceData.driverPercentageOnAddService);
+                currentRow.find('.chkIsGstApplicableForService').prop('checked', serviceData.isTaxAppliedOnAddionalService);
+                currentRow.find('.btnAddAdditionalService').prop('disabled', true);
+                currentRow.find('.chkIsUpdate').prop('disabled', false);
+                currentRow.find('.btnEditService').prop('disabled', true);
+                currentRow.find('.btnDeleteAdditionalService').attr('data-serviceid', serviceData.additionalServiceId);
+
+                
             }
         }
+
+        console.log("sds " + JSON.stringify(selectedAdditionalServiceArray));
     }
 }
 
@@ -1885,9 +1971,9 @@ function GetFormData() {
         pickupReferenceNumber: $('#txtPickupRefNo').val() === "" ? null : $('#txtPickupRefNo').val(),
         deliveryReferenceNumber: $('#txtDeliveryRefNo').val() === "" ? null : $('#txtDeliveryRefNo').val(),
 
-        shipperCustomerId: $('#lblShipperAccountNo').text() === "" ? 0 : parseInt($('#lblShipperAccountNo').text()),
+        shipperCustomerId: $('#txtShipperAccountNo').val() === "" ? 0 : parseInt($('#txtShipperAccountNo').val()),
         shipperAddressId: $('#hfShipperAddressId').val() === "" ? 0 : parseInt($('#hfShipperAddressId').val()),
-        consigneeCustomerId: $('#lblConsigneeAccountNo').text() === "" ? 0 : parseInt($('#lblConsigneeAccountNo').text()),
+        consigneeCustomerId: $('#txtConsigneeAccountNo').val() === "" ? 0 : parseInt($('#txtConsigneeAccountNo').val()),
         consigneeAddressId: $('#hfConsigneeAddressId').val() === "" ? 0 : parseInt($('#hfConsigneeAddressId').val()),
         billToCustomerId: $('#hfBillerCustomerId').val() === "" ? 0 : parseInt($('#hfBillerCustomerId').val()),
 
@@ -1961,7 +2047,7 @@ function ClearForm() {
     $('#txtPickupRefNo').val('');
     $('#txtOrderedBy').val('');
 
-    $('#lblShipperAccountNo').text('');
+    $('#txtShipperAccountNo').val('');
 
     $('#txtShipperCustomerName').val('');
     $('#txtShipperAddressLine').val('');
@@ -1974,7 +2060,7 @@ function ClearForm() {
     $('#hfShipperAddressId').val('');
     $('#hfConsigneeAddressId').val('');
 
-    $('#lblConsigneeAccountNo').text('');
+    $('#txtConsigneeAccountNo').val('');
     $('#txtConsigneeCustomerName').val('');
     $('#txtConsigneeAddressLine').val('');
     $('#txtConsigneeUnitNo').val('');
@@ -2040,34 +2126,46 @@ function ClearConsigneeAddressArea() {
 
 function GenerateNewAdditionalServiceRow() {
     var appendString = '';
+    additionalServiceSerial += 1;
 
-    appendString += '<tr style="height:32px; background-color:#dcf0ff">';
-    appendString += '<td style="width:220px">';
-    appendString += '<input class="form-control form-control-sm additionalServiceControl txtAdditionalServiceName" id="txtAdditionalServiceName" style="width:200px; margin-left:3px" placeholder="Service name" list="additionalServices" type="search" />';
+    appendString += '<div class="row ml-0 mr-0 additionalServiceBg">';
+    appendString += '<div class="form-group pt-1 pl-1 pb-1 pr-0  mr-1">';
+    appendString += '<input type="hidden" class="hfServiceId" name="hfServiceId">';
+    appendString += '<input class="form-control form-control-sm additionalServiceControl txtAdditionalServiceName" id="txtAdditionalServiceName" style="width:156px;" placeholder="Service name" list="additionalServices" type="search" />';
     appendString += '<datalist id="additionalServices" class="additionalServices">';
-    //appendString += '@foreach (var item in Model.AdditionalServices) {';
-    //appendString += '<option data-serviceid="@item.Id" value="@item.ServiceName"></option> }';
     appendString += '</datalist>';
-    appendString += '</td>';
-    appendString += '<td style="width:100px; text-align:center">';
+    appendString += '</div>';
+
+    appendString += '<div class="form-group ml-5 mr-5">';
+    appendString += '<input type="hidden" class="hfSerialNo" name="hfSerialNo" value="' + additionalServiceSerial + '">';
     appendString += '<input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" />';
-    appendString += '</td>';
-    appendString += '<td style="width:110px; padding-right:5px">';
-    appendString += '<input type="number" class="form-control form-control-sm additionalServiceControl txtServiceFee " id="txtServiceFee" step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service fee amount" />';
-    appendString += '</td>';
-    appendString += '<td style="width:110px;">';
-    appendString += '<input type="number" class="form-control form-control-sm additionalServiceControl txtDriverPercentage" min="0" id="txtDriverPercentage" step=".01" name="txtDriverPercentage" placeholder="Percent" title="Driver portion of the fee" />';
-    appendString += '</td>';
-    appendString += '<td style="width:100px; text-align:center">';
-    appendString += '<input type="checkbox" class="chkIsGstApplicableForService" id="chkIsGstApplicableForService" name="chkIsGstApplicableForService" />';
-    appendString += '</td>';
-    appendString += '<td style="width:100px;text-align:center;">';
-    appendString += '<button class="btn btn-sm btn-primary additionalServiceControl btnAddAdditionalService" id="btnAddAdditionalService" name="btnAddAdditionalService" title="Click to add to order"><i class="fa fa-plus-circle"></i> </button>';
-    appendString += '<button class="btn btn-sm btn-success additionalServiceControl btnServiceAdded" style="display:none" title="Service added to order" disabled><i class="fa fa-check-circle"></i> </button>';
+    appendString += '</div>';
+
+    appendString += '<div class="form-group ml-2 mr-4">';
+    appendString += '<input type="number" style="width: 90px" class="form-control form-control-sm additionalServiceControl txtServiceFee " step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service charges" />';
+    appendString += '</div>';
+
+    appendString += '<div class="form-group mr-2">';
+    appendString += '<input type="number" style="width: 66px" class="form-control form-control-sm additionalServiceControl txtDriverPercentage" min="0" step=".01" name="txtDriverPercentage" placeholder="Percent" title="Driver portion of the fee" />';
+    appendString += '</div>';
+
+    appendString += '<div class="form-group ml-5 mr-5">';
+    appendString += '<input type="checkbox" class="chkIsGstApplicableForService" name="chkIsGstApplicableForService" />';
+    appendString += '</div>';
+
+    appendString += '<div class="form-group ml-4 mr-5 pl-2">';
+    appendString += '<input type="checkbox" class="chkIsUpdate" name="chkIsUpdate" disabled />';
+    appendString += '</div>';
+
+    appendString += '<div class="form-group ml-5">';
+    appendString += '<button type="button" class="btn btn-sm btn-primary additionalServiceControl btnAddAdditionalService" id="btnAddAdditionalService" name="btnAddAdditionalService" title="Click to add to order"><i class="fa fa-plus-circle"></i> </button>';
+    appendString += '&nbsp;' + '<button type="button" class="btn btn-sm btn-success additionalServiceControl btnEditService" title="Update & save" disabled><i class="fa fa-save"></i> </button>';
     appendString += '&nbsp;';
-    appendString += '<button class="btn btn-sm btn-danger additionalServiceControl btnDeleteAdditionalService" id="btnDeleteAdditionalService" name="btnDeleteAdditionalService" title="Delete from order"><i class="fa fa-trash"></i> </button>';
-    appendString += '</td>';
-    appendString += '</tr>';
+    appendString += '<button type="button" class="btn btn-sm btn-danger additionalServiceControl btnDeleteAdditionalService" id="btnDeleteAdditionalService" name="btnDeleteAdditionalService" title="Delete from order"><i class="fa fa-trash"></i> </button>';
+    appendString += '</div>';
+
+    appendString += '</div>';
+
 
     return appendString;
 }

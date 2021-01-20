@@ -67,6 +67,7 @@ namespace LogisticsManagement_BusinessLogic
         public override Lms_CustomerPoco Add(Lms_CustomerPoco poco)
         {
             poco.CreateDate = DateTime.Now;
+            poco.CustomerName = !string.IsNullOrEmpty(poco.CustomerName) ? poco.CustomerName.ToUpper() : null;
 
             var addedPoco = base.Add(poco);
             _cache.Remove(App_CacheKeys.Customers);
@@ -77,6 +78,7 @@ namespace LogisticsManagement_BusinessLogic
         public override Lms_CustomerPoco Update(Lms_CustomerPoco poco)
         {
             poco.CreateDate = Convert.ToDateTime(poco.CreateDate);
+            poco.CustomerName = !string.IsNullOrEmpty(poco.CustomerName) ? poco.CustomerName.ToUpper() : null;
             var updatedPoco = base.Update(poco);
             _cache.Remove(App_CacheKeys.Customers);
 

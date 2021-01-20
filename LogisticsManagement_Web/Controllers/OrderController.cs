@@ -126,7 +126,7 @@ namespace LogisticsManagement_Web.Controllers
                     newAddress.CityId = Convert.ToInt16(shipperCityId);
                     newAddress.ProvinceId = Convert.ToInt16(shipperProvinceId);
                     newAddress.CountryId = Convert.ToInt16(shipperCountryId); // default Canada
-                    newAddress.PostCode = shipperPostcode.Trim().ToUpper();
+                    newAddress.PostCode = !string.IsNullOrEmpty(shipperPostcode) ? shipperPostcode.Trim().ToUpper() : "";
                     newAddress.CreatedBy = sessionData.UserId;
 
 
@@ -181,7 +181,7 @@ namespace LogisticsManagement_Web.Controllers
                     newAddress.CityId = Convert.ToInt16(consigneeCityId);
                     newAddress.ProvinceId = Convert.ToInt16(consigneeProvinceId);
                     newAddress.CountryId = Convert.ToInt16(consigneeCountryId); // default Canada
-                    newAddress.PostCode = consigneePostcode.Trim().ToUpper();
+                    newAddress.PostCode = !string.IsNullOrEmpty(consigneePostcode) ? consigneePostcode.Trim().ToUpper() : "";  
                     newAddress.CreatedBy = sessionData.UserId;
 
                     var consigneeAddressInfo = addressList.Where(c => c.AddressLine == newAddress.AddressLine && c.CityId == newAddress.CityId && c.ProvinceId == newAddress.ProvinceId).FirstOrDefault();
@@ -274,7 +274,7 @@ namespace LogisticsManagement_Web.Controllers
                     newAddress.CityId = Convert.ToInt16(shipperCityId);
                     newAddress.ProvinceId = Convert.ToInt16(shipperProvinceId);
                     newAddress.CountryId = Convert.ToInt16(shipperCountryId); // default Canada
-                    newAddress.PostCode = shipperPostcode.Trim().ToUpper();
+                    newAddress.PostCode = !string.IsNullOrEmpty(shipperPostcode) ? shipperPostcode.Trim().ToUpper() : "";
                     newAddress.CreatedBy = sessionData.UserId;
 
                     //var shipperAddressInfo = addressList.Where(c => c.Id == orderPoco.ShipperAddressId).FirstOrDefault();
@@ -328,7 +328,7 @@ namespace LogisticsManagement_Web.Controllers
                     newAddress.CityId = Convert.ToInt16(consigneeCityId);
                     newAddress.ProvinceId = Convert.ToInt16(consigneeProvinceId);
                     newAddress.CountryId = Convert.ToInt16(consigneeCountryId); // default Canada
-                    newAddress.PostCode = consigneePostcode.Trim().ToUpper();
+                    newAddress.PostCode = !string.IsNullOrEmpty(consigneePostcode) ? consigneePostcode.Trim().ToUpper() : "";  
                     newAddress.CreatedBy = sessionData.UserId;
 
                     var consigneeAddressInfo = addressList.Where(c => c.Id == orderPoco.ConsigneeAddressId).FirstOrDefault();
@@ -1839,6 +1839,16 @@ namespace LogisticsManagement_Web.Controllers
                             waybillPrintViewModel.DeliveryDate = null;
                             waybillPrintViewModel.DeliveryTime = null;
                             waybillPrintViewModel.PUDriverName = "";
+                            waybillPrintViewModel.DeliveredBy = orderInfo.DeliveredBy;
+                            waybillPrintViewModel.ShipperName = orderInfo.ShipperName;
+                            waybillPrintViewModel.ShipperAddress = orderInfo.ShipperAddress;
+                            waybillPrintViewModel.ProReferenceNumber = orderInfo.ProReferenceNumber;
+
+                            if (orderInfo.ServiceProviderEmployeeId != null && orderInfo.ServiceProviderEmployeeId > 0)
+                            {
+                                waybillPrintViewModel.ServiceProviderEmployeeName = employeeList.Where(c => c.Id == orderInfo.ServiceProviderEmployeeId).FirstOrDefault().FirstName;
+                            }
+
 
                             var orderStatus = orderStatusList.Where(c => c.OrderId == orderInfo.Id).FirstOrDefault();
                             if (orderStatus != null)
@@ -2023,7 +2033,8 @@ namespace LogisticsManagement_Web.Controllers
         private ViewModel_DeliveryOrder GetAllRequiredDataForDispatchBoard()
         {
             var deliveryOrderViewModel = GetDeliveryOrderRelatedAdditionalData();
-            deliveryOrderViewModel.DispatchedOrders = GetDispatchedOrders(deliveryOrderViewModel);
+            deliveryOrderViewModel.DispatchedOrders = GetDispatchedOrders(deliveryOrderViewModel).Where(c=>c.IsOrderDelivered != true).ToList();
+            deliveryOrderViewModel.DeliveredOrders = GetDispatchedOrders(deliveryOrderViewModel).Where(c => c.IsOrderDelivered == true).ToList();
 
             return deliveryOrderViewModel;
         }
@@ -2100,7 +2111,7 @@ namespace LogisticsManagement_Web.Controllers
 
             var filteredOrdersForDispatchBoard = (from order in orders
                                                   join status in ordersStatus on order.Id equals status.OrderId
-                                                  where status.IsDelivered != true
+                                                  where 1==1 //status.IsDelivered != true
                                                   select new { order, status }).ToList();
 
             foreach (var item in filteredOrdersForDispatchBoard)
@@ -2140,6 +2151,8 @@ namespace LogisticsManagement_Web.Controllers
                 data.ConsigneeCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ConsigneeCustomerId).FirstOrDefault().CustomerName;
                 data.BillerCustomerId = item.order.BillToCustomerId;
                 data.BillerCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.BillerCustomerId).FirstOrDefault().CustomerName;
+
+                data.IsOrderDelivered = item.status.IsDelivered;
 
                 if (item.status.IsDispatched == null || item.status.IsDispatched == false)
                 {

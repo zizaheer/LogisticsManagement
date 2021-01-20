@@ -4,19 +4,18 @@
 <h1>@ViewData["Title"]</h1>
 
 <div class="row">
-    <div class="col-lg-12">
-        <p style="background-color:#ecffed; padding:10px">
-            Hello <label>@ViewBag.FirstName</label>! <br />
-            You have <strong><label id="orderNo" style="color:#ff0000; font-size:1.2em">@ViewBag.OrderCount</label></strong> order/s yet to be picked up @*by <strong><label id="pickupDate">dd-MMM-yy</label></strong>*@
-
-        </p>
+    <div class="col-lg-12" style="margiN:20px 0px 30px 0px; ">
+          <p>
+              Hello <label>@ViewBag.FirstName</label>! <br />
+              You have <strong><label id="orderNo" style="color:#ff0000; font-size:1.2em">@ViewBag.OrderCount</label></strong> order/s yet to be picked up @*by <strong><label id="pickupDate">dd-MMM-yy</label></strong>*@
+          </p>
     </div>
 </div>
 
 <div class="row">
     <div class="col-lg-12">
         <p>
-            <i class="fa fa-paper-plane-o"></i> Orders & payments
+            <i class="fa fa-paper-plane-o"></i> <strong>ORDERS & PAYMENTS</strong>
             <hr />
         </p>
     </div>
@@ -28,7 +27,7 @@
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/logistics-delivery.png" />
 
-                <b><label style="text-decoration:underline; cursor:pointer">Delivery</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">DELIVERY</label></b>
             </div>
         </a>
     </div>
@@ -36,7 +35,7 @@
         <a asp-controller="MiscellaneousOrder" asp-action="Index">
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/effort.png" />
-                <b><label style="text-decoration:underline; cursor:pointer">Misc.</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">MISC.</label></b>
             </div>
         </a>
     </div>
@@ -49,7 +48,7 @@
         <a asp-controller="Invoice" asp-action="Index">
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/invoice.png" />
-                <b><label style="text-decoration:underline; cursor:pointer">Invoice</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">INVOICE</label></b>
             </div>
         </a>
     </div>
@@ -57,7 +56,7 @@
         <a asp-controller="Invoice" asp-action="InvoicePayment">
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/online-payment.png" />
-                <b><label style="text-decoration:underline; cursor:pointer">Payments</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">PAYMENTS</label></b>
             </div>
         </a>
     </div>
@@ -70,7 +69,7 @@
         <a asp-controller="Home" asp-action="Privacy">
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/boxes.png" />
-                <b><label style="text-decoration:underline; cursor:pointer">Storage</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">STORAGE</label></b>
             </div>
         </a>
     </div>
@@ -78,7 +77,7 @@
         <a asp-controller="Home" asp-action="Privacy">
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/delivery-cart.png" />
-                <b><label style="text-decoration:underline; cursor:pointer">Deliver</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">DELIVER</label></b>
             </div>
         </a>
     </div>
@@ -92,7 +91,7 @@
 <div class="row">
     <div class="col-lg-12">
         <p>
-            <i class="fa fa-building-o"></i> Administration
+            <i class="fa fa-building-o"></i> <strong>ADMINISTRATION</strong>
             <hr />
         </p>
     </div>
@@ -104,7 +103,7 @@
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/add-friend.png" />
 
-                <b><label style="text-decoration:underline; cursor:pointer">Customer</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">CUSTOMER</label></b>
             </div>
         </a>
     </div>
@@ -112,7 +111,7 @@
         <a asp-controller="Employee" asp-action="Index">
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/boss.png" />
-                <b><label style="text-decoration:underline; cursor:pointer">Employee</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">EMPLOYEE</label></b>
             </div>
         </a>
     </div>
@@ -121,7 +120,7 @@
         <a asp-controller="Address" asp-action="Index">
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/location-pin.png" />
-                <b><label style="text-decoration:underline; cursor:pointer">Address</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">ADDRESS</label></b>
             </div>
         </a>
     </div>
@@ -129,7 +128,7 @@
         <a asp-controller="Payee" asp-action="Index">
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/contact.png" />
-                <b><label style="text-decoration:underline; cursor:pointer">Payee</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">PAYEE</label></b>
             </div>
         </a>
     </div>
@@ -142,7 +141,7 @@
         <a asp-controller="Tariff" asp-action="Index">
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/calculator.png" />
-                <b><label style="text-decoration:underline; cursor:pointer">Tariff</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">TARIFF</label></b>
             </div>
         </a>
     </div>
@@ -150,7 +149,7 @@
         <a asp-controller="Configuration" asp-action="Index">
             <div class="dashboard-task-button">
                 <img src="~/images/flaticons-64x64/test.png" />
-                <b><label style="text-decoration:underline; cursor:pointer">Configuration</label></b>
+                <b><label style="text-decoration:underline; cursor:pointer">CONFIGURATION</label></b>
             </div>
         </a>
     </div>

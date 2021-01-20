@@ -20,16 +20,16 @@
                 search: "<i class='fa fa-search'></i>",
             },
             searching: true,
-            paging: false,
-            info: false
+            paging: true,
+            info: true
         });
     });
 
 </script>
 
-<table id="invoiced-list" class="table table-sm table-striped" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
-    <thead>
-        <tr style="background-color:#ebffad">
+<table id="invoiced-list" class="table table-sm table-bordered table-striped" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
+    <thead class="dtTheadBg">
+        <tr>
             <th style="width:100px">
                 <div class="form-check-inline">
                     @{

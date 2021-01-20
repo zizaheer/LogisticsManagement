@@ -541,23 +541,23 @@ function LoadDueInvoicesByCustomer(customerId) {
         var remainingAmount = (item.TotalInvoiceAmount - item.PaidAmount).toFixed(2);
         var appendString = "";
         appendString += "<tr>";
-        appendString += "<td>";
+        appendString += "<td style='width: 230px'>";
         appendString += "<a style='color:#1b8eb7;cursor:pointer;font-weight:bolder' role='button' id='lnkDisplayInvoice' class='lnkDisplayInvoice' onclick='FillInvoiceData(this)' data-invoicedate='" + item.CreateDate + "' data-paidamount='" + paidAmnt + "' data-remainingamount='" + remainingAmount + "'  data-invoiceid='" + item.Id + "'>" + item.Id + "</a>";
         appendString += "</td>";
-        appendString += "<td>";
+        appendString += "<td style='width: 230px'>";
         appendString += ConvertDateToUSFormat(item.CreateDate);
         appendString += "</td>";
-        appendString += "<td>";
+        appendString += "<td style='width: 230px'>";
         appendString += item.TotalInvoiceAmount;
         appendString += "</td>";
-        appendString += "<td>";
+        appendString += "<td style='width: 230px'>";
         if (item.PaidAmount == null) {
             appendString += 0;
         } else {
             appendString += item.PaidAmount;
         }
         appendString += "</td>";
-        appendString += "<td>";
+        appendString += "<td style='width: auto'>";
         appendString += remainingAmount;
         appendString += "</td>";
         appendString += "</tr>";
@@ -575,6 +575,10 @@ function FillInvoiceData(event) {
     $('#txtPaidAmount').val(paidAmount);
     $('#txtDueAmount').val(remaining);
     $('#txtRemainingAmount').val(remaining);
+    $('#txtChequeAmount').val("0.00");
+    $('#txtCashAmount').val("0.00");
+    $('#txtPaymentApplied').val("0.00");
+    $("#chkPayAllWaybill").prop("checked", false);
     $('#txtInvoiceDate').val(ConvertDateToUSFormat(new Date(invoiceDate)));
 
     var invoiceWiseWaybills = GetListById('GetDueWaybillsByInvoiceId', invoiceId);
@@ -634,7 +638,7 @@ function AddWayBillToPayment(event) {
 
     var chequeAmount = $('#txtChequeAmount').val() === '' ? 0 : parseFloat($('#txtChequeAmount').val());
     var dueAmount = $('#txtDueAmount').val() === '' ? 0 : parseFloat($('#txtDueAmount').val());
-
+    
     var isChecked = event.checked;
     if (isChecked === true) {
         chequeAmount = chequeAmount + waybillAmount;
@@ -661,17 +665,18 @@ function AddWayBillToPayment(event) {
     $('#txtPaymentApplied').trigger('change');
 
     if (wayBillNumberArrayForInvoicePayment.length < 1) {
-        $('#txtChequeAmount').val('');
-        $('#txtPaymentApplied').val('');
+        $('#txtChequeAmount').val('0.00');
+        $('#txtPaymentApplied').val('0.00');
         $('#txtPaymentApplied').trigger('change');
     }
+    
 }
 
 $('#txtChequeAmount').on('change', function () {
-    //CalculatePaymentAppliedAmount();
+    CalculatePaymentAppliedAmount();
 });
 $('#txtCashAmount').on('change', function () {
-    //CalculatePaymentAppliedAmount();
+    CalculatePaymentAppliedAmount();
 });
 
 $('#txtPaymentApplied').on('change', function () {
@@ -684,10 +689,10 @@ $('#txtPaymentApplied').on('change', function () {
 });
 
 function CalculatePaymentAppliedAmount() {
-    var chequeAmnt = 0;
+    var chequeAmnt = 0; 
     var cashAmnt = 0;
     var paymentApplied = 0;
-
+    
     chequeAmnt = $('#txtChequeAmount').val() === '' ? 0 : parseFloat($('#txtChequeAmount').val());
     cashAmnt = $('#txtCashAmount').val() === '' ? 0 : parseFloat($('#txtCashAmount').val());
     paymentApplied = $('#txtPaymentApplied').val() === '' ? 0 : parseFloat($('#txtPaymentApplied').val());
@@ -752,8 +757,8 @@ $('#btnMakePayment').unbind().on('click', function (event) {
         return;
     }
 
-    if (data.paymentAmount > (data.chequeAmount + data.cashAmount)) {
-        bootbox.alert('Applied amount cannot be greater than Cheque/Cash amount.');
+    if (data.paymentAmount > (parseFloat($('#txtDueAmount').val()))) {
+        bootbox.alert('Applied amount cannot be greater than due amount.');
         return;
     }
 
@@ -861,3 +866,33 @@ $('#btnShowRecordsForPaidInvoice').unbind().on('click', function (event) {
 
 });
 
+$('.btnViewInvoice').unbind().on('click', function (event) {
+    event.preventDefault();
+
+    console.log("test");
+    var customerId = $(this).data("customerid");
+    var isPaid = 1;
+
+    
+    $('#paidInvoiceModal').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#paidInvoiceModal').draggable();
+    $('#paidInvoiceModal').modal('show');
+
+    $('#loadCustomerWiseInvoices').load('PartialGetPaidInvoicesByCustomer?customerId=' + customerId + '&isPaid=' + isPaid);
+    //function loaddata() {
+    //    $('#loadCustomerWiseInvoices').load('PartialGetPaidInvoicesByCustomer?customerId=' + customerId + '&isPaid=' + isPaid);
+    //    $('#paidInvoiceModal').modal({
+    //        backdrop: 'static',
+    //        keyboard: false
+    //    });
+    //    $('#paidInvoiceModal').draggable();
+    //    $('#paidInvoiceModal').modal('show');
+    //    //clearInterval(interval);
+    //}
+
+    ////var interval = setInterval(loaddata, 1500);
+    
+});

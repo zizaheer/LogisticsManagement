@@ -637,10 +637,14 @@ namespace LogisticsManagement_Web.Controllers
                         waybillPrintViewModel.UnitQuantity = orderInfo.UnitQuantity;
                         waybillPrintViewModel.WeightScaleShortCode = weightScales.Where(c => c.Id == orderInfo.WeightScaleId).FirstOrDefault().ShortCode;
                         waybillPrintViewModel.WeightTotal = orderInfo.WeightTotal.ToString();
-                        waybillPrintViewModel.DeliveryDate = null;
+                        waybillPrintViewModel.DeliveryDate = null; ;
                         waybillPrintViewModel.DeliveryTime = null;
                         waybillPrintViewModel.PUDriverName = "";
-                        waybillPrintViewModel.DeliveryDriverName = orderInfo.DeliveredBy;
+                        waybillPrintViewModel.DeliveredBy = orderInfo.DeliveredBy;
+                        waybillPrintViewModel.ShipperName = orderInfo.ShipperName;
+                        waybillPrintViewModel.ShipperAddress = orderInfo.ShipperAddress;
+                        waybillPrintViewModel.ProReferenceNumber = orderInfo.ProReferenceNumber;
+
                         if (orderInfo.ServiceProviderEmployeeId != null && orderInfo.ServiceProviderEmployeeId > 0) {
                             waybillPrintViewModel.ServiceProviderEmployeeName = employees.Where(c => c.Id == orderInfo.ServiceProviderEmployeeId).FirstOrDefault().FirstName;
                         }

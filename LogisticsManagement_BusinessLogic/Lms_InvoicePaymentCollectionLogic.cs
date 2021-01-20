@@ -63,6 +63,7 @@ namespace LogisticsManagement_BusinessLogic
 
         public override Lms_InvoicePaymentCollectionPoco Add(Lms_InvoicePaymentCollectionPoco poco)
         {
+            poco.Remarks = !string.IsNullOrEmpty(poco.Remarks) ? poco.Remarks.ToUpper() : null;
             var addedPoco = base.Add(poco);
             _cache.Remove(App_CacheKeys.Invoices);
 

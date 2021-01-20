@@ -22,6 +22,7 @@ namespace LogisticsManagement_Web.Models
         public List<App_ProvincePoco> Provinces { get; set; }
 
         public List<ViewModel_OrderDispatched> DispatchedOrders { get; set; }
+        public List<ViewModel_OrderDispatched> DeliveredOrders { get; set; }
     }
 
 }

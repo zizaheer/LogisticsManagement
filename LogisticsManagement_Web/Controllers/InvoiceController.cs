@@ -91,8 +91,15 @@ namespace LogisticsManagement_Web.Controllers
             Lms_BankLogic lms_BankLogic = new Lms_BankLogic(_cache, new EntityFrameworkGenericRepository<Lms_BankPoco>(_dbContext));
             Lms_PaymentMethodLogic paymentMethodLogic = new Lms_PaymentMethodLogic(_cache, new EntityFrameworkGenericRepository<Lms_PaymentMethodPoco>(_dbContext));
             _customerLogic = new Lms_CustomerLogic(_cache, new EntityFrameworkGenericRepository<Lms_CustomerPoco>(_dbContext));
+            _invoiceLogic = new Lms_InvoiceLogic(_cache, new EntityFrameworkGenericRepository<Lms_InvoicePoco>(_dbContext));
 
-            ViewBag.Customers = _customerLogic.GetList();
+
+            var customers = _customerLogic.GetList();
+            var customerInvoices = _invoiceLogic.GetList();
+
+            ViewBag.Customers = (from customer in customers
+                                join invoice in customerInvoices on customer.Id equals invoice.BillerCustomerId
+                                select customer).ToList().Distinct();
             ViewBag.Banks = lms_BankLogic.GetList();
             ViewBag.PaymentMethods = paymentMethodLogic.GetList();
 
@@ -398,6 +405,8 @@ namespace LogisticsManagement_Web.Controllers
             int billerId = 0;
             bool isPaidInclusive = false;
 
+            Lms_PaymentMethodLogic _paymentMethodLogic = new Lms_PaymentMethodLogic(_cache, new EntityFrameworkGenericRepository<Lms_PaymentMethodPoco>(_dbContext));
+
             List<ViewModel_PaidInvoice> PaidInvoices = new List<ViewModel_PaidInvoice>();
             Lms_InvoicePaymentCollectionLogic _paymentCollectionLogic = new Lms_InvoicePaymentCollectionLogic(_cache, new EntityFrameworkGenericRepository<Lms_InvoicePaymentCollectionPoco>(_dbContext));
             if (customerId.Length > 0)
@@ -410,6 +419,8 @@ namespace LogisticsManagement_Web.Controllers
             {
                 invoiceList = invoiceList.Where(c => c.BillerCustomerId == billerId).ToList();
             }
+
+            var paymentMethods = _paymentMethodLogic.GetList();
 
             foreach (var inv in invoiceList)
             {
@@ -436,11 +447,12 @@ namespace LogisticsManagement_Web.Controllers
                         paidInvoice.ChequeDate = ((DateTime)paymentInfo.ChequeDate).ToString("dd-MMM-yyyy");
                     }
 
+                    paidInvoice.BankName = paymentMethods.Where(c => c.Id == paymentInfo.PaymentMethodId).FirstOrDefault().MethodName;
                     if (paymentInfo.BankId != null)
                     {
                         Lms_BankLogic _bankLogic = new Lms_BankLogic(_cache, new EntityFrameworkGenericRepository<Lms_BankPoco>(_dbContext));
                         paidInvoice.BankId = paymentInfo.BankId;
-                        paidInvoice.BankName = _bankLogic.GetSingleById((int)paidInvoice.BankId).BankName;
+                        paidInvoice.BankName += " (" + _bankLogic.GetSingleById((int)paidInvoice.BankId).BankName + ")";
                     }
 
                     if (paymentCollections.Count > 1)
@@ -1515,6 +1527,7 @@ namespace LogisticsManagement_Web.Controllers
                 waybillPrintViewModel.CargoCtlNo = order.CargoCtlNumber;
                 waybillPrintViewModel.AwbContainerNo = order.AwbCtnNumber;
                 waybillPrintViewModel.PickupRefNo = order.PickupReferenceNumber;
+                waybillPrintViewModel.DeliveryRefNo = order.DeliveryReferenceNumber;
                 waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == order.BillToCustomerId).FirstOrDefault().CustomerName;
                 waybillPrintViewModel.OrderedByName = order.OrderedBy;
                 if (order.DeliveryOptionId != null && order.DeliveryOptionId > 0)
