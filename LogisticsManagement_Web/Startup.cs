@@ -57,6 +57,7 @@ namespace LogisticsManagement_Web
             services.AddScoped<IDataRepository<App_ScreenPermissionPoco>, EntityFrameworkGenericRepository<App_ScreenPermissionPoco>>();
             services.AddScoped<IDataRepository<App_UserPoco>, EntityFrameworkGenericRepository<App_UserPoco>>();
             services.AddScoped<IDataRepository<App_UserGroupPoco>, EntityFrameworkGenericRepository<App_UserGroupPoco>>();
+            services.AddScoped<IDataRepository<Lms_BankPoco>, EntityFrameworkGenericRepository<Lms_BankPoco>>();
             services.AddScoped<IDataRepository<Lms_ParentGLCodePoco>, EntityFrameworkGenericRepository<Lms_ParentGLCodePoco>>();
             services.AddScoped<IDataRepository<Lms_AccountTypePoco>, EntityFrameworkGenericRepository<Lms_AccountTypePoco>>();
             services.AddScoped<IDataRepository<Lms_AdditionalServicePoco>, EntityFrameworkGenericRepository<Lms_AdditionalServicePoco>>();

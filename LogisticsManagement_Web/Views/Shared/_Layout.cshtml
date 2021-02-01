@@ -198,19 +198,98 @@
             <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <ul class="nav navbar-nav d-md-down-none"></ul>
-            <ul class="nav navbar-nav ml-auto" style="padding-right:20px">
+
+
+            @*<ul class="nav navbar-nav d-md-down-none">
+                <li class="nav-item px-3">
+                    <div class="btn-group float-right">
+                        <img src="~/lib/img-icons/data_table.png" class="pr-1 mt-1" /> <a class="nav-link" href="#">Dispatch board</a>
+                    </div>
+                </li>
+                <li class="nav-item px-3">
+                    <div class="btn-group float-right">
+                        <img src="~/lib/img-icons/box.png" class="pr-1 mt-1" />
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
+                            Order
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-left">
+                            <div class="dropdown-header text-left">
+                                <strong>Orders</strong>
+                            </div>
+                            <a class="dropdown-item" href="#"><i class="fa fa-truck"></i> Delivery order</a>
+                            <a class="dropdown-item" href="#"><i class="fa fa-puzzle-piece"></i> Misc. order</a>
+                            <a class="dropdown-item" href="#"><i class="fa fa-archive"></i> Storage order</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item px-3">
+                    <div class="btn-group float-right">
+                        <img src="~/lib/img-icons/bill.png" class="pr-1 mt-1" /> 
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
+                            Invoice
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-left">
+                            <div class="dropdown-header text-left">
+                                <strong>Invoice</strong>.
+                            </div>
+                            <a class="dropdown-item" href="#"><i class="fa fa-file-text-o"></i> Create invoice</a>
+                            <a class="dropdown-item" href="#"><i class="fa fa-money"></i> Collect payment</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>*@
+
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item d-md-down-none padding-right-lg">
+                    <a href="#" class="nav-link dropdown-toggle nooutline" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="icon-settings pr-1 mt-1"></i> Setup
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        @*<div class="dropdown-header text-left">
+                            <strong>Configurations & Setup</strong>
+                        </div>*@
+                        <a class="dropdown-item" asp-controller="Customer" asp-action="Index"><i class="fa fa-gears"></i> Customer</a>
+                        <a class="dropdown-item" asp-controller="Bank" asp-action="Index"><i class="fa fa-gears"></i> Bank</a>
+                        <a class="dropdown-item" asp-controller="User" asp-action="Index"><i class="fa fa-gears"></i> User</a>
+                        <a class="dropdown-item" asp-controller="AdditionalService" asp-action="Index"><i class="fa fa-gears"></i> Additional Service</a>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        <img class="img-avatar" id="user-icon" src="~/lib/img/avatars/0.png">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <div class="dropdown-header text-left">
+                            <strong>Account</strong>
+                        </div>
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-user"></i> Profile
+                        </a>
+                        <a class="dropdown-item" data-toggle="modal" id="lnkChangePassword" href="#">
+                            <i class="fa fa-wrench"></i> Change password
+                        </a>
+                        <a class="dropdown-item" asp-controller="Login" asp-action="Logout">
+                            <i class="fa fa-lock"></i> Logout
+                        </a>
+                    </div>
+                </li>
+            </ul>
+
+
+
+
+
+
+
+
+            @*<ul class="nav navbar-nav ml-auto" style="padding-right:20px">
                 <li class="nav-item px-1">
                     <a class="nav-link" href="#" id="lnkEmployeeClockIn" data-toggle="modal">
                         <img src="~/images/flaticons-64x64/alarm-clock.png" style="width:20px; height:20px" />
                     </a>
                 </li>
-                @*<li class="nav-item d-md-down-none px-5">
-                        <a class="nav-link" href="#">
-                            <i class="icon-bell"></i>
-                            <span class="badge badge-pill badge-danger">5</span>
-                        </a>
-                    </li>*@
+
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                         <img src="~/images/flaticons-64x64/boss.png" style="border:1px solid #808080; border-radius:50%; padding:2px; width:30px; height:30px;" />
@@ -220,9 +299,6 @@
                         <div class="dropdown-header text-center">
                             <strong>Account</strong>
                         </div>
-                        @*<a class="dropdown-item" href="#">
-                                <i class="fa fa-user"></i> Profile
-                            </a>*@
                         <a class="dropdown-item" data-toggle="modal" id="lnkChangePassword" href="#">
                             <i class="fa fa-key"></i> Change password
                         </a>
@@ -232,7 +308,7 @@
                         </a>
                     </div>
                 </li>
-            </ul>
+            </ul>*@
 
         </header>
 
@@ -262,11 +338,6 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="StorageOrder" asp-action="Index">
-                                        <span style="padding-left:10px"></span><i class="nav-icon icon-cursor-move"></i> Storage Order
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Invoice" asp-action="Index">
                                         <span style="padding-left:10px"></span><i class="nav-icon icon-book-open"></i> Invoice
                                     </a>
@@ -274,16 +345,6 @@
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Invoice" asp-action="InvoicePayment">
                                         <span style="padding-left:10px"></span><i class="nav-icon fa fa-money"></i> Invoice Payment
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Payroll" asp-action="Index">
-                                        <span style="padding-left:10px"></span><i class="nav-icon fa fa-list"></i> Payroll
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Payment" asp-action="Index">
-                                        <span style="padding-left:10px"></span><i class="nav-icon fa fa-money"></i> Make Payment
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -360,6 +421,11 @@
                                         <span style="padding-left:10px"></span><i class="nav-icon fa fa-address-book-o"></i> Company Info
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Bank" asp-action="Index">
+                                        <span style="padding-left:10px"></span><i class="nav-icon fa fa-address-book-o"></i> Add Bank Info
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
@@ -374,7 +440,7 @@
                                         <span style="padding-left:10px"></span><i class="nav-icon fa fa-clipboard"></i> Sales report
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                @*<li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Report" asp-action="AccountReceivable">
                                         <span style="padding-left:10px"></span><i class="nav-icon fa fa-mail-reply"></i> Account receivable
                                     </a>
@@ -383,7 +449,7 @@
                                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
                                         <span style="padding-left:10px"></span><i class="nav-icon fa fa-mail-forward"></i> Account payable
                                     </a>
-                                </li>
+                                </li>*@
                             </ul>
                         </li>
                     </ul>

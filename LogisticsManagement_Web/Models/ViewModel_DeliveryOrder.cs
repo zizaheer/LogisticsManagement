@@ -20,6 +20,7 @@ namespace LogisticsManagement_Web.Models
 
         public List<App_CityPoco> Cities { get; set; }
         public List<App_ProvincePoco> Provinces { get; set; }
+        public List<App_CountryPoco> Countries { get; set; }
 
         public List<ViewModel_OrderDispatched> DispatchedOrders { get; set; }
         public List<ViewModel_OrderDispatched> DeliveredOrders { get; set; }

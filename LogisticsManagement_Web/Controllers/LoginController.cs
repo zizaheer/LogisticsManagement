@@ -35,9 +35,6 @@ namespace LogisticsManagement_Web.Controllers
             {
                 if (_userLogic.IsCredentialsValid(userName, userPassword, out App_UserPoco outUserData))
                 {
-
-                   
-
                     SessionData sessionData = new SessionData();
                     sessionData.UserId = outUserData.Id;
                     sessionData.GroupId = outUserData.GroupId;
@@ -47,7 +44,7 @@ namespace LogisticsManagement_Web.Controllers
                     sessionData.MiddleName = outUserData.MiddleName;
                     sessionData.LastName = outUserData.LastName;
                     sessionData.EmailAddress = outUserData.EmailAddress;
-                    sessionData.Address = outUserData.Address;
+                    sessionData.Address = outUserData.AddressLine;
                     sessionData.CityId = outUserData.CityId;
                     sessionData.ProvinceId = outUserData.ProvinceId;
                     sessionData.CountryId = outUserData.CountryId;

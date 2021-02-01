@@ -2,85 +2,69 @@
 @model LogisticsManagement_Poco.Lms_CompanyInfoPoco
 
 @{
-    ViewData["Title"] = "Company Info";
+    ViewData["Title"] = "COMPANY INFO";
 }
 
 <h3>
     @ViewData["Title"]
 </h3>
-<hr style="margin-bottom:40px" />
+<hr style="margin-bottom:20px" />
 
 
-<form id="frmCompanyForm">
-    <div class="row" style="display:none">
-        <div class="col-sm-12 form-group">
-            <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Id" style="font-family:Arial, FontAwesome" id="txtCompanyId" type="number" name="txtCompanyId" value="@Model.Id" readonly>
-        </div>
-    </div>
+<form id="frmCompanyForm" style="text-transform:uppercase">
+    <input id="txtCompanyId" type="hidden" value="@Model.Id">
 
     <div class="row">
-        <div class="form-group col-sm-8">
-            <small>
-                <b>
-                    <label id="lblCompanyName" for="txtCompanyName">Company name</label>
-                </b>
-            </small>
-            <input class="form-control form-control-sm" id="txtCompanyName" placeholder="Company name" name="txtCompanyName" type="text" maxlength="70" required />
-        </div>
+        <div class="col-sm-8">
+            <div class="row mb-3">
+                <div class="form-group col-sm-12">
+                    <label id="lblCompanyName" for="txtCompanyName" c>Company name</label>
+                    <input class="col-12 form-control form-control-sm frmfontsize" id="txtCompanyName" placeholder="Company name" name="txtCompanyName" type="text" maxlength="70" required />
+                </div>
+            </div>
 
-
-    </div>
-
-    <div class="row">
-        <div class="form-group col-sm-8">
-            <small>
-                <b>
+            <div class="row mb-3">
+                <div class="form-group col-sm-12">
                     <label id="lblAddress" for="txtAddress">Address</label>
-                </b>
-            </small>
-            <input class="form-control form-control-sm" id="txtAddress" name="txtAddress" placeholder="Address" maxlength="250" type="text" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-sm-4">
-            <small>
-                <b>
+                    <input class="col-12 form-control form-control-sm frmfontsize" id="txtAddress" name="txtAddress" placeholder="Address" maxlength="250" type="text" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="form-group col-sm-12">
                     <label id="lblEmailAddress" for="txtEmailAddress">Email</label>
-                </b>
-            </small>
-            <input class="form-control form-control-sm" id="txtEmailAddress" name="txtEmailAddress" placeholder="Email" maxlength="150" type="text" />
-        </div>
-    </div>
+                    <input class="col-12 form-control form-control-sm frmfontsize" id="txtEmailAddress" name="txtEmailAddress" placeholder="Email" maxlength="150" type="text" />
+                </div>
+            </div>
 
-    <div class="row">
-        <div class="form-group col-sm-4">
-            <small>
-                <b>
+            <div class="row">
+                <div class="form-group col-sm-12">
                     <label id="lblPhoneNumber" for="txtPhoneNumber">Phone</label>
-                </b>
-            </small>
-            <input class="form-control form-control-sm" id="txtPhoneNumber" name="txtPhoneNumber" placeholder="Phone" maxlength="20" type="text" />
+                    <input class="col-12 form-control form-control-sm frmfontsize" id="txtPhoneNumber" name="txtPhoneNumber" placeholder="Phone" maxlength="20" type="text" />
+                </div>
+            </div>
+            
         </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-sm-4">
-            <small>
-                <b>
-                    <label for="fileCompanyLogo"> Logo</label>
-                </b>
-            </small>
-            <input id="fileCompanyLogo" name="fileCompanyLogo" placeholder="Logo" type="file" class="form-control form-control-sm" style="height:35px" />
-        </div>
-        <div class="col-sm-3">
-            <img id="imgCompanyLogo" src="" alt="Logo pic" style="width:180px;height:150px; margin-top:50px; border:1px solid #c3c3c3; padding: 5px" />
+        <div class="col-sm-4">
+            <div class="row mt-4 ml-3">
+                <div class="form-group col-sm-12">
+                    <img id="imgCompanyLogo" src="~/images/others/no-image.png" alt="Company Logo" style="width:auto;height:100px; border:1px solid #c3c3c3; padding: 10px" />
+                </div>
+            </div>
+            <div class="row mt-2 ml-3">
+                <div class="form-group col-sm-12">
+                    <label for="fileCompanyLogo" class="col-sm-12 pl-0">Logo</label>
+                    <input id="fileCompanyLogo" name="fileCompanyLogo" type="file" />
+                </div>
+            </div>
         </div>
     </div>
 
     <hr />
-    <button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save record</button>
+
+    <button type="submit" class="btn btn-sm btn-primary pl-5 pr-5" id="btnSave"><i class="fa fa-save"></i> Save record</button>
 
 </form>
 
-<hr />
+
 
 <script src="~/js/company.js"></script>

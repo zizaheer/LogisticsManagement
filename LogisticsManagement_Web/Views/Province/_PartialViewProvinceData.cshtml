@@ -10,7 +10,9 @@
         }
         $('#prov-list').DataTable({
             "order": [[0, "asc"]],
-            "paging": false,
+            "paging": true,
+            info: true,
+            searching: true,
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
@@ -20,44 +22,40 @@
     });
 </script>
 
-<div class="row">
-    <div class="col-sm-12">
-        <table id="prov-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
-            <thead>
-                <tr>
-                    <th>Province name</th>
-                    <th>Short code</th>
-                    <th>Country</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Provinces)
-                {
-                    <tr>
-                        <td>
-                            @item.ProvinceName
-                        </td>
-                        <td>
-                            @item.ShortCode
-                        </td>
-                        <td>
-                            @{
-                                var countryName = "";
-                                countryName = Model.Countries.Where(c => c.Id == item.CountryId).FirstOrDefault().CountryName;
-                            }
-                            @countryName
-                        </td>
-                        <td style="width:80px">
-                            <button id="btnEdit" data-provinceid='@item.Id' class="btn-primary smallGridIcon btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
-                            <button id="btnDelete" data-provinceid='@item.Id' class="btn-danger smallGridIcon btnDelete " data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                        </td>
-                    </tr>
-                }
+
+<table id="prov-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
+    <thead class="dtTheadBg">
+        <tr>
+            <th>Province name</th>
+            <th>Short code</th>
+            <th>Country</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Provinces)
+        {
+            <tr>
+                <td>
+                    @item.ProvinceName
+                </td>
+                <td>
+                    @item.ShortCode
+                </td>
+                <td>
+                    @{
+                        var countryName = "";
+                        countryName = Model.Countries.Where(c => c.Id == item.CountryId).FirstOrDefault().CountryName;
+                    }
+                    @countryName
+                </td>
+                <td style="width:80px">
+                    <button id="btnEdit" data-provinceid='@item.Id' class="btn-primary btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                    <button id="btnDelete" data-provinceid='@item.Id' class="btn-danger btnDelete " data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                </td>
+            </tr>
+        }
 
 
-            </tbody>
-        </table>
-    </div>
-</div>
-
+    </tbody>
+</table>

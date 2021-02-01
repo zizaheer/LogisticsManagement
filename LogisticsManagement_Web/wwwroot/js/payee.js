@@ -13,14 +13,16 @@ $(document).ready(function () {
     });
 });
 
-$('#btnNew').on('click', function () {
-    $('#txtPayeeId').prop('readonly', true);
-});
+$('#btnNewPayee').on('click', function () {
+    $('#frmPayeeForm').trigger('reset');
+    $('#modalPayee').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#modalPayee').draggable();
+    $('#modalPayee').modal('show');
 
-$('#btnClear').on('click', function () {
-    $('#txtPayeeId').prop('readonly', false);
 });
-
 
 
 $('#payee-list').on('click', '.btnEdit', function () {
@@ -44,30 +46,27 @@ $('#payee-list').on('click', '.btnEdit', function () {
 $('#btnDownloadData').unbind().on('click', function (event) {
     event.preventDefault();
     $('#loadDataTable').load('Payee/PartialViewDataTable');
-
 });
 
-$('#frmPayeeForm').on('keyup keypress', function (e) {
-    var keyCode = e.keyCode || e.which;
-    if (keyCode === 13) {
-        e.preventDefault();
-        return false;
-    }
-});
 $('#frmPayeeForm').unbind('submit').submit(function (event) {
     event.preventDefault();
     var dataArray = GetFormData();
-    console.log(dataArray[0].id);
+
+    if (dataArray[0].payeeName == "") {
+        bootbox.alert('Please enter payee name');
+        event.preventDefault();
+        return;
+    }
+
     if (dataArray[0].id > 0) {
         PerformPostActionWithObject('Payee/Update', dataArray);
-        bootbox.alert('Data updated successfully.');
     }
     else {
         PerformPostActionWithObject('Payee/Add', dataArray);
-        bootbox.alert('Data saved successfully.');
     }
-    $('#frmPayeeForm').trigger('reset');
+
     $('#loadDataTable').load('Payee/PartialViewDataTable');
+    $('#modalPayee').modal('hide');
 });
 
 $('.btnDelete').unbind().on('click', function () {
@@ -76,9 +75,9 @@ $('.btnDelete').unbind().on('click', function () {
         if (result === true) {
             PerformPostActionWithId('Payee/Remove', payeeId);
             $('#loadDataTable').load('Payee/PartialViewDataTable');
-            $('#frmPayeeForm').trigger('reset');
         }
     });
+
 });
 
 function GetFormData() {
@@ -100,4 +99,11 @@ function FillPayeeInfo(payeeInfo) {
     $('#txtAddress').val(payeeInfo.Address);
     $('#txtEmailAddress').val(payeeInfo.EmailAddress);
     $('#txtPhoneNumber').val(payeeInfo.PhoneNumber);
+
+    $('#modalPayee').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#modalPayee').draggable();
+    $('#modalPayee').modal('show');
 }

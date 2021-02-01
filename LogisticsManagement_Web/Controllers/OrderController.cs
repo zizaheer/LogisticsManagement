@@ -34,6 +34,7 @@ namespace LogisticsManagement_Web.Controllers
         private Lms_EmployeeLogic _employeeLogic;
         private App_CityLogic _cityLogic;
         private App_ProvinceLogic _provinceLogic;
+        private App_CountryLogic _countryLogic;
         private Lms_DeliveryOptionLogic _deliveryOptionLogic;
         private Lms_UnitTypeLogic _unitTypeLogic;
         private Lms_WeightScaleLogic _weightScaleLogic;
@@ -2050,6 +2051,9 @@ namespace LogisticsManagement_Web.Controllers
 
             _provinceLogic = new App_ProvinceLogic(_cache, new EntityFrameworkGenericRepository<App_ProvincePoco>(_dbContext));
             deliveryOrderViewModel.Provinces = _provinceLogic.GetList();
+
+            _countryLogic = new App_CountryLogic(_cache, new EntityFrameworkGenericRepository<App_CountryPoco>(_dbContext));
+            deliveryOrderViewModel.Countries = _countryLogic.GetList();
 
             _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
             deliveryOrderViewModel.Configuration = _configurationLogic.GetList().FirstOrDefault();

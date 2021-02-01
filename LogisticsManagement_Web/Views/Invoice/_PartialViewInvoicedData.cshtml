@@ -1,12 +1,6 @@
 ﻿@using LogisticsManagement_Web.Models;
 @model IEnumerable<ViewModel_GeneratedInvoice>
 
-<style>
-    .form-control {
-        margin: 6px 7px 0px 8px;
-    }
-</style>
-
 <script>
     $(document).ready(function () {
         if ($.fn.dataTable.isDataTable('#invoiced-list')) {
@@ -14,7 +8,6 @@
         }
         $('#invoiced-list').DataTable({
             "order": [[0, "desc"]],
-            "columns": [{ "orderable": false }, null, null, null, null, null],
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
@@ -46,54 +39,54 @@
                 </div>
             </th>
             <th style="width:100px">Date</th>
-            <th style="width:200px">Customer</th>
-            <th style="width:100px">Total amnt.</th>
-            <th>W/B #</th>
-            <th style="width:100px">Edit/Modify</th>
+            <th style="width:auto">Customer</th>
+            <th style="width:70px">Total amnt.</th>
+            <th style="width:90px">W/B #</th>
+            <th style="width:60px; text-align:center">Modify</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.OrderByDescending(c => c.InvoiceId))
         {
-            <tr>
-                <td>
-                    <div class="form-check-inline">
-                        <input type="checkbox" id="chkInvoiceSelected" name="chkInvoiceSelected" class="form-check-input chkInvoiceSelected" data-invoiceid='@item.InvoiceId' data-waybillnumbers="@item.WayBillNumbers" />
-                        <label class="form-check-label">@item.InvoiceId</label>
-                    </div>
-                </td>
-                <td>
-                    @item.InvoiceDateString
-                </td>
-                <td>
-                    @item.BillerName
-                </td>
-                <td>
-                    @item.TotalInvoiceAmnt
-                </td>
-                <td>
-                    @item.WayBillNumbers.Substring(0, 6)
-                    @{
-                        if (item.WayBillNumbers.Length > 10)
-                        {
-                            <label style="cursor:pointer; color:#129eef" title="@item.WayBillNumbers"> &nbsp; more>></label>
-                        }
+        <tr>
+            <td>
+                <div class="form-check-inline">
+                    <input type="checkbox" id="chkInvoiceSelected" name="chkInvoiceSelected" class="form-check-input chkInvoiceSelected" data-invoiceid='@item.InvoiceId' data-waybillnumbers="@item.WayBillNumbers" />
+                    <label class="form-check-label">@item.InvoiceId</label>
+                </div>
+            </td>
+            <td>
+                @item.InvoiceDateString
+            </td>
+            <td>
+                @item.BillerName
+            </td>
+            <td>
+                @item.TotalInvoiceAmnt
+            </td>
+            <td>
+                @item.WayBillNumbers.Substring(0, 6)
+                @{
+                    if (item.WayBillNumbers.Length > 10)
+                    {
+                        <label style="cursor:pointer; color:#129eef" title="@item.WayBillNumbers"> &nbsp; more>></label>
                     }
-                </td>
-                
-                <td>
-                    @{
-                        var disabled = "";
-                        if (item.TotalInvoiceAmnt > 0)
-                        {
-                            disabled = "disabled";
-                        }
+                }
+            </td>
 
+            <td style="text-align:center">
+                @{
+                    var disabled = "";
+                    if (item.TotalInvoiceAmnt > 0)
+                    {
+                        disabled = "disabled";
                     }
-                    <button id="btnEdit" data-invoiceid='@item.InvoiceId' data-billername="@item.BillerName" data-waybills="@item.WayBillNumbers" data-totalamount="@item.TotalInvoiceAmnt" class="btn-primary smallGridIcon btnEdit" title="Edit or modify an invoice" type="button"><i class="fa fa-pencil"></i> </button>
-                    <button id="btnEdit" data-invoiceid='@item.InvoiceId' data-waybills="@item.WayBillNumbers" class="btn-danger smallGridIcon btnRegenerateInvoice" title="Regenerate invoice" type="button" @disabled><i class="fa fa-cogs"></i> </button>
-                </td>
-            </tr>
+
+                }
+                <button id="btnEdit" data-invoiceid='@item.InvoiceId' data-billername="@item.BillerName" data-waybills="@item.WayBillNumbers" data-totalamount="@item.TotalInvoiceAmnt" class="btn-primary btnEdit" title="Modify invoice" type="button"><i class="fa fa-pencil"></i> </button>
+                @*<button id="btnEdit" data-invoiceid='@item.InvoiceId' data-waybills="@item.WayBillNumbers" class="btn-danger btnRegenerateInvoice" title="Regenerate invoice" type="button" @disabled><i class="fa fa-cogs"></i> </button>*@
+            </td>
+        </tr>
         }
     </tbody>
 </table>

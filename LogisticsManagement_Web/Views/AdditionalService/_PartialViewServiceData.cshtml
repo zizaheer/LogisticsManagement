@@ -9,7 +9,9 @@
         }
         $('#additional-service-list').DataTable({
             "order": [[0, "asc"]],
-            "paging": false,
+            "paging": true,
+            searching: true,
+            info: true,
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
@@ -18,50 +20,47 @@
     });
 </script>
 
-<div class="row">
-    <div class="col-sm-12">
-        <table id="additional-service-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
-            <thead>
-                <tr>
-                    <th>Service name</th>
-                    <th>Code</th>
-                    <th>Is tax applicable</th>
-                    <th>Pay to driver</th>
-                    <th>Use for storage</th>
-                    <th>Active</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                           @item.ServiceName
-                        </td>
-                        <td>
-                            @item.ServiceCode
-                        </td>
-                        <td>
-                            @item.IsTaxApplicable
-                        </td>
-                        <td>
-                            @item.PayToDriver
-                        </td>
-                        <td>
-                            @item.IsApplicableForStorage
-                        </td>
-                        <td>
-                            @item.IsActive
-                        </td>
-                        <td>
-                            <button id="btnEdit" data-serviceid='@item.Id' class="btn-primary smallGridIcon btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
-                            <button id="btnDelete" data-serviceid='@item.Id' class="btn-danger smallGridIcon btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+
+<table id="additional-service-list" class="table table-sm table-bordered table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
+    <thead class="dtTheadBg">
+        <tr>
+            <th>Service name</th>
+            <th>Code</th>
+            <th>Is tax applicable</th>
+            <th>Pay to driver</th>
+            <th>Use for storage</th>
+            <th>Active</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.ServiceName
+                </td>
+                <td>
+                    @item.ServiceCode
+                </td>
+                <td>
+                    @item.IsTaxApplicable
+                </td>
+                <td>
+                    @item.PayToDriver
+                </td>
+                <td>
+                    @item.IsApplicableForStorage
+                </td>
+                <td>
+                    @item.IsActive
+                </td>
+                <td>
+                    <button id="btnEdit" data-serviceid='@item.Id' class="btn-primary btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                    <button id="btnDelete" data-serviceid='@item.Id' class="btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 <script src="~/js/additional-service.js"></script>

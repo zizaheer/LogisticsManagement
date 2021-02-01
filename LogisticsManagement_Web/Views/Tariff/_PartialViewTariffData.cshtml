@@ -10,7 +10,9 @@
         }
         $('#tariff-list').DataTable({
             "order": [[0, "asc"]],
-            "paging": false,
+            "paging": true,
+            searching: true,
+            info: true,
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
@@ -20,61 +22,59 @@
     });
 </script>
 
-<div class="row">
-    <div class="col-sm-12">
-        <table id="tariff-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
-            <thead>
-                <tr>
-                    <th>City</th>
-                    <th>Delivery</th>
-                    <th>Transport</th>
-                    <th>Unit</th>
-                    <th>First Unit</th>
-                    <th>Per Unit</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Tariffs)
-                {
-                    <tr>
-                        <td>
-                            @{
-                                var cityName = Model.Cities.Where(c => c.Id == item.CityId).FirstOrDefault().CityName;
-                                @cityName
-                            }
 
-                        </td>
-                        <td>
-                            @{
-                                var deliveryOptionName = Model.DeliveryOptions.Where(c => c.Id == item.DeliveryOptionId).FirstOrDefault().OptionName;
-                                @deliveryOptionName
-                            }
-                        </td>
-                        <td>
-                            @{
-                                var vehicleTypeName = Model.VehicleTypes.Where(c => c.Id == item.VehicleTypeId).FirstOrDefault().TypeName;
-                                @vehicleTypeName
-                            }
-                        </td>
-                        <td>
-                            @{
-                                var unitTypename = Model.UnitTypes.Where(c => c.Id == item.UnitTypeId).FirstOrDefault().TypeName;
-                                @unitTypename
-                            }
-                        </td>
-                        <td>@item.FirstUnitPrice</td>
-                        <td>@item.PerUnitPrice</td>
-                        <td>
-                            <button id="btnEdit" data-tariffid='@item.Id' class="btn-primary smallGridIcon btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
-                            <button id="btnDelete" data-tariffid='@item.Id' class="btn-danger smallGridIcon btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                        </td>
-                    </tr>
-                }
+<table id="tariff-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
+    <thead class="dtTheadBg">
+        <tr>
+            <th>City</th>
+            <th>Delivery</th>
+            <th>Transport</th>
+            <th>Unit</th>
+            <th>First Unit</th>
+            <th>Per Unit</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Tariffs)
+        {
+            <tr>
+                <td>
+                    @{
+                        var cityName = Model.Cities.Where(c => c.Id == item.CityId).FirstOrDefault().CityName;
+                        @cityName
+                    }
+
+                </td>
+                <td>
+                    @{
+                        var deliveryOptionName = Model.DeliveryOptions.Where(c => c.Id == item.DeliveryOptionId).FirstOrDefault().OptionName;
+                        @deliveryOptionName
+                    }
+                </td>
+                <td>
+                    @{
+                        var vehicleTypeName = Model.VehicleTypes.Where(c => c.Id == item.VehicleTypeId).FirstOrDefault().TypeName;
+                        @vehicleTypeName
+                    }
+                </td>
+                <td>
+                    @{
+                        var unitTypename = Model.UnitTypes.Where(c => c.Id == item.UnitTypeId).FirstOrDefault().TypeName;
+                        @unitTypename
+                    }
+                </td>
+                <td>@item.FirstUnitPrice</td>
+                <td>@item.PerUnitPrice</td>
+                <td>
+                    <button id="btnEdit" data-tariffid='@item.Id' class="btn-primary btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                    <button id="btnDelete" data-tariffid='@item.Id' class="btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                </td>
+            </tr>
+        }
 
 
-            </tbody>
-        </table>
-    </div>
-</div>
+    </tbody>
+</table>
+
 <script src="~/js/tariff.js"></script>

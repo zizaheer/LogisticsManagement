@@ -10,7 +10,11 @@
             "order": [[0, "desc"]],
             searching: true,
             paging: true,
-            info: true
+            info: true,
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+            }
         });
     });
 </script>
@@ -60,7 +64,25 @@
                     @item.CustomerRefNumber
                 </td>
                 <td>
-                    @item.UnitQuantity (@item.UnitTypeName)
+                    @{
+                        var qtyStr = "";
+                        if (item.UnitQuantity > 0)
+                        {
+                            qtyStr = item.UnitQuantity.ToString();
+                            qtyStr += " (" + item.UnitTypeName + ")";
+                            if (item.SkidQuantity > 0) {
+                                qtyStr += "; " + item.SkidQuantity + " SKID";
+                            }
+                        }
+                        else {
+                            if (item.SkidQuantity > 0)
+                            {
+                                qtyStr += item.SkidQuantity;
+                            }
+                        }
+
+                        @qtyStr;
+                    }
                 </td>
                 <td>
                     @item.WeightTotal (@item.WeightScaleId)

@@ -1,0 +1,69 @@
+﻿@using LogisticsManagement_Web.Models;
+@model ViewModel_Bank
+
+@{
+    ViewData["Title"] = "BANK";
+}
+
+<div class="row">
+    <div class="col-sm-2">
+        <h3>
+            @ViewData["Title"]
+        </h3>
+    </div>
+
+    <div class="col-sm-2 offset-8">
+        <button id="btnNewBank" type="button" class="btn btn-sm btn-danger form-control" title="Add New Bank" data-toggle="modal"><i class="fa fa-plus-circle"></i> New Bank </button>
+    </div>
+</div>
+
+<hr style="margin-bottom:20px" />
+<div class="row">
+    <div class="col-sm-12">
+        <div style="display: block" id="loadBankDataTable">
+            <partial name="_PartialViewBankData" />
+        </div>
+    </div>
+
+</div>
+
+<form id="frmBankForm" class="form-inline">
+    <div class="modal fade" id="bankInformation" tabindex="-1" role="dialog" style="text-transform:uppercase">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content bg-light">
+                <div class="modal-header">
+                    <label class="modal-title mr-1"> BANK </label>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="form-group col-sm-12">
+                            <input class="col-10 form-control form-control-sm frmfontsize" id="txtBankName" placeholder="Bank name" name="txtBankName" type="text" maxlength="150" />
+                            <input class="col-2 form-control form-control-sm frmfontsize" id="txtBankId" placeholder="##" name="txtBankId" type="text" maxlength="10" disabled />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <select class="col-12 form-control form-control-sm frmfontsize" id="ddlBankId" name="ddlBankId">
+                                <option value="0">BANK</option>
+                                @foreach (var bank in Model.Banks)
+                                {
+                                   <option value="@bank.Id">@bank.BankName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer padding-lg">
+                    <button type="submit" class="btn btn-sm btn-primary pl-5 pr-5" id="btnSave"><i class="fa fa-save"></i> SAVE</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" id="btnCloseModal"> CLOSE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="~/js/bank.js"></script>

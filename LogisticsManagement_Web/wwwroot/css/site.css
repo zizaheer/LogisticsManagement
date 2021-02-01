@@ -2,7 +2,21 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 
+.container-fluid {
+    min-height: 730px !important;
+}
 
+.nav-item img, .img-icon {
+    width: auto;
+    height: 15px;
+}
+.app-header .dropdown-menu {
+    margin-top: 10px;
+    line-height: 1 !important;
+}
+.nooutline {
+    outline: none !important;
+}
 
 .horizontal-list li {
     display: inline;
@@ -46,9 +60,10 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 .disable-div {
-    pointer-events:none;
-    opacity:0.6;
+    pointer-events: none;
+    opacity: 0.6;
 }
+
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
@@ -70,7 +85,7 @@ input[type=number] {
     height: 16px;
     border: 1px solid transparent;
     text-align: center;
-    border-radius:2px;
+    border-radius: 2px;
 }
 
 .dispatchBoardIcon {
@@ -86,6 +101,7 @@ fieldset {
     border: 1px solid #c3c3c3;
     padding: 8px
 }
+
     fieldset legend {
         width: auto;
         padding: 5px;
@@ -96,14 +112,15 @@ fieldset {
     }
 
 .custom-select-sm {
-    width:80px !important;
+    width: 80px !important;
 }
+
 .modal-header {
     padding: 1rem 1rem .5rem 1rem !important;
 }
 
 .orderFormCardBody {
-border:none !important;
+    border: none !important;
 }
 
 .frmfontsize {
@@ -163,10 +180,6 @@ border:none !important;
     float: left;
 }
 
-.toggleButtonReturnOrder {
-    margin-left: 18px;
-}
-
 .form-control {
     padding: 4px 4px 4px 8px;
     height: 29px;
@@ -192,3 +205,7 @@ border:none !important;
     background-color: #e2e2e2;
 }
 
+#frmPayeeForm, #frmTariffForm label {
+    text-align: left !important;
+    display: inline-block !important;
+}

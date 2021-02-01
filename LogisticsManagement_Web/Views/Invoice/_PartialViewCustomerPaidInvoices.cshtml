@@ -10,7 +10,11 @@
             "order": [[0, "asc"]],
             paging: true,
             info: true,
-            searching: true
+            searching: true,
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+            },
         });
     });
 </script>
@@ -93,8 +97,8 @@
                     @item.BankName
                 </td>
                 <td>
-                    <button class="btn-primary smallGridIcon btnPrintPaidInvoice" data-invoiceid="@item.InvoiceId" title="Print invoice" type="button"><i class="fa fa-print"></i></button>
-                    <button class="btn-danger smallGridIcon btnUndoPayment" data-invoiceid="@item.InvoiceId" title="Undo payment" type="button" style="display:none"><i class="fa fa-undo"></i></button>
+                    <button class="btn-primary btnPrintPaidInvoice" data-invoiceid="@item.InvoiceId" title="Print invoice" type="button"><i class="fa fa-print"></i></button>
+                    <button class="btn-danger btnUndoPayment" data-invoiceid="@item.InvoiceId" title="Undo payment" type="button" style="display:none"><i class="fa fa-undo"></i></button>
                 </td>
             </tr>
         }

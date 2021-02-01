@@ -10,7 +10,9 @@
         }
         $('#address-list').DataTable({
             "order": [[0, "desc"]],
-            "paging": false,
+            "paging": true,
+            info: true,
+            searching: true,
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
@@ -20,61 +22,59 @@
     });
 </script>
 
-<div class="row">
-    <div class="col-sm-12">
-        <table id="address-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
-            <thead>
-                <tr>
-                    <th>Unit #</th>
-                    <th>Address line</th>
-                    <th>City</th>
-                    <th>Province</th>
-                    <th>Country</th>
-                    <th>Postcode</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                <tr>
-                    <td>
-                        @item.UnitNumber
-                    </td>
-                    <td>
-                        @item.AddressLine
-                    </td>
-                    <td>
-                        @item.CityName
-                    </td>
-                    <td>
-                        @item.ProvinceShortCode
-                    </td>
-                    <td>
-                        @item.CountryName
-                    </td>
-                    <td>
-                        @item.PostCode
-                    </td>
-                    <td>
-                        @item.EmailAddress1
-                    </td>
-                    <td>
-                        @item.PrimaryPhoneNumber
-                    </td>
 
-                    <td style="width:80px">
-                        <button id="btnEdit" data-addressid='@item.AddressId' class="btn-primary smallGridIcon btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
-                        <button id="btnDelete" data-addressid='@item.AddressId' class="btn-danger smallGridIcon btnDelete " data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                    </td>
-                </tr>
-                }
+<table id="address-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
+    <thead class="dtTheadBg">
+        <tr>
+            <th>Unit #</th>
+            <th>Address line</th>
+            <th>City</th>
+            <th>Province</th>
+            <th>Country</th>
+            <th>Postcode</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.UnitNumber
+                </td>
+                <td>
+                    @item.AddressLine
+                </td>
+                <td>
+                    @item.CityName
+                </td>
+                <td>
+                    @item.ProvinceShortCode
+                </td>
+                <td>
+                    @item.CountryName
+                </td>
+                <td>
+                    @item.PostCode
+                </td>
+                <td>
+                    @item.EmailAddress1
+                </td>
+                <td>
+                    @item.PrimaryPhoneNumber
+                </td>
+
+                <td style="width:80px">
+                    <button id="btnEdit" data-addressid='@item.AddressId' class="btn-primary btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                    <button id="btnDelete" data-addressid='@item.AddressId' class="btn-danger btnDelete " data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                </td>
+            </tr>
+        }
 
 
-            </tbody>
-        </table>
-    </div>
-</div>
+    </tbody>
+</table>
+
 <script src="~/js/address.js"></script>

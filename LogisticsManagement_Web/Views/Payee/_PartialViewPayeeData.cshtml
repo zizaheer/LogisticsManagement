@@ -8,7 +8,9 @@
         }
         $('#payee-list').DataTable({
             "order": [[0, "desc"]],
-            "paging": false,
+            "paging": true,
+            searching: true,
+            info: true,
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
@@ -18,46 +20,43 @@
     });
 </script>
 
-<div class="row">
-    <div class="col-sm-12">
-        <table id="payee-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
-            <thead>
-                <tr>
-                    <th>Number</th>
-                    <th>Payee name</th>
-                    <th>Address</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.OrderByDescending(c => c.Id))
-                {
-                    <tr>
-                        <td>
-                            @item.Id
-                        </td>
-                        <td>
-                            @item.PayeeName
-                        </td>
-                        <td>
-                            @item.Address
-                        </td>
-                        <td>
-                            @item.EmailAddress
-                        </td>
-                        <td>
-                            @item.PhoneNumber
-                        </td>
-                        <td>
-                            <button id="btnEdit" data-payeeid='@item.Id' class="btn-primary smallGridIcon btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
-                            <button id="btnDelete" data-payeeid='@item.Id' class="btn-danger smallGridIcon btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+<table id="payee-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
+    <thead class="dtTheadBg">
+        <tr>
+            <th>Id</th>
+            <th>Payee name</th>
+            <th>Address</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderByDescending(c => c.Id))
+        {
+            <tr>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    @item.PayeeName
+                </td>
+                <td>
+                    @item.Address
+                </td>
+                <td>
+                    @item.EmailAddress
+                </td>
+                <td>
+                    @item.PhoneNumber
+                </td>
+                <td>
+                    <button id="btnEdit" data-payeeid='@item.Id' class="btn-primary btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                    <button id="btnDelete" data-payeeid='@item.Id' class="btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 <script src="~/js/payee.js"></script>

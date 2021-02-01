@@ -13,46 +13,20 @@ $(document).ready(function () {
     });
 });
 
-$('#btnNew').on('click', function () {
-    $('#txtAddressId').prop('readonly', true);
+$('#btnNewAddress').on('click', function () {
+    $('#frmAddressForm').trigger('reset');
+    $('#addressModal').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+
+    $('#addressModal').draggable({
+        handle: ".modal-header"
+    });
+    $('#addressModal').modal('show');
 });
-
-$('#btnClear').on('click', function () {
-    $('#txtAddressId').prop('readonly', false);
-});
-
-
-$('#txtAddressId').unbind('keypress').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-
-        $('#txtAddressId').change();
-
-    }
-});
-$('#txtAddressId').on('change', function (event) {
-
-    var addressId = $('#txtAddressId').val();
-    var addressInfo = GetSingleById('Address/GetAddressById', addressId);
-    if (addressInfo !== "" && addressInfo !== null) {
-        addressInfo = JSON.parse(addressInfo);
-    }
-    else {
-        bootbox.alert('The address was not found with your provided id. Please check or select from the bottom list of addresses.');
-        event.preventDefault();
-        return;
-    }
-
-    if (addressInfo !== null) {
-        FillAddressInfo(addressInfo);
-    }
-
-});
-
 
 $('#address-list').on('click', '.btnEdit', function () {
-    $('#txtAddressId').prop('readonly', true);
-
     var addressId = $(this).data('addressid');
     var addressInfo = GetSingleById('Address/GetAddressById', addressId);
 
@@ -66,20 +40,19 @@ $('#address-list').on('click', '.btnEdit', function () {
     }
 
     FillAddressInfo(addressInfo);
+
+    $('#addressModal').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+
+    $('#addressModal').draggable();
+    $('#addressModal').modal('show');
 });
 
 $('#btnDownloadAddressData').unbind().on('click', function (event) {
     event.preventDefault();
     $('#loadAddressDataTable').load('Address/PartialViewDataTable');
-
-});
-
-$('#frmAddressForm').on('keyup keypress', function (e) {
-    var keyCode = e.keyCode || e.which;
-    if (keyCode === 13) {
-        e.preventDefault();
-        return false;
-    }
 });
 
 $('#frmAddressForm').unbind('submit').submit(function (event) {
@@ -92,14 +65,17 @@ $('#frmAddressForm').unbind('submit').submit(function (event) {
         PerformPostActionWithObject('Address/Add', data);
     }
     event.preventDefault();
-    //$('#loadAddressDataTable').load('Address/PartialViewDataTable');
+    location.reload();
 });
 
 $('.btnDelete').unbind().on('click', function () {
     addressId = $(this).data('addressid');
-    PerformPostActionWithId('Address/Remove', addressId);
-    $('#loadAddressDataTable').load('Address/PartialViewDataTable');
-
+    bootbox.confirm("This user will be deleted. Are you sure to proceed?", function (result) {
+        if (result === true) {
+            PerformPostActionWithId('Address/Remove', addressId);
+            $('#loadAddressDataTable').load('Address/PartialViewDataTable');
+        }
+    });
 });
 
 function GetFormData() {

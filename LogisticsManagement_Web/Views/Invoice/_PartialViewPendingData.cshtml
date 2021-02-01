@@ -8,18 +8,20 @@
         }
         $('#pending-list').DataTable({
             "order": [[0, "desc"]],
-            "columns": [{ "orderable": false }, null, null, null, null, null, null, null, null, null, null],
-            "lengthChange": false,
-            searching: false,
-            paging: false,
-            info: false
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+            },
+            searching: true,
+            paging: true,
+            info: true
         });
     });
 </script>
 
-<table id="pending-list" class="table table-sm table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
-    <thead>
-        <tr style="background-color:#ebffad">
+<table id="pending-list" class="table table-sm table-bordered table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
+    <thead class="dtTheadBg">
+        <tr>
             <th style="width:50px">
                 <div class="form-check-inline">
                     @{
@@ -173,8 +175,8 @@
                     @item.TotalOrderCost
                 </td>
                 <td>
-                    <button class="btn-primary smallGridIcon btnPrintWaybill" data-waybillnumber="@item.WayBillNumber" title="Print waybill" type="button"><i class="fa fa-print"></i></button>
-                    <button class="btn-danger smallGridIcon btnUndoDelivery" data-waybillnumber="@item.WayBillNumber" title="Undo delivery" type="button"><i class="fa fa-undo"></i></button>
+                    <button class="btn-primary btnPrintWaybill" data-waybillnumber="@item.WayBillNumber" title="Print waybill" type="button"><i class="fa fa-print"></i></button>
+                    <button class="btn-danger btnUndoDelivery" data-waybillnumber="@item.WayBillNumber" title="Undo delivery" type="button"><i class="fa fa-undo"></i></button>
                 </td>
             </tr>
         }

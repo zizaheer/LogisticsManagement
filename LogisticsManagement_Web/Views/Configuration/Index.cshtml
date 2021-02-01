@@ -2,7 +2,7 @@
 
 
 @{
-    ViewData["Title"] = "Configuration";
+    ViewData["Title"] = "CONFIGURATION";
 }
 <h3>
     @ViewData["Title"]
@@ -12,273 +12,176 @@
 
 <form id="frmConfigurationForm">
 
-    <div class="row">
-        <div class="col-sm-12 form-group">
-            <input class="col-2 form-control form-control-sm" placeholder="&#xF002; Config id" style="font-family:Arial, FontAwesome" id="txtConfigId" type="number" min="1" name="txtConfigId" title="Configuration Id" value="@Model.Id" disabled readonly>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-sm-2">
-            <input type="hidden" id="hfTaxToCall" value="@Model.TaxToCall" />
-            <small>
-                <b>
-                    <label for="ddlTaxToCall"> Tax to call </label>
-                </b>
-            </small>
-            <select class="form-control form-control-sm" id="ddlTaxToCall" name="ddlTaxToCall">
-                @foreach (var item in ViewBag.TaxToCall)
-                {
-                    var selected = false;
-                    if ((int)item == 1)
+    <fieldset>
+        <legend>GENERAL</legend>
+        <div class="row">
+            <div class="form-group col-sm-3">
+                <input type="hidden" id="hfTaxToCall" value="@Model.TaxToCall" />
+                <label for="ddlTaxToCall"> Tax to call </label>
+                <select class="form-control form-control-sm frmfontsize" id="ddlTaxToCall" name="ddlTaxToCall">
+                    @foreach (var item in ViewBag.TaxToCall)
                     {
-                        selected = true;
+                        var selected = false;
+                        if ((int)item == 1)
+                        {
+                            selected = true;
+                        }
+                        <option value="@item" selected="@selected">@item</option>
                     }
-                    <option value="@item" selected="@selected">@item</option>
-                }
-            </select>
+                </select>
+            </div>
+            <div class="form-group col-sm-3">
+                <label for="txtTaxAmount"> Tax amount</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtTaxAmount" value="@Model.TaxAmount" min="0" max="100" step=".01" placeholder="Tax amount (%)" />
+            </div>
+            <div class="form-group col-sm-3">
+                <label for="txtDefaultFuelSurCharge"> Fuel surcharge</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" value="@Model.DefaultFuelSurcharge" min="0" max="100" step=".01" placeholder="Default fuel surcharge" title="Default fuel surcharge" />
+            </div>
+            <div class="form-group col-sm-3">
+                <label for="ddlSignInRequired"> Sign-in mandatory? <span style="color:blue"><i class="fa fa-question-circle" title="Whether employee/driver sign-in is required to dispatch the order/s"></i> </span></label>
+                <select class="form-control form-control-sm frmfontsize" id="ddlSignInRequired" name="ddlSignInRequired">
+                    @{
+                        var isRequired = false;
+                        if (Model.IsSignInRequiredForDispatch == true)
+                        {
+                            isRequired = true;
+                        }
+
+                    }
+                    <option value="0" selected="@isRequired">No</option>
+                    <option value="1" selected="@isRequired">Yes</option>
+                </select>
+            </div>
         </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtTaxAmount"> Tax amount</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtTaxAmount" value="@Model.TaxAmount" min="0" max="100" step=".01" placeholder="Tax amount (%)" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtDefaultFuelSurCharge"> Fuel surcharge</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtDefaultFuelSurCharge" name="txtDefaultFuelSurCharge" value="@Model.DefaultFuelSurcharge" min="0" max="100" step=".01" placeholder="Default fuel surcharge" title="Default fuel surcharge" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="ddlSignInRequired"> Sign-in mandatory? <span style="color:blue"><i class="fa fa-question-circle" title="Whether employee/driver sign-in is required to dispatch the order/s"></i> </span></label>
-                </b>
-            </small>
-            <select class="form-control form-control-sm" id="ddlSignInRequired" name="ddlSignInRequired">
-                @{
-                    var isRequired = false;
-                    if (Model.IsSignInRequiredForDispatch == true)
+
+        <div class="row mt-3">
+            <div class="form-group col-sm-3">
+                <label for="txtWayBillPrefix"> W/B Prefix</label>
+                <input type="text" class="form-control form-control-sm frmfontsize" id="txtWayBillPrefix" name="txtWayBillPrefix" value="@Model.WayBillPrefix" placeholder="Prefix" title="Invoice no. starts from" />
+            </div>
+            <div class="form-group col-sm-3">
+                <label for="txtDeliveryWbNoStartsFrom"> Delivery WB# starts from</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtDeliveryWbNoStartsFrom" name="txtDeliveryWbNoStartsFrom" value="@Model.DeliveryWBNoStartFrom" placeholder="Delivery WB# starts from" title="Delivery WB# starts from" />
+            </div>
+
+            <div class="form-group col-sm-3">
+                <label for="txtInvoiceNoStartsFrom"> Invoice# starts from</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtInvoiceNoStartsFrom" name="txtInvoiceNoStartsFrom" value="@Model.InvoiceNumberStartFrom" placeholder="Invoice# starts from" />
+            </div>
+            <div class="form-group col-sm-3">
+
+
+                <label for="txtStorageWbNoStartsFrom"> Storage WB# starts from</label>
+
+
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtStorageWbNoStartsFrom" name="txtStorageWbNoStartsFrom" value="@Model.StorageWBNoStartFrom" placeholder="Storage WB# starts from" title="Storage WB# starts from" />
+            </div>
+
+            <div class="form-group col-sm-3" style="display:none">
+                <label for="txtMiscWbNoStartsFrom"> Misc. WB# starts from</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtMiscWbNoStartsFrom" name="txtMiscWbNoStartsFrom" value="@Model.MiscWBNoStartFrom" placeholder="Misc. WB# starts from" title="Misc. WB# starts from" />
+            </div>
+            <div class="form-group col-sm-3" style="display:none">
+                <label for="ddlDefaultWeightScaleId"> Default weight scale</label>
+                <select id="ddlDefaultWeightScaleId" class="form-control form-control-sm frmfontsize">
+                    @foreach (var item in ViewBag.WeightScales)
                     {
-                        isRequired = true;
+                        <option value="@item.Id">(@item.ShortCode) - @item.ScaleName</option>
                     }
-
-                }
-                <option value="0" selected="@isRequired">No</option>
-                <option value="1" selected="@isRequired">Yes</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtWayBillPrefix"> W/B Prefix</label>
-                </b>
-            </small>
-            <input type="text" class="form-control form-control-sm" id="txtWayBillPrefix" name="txtWayBillPrefix" value="@Model.WayBillPrefix" placeholder="Invoice no. starts from" title="Invoice no. starts from" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtDeliveryWbNoStartsFrom"> Delivery WB# starts from</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtDeliveryWbNoStartsFrom" name="txtDeliveryWbNoStartsFrom" value="@Model.DeliveryWBNoStartFrom" placeholder="Delivery WB# starts from" title="Delivery WB# starts from" />
-        </div>
-
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtInvoiceNoStartsFrom"> Invoice# starts from</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtInvoiceNoStartsFrom" name="txtInvoiceNoStartsFrom" value="@Model.InvoiceNumberStartFrom" placeholder="Invoice no. starts from" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtStorageWbNoStartsFrom"> Storage WB# starts from</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtStorageWbNoStartsFrom" name="txtStorageWbNoStartsFrom" value="@Model.StorageWBNoStartFrom" placeholder="Storage WB# starts from" title="Storage WB# starts from" />
-        </div>
-
-        <div class="form-group col-sm-2" style="display:none">
-            <small>
-                <b>
-                    <label for="txtMiscWbNoStartsFrom"> Misc. WB# starts from</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtMiscWbNoStartsFrom" name="txtMiscWbNoStartsFrom" value="@Model.MiscWBNoStartFrom" placeholder="Misc. WB# starts from" title="Misc. WB# starts from" />
-        </div>
-        <div class="form-group col-sm-2" style="display:none">
-            <small>
-                <b>
-                    <label for="ddlDefaultWeightScaleId"> Default weight scale</label>
-                </b>
-            </small>
-            <select id="ddlDefaultWeightScaleId" class="form-control form-control-sm">
-                @foreach (var item in ViewBag.WeightScales)
-                {
-                    <option value="@item.Id">(@item.ShortCode) - @item.ScaleName</option>
-                }
-            </select>
-        </div>
-        <div class="form-group col-sm-2" style="display:none">
-            <small>
-                <b>
-                    <label for="ddlDefaultWeightScaleId"> Default unit</label>
-                </b>
-            </small>
-            <select id="ddlDefaultWeightScaleId" class="form-control form-control-sm">
-                @foreach (var item in ViewBag.UnitTypes)
-                {
-                    <option value="@item.Id">(@item.ShortCode) - @item.TypeName</option>
-                }
-            </select>
-        </div>
-    </div>
-
-
-
-    <div class="row">
-        <div class="col-sm-12">
-            <small>
-                <b>
-                    <label id="" for="">GL Account Mapping</label>
-                </b>
-            </small>
-            <hr style="margin-top:-5px;margin-bottom:10px" />
-        </div>
-
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtIncomeAccount"> Sales income A/C</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtIncomeAccount" name="txtIncomeAccount" placeholder="Sales income A/C" title="Sales income A/C" value="@Model.SalesIncomeAccount" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtSalaryExpenseAccount"> Salary expense A/C</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtSalaryExpenseAccount" name="txtSalaryExpenseAccount" placeholder="Salary expense A/C" title="Salary expense A/C" value="@Model.SalesIncomeAccount" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtTaxPayableAccount"> Tax payable A/C</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtTaxPayableAccount" name="txtTaxPayableAccount" placeholder="Tax payable account" title="Tax payable account" value="@Model.SalesTaxPayableAccount" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtParentGLForCustomerAccount"> Customer GL</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtParentGLForCustomerAccount" name="txtParentGLForCustomerAccount" placeholder="GL Code" title="Parent GL for customer" value="@Model.ParentGLForCustomerAccount" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtParentGLForEmployeeAccount"> Employee GL</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtParentGLForEmployeeAccount" name="txtParentGLForEmployeeAccount" placeholder="GL Code" title="Parent GL for employee" value="@Model.ParentGLForEmployeeAccount" />
+                </select>
+            </div>
+            <div class="form-group col-sm-3" style="display:none">
+                <label for="ddlDefaultWeightScaleId"> Default unit</label>
+                <select id="ddlDefaultWeightScaleId" class="form-control form-control-sm frmfontsize">
+                    @foreach (var item in ViewBag.UnitTypes)
+                    {
+                        <option value="@item.Id">(@item.ShortCode) - @item.TypeName</option>
+                    }
+                </select>
+            </div>
         </div>
 
 
-    </div>
-    <div class="row">
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtCashInHandAccount"> Cash in Hand A/C</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtCashInHandAccount" name="txtCashInHandAccount" placeholder="Cash in Hand A/C" title="Cash in Hand A/C" value="@Model.CashAccount" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtBankAccount"> Bank A/C</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtBankAccount" name="txtBankAccount" placeholder="Bank A/C" title="Bank A/C" value="@Model.BankAccount" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtBonusExpenseAccount"> Bonus expense A/C</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtBonusExpenseAccount" name="txtBonusExpenseAccount" placeholder="Bonus expense A/C" title="Bonus expense A/C" value="@Model.BonusExpenseAccount" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtOtherReceivableAccount"> Other receivable A/C</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtOtherReceivableAccount" name="txtOtherReceivableAccount" placeholder="Other receivable A/C" title="Other receivable A/C" value="@Model.OtherReceivableAccount" />
-        </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtOtherPayableAccount"> Other payable A/C</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtOtherPayableAccount" name="txtOtherPayableAccount" placeholder="Other payable A/C" title="Other payable A/C" value="@Model.OtherPayableAccount" />
-        </div>
-    </div>
+    </fieldset>
 
-    <div class="row">
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtOtherIncomeAccount"> Other income A/C</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtOtherIncomeAccount" name="txtOtherIncomeAccount" placeholder="Other income A/C" title="Other income A/C" value="@Model.OtherIncomeAccount" />
+    <fieldset>
+        <legend>GL CODE MAPPING</legend>
+
+        <div class="row mb-3">
+            <div class="form-group col-sm-2">
+                <label for="txtIncomeAccount"> Sales income A/C</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtIncomeAccount" name="txtIncomeAccount" placeholder="Sales income A/C" title="Sales income A/C" value="@Model.SalesIncomeAccount" />
+            </div>
+            <div class="form-group col-sm-2">
+                <label for="txtSalaryExpenseAccount"> Salary expense A/C</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtSalaryExpenseAccount" name="txtSalaryExpenseAccount" placeholder="Salary expense A/C" title="Salary expense A/C" value="@Model.SalesIncomeAccount" />
+            </div>
+            <div class="form-group col-sm-2">
+                <label for="txtTaxPayableAccount"> Tax payable A/C</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtTaxPayableAccount" name="txtTaxPayableAccount" placeholder="Tax payable account" title="Tax payable account" value="@Model.SalesTaxPayableAccount" />
+            </div>
+            <div class="form-group col-sm-3">
+                <label for="txtParentGLForCustomerAccount"> Customer GL</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtParentGLForCustomerAccount" name="txtParentGLForCustomerAccount" placeholder="GL Code" title="Parent GL for customer" value="@Model.ParentGLForCustomerAccount" />
+            </div>
+            <div class="form-group col-sm-3">
+                <label for="txtParentGLForEmployeeAccount"> Employee GL</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtParentGLForEmployeeAccount" name="txtParentGLForEmployeeAccount" placeholder="GL Code" title="Parent GL for employee" value="@Model.ParentGLForEmployeeAccount" />
+            </div>
         </div>
-        <div class="form-group col-sm-2">
-            <small>
-                <b>
-                    <label for="txtOtherExpenseAccount"> Other expense A/C</label>
-                </b>
-            </small>
-            <input type="number" class="form-control form-control-sm" id="txtOtherExpenseAccount" name="txtOtherExpenseAccount" placeholder="Other expense A/C" title="Other expense A/C" value="@Model.OtherExpenseAccount" />
+        <div class="row mb-3">
+            <div class="form-group col-sm-2">
+                <label for="txtCashInHandAccount"> Cash in Hand A/C</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtCashInHandAccount" name="txtCashInHandAccount" placeholder="Cash in Hand A/C" title="Cash in Hand A/C" value="@Model.CashAccount" />
+            </div>
+            <div class="form-group col-sm-2">
+                <label for="txtBankAccount"> Bank A/C</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtBankAccount" name="txtBankAccount" placeholder="Bank A/C" title="Bank A/C" value="@Model.BankAccount" />
+            </div>
+            <div class="form-group col-sm-2">
+                <label for="txtBonusExpenseAccount"> Bonus expense A/C</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtBonusExpenseAccount" name="txtBonusExpenseAccount" placeholder="Bonus expense A/C" title="Bonus expense A/C" value="@Model.BonusExpenseAccount" />
+            </div>
+            <div class="form-group col-sm-3">
+                <label for="txtOtherReceivableAccount"> Other receivable A/C</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtOtherReceivableAccount" name="txtOtherReceivableAccount" placeholder="Other receivable A/C" title="Other receivable A/C" value="@Model.OtherReceivableAccount" />
+            </div>
+            <div class="form-group col-sm-3">
+                <label for="txtOtherPayableAccount"> Other payable A/C</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtOtherPayableAccount" name="txtOtherPayableAccount" placeholder="Other payable A/C" title="Other payable A/C" value="@Model.OtherPayableAccount" />
+            </div>
         </div>
 
-    </div>
+        <div class="row">
+            <div class="form-group col-sm-2">
+                <label for="txtOtherIncomeAccount"> Other income A/C</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtOtherIncomeAccount" name="txtOtherIncomeAccount" placeholder="Other income A/C" title="Other income A/C" value="@Model.OtherIncomeAccount" />
+            </div>
+            <div class="form-group col-sm-2">
+                <label for="txtOtherExpenseAccount"> Other expense A/C</label>
+                <input type="number" class="form-control form-control-sm frmfontsize" id="txtOtherExpenseAccount" name="txtOtherExpenseAccount" placeholder="Other expense A/C" title="Other expense A/C" value="@Model.OtherExpenseAccount" />
+            </div>
+        </div>
+
+    </fieldset>
+
 
 
     <hr />
 
     <div class="row">
-        <div class="col-sm-8"><button type="submit" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-save"></i> Save record</button></div>
-        <div class="col-sm-4">
-            <button class="col-7 btn btn-sm btn-warning" id="btnDeleteInvoiceWaybill"><i class="fa fa-trash"></i> Delete invoice/waybill files</button>
-            <button class="btn btn-sm btn-warning" id="btnClearCache"><i class="fa fa-trash"></i> Clear cache</button>
-            <button class="btn btn-sm btn-warning" id="btnCreateDatabaseBackup"><i class="fa fa-save"></i> Db Backup</button>
-            
+        <div class="col-sm-4"><button type="submit" class="btn btn-sm btn-primary" id="btnSave"><i class="fa fa-save"></i> Save record</button></div>
+        <div class="col-sm-8 text-right">
+            <button class="btn btn-sm btn-secondary" id="btnClearCache"><i class="fa fa-refresh"></i> Clear cache</button>
+            <button class="btn btn-sm btn-secondary" id="btnCreateDatabaseBackup"><i class="fa fa-save"></i> Create database backup</button>
+            <button class="btn btn-sm btn-secondary" id="btnDeleteInvoiceWaybill"><i class="fa fa-trash"></i> Delete invoice/waybill files</button>
         </div>
     </div>
 
 
-    
-    
+
+
 
 </form>
 
@@ -296,7 +199,7 @@
     $('#frmConfigurationForm').unbind('submit').submit(function (event) {
         event.preventDefault();
         var data = {
-            id: $('#txtConfigId').val(),
+            id: 1,
             taxToCall: $('#ddlTaxToCall').val(),
             taxAmount: $('#txtTaxAmount').val(),
             isSignInRequiredForDispatch: $('#ddlSignInRequired').val() == '1' ? 1 : 0,

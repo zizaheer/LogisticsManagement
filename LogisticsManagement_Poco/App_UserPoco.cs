@@ -22,7 +22,7 @@ namespace LogisticsManagement_Poco
         public string MiddleName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
-        public string Address { get; set; }
+        public string AddressLine { get; set; }
         public int CityId { get; set; }
         public int ProvinceId { get; set; }
         public int CountryId { get; set; }

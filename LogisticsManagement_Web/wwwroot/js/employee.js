@@ -13,44 +13,20 @@ $(document).ready(function () {
     });
 });
 
-$('#btnNew').on('click', function () {
+$('#btnNewEmployee').on('click', function () {
     $('#txtEmployeeId').prop('readonly', true);
-});
-
-$('#btnClear').on('click', function () {
-    $('#txtEmployeeId').prop('readonly', false);
-});
-
-
-$('#txtEmployeeId').unbind('keypress').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-
-        var employeeId = $('#txtEmployeeId').val();
-        var employeeInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
-        if (employeeInfo !== "" && employeeInfo !== null)
-        {
-            employeeInfo = JSON.parse(employeeInfo);
-        }
-        else
-        {
-            bootbox.alert('The employee was not found. Please check or select from the bottom list of employees.');
-            event.preventDefault();
-            return;
-        }
-
-        if (employeeInfo !== null)
-        {
-            FillEmployeeInfo(employeeInfo);
-        }
-    }
+    $('#frmEmployeeForm').trigger('reset');
+    $('#newEmployee').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#newEmployee').draggable();
+    $('#newEmployee').modal('show');
 });
 
 $('#chkIsHourlyPaid').on('change', function () {
-
     var isChecked = $('input[name=chkIsHourlyPaid]').is(':checked');
     if (!isChecked) {
-
         $('#txtHourlyRate').val('');
         $('#txtHourlyRate').prop('disabled', true);
     }
@@ -59,10 +35,8 @@ $('#chkIsHourlyPaid').on('change', function () {
     }
 });
 $('#chkIsSalaryEmployee').on('change', function () {
-
     var isChecked = $('input[name=chkIsSalaryEmployee]').is(':checked');
     if (!isChecked) {
-
         $('#txtSalaryAmount').val('');
         $('#txtSalaryAmount').prop('disabled', true);
     }
@@ -71,10 +45,8 @@ $('#chkIsSalaryEmployee').on('change', function () {
     }
 });
 $('#chkIsCommissionProvided').on('change', function () {
-
     var isChecked = $('input[name=chkIsCommissionProvided]').is(':checked');
     if (!isChecked) {
-
         $('#txtCommissionAmount').val('');
         $('#txtCommissionAmount').prop('disabled', true);
     }
@@ -83,10 +55,8 @@ $('#chkIsCommissionProvided').on('change', function () {
     }
 });
 $('#chkIsFuelProvided').on('change', function () {
-
     var isChecked = $('input[name=chkIsFuelProvided]').is(':checked');
     if (!isChecked) {
-
         $('#txtFuelSurchargePercentage').val('');
         $('#txtFuelSurchargePercentage').prop('disabled', true);
     }
@@ -97,10 +67,8 @@ $('#chkIsFuelProvided').on('change', function () {
 
 $('#employee-list').on('click', '.btnEdit', function () {
     $('#txtEmployeeId').prop('readonly', true);
-
     var employeeId = $(this).data('employeeid');
     var employeeInfo = GetSingleById('Employee/GetEmployeeById', employeeId);
-    
     if (employeeInfo !== "") {
         employeeInfo = JSON.parse(employeeInfo);
     }
@@ -111,6 +79,13 @@ $('#employee-list').on('click', '.btnEdit', function () {
     }
 
     FillEmployeeInfo(employeeInfo);
+
+    $('#newEmployee').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#newEmployee').draggable();
+    $('#newEmployee').modal('show');
 });
 
 $('#btnDownloadData').unbind().on('click', function (event) {
@@ -132,11 +107,11 @@ $('#frmEmployeeForm').unbind('submit').submit(function (event) {
     console.log(dataArray[0].id);
     if (dataArray[0].id > 0) {
         PerformPostActionWithObject('Employee/Update', dataArray);
-        bootbox.alert('Data updated successfully.');
+        location.reload();
     }
     else {
         PerformPostActionWithObject('Employee/Add', dataArray);
-        bootbox.alert('Data saved successfully.');
+        location.reload();
     }
     $('#frmEmployeeForm').trigger('reset');
     $('#loadDataTable').load('Employee/PartialViewDataTable');

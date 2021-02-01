@@ -330,7 +330,145 @@
     </div>
 </div>
 
+<form id="frmCustomerForm" class="form-inline">
+    <div class="modal fade" id="addNewCustomer" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content bg-light">
+                <div class="modal-header">
+                    <label class="modal-title"> CUSTOMER </label>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btnCloseCustomerModal1">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
 
+                    <div class="row mb-2">
+                        <input type="hidden" id="hfMailingAddressId" name="hfMailingAddressId" />
+                        <input type="hidden" id="hfBillingAddressId" name="hfBillingAddressId" />
+                        <input type="hidden" id="hfBillingAddressMappingId" name="hfBillingAddressMappingId" />
+                        <input type="hidden" id="hfShippingAddressMappingId" name="hfShippingAddressMappingId" />
+                        <div class="col-12 input-group">
+                            <label for="txtCustomerName" class="captionWeight mr-3">NAME</label>
+                            <input class="col-10 form-control form-control-sm frmfontsize" id="txtCustomerName" placeholder="Customer name" type="text" name="txtCustomerName" title="Customer name" />
+                            <input class="col-1 form-control form-control-sm frmfontsize" id="txtCustomerId" type="number" min="1" name="txtCustomerId" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2 ml-0">
+                        <div class="form-group mr-4">
+                            <label for="txtFuelSurcharge" class="captionWeight mr-4">FUEL</label>
+                            <input style="width:100px" class="form-control form-control-sm frmfontsize" id="txtFuelSurcharge" placeholder="Fuel (%)" type="number" max="100" step=".01" name="txtFuelSurcharge" value="@ViewBag.DefaultFuelSurcharge" title="Fuel surcharge" />
+                        </div>
+                        <div class="form-group mr-4">
+                            <label for="txtSpecialDiscount" class="captionWeight mr-2"> DISC.(%)</label>
+                            <input style="width:100px" class="form-control form-control-sm frmfontsize" id="txtSpecialDiscount" placeholder="Disc. (%)" type="number" max="100" step=".01" name="txtSpecialDiscount" title="Discount (%)" />
+                        </div>
+                        <div class="form-group mr-4">
+                            <label for="txtInvoiceDueDays" class="captionWeight mr-2"> INV. DUE DAY/S</label>
+                            <input style="width:100px" class="form-control form-control-sm frmfontsize" id="txtInvoiceDueDays" placeholder="Days" type="text" name="txtInvoiceDueDays" title="Invoice due days" />
+                        </div>
+                        <div class="form-group">
+                            <label for="isGstApplicable" class="captionWeight mr-3"> APPLY HST?</label>
+                            <input id="isGstApplicable" type="checkbox" name="isGstApplicable" title="Apply HST" class="mr-1" /> <label class="captionWeight" for="isGstApplicable">YES</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12" id="divAddress0">
+                            <div class="row m-0 input-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBothForMain" value="0" checked />
+                                    <label class="form-check-label captionWeight" for="rdoBothForMain">BILLING/SHIPPING SAME</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoBillingForMain" value="1" />
+                                    <label class="form-check-label captionWeight" for="rdoBillingForMain">BILLING ONLY</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="rdoAddressTypeForMain" id="rdoShippingForMain" value="2" />
+                                    <label class="form-check-label captionWeight" for="rdoShippingForMain">SHIPPING/RECEIVING ONLY</label>
+                                </div>
+
+                                <br /><br /><br />
+                            </div>
+                            <div class="row m-0 input-group">
+                                <input type="hidden" id="hfAddressIdForMain" />
+                                <input class="col-8 form-control form-control-sm frmfontsize" id="txtAddressLineForMain" name="txtAddressLineForMain" placeholder="Address Line" list="addresses" type="search" />
+                                <datalist id="addresses">
+                                    @*<option data-addressid="@item.AddressId" value="@item.AddressLine"></option>*@
+                                </datalist>
+                                <input class="col-4 form-control form-control-sm addressBox frmfontsize" id="txtAddressUnitForMain" type="text" name="txtAddressUnitForMain" placeholder="Unit " />
+                            </div>
+                            <div class="row m-0 input-group">
+                                <select class="col-5 form-control form-control-sm frmfontsize" id="ddlCityIdForMain" name="ddlCityIdForMain">
+                                    <option value="0">City </option>
+                                    @foreach (var city in Model.Cities)
+                                    {
+                                        var selected = false;
+                                        if (city.Id == 335)
+                                        {
+                                            selected = true;
+                                        }
+                                        <option value="@city.Id" selected="@selected">@city.CityName</option>
+                                    }
+                                </select>
+                                <select class="col-2 form-control form-control-sm addressBox frmfontsize" id="ddlProvinceIdForMain" name="ddlProvinceIdForMain">
+                                    <option value="0">Province</option>
+                                    @foreach (var province in Model.Provinces)
+                                    {
+                                        var selected = false;
+                                        if (province.Id == 7)
+                                        {
+                                            selected = true;
+                                        }
+                                        <option value="@province.Id" selected="@selected">@province.ShortCode</option>
+                                    }
+                                </select>
+                                <select class="col-3 form-control form-control-sm addressBox frmfontsize" id="ddlCountryIdForMain" name="ddlCountryIdForMain">
+                                    <option value="0">Country</option>
+                                    @foreach (var country in Model.Countries)
+                                    {
+                                        var selected = false;
+                                        if (country.Id == 41)
+                                        {
+                                            selected = true;
+                                        }
+                                        <option value="@country.Id" selected="@selected">@country.CountryName</option>
+                                    }
+                                </select>
+                                <input class="col-2 form-control form-control-sm addressBox frmfontsize" id="txtPostCodeForMain" name="txtPostCodeForMain" placeholder="Postcode" />
+                            </div>
+
+                            <div class="row m-0 input-group">
+                                <input class="col-6 form-control form-control-sm  frmfontsize" id="txtContactPersonForMain" type="text" name="txtContactPersonForMain" placeholder="Contact person" />
+                                <input class="col-6 form-control form-control-sm addressBox frmfontsize" id="txtEmailAddressForMain" type="email" name="txtEmailAddressForMain" placeholder="Email address" />
+                            </div>
+                            <div class="row m-0 input-group">
+                                <input class="col-6 form-control form-control-sm frmfontsize " id="txtPrimaryPhoneNumberForMain" type="tel" name="txtPrimaryPhoneNumberForMain" placeholder="Phone" />
+                                <input class="col-6 form-control form-control-sm addressBox frmfontsize" id="txtFaxNumberForMain" type="tel" name="txtFaxNumberForMain" placeholder="Fax" />
+                            </div>
+
+                            <div class="row ml-0 mt-3 mb-3 input-group">
+                                <div class="form-check-inline">
+                                    <input class="form-check-input" id="chkIsActive" type="checkbox" checked />
+                                    <label class="form-check-label ml-1" for="chkIsActive">MAKE THIS CUSTOMER ACTIVE</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-primary pl-5 pr-5" id="btnSaveCustomer"><i class="fa fa-save"></i> SAVE</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" id="btnCloseCustomerModal2"><i class="fa fa-cross"></i> CLOSE </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 <div class="modal fade" id="newOrder" tabindex="-1" role="dialog">
     <form id="frmOrderForm" style="text-transform:uppercase; font-weight:600" class="form-inline">
@@ -338,9 +476,7 @@
             <div class="modal-content bg-light">
                 <div class="modal-header">
                     <label class="modal-title">DELIVERY ORDER</label>
-                    <input type="checkbox" id="chkIsReturnOrder" name="chkIsReturnOrder" title="Turn it on if you want to place a return order" data-toggle="toggle" data-on="<i class='fa fa-mail-forward'></i>  &nbsp;&nbsp; Single order" data-off="<i class='fa fa-mail-reply'></i>  &nbsp;&nbsp; Return order" data-onstyle="primary" data-offstyle="secondary" data-size="mini" data-width="160" data-height="23" data-style="toggleButtonReturnOrder">
-                    @*<input type="checkbox" id="chkIsCalculateByUnit" name="chkIsCalculateByUnit" title="Calculate by unit/skid" data-toggle="toggle" data-on="<i class='fa fa-balance-scale'></i> By unit" data-off="<i class='fa fa-stack-overflow'></i> By skid" data-onstyle="primary" data-offstyle="success" data-size="mini" data-width="90" data-height="28" data-style="toggleButtonByUnit" >*@
-
+                    
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btnCloseModal">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -462,7 +598,8 @@
                                         }
                                     </datalist>
                                     @*<label id="lblShipperAccountNo" class="form-control-plaintext"></label>*@
-                                    <input type="text" class="col-3 form-control form-control-sm frmfontsize col-no-margin" placeholder="####" id="txtShipperAccountNo" name="txtShipperAccountNo" readonly>
+                                    <input type="text" class="col-2 form-control form-control-sm frmfontsize col-no-margin" placeholder="#####" id="txtShipperAccountNo" name="txtShipperAccountNo" readonly>
+                                    <button type="button" class="col-1 col-1 btn btn-sm btn-secondary" placeholder="" id="btnAddShipperCustomer" readonly><i class="fa fa-plus"></i> </button>
                                 </div>
                             </div>
                             <div class="row mb-1">
@@ -507,6 +644,7 @@
                                     </datalist>
                                     @*<label id="lblShipperAccountNo" class="form-control-plaintext"></label>*@
                                     <input type="text" class="col-3 form-control form-control-sm frmfontsize col-no-margin" placeholder="####" id="txtConsigneeAccountNo" name="txtConsigneeAccountNo" readonly>
+                                    <button type="button" class="col-1 col-1 btn btn-sm btn-secondary" placeholder="" id="btnAddConsigneeCustomer" readonly><i class="fa fa-plus"></i> </button>
                                 </div>
                             </div>
                             <div class="row mb-1">
@@ -719,6 +857,9 @@
 
                 </div>
                 <div class="modal-footer">
+                    <input type="checkbox" id="chkIsReturnOrder" name="chkIsReturnOrder" title="Turn it on if you want to place a return order" data-toggle="toggle" data-on="<i class='fa fa-mail-forward'></i>  &nbsp;&nbsp; Single order" data-off="<i class='fa fa-mail-reply'></i>  &nbsp;&nbsp; Return order" data-onstyle="primary" data-offstyle="secondary" data-size="mini" data-width="160" data-height="28" data-style="mr-auto">
+                    @*<input type="checkbox" id="chkIsCalculateByUnit" name="chkIsCalculateByUnit" title="Calculate by unit/skid" data-toggle="toggle" data-on="<i class='fa fa-balance-scale'></i> By unit" data-off="<i class='fa fa-stack-overflow'></i> By skid" data-onstyle="primary" data-offstyle="success" data-size="mini" data-width="90" data-height="28" data-style="toggleButtonByUnit" >*@
+
                     <button type="submit" class="btn btn-sm btn-primary pl-5 pr-5" id="btnSave"><i class="fa fa-save"></i> SAVE </button>
                     <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" id="btnClose"><i class="fa fa-cross"></i> CLOSE</button>
                 </div>
@@ -780,7 +921,7 @@
         <select class="col-3 form-control form-control-sm" id="ddlCopyOnPage"><option value="1">1 PER PAGE</option><option value="2" selected>2 Per page</option></select>
         &nbsp;
         <div class="form-control form-control-sm form-check-inline" style="text-transform:capitalize !important">
-            <input type="checkbox" id="chkIgnorePricingInformation" class="form-check-input" checked />
+            <input type="checkbox" id="chkIgnorePricingInformation" class="form-check-input" checked />                                                                                                                                 
             <label for="chkIgnorePricingInformation" class="form-check-label">IGNORE PRICE</label>
         </div>
         &nbsp;

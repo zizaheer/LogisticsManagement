@@ -10,7 +10,9 @@
         }
         $('#employee-loan-list').DataTable({
             "order": [[0, "desc"]],
-            "paging": false,
+            "paging": true,
+            searching: true,
+            info:true,
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
@@ -23,7 +25,7 @@
 <div class="row">
     <div class="col-sm-12">
         <table id="employee-loan-list" class="table table-sm  table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
-            <thead>
+            <thead class="dtTheadBg">
                 <tr>
                     <th>Employee Id</th>
                     <th>Name</th>
@@ -50,8 +52,8 @@
                             @item.LoanTakenOn
                         </td>
                         <td>
-                           @* <button id="btnEditLoan" data-loanid='@item.LoanId' class="btn-primary smallGridIcon btnEditLoan" type="button"><i class="fa fa-pencil"></i> </button>*@
-                            <button id="btnDeleteLoan" data-loanid='@item.LoanId' class="btn-danger smallGridIcon btnDeleteLoan" type="button"><i class="fa fa-trash"></i> </button>
+                           @* <button id="btnEditLoan" data-loanid='@item.LoanId' class="btn-primary btnEditLoan" type="button"><i class="fa fa-pencil"></i> </button>*@
+                            <button id="btnDeleteLoan" data-loanid='@item.LoanId' class="btn-danger btnDeleteLoan" type="button"><i class="fa fa-trash"></i> </button>
                         </td>
                     </tr>
                 }

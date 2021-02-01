@@ -9,7 +9,9 @@
         }
         $('#user-list').DataTable({
             "order": [[0, "desc"]],
-            "paging": false,
+            "paging": true,
+            info: true,
+            searching: true,
             "language": {
                 searchPlaceholder: 'Search...',
                 search: "<i class='fa fa-search'></i>",
@@ -22,7 +24,7 @@
 <div class="row">
     <div class="col-sm-12">
         <table id="user-list" class="table table-sm table-striped table-bordered lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.8em">
-            <thead>
+            <thead class="dtTheadBg">
                 <tr>
                     <th>User Name</th>
                     <th>Emp. Id</th>
@@ -61,8 +63,8 @@
                     </td>
 
                     <td>
-                        <button id="btnEdit" data-userid='@item.Id' class="btn-primary smallGridIcon btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
-                        <button id="btnDelete" data-userid='@item.Id' class="btn-danger smallGridIcon btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+                        <button id="btnEdit" data-userid='@item.Id' class="btn-primary btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                        <button id="btnDelete" data-userid='@item.Id' class="btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
                     </td>
                 </tr>
                 }

@@ -9,15 +9,7 @@ $(document).ready(function () {
     });
 });
 
-$('#btnNew').on('click', function () {
-    $('#txtTariffId').prop('readonly', true);
-    $('#txtTariffId').val('');
-});
-
-
 $('#btnNewTariff').on('click', function () {
-    $('#txtTariffId').prop('readonly', true);
-    $('#txtTariffId').val('');
     $('#frmTariffForm').trigger('reset');
 
     $('#tariffUpdate').modal({
@@ -30,33 +22,6 @@ $('#btnNewTariff').on('click', function () {
 
 });
 
-
-
-$('#btnClear').on('click', function () {
-    $('#txtTariffId').prop('readonly', false);
-});
-
-
-$('#txtTariffId').unbind('keypress').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-
-        var tariffId = $('#txtTariffId').val();
-        var tariffInfo = GetSingleById('Tariff/GetTariffById', tariffId);
-        if (tariffInfo !== "" && tariffInfo !== null) {
-            tariffInfo = JSON.parse(tariffInfo);
-        }
-        else {
-            bootbox.alert('The tariff was not found. Please check or select from the bottom list of tariffs.');
-            event.preventDefault();
-            return;
-        }
-
-        if (tariffInfo !== null) {
-            FillTariffInfo(tariffInfo);
-        }
-    }
-});
 
 
 $('#tariff-list').on('click', '.btnEdit', function () {
@@ -85,23 +50,12 @@ $('#tariff-list').on('click', '.btnEdit', function () {
     $('#tariffUpdate').modal('show');
 });
 
-$('#btnCloseModal').on('click', function () {
-    $('#tariffUpdate').modal('hide');
-});
 
 $('#btnDownloadTariffData').unbind().on('click', function (event) {
     event.preventDefault();
     $('#loadTariffDataTable').load('Tariff/PartialViewDataTable');
-
 });
 
-$('#frmTariffForm').on('keyup keypress', function (e) {
-    var keyCode = e.keyCode || e.which;
-    if (keyCode === 13) {
-        e.preventDefault();
-        return false;
-    }
-});
 $('#frmTariffForm').unbind('submit').submit(function (event) {
     event.preventDefault();
 
@@ -138,9 +92,12 @@ $('#frmTariffForm').unbind('submit').submit(function (event) {
 
 $('.btnDelete').unbind().on('click', function () {
     tariffId = $(this).data('tariffid');
-    PerformPostActionWithId('Tariff/Remove', tariffId);
-    $('#loadTariffDataTable').load('Tariff/PartialViewDataTable');
-
+    bootbox.confirm("This tariff will be deleted. Are you sure to proceed?", function (result) {
+        if (result === true) {
+            PerformPostActionWithId('Tariff/Remove', tariffId);
+            $('#loadTariffDataTable').load('Tariff/PartialViewDataTable');
+        }
+    });
 });
 
 function GetFormData() {

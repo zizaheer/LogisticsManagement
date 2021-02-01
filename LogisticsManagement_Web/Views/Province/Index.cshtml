@@ -2,7 +2,7 @@
 @model ViewModel_Province
 
 @{
-    ViewData["Title"] = "Province";
+    ViewData["Title"] = "PROVINCE";
 }
 
 <div class="row">
@@ -20,66 +20,56 @@
 <hr style="margin-bottom:20px" />
 <div class="row">
     <div class="col-sm-12">
-        <div style="display: block; max-height: 240px; min-height: 80px; padding:10px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px" id="loadCustomerDataTable">
+        <div style="display: block" id="loadCustomerDataTable">
             <partial name="_PartialViewProvinceData" />
         </div>
     </div>
 
 </div>
 
-
-<form id="frmProvinceForm">
-    <div class="modal fade bd-example-modal-xl" id="provinceInformation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<form id="frmProvinceForm" class="form-inline">
+    <div class="modal fade" id="provinceInformation" tabindex="-1" role="dialog" style="text-transform:uppercase">
+        <div class="modal-dialog modal-md" role="document">
             <div class="modal-content bg-light">
-                <div class="modal-header" style="justify-content:initial;padding-top:9px;padding-bottom:9px; padding-right:0px">
-                    <img src="~/images/flaticons-64x64/location-pin.png" style="height:25px; padding-left:14px; padding-right:10px" />
-                    <b id="exampleModalCenterTitle">Province</b>
-                    <div class="col-sm-3 offset-7" style="padding-right:0px;text-align:right">
-                        <button type="button" style="margin-right:-13px" class="btn btn-sm btn-secondary" aria-label="Close" id="btnCloseModal"><i class="fa fa-times"></i></button>
-                    </div>
+                <div class="modal-header">
+                    <label class="modal-title mr-1"> PROVINCE </label>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="form-group col-sm-3">
-                                <input class="form-control form-control-sm" id="txtProvinceId" placeholder="Id" name="txtProvinceId" type="text" maxlength="10" disabled />
-                            </div>
+                    <div class="row mb-3">
+                        <div class="form-group col-sm-12">
+                            <input class="col-8 form-control form-control-sm frmfontsize" id="txtProvinceName" placeholder="Province name" name="txtProvinceName" type="text" maxlength="150" />
+                            <input class="col-3 form-control form-control-sm frmfontsize" id="txtShortCode" placeholder="Short code" name="txtShortCode" type="text" maxlength="2" />
+                            <input class="col-1 form-control form-control-sm frmfontsize" id="txtProvinceId" placeholder="##" name="txtProvinceId" type="text" maxlength="10" disabled />
                         </div>
-                        <div class="row">
-                            <div class="form-group col-sm-12">
-                                <input class="form-control form-control-sm" id="txtProvinceName" placeholder="Province name" name="txtProvinceName" type="text" maxlength="150" />
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-sm-2">
-                                <input class="form-control form-control-sm" id="txtShortCode" placeholder="Short code" name="txtShortCode" type="text" maxlength="2" />
-                            </div>
-
-                            <div class="form-group col-sm-4">
-                                <select class="form-control form-control-sm" id="ddlCountryId" name="ddlCountryId">
-                                    <option value="0">Country</option>
-                                    @foreach (var country in Model.Countries)
-                                    {
-                                        var selected = false;
-                                        if (country.Id == 41)
-                                        {
-                                            selected = true;
-                                        }
-                                        <option value="@country.Id" selected="@selected">@country.CountryName</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <hr />
-                        <button type="submit" style="float:right" class="btn btn-sm btn-success" id="btnSave"><i class="fa fa-check"></i> Save </button>
                     </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <select class="col-12 form-control form-control-sm frmfontsize" id="ddlCountryId" name="ddlCountryId">
+                                <option value="0">Country</option>
+                                @foreach (var country in Model.Countries)
+                                {
+                                    var selected = false;
+                                    if (country.Id == 41)
+                                    {
+                                        selected = true;
+                                    }
+                                    <option value="@country.Id" selected="@selected">@country.CountryName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer padding-lg">
+                    <button type="submit" class="btn btn-sm btn-primary pl-5 pr-5" id="btnSave"><i class="fa fa-save"></i> SAVE</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" id="btnCloseModal"> CLOSE</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
-
-
 <script src="~/js/province.js"></script>

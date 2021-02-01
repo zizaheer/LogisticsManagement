@@ -103,7 +103,7 @@ namespace LogisticsManagement_Web.Controllers
                 LastName = c.LastName,
                 EmailAddress = c.EmailAddress,
                 BranchId = c.BranchId,
-                Address = c.Address,
+                AddressLine = c.AddressLine,
                 PostCode = c.PostCode,
                 CityId = c.CityId,
                 ProvinceId = c.ProvinceId,
@@ -180,7 +180,7 @@ namespace LogisticsManagement_Web.Controllers
                         user.GroupId = userPoco.GroupId;
                         user.BranchId = userPoco.BranchId;
                         user.EmailAddress = userPoco.EmailAddress;
-                        user.Address = userPoco.Address;
+                        user.AddressLine = userPoco.AddressLine;
                         user.CityId = userPoco.CityId;
                         user.ProvinceId = userPoco.ProvinceId;
                         user.CountryId = userPoco.CountryId;
@@ -227,7 +227,8 @@ namespace LogisticsManagement_Web.Controllers
                     var newPass = (JObject.Parse(passData)["newPass"]).ToString();
                     var currentPass = (JObject.Parse(passData)["currentPass"]).ToString();
 
-                    if (currentPass.ToString() != null) {
+                    if (currentPass.ToString() != null)
+                    {
                         var userData = new App_UserPoco();
                         var isUserValid = _userLogic.IsCredentialsValid(sessionData.UserName, currentPass, out userData);
                         if (isUserValid)
@@ -272,15 +273,44 @@ namespace LogisticsManagement_Web.Controllers
 
         public JsonResult GetUserById(string id)
         {
-            if (!string.IsNullOrEmpty(id))
+            try
             {
-                var user = _userLogic.GetSingleById(Convert.ToInt32(id));
-                return Json(JsonConvert.SerializeObject(user));
+                if (!string.IsNullOrEmpty(id))
+                {
+                    var user = _userLogic.GetSingleById(Convert.ToInt32(id));
+                    if (user != null)
+                    {
+                        return Json(JsonConvert.SerializeObject(user));
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Json(string.Empty);
+                //
             }
+            
+            return Json(string.Empty);
+        }
+
+        public JsonResult GetUserByUserName(string id)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(id))
+                {
+                    var user = _userLogic.GetList().Where(c => c.UserName == id).FirstOrDefault();
+                    if (user != null)
+                    {
+                        return Json(JsonConvert.SerializeObject(user));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //
+            }
+
+            return Json(string.Empty);
         }
 
         private void ValidateSession()

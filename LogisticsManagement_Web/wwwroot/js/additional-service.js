@@ -56,13 +56,6 @@ $('#btnCloseModal').on('click', function () {
 });
 
 
-$('#frmAddServiceForm').on('keyup keypress', function (e) {
-    var keyCode = e.keyCode || e.which;
-    if (keyCode === 13) {
-        e.preventDefault();
-        return false;
-    }
-});
 $('#frmAddServiceForm').unbind('submit').submit(function (event) {
     event.preventDefault();
 
@@ -77,7 +70,7 @@ $('#frmAddServiceForm').unbind('submit').submit(function (event) {
         PerformPostActionWithObject('AdditionalService/Update', data);
     }
     else {
-        var result = PerformPostActionWithObject('AdditionalService/Add', data);
+        PerformPostActionWithObject('AdditionalService/Add', data);
     }
 
     location.reload();
@@ -85,9 +78,12 @@ $('#frmAddServiceForm').unbind('submit').submit(function (event) {
 
 $('.btnDelete').unbind().on('click', function () {
     serviceId = $(this).data('serviceid');
-    PerformPostActionWithId('AdditionalService/Remove', serviceId);
-    location.reload();
-
+    bootbox.confirm("This user will be deleted. Are you sure to proceed?", function (result) {
+        if (result === true) {
+            PerformPostActionWithId('AdditionalService/Remove', serviceId);
+            location.reload();
+        }
+    });
 });
 
 function GetFormData() {

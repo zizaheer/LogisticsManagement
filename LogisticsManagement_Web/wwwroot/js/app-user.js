@@ -15,60 +15,41 @@ $(document).ready(function () {
 
 var imageFileInfo = null;
 
-$('#btnNew').on('click', function () {
-    $('#txtUserId').prop('readonly', true);
-    $('#txtConfirmPassword').prop('disabled', false);
+$('#btnNewUser').on('click', function () {
     $('#txtPassword').prop('disabled', false);
+    $('#txtConfirmPassword').prop('disabled', false);
+    $('#frmUserForm').trigger('reset');
+
+    $('#modalUser').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#modalUser').draggable();
+    $('#modalUser').modal('show');
 
     ResetDefaultProfilePicture();
-});
-
-$('#btnClear').on('click', function () {
-    $('#txtUserId').prop('readonly', false);
-    $('#txtConfirmPassword').prop('disabled', false);
-    $('#txtPassword').prop('disabled', false);
-
-    ResetDefaultProfilePicture();
-});
-
-
-$('#txtUserId').unbind('keypress').keypress(function (event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-
-        var userId = $('#txtUserId').val();
-        var userInfo = GetSingleById('User/GetUserById', userId);
-        if (userInfo !== "" && userInfo !== null) {
-            userInfo = JSON.parse(userInfo);
-        }
-        else {
-            bootbox.alert('The user was not found. Please check or select from the bottom list of users.');
-            event.preventDefault();
-            return;
-        }
-
-        if (userInfo !== null) {
-            FillUserInfo(userInfo);
-        }
-    }
 });
 
 $('#user-list').on('click', '.btnEdit', function () {
-    $('#txtUserId').prop('readonly', true);
-
     var userId = $(this).data('userid');
     var userInfo = GetSingleById('User/GetUserById', userId);
 
     if (userInfo !== "") {
         userInfo = JSON.parse(userInfo);
+        FillUserInfo(userInfo);
+
+        $('#modalUser').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#modalUser').draggable();
+        $('#modalUser').modal('show');
     }
     else {
         bootbox.alert('The user was not found. Please check or select from the bottom list of users.');
         event.preventDefault();
         return;
     }
-
-    FillUserInfo(userInfo);
 });
 
 $('#btnDownloadUserData').unbind().on('click', function (event) {
@@ -77,46 +58,63 @@ $('#btnDownloadUserData').unbind().on('click', function (event) {
 
 });
 
-$('#frmUserForm').on('keyup keypress', function (e) {
-    var keyCode = e.keyCode || e.which;
-    if (keyCode === 13) {
-        e.preventDefault();
-        return false;
-    }
-});
+
 
 $('#frmUserForm').unbind('submit').submit(function (event) {
 
-    if ($('#ddlUserGroupId').val() === '0') {
-        bootbox.alert("Failed! Please select user group information.");
+    var dataArray = GetFormData();
+
+    var existingUser = GetSingleById('User/GetUserByUserName', dataArray[0].userName);
+    if (existingUser !== "") {
+        bootbox.alert("User exist with the user name. Try a different user name.");
+        event.preventDefault();
+        return;
+    }
+    if (dataArray[0].firstName === "") {
+        bootbox.alert("Please enter first name.");
+        event.preventDefault();
+        return;
+    }
+    if (dataArray[0].groupId === '0') {
+        bootbox.alert("Please select user group.");
+        event.preventDefault();
+        return;
+    }
+    if (dataArray[0].userName === '') {
+        bootbox.alert("Please enter user name.");
+        event.preventDefault();
+        return;
+    }
+    if (dataArray[0].password === '') {
+        bootbox.alert("Please enter password.");
+        event.preventDefault();
+        return;
+    }
+    if ($('#txtPassword').val() !== $('#txtConfirmPassword').val()) {
+        bootbox.alert("Password doesn't match with confirm password");
         event.preventDefault();
         return;
     }
 
-    var dataArray = GetFormData();
-    console.log(dataArray);
     if (dataArray[0].id > 0) {
         PerformPostActionWithObject('User/Update', dataArray);
     }
     else {
-
-        if ($('#txtPassword').val() !== $('#txtConfirmPassword').val()) {
-            bootbox.alert("Failed! Password and confirmed password did not match.");
-            event.preventDefault();
-            return;
-        }
-
         PerformPostActionWithObject('User/Add', dataArray);
     }
     event.preventDefault();
     $('#loadUserDataTable').load('User/PartialViewDataTable');
+    $('#modalUser').modal('hide');
 });
 
 $('.btnDelete').unbind().on('click', function () {
     userId = $(this).data('userid');
-    PerformPostActionWithId('User/Remove', userId);
-    $('#loadUserDataTable').load('User/PartialViewDataTable');
-
+    bootbox.confirm("This user will be deleted. Are you sure to proceed?", function (result) {
+        if (result === true) {
+            PerformPostActionWithId('User/Remove', userId);
+            $('#loadUserDataTable').load('User/PartialViewDataTable');
+        }
+    });
 });
 
 function GetFormData() {
@@ -126,7 +124,6 @@ function GetFormData() {
         employeeId: $('#ddlEmployeeId').val(),
         userName: $('#txtUserName').val(),
         password: $('#txtPassword').val(),
-        //confirmPassword: $('#txtConfirmPassword').val(),
         firstName: $('#txtFirstName').val(),
         lastName: $('#txtLastName').val(),
         groupId: $('#ddlUserGroupId').val(),
@@ -137,8 +134,7 @@ function GetFormData() {
         postCode: $('#txtPostCode').val(),
         phoneNumber: $('#txtPhoneNumber').val(),
         emailAddress: $('#txtEmailAddress').val(),
-        //profilePicture: imageFileInfo,
-        isActive: $('#chkIsActive').is(':checked') ===true ? 1 : 0
+        isActive: $('#chkIsActive').is(':checked') === true ? 1 : 0
 
     };
 
@@ -148,10 +144,8 @@ function GetFormData() {
 }
 
 function FillUserInfo(userInfo) {
-
     $('#txtPassword').prop('disabled', true);
     $('#txtConfirmPassword').prop('disabled', true);
-
     $('#txtUserId').val(userInfo.Id);
     $('#ddlEmployeeId').val(userInfo.EmployeeId);
     $('#txtUserName').val(userInfo.UserName);
@@ -160,7 +154,7 @@ function FillUserInfo(userInfo) {
     $('#txtFirstName').val(userInfo.FirstName);
     $('#txtLastName').val(userInfo.LastName);
     $('#ddlUserGroupId').val(userInfo.GroupId);
-    $('#txtAddressLine').val(userInfo.Address);
+    $('#txtAddressLine').val(userInfo.AddressLine);
     $('#ddlCityId').val(userInfo.CityId);
     $('#ddlProvinceId').val(userInfo.ProvinceId);
     $('#ddlCountryId').val(userInfo.CountryId);
@@ -175,7 +169,7 @@ function FillUserInfo(userInfo) {
         ResetDefaultProfilePicture();
     }
 
-    
+
     if (userInfo.IsActive) {
         $('#chkIsActive').prop('checked', true);
     } else {
@@ -184,8 +178,7 @@ function FillUserInfo(userInfo) {
 
 }
 
-function GetImageFile(imgPath)
-{
+function GetImageFile(imgPath) {
     var fileInfo = null;
 
     if (imgPath.files && imgPath.files[0]) {
@@ -196,13 +189,12 @@ function GetImageFile(imgPath)
             $('#imgProfilePic').attr('src', fileInfo);
         };
 
-       reader.readAsDataURL(imgPath.files[0]);
+        reader.readAsDataURL(imgPath.files[0]);
     }
     return fileInfo;
 }
 
-function ResetDefaultProfilePicture()
-{
+function ResetDefaultProfilePicture() {
     $('#imgProfilePic').prop('src', '../images/others/no-image.png');
 }
 
