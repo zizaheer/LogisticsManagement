@@ -891,30 +891,17 @@ $('#btnShowRecordsForPaidInvoice').unbind().on('click', function (event) {
 $('.btnViewInvoice').unbind().on('click', function (event) {
     event.preventDefault();
 
-    console.log("test");
     var customerId = $(this).data("customerid");
     var isPaid = 1;
 
-    
-    $('#paidInvoiceModal').modal({
-        backdrop: 'static',
-        keyboard: false
+    $('#loadCustomerWiseInvoices').load('PartialGetPaidInvoicesByCustomer?customerId=' + customerId + '&isPaid=' + isPaid, function () {
+
+        $('#paidInvoiceModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#paidInvoiceModal').draggable();
+        $('#paidInvoiceModal').modal('show');
+
     });
-    $('#paidInvoiceModal').draggable();
-    $('#paidInvoiceModal').modal('show');
-
-    $('#loadCustomerWiseInvoices').load('PartialGetPaidInvoicesByCustomer?customerId=' + customerId + '&isPaid=' + isPaid);
-    //function loaddata() {
-    //    $('#loadCustomerWiseInvoices').load('PartialGetPaidInvoicesByCustomer?customerId=' + customerId + '&isPaid=' + isPaid);
-    //    $('#paidInvoiceModal').modal({
-    //        backdrop: 'static',
-    //        keyboard: false
-    //    });
-    //    $('#paidInvoiceModal').draggable();
-    //    $('#paidInvoiceModal').modal('show');
-    //    //clearInterval(interval);
-    //}
-
-    ////var interval = setInterval(loaddata, 1500);
-    
 });

@@ -15,6 +15,8 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public string ServiceCode { get; set; }
         public string ServiceName { get; set; }
+        public bool? IsPriceApplicable { get; set; }
+        public decimal? UnitPrice { get; set; }
         public bool IsTaxApplicable { get; set; }
         public bool PayToDriver { get; set; }
         public bool IsApplicableForStorage { get; set; }

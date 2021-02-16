@@ -822,6 +822,10 @@ function addAdditionalServiceRowData(currentRow) {
     var driverPercentage = currentRow.find('.txtDriverPercentage').val();
     var isGstApplicable = currentRow.find('.chkIsGstApplicableForService').is(':checked');
     var taxPercentage = $('#lblGstAmount').text() !== "" ? parseFloat($('#lblGstAmount').text()) : 0.0;
+    var unitQty = currentRow.find('.txtQuantity').val();
+    var unitPrice = currentRow.find('.txtUnitPrice').val();
+    unitQty = unitQty !== '' ? parseInt(unitQty) : 0;
+    unitPrice = unitPrice !== '' ? parseFloat(unitPrice) : 0.0;
 
     if (isGstApplicable === true) {
         if (isCustomerTaxApplicable === false) {
@@ -839,9 +843,16 @@ function addAdditionalServiceRowData(currentRow) {
         return;
     }
 
-    if (serviceFee === "") {
-        bootbox.alert("Please enter service charge before adding it to the order.");
+    if (serviceFee === "" || parseFloat(serviceFee)<=0 ) {
+        bootbox.alert("Please enter service fee before adding it to the order.");
         return;
+    }
+
+    if (unitQty !== "") {
+        if (unitQty % 1 != 0) {
+            bootbox.alert("Please enter valid quantity in whole number.");
+            return;
+        }
     }
 
     if (payToDriver === true) {
@@ -855,6 +866,9 @@ function addAdditionalServiceRowData(currentRow) {
         serialNo: serialNo,
         orderId: $('#hfOrderId').val(),
         additionalServiceId: parseInt(serviceId),
+        unitPrice: unitPrice,
+        quantity: unitQty,
+        isPayToDriver: payToDriver,
         driverPercentageOnAddService: driverPercentage === "" ? 0 : parseFloat(driverPercentage),
         additionalServiceFee: parseFloat(serviceFee),
         isTaxAppliedOnAddionalService: isGstApplicable,
@@ -874,7 +888,7 @@ function addAdditionalServiceRowData(currentRow) {
     currentRow.find('.chkIsUpdate').prop("disabled", false);
     currentRow.find('.btnDeleteAdditionalService').removeAttr('disabled');
 
-    console.log("Additional service : " + JSON.stringify(selectedAdditionalServiceArray));
+    //console.log("Additional service : " + JSON.stringify(selectedAdditionalServiceArray));
 
 }
 
@@ -882,6 +896,29 @@ $('#service-list').on('click', '.btnAddAdditionalService', function (event) {
     event.preventDefault();
     var currentRow = $(this).closest('div.row');
     addAdditionalServiceRowData(currentRow);
+});
+
+
+$('#service-list').on('input', '.txtUnitPrice', function () {
+    var selectedRow = $(this).closest("div.row");
+    var unitPrice = $(this).val();
+    var qty = selectedRow.find('.txtQuantity').val();
+
+    unitPrice = unitPrice !== '' ? parseFloat(unitPrice) : 0.00;
+    qty = qty !== '' ? parseInt(qty) : 0;
+
+    selectedRow.find('.txtServiceFee').val(unitPrice * qty);
+});
+
+$('#service-list').on('input', '.txtQuantity', function () {
+    var selectedRow = $(this).closest("div.row");
+    var qty = $(this).val();
+    var unitPrice = selectedRow.find('.txtUnitPrice').val();
+
+    unitPrice = unitPrice !== '' ? parseFloat(unitPrice) : 0.00;
+    qty = qty !== '' ? parseInt(qty) : 0;
+
+    selectedRow.find('.txtServiceFee').val(unitPrice * qty);
 });
 
 
@@ -2063,6 +2100,9 @@ function FillOrderAdditionalServices(orderAdditionalServiceData) {
                 serialNo: i + 1,
                 orderId: orderAdditionalServiceData[i].OrderId,
                 additionalServiceId: orderAdditionalServiceData[i].AdditionalServiceId,
+                unitPrice: orderAdditionalServiceData[i].UnitPrice,
+                quantity: orderAdditionalServiceData[i].Quantity,
+                isPayToDriver: orderAdditionalServiceData[i].IsPayToDriver,
                 driverPercentageOnAddService: orderAdditionalServiceData[i].DriverPercentageOnAddService === "" ? 0 : parseFloat(orderAdditionalServiceData[i].DriverPercentageOnAddService),
                 additionalServiceFee: parseFloat(orderAdditionalServiceData[i].AdditionalServiceFee),
                 isTaxAppliedOnAddionalService: orderAdditionalServiceData[i].IsTaxAppliedOnAddionalService,
@@ -2085,7 +2125,14 @@ function FillOrderAdditionalServices(orderAdditionalServiceData) {
                 currentRow.find('.hfServiceId').val(serviceData.additionalServiceId);
                 currentRow.find('.txtAdditionalServiceName').val(additionalServiceInfo.ServiceName);
                 currentRow.find('.hfSerialNo').val(serviceData.serialNo);
-                currentRow.find('.chkPayToDriver').prop('checked', additionalServiceInfo.PayToDriver);
+                currentRow.find('.chkPayToDriver').prop('checked', serviceData.isPayToDriver);
+                if (serviceData.unitPrice > 0) {
+                    currentRow.find('.txtUnitPrice').val(serviceData.unitPrice);
+                }
+                if (serviceData.quantity > 0) {
+                    currentRow.find('.txtQuantity').val(serviceData.quantity);
+                }
+                
                 currentRow.find('.txtServiceFee').val(serviceData.additionalServiceFee);
                 currentRow.find('.txtDriverPercentage').val(serviceData.driverPercentageOnAddService);
                 currentRow.find('.chkIsGstApplicableForService').prop('checked', serviceData.isTaxAppliedOnAddionalService);
@@ -2098,7 +2145,7 @@ function FillOrderAdditionalServices(orderAdditionalServiceData) {
             }
         }
 
-        console.log("sds " + JSON.stringify(selectedAdditionalServiceArray));
+        //console.log("sds " + JSON.stringify(selectedAdditionalServiceArray));
     }
 }
 
@@ -2310,24 +2357,32 @@ function GenerateNewAdditionalServiceRow() {
     appendString += '</datalist>';
     appendString += '</div>';
 
-    appendString += '<div class="form-group ml-5 mr-5">';
+    appendString += '<div class="form-group ml-1 mr-1">';
     appendString += '<input type="hidden" class="hfSerialNo" name="hfSerialNo" value="' + additionalServiceSerial + '">';
+    appendString += '<input type="number" style="width: 60px" class="form-control form-control-sm additionalServiceControl txtUnitPrice " step=".01" name="txtUnitPrice" placeholder="UNT" title="Unit price" />';
+    appendString += '</div>';
+
+    appendString += '<div class="form-group ml-2 mr-1">';
+    appendString += '<input type="number" style="width: 50px" class="form-control form-control-sm additionalServiceControl txtQuantity " name="txtQuantity" placeholder="QTY" title="Quantity" />';
+    appendString += '</div>';
+
+    appendString += '<div class="form-group ml-2 mr-2">';
+    appendString += '<input type="number" style="width: 80px" class="form-control form-control-sm additionalServiceControl txtServiceFee " step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service charges" />';
+    appendString += '</div>';
+
+    appendString += '<div class="form-group ml-4 mr-5">';
     appendString += '<input type="checkbox" class="chkPayToDriver" id="chkPayToDriver" name="chkPayToDriver" />';
     appendString += '</div>';
 
-    appendString += '<div class="form-group ml-2 mr-4">';
-    appendString += '<input type="number" style="width: 90px" class="form-control form-control-sm additionalServiceControl txtServiceFee " step=".01" name="txtServiceFee" placeholder="Fee" title="Applicable service charges" />';
-    appendString += '</div>';
-
-    appendString += '<div class="form-group mr-2">';
+    appendString += '<div class="form-group ml-1 mr-2">';
     appendString += '<input type="number" style="width: 66px" class="form-control form-control-sm additionalServiceControl txtDriverPercentage" min="0" step=".01" name="txtDriverPercentage" placeholder="Percent" title="Driver portion of the fee" />';
     appendString += '</div>';
 
-    appendString += '<div class="form-group ml-5 mr-5">';
+    appendString += '<div class="form-group ml-3 mr-4">';
     appendString += '<input type="checkbox" class="chkIsGstApplicableForService" name="chkIsGstApplicableForService" />';
     appendString += '</div>';
 
-    appendString += '<div class="form-group ml-4 mr-5 pl-2">';
+    appendString += '<div class="form-group ml-4 mr-4">';
     appendString += '<input type="checkbox" class="chkIsUpdate" name="chkIsUpdate" disabled />';
     appendString += '</div>';
 

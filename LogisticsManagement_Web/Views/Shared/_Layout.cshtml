@@ -131,60 +131,46 @@
     </div>
     <!-- Modal for clock-in -->
     <!-- Modal for change password -->
-    <div class="modal fade bd-example-modal-xl" id="changePassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+
+    <div class="modal fade" id="changePassword" tabindex="-1" role="dialog" style="text-transform:uppercase">
+        <div class="modal-dialog modal-md" role="document">
             <div class="modal-content bg-light">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="exampleModalCenterTitle"><img src="~/images/flaticons-64x64/website.png" style="height:30px; padding-left:13px; padding-right:10px" />Change password</h4>
-
+                    <label class="modal-title mr-1"> CHANGE PASSWORD </label>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-sm-6 form-group">
-                                <small>
-                                    <b>
-                                        <label for="txtCurrentPassword">Current password</label>
-                                    </b>
-                                </small>
-                                <input class="col-5 form-control form-control-sm" placeholder="Current password" id="txtCurrentPassword" type="password" name="txtCurrentPassword">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6 form-group">
-                                <small>
-                                    <b>
-                                        <label for="txtNewPassword">New password</label>
-                                    </b>
-                                </small>
-                                <input type="password" maxlength="20" id="txtNewPassword" placeholder="New password" class="col-9 form-control form-control-sm txtNewPassword" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6 form-group">
-                                <small>
-                                    <b>
-                                        <label for="txtConfirmNewPassword">Confirm new password</label>
-                                    </b>
-                                </small>
-                                <input type="password" id="txtConfirmNewPassword" placeholder="Confirm new password" class="col-9 form-control form-control-sm txtConfirmNewPassword" />
-                            </div>
-                        </div>
-
-                        <hr />
-                        <div class="row" style="margin-bottom:80px">
-                            <div class="col-sm-12">
-                                <button type="button" class="col-2 btn btn-sm btn-success" id="btnSavePassword"><i class="fa fa-save"></i> Save password</button>
-                            </div>
+                    <div class="row mb-2">
+                        <div class="form-group col-sm-12">
+                            <label for="txtCurrentPassword" class="captionWeight">Current password</label>
+                            <input class="col-12 form-control form-control-sm frmfontsize" placeholder="Current password" id="txtCurrentPassword" type="password" name="txtCurrentPassword">
                         </div>
                     </div>
+
+                    <div class="row mb-2">
+                        <div class="form-group col-sm-12">
+                            <label for="txtNewPassword" class="captionWeight">New password</label>
+                            <input type="password" maxlength="20" id="txtNewPassword" placeholder="New password" class="col-12 form-control form-control-sm txtNewPassword frmfontsize" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label for="txtConfirmNewPassword" class="captionWeight">Confirm new password</label>
+                            <input type="password" id="txtConfirmNewPassword" placeholder="Confirm new password" class="col-12 form-control form-control-sm txtConfirmNewPassword frmfontsize" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer padding-lg">
+                    <button type="button" class="btn btn-sm btn-primary pl-5 pr-5" id="btnSavePassword"><i class="fa fa-save"></i> SAVE</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" id="btnCloseModal"> CLOSE</button>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Modal for clock-in -->
 
     <div style="width:1150px !important; margin:0 auto">
@@ -201,43 +187,43 @@
 
 
             @*<ul class="nav navbar-nav d-md-down-none">
-                <li class="nav-item px-3">
-                    <div class="btn-group float-right">
-                        <img src="~/lib/img-icons/data_table.png" class="pr-1 mt-1" /> <a class="nav-link" href="#">Dispatch board</a>
-                    </div>
-                </li>
-                <li class="nav-item px-3">
-                    <div class="btn-group float-right">
-                        <img src="~/lib/img-icons/box.png" class="pr-1 mt-1" />
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
-                            Order
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-left">
-                            <div class="dropdown-header text-left">
-                                <strong>Orders</strong>
-                            </div>
-                            <a class="dropdown-item" href="#"><i class="fa fa-truck"></i> Delivery order</a>
-                            <a class="dropdown-item" href="#"><i class="fa fa-puzzle-piece"></i> Misc. order</a>
-                            <a class="dropdown-item" href="#"><i class="fa fa-archive"></i> Storage order</a>
+                    <li class="nav-item px-3">
+                        <div class="btn-group float-right">
+                            <img src="~/lib/img-icons/data_table.png" class="pr-1 mt-1" /> <a class="nav-link" href="#">Dispatch board</a>
                         </div>
-                    </div>
-                </li>
-                <li class="nav-item px-3">
-                    <div class="btn-group float-right">
-                        <img src="~/lib/img-icons/bill.png" class="pr-1 mt-1" /> 
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
-                            Invoice
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-left">
-                            <div class="dropdown-header text-left">
-                                <strong>Invoice</strong>.
+                    </li>
+                    <li class="nav-item px-3">
+                        <div class="btn-group float-right">
+                            <img src="~/lib/img-icons/box.png" class="pr-1 mt-1" />
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
+                                Order
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-left">
+                                <div class="dropdown-header text-left">
+                                    <strong>Orders</strong>
+                                </div>
+                                <a class="dropdown-item" href="#"><i class="fa fa-truck"></i> Delivery order</a>
+                                <a class="dropdown-item" href="#"><i class="fa fa-puzzle-piece"></i> Misc. order</a>
+                                <a class="dropdown-item" href="#"><i class="fa fa-archive"></i> Storage order</a>
                             </div>
-                            <a class="dropdown-item" href="#"><i class="fa fa-file-text-o"></i> Create invoice</a>
-                            <a class="dropdown-item" href="#"><i class="fa fa-money"></i> Collect payment</a>
                         </div>
-                    </div>
-                </li>
-            </ul>*@
+                    </li>
+                    <li class="nav-item px-3">
+                        <div class="btn-group float-right">
+                            <img src="~/lib/img-icons/bill.png" class="pr-1 mt-1" />
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
+                                Invoice
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-left">
+                                <div class="dropdown-header text-left">
+                                    <strong>Invoice</strong>.
+                                </div>
+                                <a class="dropdown-item" href="#"><i class="fa fa-file-text-o"></i> Create invoice</a>
+                                <a class="dropdown-item" href="#"><i class="fa fa-money"></i> Collect payment</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>*@
 
             <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item d-md-down-none padding-right-lg">
@@ -246,8 +232,8 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         @*<div class="dropdown-header text-left">
-                            <strong>Configurations & Setup</strong>
-                        </div>*@
+                                <strong>Configurations & Setup</strong>
+                            </div>*@
                         <a class="dropdown-item" asp-controller="Customer" asp-action="Index"><i class="fa fa-gears"></i> Customer</a>
                         <a class="dropdown-item" asp-controller="Bank" asp-action="Index"><i class="fa fa-gears"></i> Bank</a>
                         <a class="dropdown-item" asp-controller="User" asp-action="Index"><i class="fa fa-gears"></i> User</a>
@@ -263,7 +249,7 @@
                         <div class="dropdown-header text-left">
                             <strong>Account</strong>
                         </div>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item">
                             <i class="fa fa-user"></i> Profile
                         </a>
                         <a class="dropdown-item" data-toggle="modal" id="lnkChangePassword" href="#">
@@ -284,31 +270,31 @@
 
 
             @*<ul class="nav navbar-nav ml-auto" style="padding-right:20px">
-                <li class="nav-item px-1">
-                    <a class="nav-link" href="#" id="lnkEmployeeClockIn" data-toggle="modal">
-                        <img src="~/images/flaticons-64x64/alarm-clock.png" style="width:20px; height:20px" />
-                    </a>
-                </li>
+                    <li class="nav-item px-1">
+                        <a class="nav-link" href="#" id="lnkEmployeeClockIn" data-toggle="modal">
+                            <img src="~/images/flaticons-64x64/alarm-clock.png" style="width:20px; height:20px" />
+                        </a>
+                    </li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                        <img src="~/images/flaticons-64x64/boss.png" style="border:1px solid #808080; border-radius:50%; padding:2px; width:30px; height:30px;" />
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <img src="~/images/flaticons-64x64/boss.png" style="border:1px solid #808080; border-radius:50%; padding:2px; width:30px; height:30px;" />
 
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <div class="dropdown-header text-center">
-                            <strong>Account</strong>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-header text-center">
+                                <strong>Account</strong>
+                            </div>
+                            <a class="dropdown-item" data-toggle="modal" id="lnkChangePassword" href="#">
+                                <i class="fa fa-key"></i> Change password
+                            </a>
+
+                            <a class="dropdown-item" asp-controller="Login" asp-action="Logout">
+                                <i class="fa fa-lock"></i> Logout
+                            </a>
                         </div>
-                        <a class="dropdown-item" data-toggle="modal" id="lnkChangePassword" href="#">
-                            <i class="fa fa-key"></i> Change password
-                        </a>
-
-                        <a class="dropdown-item" asp-controller="Login" asp-action="Logout">
-                            <i class="fa fa-lock"></i> Logout
-                        </a>
-                    </div>
-                </li>
-            </ul>*@
+                    </li>
+                </ul>*@
 
         </header>
 
@@ -441,15 +427,15 @@
                                     </a>
                                 </li>
                                 @*<li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Report" asp-action="AccountReceivable">
-                                        <span style="padding-left:10px"></span><i class="nav-icon fa fa-mail-reply"></i> Account receivable
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                        <span style="padding-left:10px"></span><i class="nav-icon fa fa-mail-forward"></i> Account payable
-                                    </a>
-                                </li>*@
+                                        <a class="nav-link" asp-area="" asp-controller="Report" asp-action="AccountReceivable">
+                                            <span style="padding-left:10px"></span><i class="nav-icon fa fa-mail-reply"></i> Account receivable
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                            <span style="padding-left:10px"></span><i class="nav-icon fa fa-mail-forward"></i> Account payable
+                                        </a>
+                                    </li>*@
                             </ul>
                         </li>
                     </ul>
@@ -550,6 +536,7 @@
     <script src="~/lib/vendors/pace-progress/js/pace.min.js"></script>
     <script src="~/lib/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js"></script>
     <script src="~/lib/vendors/from-coreui/coreui/js/coreui.min.js"></script>
+    <script src="~/lib/js/tooltips.js"></script>
     <!-- Plugins and scripts required by this view-->
     @*<script src="~/lib/vendors/chart.js/js/Chart.min.js"></script>*@
     @*<script src="~/lib/vendors/from-coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js"></script>*@

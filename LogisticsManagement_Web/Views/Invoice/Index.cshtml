@@ -103,72 +103,68 @@
                     <button id="btnFilter" class="col-9 btn btn-sm btn-dark mr-2" type="button"> Load orders</button>
                 </div>
             </div>
-            <hr />
-            <div class="row mt-2">
-                <div class="col-sm-6">
+        </fieldset>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-sm-6">
+        <fieldset style="background-color:#f0f3f5">
+            <legend>GENERATE INVOICE</legend>
 
-                    <fieldset>
-                        <legend>GENERATE</legend>
-
-                        <form id="frmInvoiceGenerationForm" class="form-inline">
-                            <div class="row ml-0">
-                                <div class="form-group">
-                                    <label for="txtInvoiceDate" class="captionWeight pr-2">INV.DATE</label>
-                                    <input type="date" id="txtInvoiceDate" class="form-control form-control-sm txtInvoiceDate mr-5 frmfontsize" />
-                                </div>
-                            </div>
-                            <div class="row ml-3">
-                                <div class="form-group">
-                                    <button id="btnTrialPrint" type="button" class="btn btn-sm btn-secondary mr-auto"><i class="fa fa-print"></i> TRIAL PRINT</button>
-                                    <button type="submit" class="btn btn-sm btn-primary ml-2" id="btnGenerateInvoice"><i class="fa fa-gear"></i> GENERATE</button>
-                                </div>
-
-                            </div>
-                        </form>
-
-                    </fieldset>
+            <form id="frmInvoiceGenerationForm" class="form-inline">
+                <div class="row ml-0">
+                    <div class="form-group">
+                        <label for="txtInvoiceDate" class="captionWeight pr-2">INV.DATE</label>
+                        <input type="date" id="txtInvoiceDate" class="form-control form-control-sm txtInvoiceDate mr-5 frmfontsize" />
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <fieldset>
-                        <legend>LOAD INVOICE</legend>
-                        <div class="form-inline">
-                            <div class="row ml-0">
-                                <div class="form-group col-6 pl-0">
-                                    <select class="col-12 form-control form-control-sm frmfontsize" id="ddlCustomerIdForPrint" disabled>
-                                        <option value="0">- All customer -</option>
-                                        @foreach (var item in ViewBag.Customers)
-                                        {
-                                            <option value="@item.Id"> @item.CustomerName </option>
-                                        }
-                                    </select>
-                                </div>
-                                <div class="form-group col-3 pl-0">
-                                    <select class="col-12 form-control form-control-sm frmfontsize" id="ddlCustomerIdForPrint" disabled>
-                                        <option value="0">All Orders</option>
-                                        <option value="1">Delivery</option>
-                                        <option value="2">Miscellaneous</option>
-                                    </select>
-                                    @*<input type="checkbox" class="form-check-input" id="chkIsMiscellaneous" />
-                                        <label for="chkIsMiscellaneous" class="form-check-label"> Misc.</label>*@
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-sm btn-primary" id="btnDownloadData" type="button"><i class="fa fa-download"></i> Load invoices</button>
-                                </div>
-                                <div class="form-group">
+                <div class="row ml-3">
+                    <div class="form-group">
+                        <button id="btnTrialPrint" type="button" class="btn btn-sm btn-secondary mr-auto"><i class="fa fa-print"></i> TRIAL PRINT</button>
+                        <button type="submit" class="btn btn-sm btn-primary ml-2" id="btnGenerateInvoice"><i class="fa fa-gear"></i> GENERATE</button>
+                    </div>
 
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
                 </div>
-
-            </div>
+            </form>
 
         </fieldset>
     </div>
+    <div class="col-sm-6">
+        <fieldset style="background-color:#f0f3f5">
+            <legend>LOAD GENERATED INVOICES</legend>
+            <div class="form-inline">
+                <div class="row ml-0">
+                    <div class="form-group col-6 pl-0">
+                        <select class="col-12 form-control form-control-sm frmfontsize" id="ddlCustomerIdForPrint" disabled>
+                            <option value="0">- All customer -</option>
+                            @foreach (var item in ViewBag.Customers)
+                            {
+                                <option value="@item.Id"> @item.CustomerName </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-3 pl-0">
+                        <select class="col-12 form-control form-control-sm frmfontsize" id="ddlCustomerIdForPrint" disabled>
+                            <option value="0">All Orders</option>
+                            <option value="1">Delivery</option>
+                            <option value="2">Miscellaneous</option>
+                        </select>
+                        @*<input type="checkbox" class="form-check-input" id="chkIsMiscellaneous" />
+                            <label for="chkIsMiscellaneous" class="form-check-label"> Misc.</label>*@
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-sm btn-primary" id="btnDownloadData" type="button"><i class="fa fa-download"></i> Load invoices</button>
+                    </div>
+                    <div class="form-group">
 
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
 </div>
-<hr />
+
+
 @*<div class="row">
         <div class="col-12">
             <span id="spinnerLoadingDataTable" style="display:block">
@@ -177,7 +173,7 @@
             </span>
         </div>
     </div>*@
-<div class="row mt-4" id="divLoadOrders">
+<div class="row mt-5" id="divLoadOrders">
     <div class="col-md-12">
         <div class="form-group">
             <strong style="color:#0051b5"><label id="lblOrderName">DELIVERY ORDERS</label></strong>
@@ -189,7 +185,7 @@
     </div>
 </div>
 
-<div class="row mt-4" id="divLoadInvoices" style="display:none">
+<div class="row mt-5" id="divLoadInvoices" style="display:none">
     <div class="form-group ml-3">
         <strong style="color:#0051b5">GENERATED INVOICES</strong>
         <div style="float:right" class="mr-3">
@@ -199,7 +195,7 @@
         </div>
         <hr />
     </div>
-    
+
     <div class="col-12">
         <div style="display: block; " id="loadInvoicedDataTable">
         </div>

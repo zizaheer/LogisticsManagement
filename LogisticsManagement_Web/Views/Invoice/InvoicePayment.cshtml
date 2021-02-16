@@ -41,7 +41,7 @@
             </div>
             <div class="modal-body">
                 
-                <div class="row mt-2">
+                <div class="row">
                     <div class="col-sm-12">
                         <table class="table table-sm table-bordered table-striped" cellspacing="0" style="width:100%; font-size:.75em">
                                 <thead class="dtTheadBg">
@@ -56,7 +56,7 @@
                                 <tbody></tbody>
                             </table>
                       
-                        <div style="display:block; height:120px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:15px; margin-top:-16px" id="loadPartialViewCustomerWiseDueInvoices">
+                        <div style="display:block; height:120px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3; margin-bottom:5px; margin-top:-16px" id="loadPartialViewCustomerWiseDueInvoices">
                             <table id="customer-wise-due-invoices" class="table table-sm table-striped customer-wise-due-invoices" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
                                 <tbody></tbody>
                             </table>
@@ -66,30 +66,30 @@
 
                 <div class="row">
                     
-                        <div class="col-sm-7">
+                        <div class="col-sm-6">
                             <fieldset style="background-color:#e6f0f7">
                                 <legend>WB INFO</legend>
-                                <div class="row mt-0 mb-2">
-                                    <div class="form-group col-sm-3">
-                                       <label for="txtInvoiceNo" class="captionWeight">Invoice #</label>
-                                        <input type="text" id="txtInvoiceNo" class="form-control form-control-sm frmfontsize" style="font-weight:bolder" placeholder="Invoice #" readonly/>
+                                <div class="form-inline row mt-0 mb-2">
+                                    <div class="form-group col-3 pr-0">
+                                        <label for="txtInvoiceNo" class="captionWeight mr-1">INV.</label>
+                                        <input type="text" id="txtInvoiceNo" class="col-8 form-control form-control-sm frmfontsize" style="font-weight:bolder" placeholder="Inv #" readonly="">
                                     </div>
-                                    <div class="form-group col-sm-3">
-                                        <label for="txtPaidAmount" class="captionWeight">PAID</label>
-                                        <input type="text" id="txtPaidAmount" class="form-control form-control-sm frmfontsize" readonly />
+                                    <div class="form-group col-3 pl-0 pr-0">
+                                        <label for="txtPaidAmount" class="captionWeight mr-1">PAID</label>
+                                        <input type="text" id="txtPaidAmount" class="col-8 form-control form-control-sm frmfontsize" placeholder="0.00" readonly="">
                                     </div>
-                                    <div class="form-group col-sm-3">
-                                       <label for="txtDueAmount" class="captionWeight">DUE</label>
-                                        <input type="text" id="txtDueAmount" class="form-control form-control-sm frmfontsize" readonly />
+                                    <div class="form-group col-3 pr-0 pl-0">
+                                        <label for="txtDueAmount" class="captionWeight mr-1">DUE</label>
+                                        <input type="text" id="txtDueAmount" class="col-8 form-control form-control-sm frmfontsize" placeholder="0.00" readonly="">
                                     </div>
-                                    <div class="form-group col-sm-3">
-                                        <label for="txtInvoiceDate" class="captionWeight">INV. DATE</label>
-                                        <input type="date" id="txtInvoiceDate" class="form-control form-control-sm frmfontsize" readonly />
+                                    <div class="form-group col-3 pl-0 pr-0">
+                                        <label for="txtInvoiceDate" class="captionWeight mr-1">DATE</label>
+                                        <input type="text" id="txtInvoiceDate" class="col-7 form-control form-control-sm frmfontsize pl-1" readonly="">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <div style="display:block; height:229px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3;" id="loadPartialViewCustomerWiseDueInvoices">
+                                        <div style="display:block; height:180px; overflow-y:scroll; overflow-x:hidden; border:1px solid #c3c3c3;" id="loadPartialViewCustomerWiseDueInvoices">
                                             <table class="table table-sm table-striped waybill-list-for-invoice-payment" style="width:100%; font-size:.75em">
                                                 <thead class="dtTheadBg">
                                                     <tr>
@@ -114,13 +114,13 @@
                             </fieldset>
                             
                         </div>
-                        <div class="col-sm-5">
+                        <div class="col-sm-6">
                             <fieldset style="background-color:#e6f0f7">
                                 <legend>PAYMENT INFO</legend>
-                                <div class="row">
+
+                                <div class="row mb-2">
                                     <div class="form-group col-sm-6">
-                                        <small><b><label for="ddlPaymentMethodId">Payment method:</label></b></small>
-                                        <select class="form-control form-control-sm ddlPaymentMethodId" id="ddlPaymentMethodId">
+                                        <select class="form-control form-control-sm ddlPaymentMethodId frmfontsize" id="ddlPaymentMethodId">
                                             @foreach (var item in ViewBag.PaymentMethods)
                                             {
                                                 var selected = false;
@@ -133,18 +133,16 @@
                                         </select>
                                     </div>
                                     <div class="form-group col-sm-6">
-                                        <small><b><label>Banking info</label></b></small>
                                         <div class="form-check-inline">
                                             <input type="checkbox" class="form-check-input" id="chkKeepBankingInformation" />
-                                            <small><label class="form-check-label" for="chkKeepBankingInformation">Apply to next inv.</label></small>
+                                            <label class="form-check-label captionWeight" for="chkKeepBankingInformation">APPLY TO NEXT INVOICE</label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-3">
                                     <div class="form-group col-sm-6">
-                                        <small><b><label for="ddlBankId">Bank name:</label></b></small>
-                                        <select class="form-control form-control-sm ddlBankId" id="ddlBankId">
-                                            <option value="0">-Select-</option>
+                                        <select class="form-control form-control-sm ddlBankId frmfontsize" id="ddlBankId">
+                                            <option value="0">-- SELECT BANK --</option>
                                             @foreach (var item in ViewBag.Banks)
                                             {
                                                 <option value="@item.Id">@item.BankName</option>
@@ -152,39 +150,37 @@
 
                                         </select>
                                     </div>
-                                    <div class="form-group col-sm-6">
-                                        <small><b><label for="txtChequeNo">Cheque no:</label></b></small>
-                                        <input type="text" id="txtChequeNo" class="form-control form-control-sm" />
+                                    <div class="form-group col-sm-6 form-inline pr-0">
+                                        <label class="captionWeight mr-2">CHQ#</label>
+                                        <input type="text" id="txtChequeNo" class="col-9 form-control form-control-sm frmfontsize" placeholder="CHEQUE #">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-sm-6">
-                                        <small><b><label for="txtChequeAmount">Cheque amt.:</label></b></small>
-                                        <input type="number" id="txtChequeAmount" class="form-control form-control-sm" />
+                                <div class="row mb-2">
+                                    <div class="form-group col-sm-3">
+                                        <label for="txtChequeAmount" class="captionWeight">Cheq amt.</label>
+                                        <input type="number" id="txtChequeAmount" class="form-control form-control-sm frmfontsize" placeholder="0.00">
                                     </div>
 
-                                    <div class="form-group col-sm-6">
-                                        <small><b><label for="txtChequeDate">Cheque date:</label></b></small>
-                                        <input type="date" id="txtChequeDate" class="form-control form-control-sm" />
+                                    <div class="form-group col-sm-4 pl-0">
+                                        <label for="txtChequeDate" class="captionWeight">Cheq date</label>
+                                        <input type="date" id="txtChequeDate" class="form-control form-control-sm frmfontsize">
+                                    </div>
+                                    <div class="form-group col-sm-3 pl-0">
+                                        <label for="txtCashAmount" class="captionWeight">Cash</label>
+                                        <input type="number" id="txtCashAmount" class="form-control form-control-sm frmfontsize" placeholder="0.00" disabled>
+                                    </div>
+                                    <div class="form-group col-sm-2 pl-0">
+                                        <label for="txtPaymentApplied" class="captionWeight">Applied</label>
+                                        <input type="number" id="txtPaymentApplied" class="form-control form-control-sm frmfontsize" placeholder="0.00">
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group col-sm-4">
-                                        <small><b><label for="txtCashAmount">Cash amt.:</label></b></small>
-                                        <input type="number" id="txtCashAmount" class="form-control form-control-sm" disabled />
+                                    <div class="form-group col-sm-3">
+                                        <label for="txtRemainingAmount" class="captionWeight">Remaining</label>
+                                        <input type="number" id="txtRemainingAmount" class="form-control form-control-sm frmfontsize" placeholder="0.00" disabled />
                                     </div>
-                                    <div class="form-group col-sm-4">
-                                        <small><b><label for="txtPaymentApplied">Applied</label></b></small>
-                                        <input type="number" id="txtPaymentApplied" class="form-control form-control-sm" />
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <small><b><label for="txtRemainingAmount">Remaining</label></b></small>
-                                        <input type="number" id="txtRemainingAmount" class="form-control form-control-sm" disabled />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-sm-12">
-                                        <small><b><label for="txtPaymentRemarks">Remarks:</label></b></small>
+                                    <div class="form-group col-sm-9 pl-0">
+                                        <label for="txtPaymentRemarks" class="captionWeight">Remarks:</label>
                                         <input id="txtPaymentRemarks" class="form-control form-control-sm" />
                                     </div>
                                 </div>
@@ -228,8 +224,8 @@
 
 <form id="frmInvoicePaymentForm">
     <div class="row">
-        <div class="col-sm-6 input-group">
-            <select class="col-6 form-control form-control-sm" id="ddlCustomerId">
+        <div class="col-sm-12 input-group">
+            <select class="col-2 form-control form-control-sm" id="ddlCustomerId">
                 <option value="0">All Customer</option>
                 @foreach (var customer in ViewBag.Customers)
                 {
@@ -238,18 +234,22 @@
                 }
 
             </select>
-            <select class="col-3 form-control form-control-sm" id="ddlYear">
+            <select class="col-1 form-control form-control-sm" id="ddlYear">
                 <option value="0">All</option>
                 <option value="@DateTime.Now.ToString("yyyy")">@DateTime.Now.ToString("yyyy")</option>
                 <option value="@DateTime.Now.AddYears(-1).ToString("yyyy")">@DateTime.Now.AddYears(-1).ToString("yyyy")</option>
             </select>
-            <div class="col-2 form-control form-control-sm form-check-inline" style="display:none">
-                <input class="form-check-input" type="checkbox" id="chkShowPaidInvoice" style="margin-left:10px !important" />
-                <label class="form-check-label" id="" for="chkShowPaidInvoice">Paid</label>
+            <div class="col-2 form-control form-control-sm form-check-inline ml-2" style="font-weight:bold">
+                <input class="form-check-input" type="checkbox" id="chkShowPaidInvoice" />
+                <label class="form-check-label" id="" for="chkShowPaidInvoice">INCLUDE PAID INVOICES</label>
             </div>
             <div class="col-sm-2">
-                <button class="btn btn-sm btn-dark" id="btnShowRecords" style="margin-bottom:10px" type="button">Show</button>
+                <button class="btn btn-sm btn-dark" id="btnShowRecords" style="margin-bottom:10px" type="button">SHOW INVOICES</button>
             </div>
+            <span id="spinnerLoadingDataTable" style="display:none">
+                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="margin-right:5px"></span>
+                <span style="margin-right:20px">Loading...</span>
+            </span>
 
         </div>
     </div>

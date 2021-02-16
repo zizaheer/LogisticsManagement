@@ -24,6 +24,14 @@ $('#btnAddNewAddService').on('click', function () {
     $('#additionalService').modal('show');
 });
 
+$('#chkUnitPriceApplicable').on('click', function () {
+    var isChecked = $(this).is(':checked');
+    if (isChecked == true) {
+        $('#txtUnitPrice').prop('disabled', false);
+    } else {
+        $('#txtUnitPrice').prop('disabled', true);
+    }
+});
 
 $('#additional-service-list').on('click', '.btnEdit', function () {
     $('#txtServiceId').prop('readonly', true);
@@ -88,9 +96,12 @@ $('.btnDelete').unbind().on('click', function () {
 
 function GetFormData() {
     var data = {
-        id: $('#hfServiceId').val() === '' ? 0 : $('#hfServiceId').val(),
+        id: $('#txtServiceId').val() === '' ? 0 : $('#txtServiceId').val(),
         serviceCode: $('#txtShortCode').val(),
         serviceName: $('#txtServiceName').val(),
+        IsPriceApplicable: $('#chkUnitPriceApplicable').is(':checked'),
+        UnitPrice: $('#txtUnitPrice').val() == "" ? 0 : parseFloat($('#txtUnitPrice').val()),
+
         isTaxApplicable: $('#chkIsTaxApplicable').is(':checked') === true ? 1 : 0,
         payToDriver: $('#chkPayToDriver').is(':checked') === true ? 1 : 0,
         isApplicableForStorage: $('#chkIsApplicableForStorage').is(':checked') === true ? 1 : 0,
@@ -101,11 +112,18 @@ function GetFormData() {
 }
 
 function FillServiceInfo(serviceInfo) {
-
-    $('#hfServiceId').val(serviceInfo.Id);
     $('#txtServiceId').val(serviceInfo.Id);
     $('#txtShortCode').val(serviceInfo.ServiceCode);
     $('#txtServiceName').val(serviceInfo.ServiceName);
+    $('#txtUnitPrice').val(serviceInfo.UnitPrice);
+
+    if (serviceInfo.IsPriceApplicable === true) {
+        $('#chkUnitPriceApplicable').prop('checked', true);
+        $('#txtUnitPrice').prop("disabled", false);
+    } else {
+        $('#chkUnitPriceApplicable').prop('checked', false);
+        $('#txtUnitPrice').prop("disabled", true);
+    }
 
     if (serviceInfo.IsTaxApplicable === true) {
         $('#chkIsTaxApplicable').prop('checked', true);

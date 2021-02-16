@@ -24,7 +24,7 @@
     <thead style="background-color:#e2e2e2">
         <tr>
             <th>Cust. Name</th>
-            <th>Cust. Id</th>
+            <th>Cust. #</th>
             <th>Address</th>
             <th>Phone</th>
             <th># Invoices</th>
@@ -68,17 +68,17 @@
                 @{
                     if (item.TotalDue == 0)
                     {
-                        <button data-toggle="modal" id="btnViewInvoice" class="btn-success lnkPaidInvoice" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" type="button">Paid</button>
+                        <button class="btn btn-sm btn-secondary pl-3 pr-4" type="button" disabled><i class="fa fa-money"></i> FULLY PAID</button>
                     }
                     else
                     {
-                        <button data-toggle="modal" id="btnCollectPayment" class="btn  btn-info btn-sm lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" type="button"><i class="fa fa-money"></i> Apply payment</button>
+                        <button data-toggle="modal" id="btnCollectPayment" class="btn  btn-info btn-sm lnkCollectPayment" data-customerid="@item.CustomerId" data-customername="@item.CustomerName" type="button"><i class="fa fa-money"></i> APPLY PAYMENT</button>
                     }
 
                 }
             </td>
             <td>
-                <button class="btn btn-secondary btn-sm btnViewInvoice" data-customerid="@item.CustomerId" type="button"><i class="fa fa-search"></i> Show</button>
+                <button class="btn btn-secondary btn-sm btnViewInvoice" data-customerid="@item.CustomerId" type="button"><i class="fa fa-search"></i> SHOW</button>
             </td>
         </tr>
         }

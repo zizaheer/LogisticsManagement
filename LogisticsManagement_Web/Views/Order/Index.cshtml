@@ -565,7 +565,7 @@
                             <label id="lblPickupRefNo" for="txtPickupRefNo" class="captionWeight">PU REF#</label>
                         </div>
                         <div class="form-group mr-3">
-                            <input type="text" class="form-control form-control-sm refNumber frmfontsize" placeholder="Pickup ref" id="txtPickupRefNo" name="txtPickupRefNo" title="Pickup ref #">
+                            <input type="text" class="form-control form-control-sm refNumber frmfontsize" placeholder="Pickup ref" id="txtPickupRefNo" name="txtPickupRefNo" data-toggle="tooltip" title="Pickup ref #">
                         </div>
                         <div class="form-group mr-3">
                             <label id="lblDeliveryRefNo" for="txtDeliveryRefNo" class="captionWeight">DL REF#</label>
@@ -746,16 +746,18 @@
                     <div class="row ml-0 mt-3">
                         <div class="col-sm-9 pl-0">
                             <div class="row ml-0 mr-0">
-                                <table>
+                                <table style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th style="width:175px">Additional service</th>
-                                            <th style="width:106px;">Pay Driver</th>
-                                            <th style="width:115px;">Srv. Charge</th>
-                                            <th style="width:95px;">Driver %</th>
-                                            <th style="width:102px;">Apply HST</th>
-                                            <th style="width:95px; ">Update</th>
-                                            <th style="width:135px; text-align:right;"><button style="width:135px" class="btn btn-sm btn-dark additionalServiceControl" id="btnAddAddtionalServiceRow"> <i class="fa fa-eyedropper"></i> Add service</button></th>
+                                            <th style="width: 170px;">Additional srv.</th>
+                                            <th style="width: 72px;">Prc/Unt</th>
+                                            <th style="width: 63px;">Qty</th>
+                                            <th style="width: 88px;">Srv. Fee</th>
+                                            <th style="width: 89px;">Pay Drv.</th>
+                                            <th style="width: 79px;">Drv. %</th>
+                                            <th style="width: 52px;">HST</th>
+                                            <th style="width: 75px;">Update</th>
+                                            <th style="width:125px; text-align:right;"><button style="width:135px" class="btn btn-sm btn-dark additionalServiceControl" id="btnAddAddtionalServiceRow"> <i class="fa fa-eyedropper"></i> Add service</button></th>
                                         </tr>
                                     </thead>
                                 </table>

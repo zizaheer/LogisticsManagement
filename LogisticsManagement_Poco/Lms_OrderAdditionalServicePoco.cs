@@ -15,7 +15,10 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public int? OrderId { get; set; }
         public int AdditionalServiceId { get; set; }
+        public int? Quantity { get; set; }
+        public decimal? UnitPrice { get; set; }
         public decimal AdditionalServiceFee { get; set; }
+        public bool? IsPayToDriver { get; set; }
         public decimal? DriverPercentageOnAddService { get; set; }
         public bool? IsTaxAppliedOnAddionalService { get; set; }
         public decimal? TaxAmountOnAdditionalService { get; set; }
