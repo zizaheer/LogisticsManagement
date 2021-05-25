@@ -1,0 +1,237 @@
+﻿@using LogisticsManagement_Web.Models
+@model ViewModel_Report_CustomerDue
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Print - Customer Due Report</title>
+
+    <style type="text/css">
+
+        .tdStyle {
+            padding: 4px;
+            vertical-align: top;
+            border-left: none;
+            border-right: none;
+            color: #000000;
+        }
+
+        .pagebreak {
+            page-break-after: always;
+        }
+    </style>
+
+
+</head>
+<body>
+    <table style="width:900px; border:0px solid black; height:290px" border="0">
+        <tbody>
+            <tr>
+                <td style="text-align: center; vertical-align: top;" colspan="4">
+                    <span style="display:inline-block; padding-right:40px">
+                        <img src="data:image/png;base64, @SessionData.CompanyLogo" class="imgCompanyLogo" style="width:90px; height:70px" />
+                    </span>
+                    <span style="display:inline-block">
+                        <b><label style="font-size:1.5em"> @SessionData.CompanyName </label></b><br />
+                        <label>@SessionData.CompanyAddress</label><br />
+                        <label>TEL: @SessionData.CompanyTelephone, FAX: @SessionData.CompanyFax, Email: @SessionData.CompanyEmail</label>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align:middle" colspan="4">
+                    <table border="1" style="border-collapse:collapse; border-right:none; border-left:none" width="100%">
+                        <tr>
+                            <td style="border-right:none; border-left:none; text-align:center; height:30px; background-color:#cccccc">
+                                <span style="font-size:1.2em; font-weight:bold">BALANCE DUE / SOLDE DU</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr style="font-family: Arial">
+                <td style="width: 180px; vertical-align:top" colspan="2"><b>TO</b></td>
+                <td style="width: 214px; vertical-align:top">
+                    <span>
+                    </span>
+                </td>
+                <td style="width: 215px; vertical-align:top;">
+                    <b>
+                        <span style="margin-right:20px !important">
+                            A/C #: @Model.CustomerId
+                        </span>
+                        <span>
+
+                        </span>
+                    </b>
+                </td>
+            </tr>
+            <tr style="font-family: Arial">
+                <td style="width: 180px; vertical-align:top;" colspan="2">
+                    <span style="font-size:1.2em; font-weight:bold">@Model.CustomerName</span><br />
+                    <span>@Model.AddressLine1</span><br />
+                    <span>@Model.City, @Model.ProvinceCode</span><br />
+                    <span>@Model.PostCode</span><br />
+                </td>
+                <td style="width: 214px; vertical-align:top">&nbsp;</td>
+                <td style="width: 215px; vertical-align: top;">
+                    <br />
+                    <b>
+                        <span style="margin-right:55px !important">
+                            DATE: @DateTime.Now.ToString("dd-MMM-yyyy").ToUpper()
+                        </span>
+                        <span>
+
+                        </span>
+                    </b>
+                    <br /><br />
+                    <b><span style="margin-right:55px !important">TERM: @Model.InvoiceDueDays</span><span></span></b>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 180px; height:35px; font-family: Arial" colspan="2">
+                    ATTN: ACCOUNT PAYABLE
+                </td>
+
+                <td style="width: 214px;"></td>
+                <td style="width: 215px;"></td>
+            </tr>
+        </tbody>
+    </table>
+    <table style="width:900px; border:0px solid black; height:810px;" border="0">
+        <tbody>
+            <tr>
+                <td colspan="5" style="padding-top:30px;vertical-align:top">
+                    <table style="width:900px; border-left:none;border-right:none; border-collapse:collapse; text-transform:uppercase; " border="1" cellspacing="2" cellpadding="2">
+                        <tr style="background-color: #cccccc; font-family:Arial;font-size:1em; font-weight:bold; border-top:8px">
+                            <td class="tdStyle" style="width:10px">
+                                <span></span>
+                            </td>
+                            <td class="tdStyle" style="width:90px">
+                                <span>INV#</span><br />
+                            </td>
+                            <td class="tdStyle" style="width:130px">
+                                <span>INV. DATE</span><br />
+                            </td>
+                            <td class="tdStyle" style="width:115px">
+                                <span>INV. AMT.</span><br />
+                            </td>
+                            <td class="tdStyle" style="width:100px">
+                                <span>PAID</span><br />
+                            </td>
+                            <td class="tdStyle" style="width:100px">
+                                <span>DUE</span><br />
+                            </td>
+                            <td class="tdStyle" style="width:150px">
+                                <span>METHOD</span><br />
+                            </td>
+                            <td class="tdStyle" style="width:130px">
+                                <span>PAY DATE</span>
+                            </td>
+                            <td class="tdStyle" style="width:100px">
+                                <span>CHQ#</span><br />
+                            </td>
+                            <td class="tdStyle" style="width:130px">
+                                <span>CHQ AMT.</span><br />
+                            </td>
+                            <td class="tdStyle" style="width:150px">
+                                <span>BANK</span><br />
+                            </td>
+
+                        </tr>
+                        @{
+                            foreach (var invoice in Model.InvoiceData)
+                            {
+                        <tr style="font-family:Arial; font-size:.8rem; text-transform:uppercase; border-top:8px">
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span></span>
+                            </td>
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span>@invoice.InvoiceNo</span><br />
+                            </td>
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span>@invoice.InvoiceDate</span><br />
+                            </td>
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span>@invoice.TotalInvoiceAmount</span><br />
+                            </td>
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span>@invoice.PaidAmount</span><br />
+                            </td>
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span>@invoice.BalanceDueAmount</span><br />
+                            </td>
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span title="@invoice.PaymentMethod">
+                                @{
+                                    if (invoice.PaymentMethod != null) {
+                                        @invoice.PaymentMethod.Substring(0, 10);
+                                    }
+                                }
+
+                                    </span><br />
+                            </td>
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span>@invoice.PaymentDate</span>
+                            </td>
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span>@invoice.ChqNo</span>
+                            </td>
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span>@invoice.ChqAmount</span>
+                            </td>
+                            <td class="tdStyle" style="padding-top:8px; padding-bottom:8px">
+                                <span>@invoice.BankShortName</span>
+                            </td>
+                        </tr>
+                            }
+                        }
+
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table style="width:900px; border:0px solid black; height:100px" border="0">
+        <tbody>
+            <tr style="font-family:Arial; font-weight:bold; ">
+                <td class="tdStyle" colspan="4">
+                    <table style="width: 100%; border-collapse:collapse; border-left:none; border-bottom:none; border-right:none; text-transform:uppercase" border="1">
+                        <tbody>
+                            <tr style="font-family:Arial; font-weight:bold; text-transform:uppercase; border-top:8px">
+                                <td class="tdStyle" style="width:10px;padding-top:8px; padding-bottom:8px">
+                                    <span></span>
+                                </td>
+                                <td class="tdStyle" style="width:10px;padding-top:8px; padding-bottom:8px"></td>
+                                <td class="tdStyle" style="width:10px;padding-top:8px; padding-bottom:8px"></td>
+                                <td class="tdStyle" style="width:10px;padding-top:8px; padding-bottom:8px"></td>
+                                <td class="tdStyle" style="width:80px;padding-top:8px; padding-bottom:8px"></td>
+                                <td class="tdStyle" style="width:10px;padding-top:8px; padding-bottom:8px"></td>
+                                <td class="tdStyle" style="width:10px;padding-top:8px; padding-bottom:8px"></td>
+                                <td class="tdStyle" style="width:180px;padding-top:8px; padding-bottom:8px">
+                                    <span>TOTAL PAYABLE: $@Model.TotalAmountPayable</span>
+                                </td>
+                            </tr>
+                            <tr style="font-size:10px;  font-family: 'Courier New'; font-weight:normal">
+                                <td colspan="7" style="border-right:none; border-bottom:none; border-left:none">
+                                    <span>ALL INVOICES ARE DUE WHEN RENDERED UNLESS AGREED OTHERWISE</span><br />
+                                    <span>INTEREST CHARGED ON OUTSTANDING BALANCE AT THE RATE OF 2% PER MONTH</span>
+                                </td>
+                                <td style="border-right:none; border-left:none;border-bottom:none; padding-top:10px">
+                                    <span>HST: @SessionData.CompanyTaxNumber</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

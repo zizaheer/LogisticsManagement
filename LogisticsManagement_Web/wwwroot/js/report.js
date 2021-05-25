@@ -23,7 +23,7 @@ $(document).ready(function () {
 
 //#region Local Variables
 
-var selectedOrdersForDispatch = [];
+var selectedCustomersForReport = [];
 
 //#endregion
 
@@ -36,13 +36,13 @@ $('#customer-list .chkCustomerId').change(function (event) {
     var isChecked = $(this).is(':checked');
     var customerId = $(this).data('customerid');
 
-    var index = selectedOrdersForDispatch.indexOf(customerId);
+    var index = selectedCustomersForReport.indexOf(customerId);
     if (index >= 0) {
-        selectedOrdersForDispatch.splice(index, 1);
+        selectedCustomersForReport.splice(index, 1);
     }
 
     if (isChecked) {
-        selectedOrdersForDispatch.push(customerId);
+        selectedCustomersForReport.push(customerId);
     }
 });
 
@@ -55,22 +55,22 @@ $('#customer-list').on('change', '#chkCheckAllCustomers', function (event) {
     if (isChecked === true) {
         $('.chkCustomerId').prop('checked', true);
         var customerIdString = $('#hfcustomerArray').val();
-        selectedOrdersForDispatch = [];
+        selectedCustomersForReport = [];
         var customerIdArray = customerIdString.split(',');
         $.each(customerIdArray, function (i, item) {
             if (item !== '') {
-                selectedOrdersForDispatch.push(parseInt(item));
+                selectedCustomersForReport.push(parseInt(item));
             }
         });
     } else {
         $('.chkCustomerId').prop('checked', false);
-        selectedOrdersForDispatch = [];
+        selectedCustomersForReport = [];
     }
 });
 $('#btnShowReport').unbind().on('click', function (event) {
     event.preventDefault();
 
-    if (selectedOrdersForDispatch.length < 1) {
+    if (selectedCustomersForReport.length < 1) {
         bootbox.alert('Please select customer/s to generate report.');
         event.preventDefault();
         return;
@@ -79,7 +79,7 @@ $('#btnShowReport').unbind().on('click', function (event) {
     var startDate = $('#txtStartDate').val();
     var endDate = $('#txtEndDate').val();
 
-    var reportParam = { "customers": selectedOrdersForDispatch, "startDate": startDate, "endDate": endDate };
+    var reportParam = { "customers": selectedCustomersForReport, "startDate": startDate, "endDate": endDate };
 
     $.ajax({
         'async': false,
@@ -100,6 +100,42 @@ $('#btnShowReport').unbind().on('click', function (event) {
     });
 
 });
+
+
+$('#btnShowCustomerWiseDueReport').unbind().on('click', function (event) {
+    event.preventDefault();
+
+    var customerId = $('.ddlcustomers').val();
+    var isPaidIncluded = $('#chkIsPaidIncluded').is(':checked') ? true : false;
+    if (customerId == "" || parseInt(customerId) < 1) {
+        bootbox.alert('Please select a customer to generate the report.');
+        event.preventDefault();
+        return;
+    }
+
+    var startDate = $('#txtStartDate').val();
+    var endDate = $('#txtEndDate').val();
+    var reportParam = { "customers": customerId, "startDate": startDate, "endDate": endDate, "isPaidIncluded": isPaidIncluded };
+
+    $.ajax({
+        'async': false,
+        url: "PrintCustomerDueReportAsPdf",
+        type: 'POST',
+        data: JSON.stringify(reportParam),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            if (result.length > 0) {
+                window.open(result, "_blank");
+            }
+        },
+        error: function (result) {
+            bootbox.alert('Printing failed! There might not be any data to print. Please check and try again.');
+        }
+    });
+
+});
+
 
 
 //#endregion

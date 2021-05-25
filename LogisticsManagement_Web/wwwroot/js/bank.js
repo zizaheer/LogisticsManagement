@@ -96,6 +96,7 @@ function GetFormData() {
     var bankData = {
         id: $('#txtBankId').val() === "" ? "0" : $('#txtBankId').val(),
         bankName: $('#txtBankName').val(),
+        bankShortName: $('#txtBankShortName').val(),
         instituteNumber: "",
     };
 
@@ -106,4 +107,5 @@ function GetFormData() {
 function FillBankInformation(bankInfo) {
     $('#txtBankId').val(bankInfo.Id);
     $('#txtBankName').val(bankInfo.BankName);
+    $('#txtBankShortName').val(bankInfo.BankShortName);
 }

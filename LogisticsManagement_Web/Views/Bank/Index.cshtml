@@ -47,13 +47,7 @@
 
                     <div class="row">
                         <div class="form-group col-sm-12">
-                            <select class="col-12 form-control form-control-sm frmfontsize" id="ddlBankId" name="ddlBankId">
-                                <option value="0">BANK</option>
-                                @foreach (var bank in Model.Banks)
-                                {
-                                   <option value="@bank.Id">@bank.BankName</option>
-                                }
-                            </select>
+                            <input class="col-12 form-control form-control-sm frmfontsize" id="txtBankShortName" placeholder="Bank Short Name" name="txtBankShortName" type="text" maxlength="10" />
                         </div>
                     </div>
 

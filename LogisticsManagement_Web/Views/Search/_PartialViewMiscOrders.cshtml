@@ -1,0 +1,144 @@
+﻿@using LogisticsManagement_Web.Models;
+@model List<ViewModel_SearchResult_Order>
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.dataTable.isDataTable('#misc-order-list')) {
+            $('#misc-order-list').DataTable().destroy();
+        }
+        $('#misc-order-list').DataTable({
+            "order": [[0, "desc"]],
+            "lengthMenu": [[5, 10, -1], [5, 10, "All"]],
+            searching: true,
+            paging: true,
+            info: true,
+            "language": {
+                searchPlaceholder: 'Search...',
+                search: "<i class='fa fa-search'></i>",
+            }
+        });
+    });
+</script>
+
+<table id="misc-order-list" class="table table-sm table-bordered table-striped lms_dataTable" cellspacing="0" style="width:100%; margin-top: -1px !important; font-size:.75em">
+    <thead style="background-color:#e2e2e2">
+        <tr>
+            <th style="width:75px">
+                <div class="form-check-inline">
+                    @{
+                        var wayBillArray = Model.Where(c => c.OrderTypeId == 3).ToList().Select(c => c.WayBillNumber).Distinct().ToArray();
+                        string wayBillArrayString = "";
+                        foreach (var wb in wayBillArray)
+                        {
+                            wayBillArrayString += wb + ",";
+                        }
+                    }
+                    <input type="checkbox" class="form-check-inline chkCheckAllDelOrders" />
+                    <input type="hidden" class="hfDelWaybillArray" value="@wayBillArrayString" />
+                    <label class="form-check-label">W/B #</label>
+                </div>
+            </th>
+
+            <th style="width:50px">Date</th>
+            <th style="width:30px">Svc.</th>
+            <th style="width:100px">Cust. Ref #</th>
+            <th style="width:50px">Unit/Qty</th>
+            @*<th>Spc/Ins</th>*@
+            <th style="width:160px">Shipper</th>
+            <th style="width:160px">Consignee</th>
+            <th style="width:auto">Biller</th>
+
+            <th style="width:40px">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Where(c => c.OrderTypeId == 3).ToList().OrderByDescending(c => c.WayBillNumber))
+        {
+            <tr>
+                <td>
+                    <div class="form-check-inline">
+                        <input type="checkbox" id="chkDispatchToEmployee" class="form-check-input chkOrderToPrint" name="chkDispatchToEmployee" data-waybillnumber="@item.WayBillNumber">
+                        <a class="btnEdit" href="#" data-waybillnumber='@item.WayBillNumber' data-toggle="modal" style="cursor:pointer"><label class="form-check-label" style="cursor:pointer">@item.WayBillNumber</label></a>
+                    </div>
+                </td>
+                <td>
+                    @item.OrderDateString
+                </td>
+                <td>
+                    @item.DeliveryOptionName
+                </td>
+                <td>
+                    @item.ReferenceNumber
+                </td>
+                <td>
+                    @{
+                        if (item.SkidQuantity > 0)
+                        {
+                            @item.SkidQuantity;<span> (SKD);</span>
+                        }
+
+                        if (item.UnitQuantity > 0)
+                        {
+                            <span>
+                                @item.UnitQuantity (@item.UnitTypeName)
+                            </span>
+                        }
+                    }
+                </td>
+                @*<td>
+                        @item.SpcIns
+                    </td>*@
+
+                <td title="@item.ShipperCustomerName">
+                    @{
+                        var shipper = "";
+                        if (item.ShipperCustomerName!=null && item.ShipperCustomerName.Length > 25)
+                        {
+                            shipper = item.ShipperCustomerName.Substring(0, 22) + "...";
+                        }
+                        else
+                        {
+                            shipper = item.ShipperCustomerName;
+                        }
+                        @shipper
+                    }
+                </td>
+
+                <td title="@item.ConsigneeCustomerName">
+                    @{
+                        var consignee = "";
+                        if (item.ConsigneeCustomerName != null && item.ConsigneeCustomerName.Length > 25)
+                        {
+                            consignee = item.ConsigneeCustomerName.Substring(0, 22) + "...";
+                        }
+                        else
+                        {
+                            consignee = item.ConsigneeCustomerName;
+                        }
+                        @consignee
+                    }
+                </td>
+
+                <td title="@item.BillToCustomerName">
+                    @{
+                        var biller = "";
+                        if (item.BillToCustomerName != null && item.BillToCustomerName.Length > 25)
+                        {
+                            biller = item.BillToCustomerName.Substring(0, 22) + "...";
+                        }
+                        else
+                        {
+                            biller = item.BillToCustomerName;
+                        }
+                        @biller
+                    }
+                </td>
+
+                <td>
+                    
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>

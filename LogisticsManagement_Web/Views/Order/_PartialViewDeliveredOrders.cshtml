@@ -39,16 +39,16 @@
                 </div>
             </th>
 
-            <th style="width:50px">Date</th>
-            <th style="width:30px">Svc.</th>
-            <th style="width:100px">Cust. Ref #</th>
-            <th style="width:50px">Unit/Qty</th>
+            <th style="width:50px">DATE</th>
+            <th style="width:30px">SVC.</th>
+            <th style="width:100px">CUST REF #</th>
+            <th style="width:50px">UNIT/QTY</th>
             @*<th>Spc/Ins</th>*@
-            <th style="width:160px">Shipper</th>
-            <th style="width:160px">Consignee</th>
-            <th style="width:auto">Biller</th>
+            <th style="width:160px">SHIPPER</th>
+            <th style="width:160px">CONSIGNEE</th>
+            <th style="width:auto">BILL TO</th>
 
-            <th style="width:40px">Action</th>
+            <th style="width:40px">ACTION</th>
         </tr>
     </thead>
     <tbody>
@@ -135,8 +135,8 @@
             </td>
 
             <td>
-                <button id="btnEdit" data-waybillnumber='@item.WayBillNumber' class="btn-primary btnEdit" type="button" title="Edit" data-target="#newOrder" data-toggle="modal"><i class="fa fa-pencil"></i></button>
-                <button id="btnDelete" data-waybillnumber='@item.WayBillNumber' class="btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button" title="Delete"><i class="fa fa-trash"></i> </button>
+                <button data-waybillnumber='@item.WayBillNumber' class="btn-primary btnEdit" type="button" title="Edit" data-target="#newOrder" data-toggle="modal"><i class="fa fa-pencil"></i></button>
+                <button data-waybillnumber='@item.WayBillNumber' class="btn-danger btnUndoDelivery" data-toggle="modal" data-target="#alert-modal" type="button" title="Remove from delivered"><i class="fa fa-undo"></i> </button>
             </td>
         </tr>
         }

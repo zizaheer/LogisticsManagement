@@ -32,5 +32,26 @@ namespace LogisticsManagement_Web.Controllers
             var customerList = _weightScaleLogic.GetList();
             return View();
         }
+
+        [HttpGet]
+        public JsonResult GetAllScales()
+        {
+            string result = "";
+            try
+            {
+                var scaleList = _weightScaleLogic.GetList();
+                if (scaleList != null && scaleList.Count > 0)
+                {
+                    result = JsonConvert.SerializeObject(scaleList);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
     }
 }

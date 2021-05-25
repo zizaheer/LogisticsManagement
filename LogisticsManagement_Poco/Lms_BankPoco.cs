@@ -14,6 +14,7 @@ namespace LogisticsManagement_Poco
         public int Id { get; set; }
         public string InstituteNumber { get; set; }
         public string BankName { get; set; }
+        public string BankShortName { get; set; }
         public DateTime CreateDate { get; set; }
         public int CreatedBy { get; set; }
     }

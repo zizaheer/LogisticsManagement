@@ -52,6 +52,27 @@ namespace LogisticsManagement_Web.Controllers
             return View(configuration);
         }
 
+        [HttpGet]
+        public JsonResult GetConfiguration()
+        {
+            string result = "";
+            try
+            {
+                var config = _configurationLogic.GetSingleById(1);
+                if (config != null)
+                {
+                    result = JsonConvert.SerializeObject(config);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
+
         [HttpPost]
         public IActionResult Update([FromBody]dynamic configurationData)
         {
@@ -70,26 +91,26 @@ namespace LogisticsManagement_Web.Controllers
                     {
                         existingConfigData.TaxAmount = configData.TaxAmount;
                         existingConfigData.TaxToCall = configData.TaxToCall;
-                        existingConfigData.IsSignInRequiredForDispatch = configData.IsSignInRequiredForDispatch;
-                        existingConfigData.WayBillPrefix = configData.WayBillPrefix;
-                        existingConfigData.DeliveryWBNoStartFrom = configData.DeliveryWBNoStartFrom;
-                        existingConfigData.MiscWBNoStartFrom = configData.MiscWBNoStartFrom;
-                        existingConfigData.StorageWBNoStartFrom = configData.StorageWBNoStartFrom;
-                        existingConfigData.InvoiceNumberStartFrom = configData.InvoiceNumberStartFrom;
+                        //existingConfigData.IsSignInRequiredForDispatch = configData.IsSignInRequiredForDispatch;
+                        //existingConfigData.WayBillPrefix = configData.WayBillPrefix;
+                        //existingConfigData.DeliveryWBNoStartFrom = configData.DeliveryWBNoStartFrom;
+                        //existingConfigData.MiscWBNoStartFrom = configData.MiscWBNoStartFrom;
+                        existingConfigData.WaybillSequenceStartsFrom = configData.WaybillSequenceStartsFrom;
+                        //existingConfigData.InvoiceNumberStartFrom = configData.InvoiceNumberStartFrom;
                         existingConfigData.DefaultFuelSurcharge = configData.DefaultFuelSurcharge;
 
-                        existingConfigData.ParentGLForCustomerAccount = configData.ParentGLForCustomerAccount;
-                        existingConfigData.ParentGLForEmployeeAccount = configData.ParentGLForEmployeeAccount;
-                        existingConfigData.SalesTaxPayableAccount = configData.SalesTaxPayableAccount;
-                        existingConfigData.SalesIncomeAccount = configData.SalesIncomeAccount;
-                        existingConfigData.SalaryExpenseAccount = configData.SalaryExpenseAccount;
-                        existingConfigData.BonusExpenseAccount = configData.BonusExpenseAccount;
-                        existingConfigData.OtherReceivableAccount = configData.OtherReceivableAccount;
-                        existingConfigData.OtherPayableAccount = configData.OtherPayableAccount;
-                        existingConfigData.OtherIncomeAccount = configData.OtherIncomeAccount;
-                        existingConfigData.OtherExpenseAccount = configData.OtherExpenseAccount;
-                        existingConfigData.BankAccount = configData.BankAccount;
-                        existingConfigData.CashAccount = configData.CashAccount;
+                        //existingConfigData.ParentGLForCustomerAccount = configData.ParentGLForCustomerAccount;
+                        //existingConfigData.ParentGLForEmployeeAccount = configData.ParentGLForEmployeeAccount;
+                        //existingConfigData.SalesTaxPayableAccount = configData.SalesTaxPayableAccount;
+                        //existingConfigData.SalesIncomeAccount = configData.SalesIncomeAccount;
+                        //existingConfigData.SalaryExpenseAccount = configData.SalaryExpenseAccount;
+                        //existingConfigData.BonusExpenseAccount = configData.BonusExpenseAccount;
+                        //existingConfigData.OtherReceivableAccount = configData.OtherReceivableAccount;
+                        //existingConfigData.OtherPayableAccount = configData.OtherPayableAccount;
+                        //existingConfigData.OtherIncomeAccount = configData.OtherIncomeAccount;
+                        //existingConfigData.OtherExpenseAccount = configData.OtherExpenseAccount;
+                        //existingConfigData.BankAccount = configData.BankAccount;
+                        //existingConfigData.CashAccount = configData.CashAccount;
 
                         // existingConfigData.DefaultWeightScaleId = null;
 

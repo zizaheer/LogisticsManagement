@@ -18,12 +18,13 @@
     <link href="~/lib/vendors/flag-icon-css/css/flag-icon.min.css" rel="stylesheet">
     <link href="~/lib/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="~/lib/vendors/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Main styles for this application-->
 
     <link href="~/lib/css/style.css" rel="stylesheet">
     <link href="~/lib/vendors/pace-progress/css/pace.min.css" rel="stylesheet">
     <link href="~/css/site.min.css" rel="stylesheet" />
-
+    
 
     <!-- Global site tag (gtag.js) - Google Analytics-->
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
@@ -40,7 +41,7 @@
         gtag('config', 'UA-118965717-5');
     </script>
 
-    
+
 
 </head>
 
@@ -228,16 +229,17 @@
             <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item d-md-down-none padding-right-lg">
                     <a href="#" class="nav-link dropdown-toggle nooutline" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="icon-settings pr-1 mt-1"></i> Setup
+                        <i class="fa fa-star pr-1 mt-1"></i> Quick access
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         @*<div class="dropdown-header text-left">
                                 <strong>Configurations & Setup</strong>
                             </div>*@
-                        <a class="dropdown-item" asp-controller="Customer" asp-action="Index"><i class="fa fa-gears"></i> Customer</a>
-                        <a class="dropdown-item" asp-controller="Bank" asp-action="Index"><i class="fa fa-gears"></i> Bank</a>
-                        <a class="dropdown-item" asp-controller="User" asp-action="Index"><i class="fa fa-gears"></i> User</a>
-                        <a class="dropdown-item" asp-controller="AdditionalService" asp-action="Index"><i class="fa fa-gears"></i> Additional Service</a>
+                        <a class="dropdown-item" asp-controller="Customer" asp-action="Index"><i class="fa fa-user-o"></i> Customer</a>
+                        <a class="dropdown-item" asp-controller="Bank" asp-action="Index"><i class="fa fa-building"></i> Bank</a>
+                        <a class="dropdown-item" asp-controller="User" asp-action="Index"><i class="fa fa-user-circle-o"></i> User</a>
+                        <a class="dropdown-item" asp-controller="AdditionalService" asp-action="Index"><i class="fa fa-puzzle-piece"></i> Additional Service</a>
+                        <a class="dropdown-item" asp-controller="Search" asp-action="Index"><i class="fa fa-search"></i> Search</a>
                     </div>
                 </li>
 
@@ -426,6 +428,11 @@
                                         <span style="padding-left:10px"></span><i class="nav-icon fa fa-clipboard"></i> Sales report
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Report" asp-action="CustomerWiseDueReport">
+                                        <span style="padding-left:10px"></span><i class="nav-icon fa fa-institution"></i> Customer due
+                                    </a>
+                                </li>
                                 @*<li class="nav-item">
                                         <a class="nav-link" asp-area="" asp-controller="Report" asp-action="AccountReceivable">
                                             <span style="padding-left:10px"></span><i class="nav-icon fa fa-mail-reply"></i> Account receivable
@@ -546,6 +553,7 @@
     <script type="text/javascript" src="~/lib/bootstrap-datatables/datatables.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
     <script src="~/lib/js/bootbox.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 

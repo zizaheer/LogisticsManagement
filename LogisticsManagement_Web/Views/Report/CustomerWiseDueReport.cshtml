@@ -1,0 +1,66 @@
+﻿@using LogisticsManagement_Poco
+@model List<Lms_CustomerPoco>
+
+@{
+    ViewData["Title"] = "CUSTOMER DUE REPORT";
+}
+
+
+<div class="row">
+    <div class="col-sm-5">
+        <h3>
+            @ViewData["Title"]
+        </h3>
+
+    </div>
+
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-4">
+        <select class="form-control frmfontsize ddlcustomers">
+            <option></option>
+            @{
+                foreach (var customer in Model)
+                {
+                    <option value='@customer.Id'>@customer.CustomerName (@customer.Id)</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-5">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="txtStartDate" class="mr-2"><b>FROM</b></label>
+                <input type="date" id="txtStartDate" class="col-8 form-control form-control-sm frmfontsize" />
+            </div>
+            <div class="form-group">
+                <label for="txtEndDate" class="mr-2"><b>TO</b></label>
+                <input type="date" id="txtEndDate" class="col-9 form-control form-control-sm frmfontsize" />
+            </div>
+        </div>
+    </div>
+    <div class="col-1">
+        <div class="form-inline">
+            <input type="checkbox" id="chkIsPaidIncluded"  class="mr-2"/>
+            <label for="chkIsPaidIncluded"><b>PAID</b></label>
+        </div>
+    </div>
+
+    <div class="col-2 text-right">
+        <button id="btnShowCustomerWiseDueReport" class="btn btn-sm btn-dark"><i class="fa fa-search"></i> SHOW REPORT </button>
+    </div>
+</div>
+<hr />
+
+<script>
+    $(document).ready(function () {
+        $('.ddlcustomers').select2({
+            placeholder: "SELECT CUSTOMER",
+            allowClear: true
+        });
+    });
+</script>
+
+<script src="~/js/report.js"></script>

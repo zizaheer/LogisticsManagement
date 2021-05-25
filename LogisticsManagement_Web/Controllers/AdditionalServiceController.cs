@@ -39,7 +39,12 @@ namespace LogisticsManagement_Web.Controllers
         {
 
             var serviceList = _additionalServiceLogic.GetList();
-            return Json(JsonConvert.SerializeObject(serviceList));
+            if (serviceList != null)
+            {
+                return Json(JsonConvert.SerializeObject(serviceList.OrderBy(c => c.ServiceName)));
+            }
+
+            return Json("");
 
         }
 
@@ -111,6 +116,8 @@ namespace LogisticsManagement_Web.Controllers
 
                         existingService.ServiceName = addressPoco.ServiceName;
                         existingService.ServiceCode = addressPoco.ServiceCode;
+                        existingService.UnitPrice = addressPoco.UnitPrice;
+                        existingService.IsPriceApplicable = addressPoco.IsPriceApplicable;
                         existingService.PayToDriver = addressPoco.PayToDriver;
                         existingService.IsTaxApplicable = addressPoco.IsTaxApplicable;
                         existingService.IsApplicableForStorage = addressPoco.IsApplicableForStorage;

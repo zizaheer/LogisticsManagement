@@ -31,5 +31,26 @@ namespace LogisticsManagement_Web.Controllers
             var customerList = _deliveryOptionLogic.GetList();
             return View();
         }
+
+        [HttpGet]
+        public JsonResult GetAllOptions()
+        {
+            string result = "";
+            try
+            {
+                var optionList = _deliveryOptionLogic.GetList();
+                if (optionList != null && optionList.Count > 0)
+                {
+                    result = JsonConvert.SerializeObject(optionList);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
     }
 }

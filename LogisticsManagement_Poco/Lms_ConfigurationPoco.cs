@@ -18,7 +18,7 @@ namespace LogisticsManagement_Poco
         public string WayBillPrefix { get; set; }
         public string DeliveryWBNoStartFrom { get; set; }
         public string MiscWBNoStartFrom { get; set; }
-        public string StorageWBNoStartFrom { get; set; }
+        public byte WaybillSequenceStartsFrom { get; set; }
         public string InvoiceNumberStartFrom { get; set; }
         public int? DefaultWeightScaleId { get; set; }
         public decimal? DefaultFuelSurcharge { get; set; }

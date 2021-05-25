@@ -5,6 +5,16 @@
     <RuntimeFrameworkName>Microsoft.AspNetCore.App</RuntimeFrameworkName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Views\Report\mfi_logo.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Views\Report\mfi_logo.jpg">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />

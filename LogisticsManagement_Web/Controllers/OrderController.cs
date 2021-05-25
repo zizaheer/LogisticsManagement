@@ -182,7 +182,7 @@ namespace LogisticsManagement_Web.Controllers
                     newAddress.CityId = Convert.ToInt16(consigneeCityId);
                     newAddress.ProvinceId = Convert.ToInt16(consigneeProvinceId);
                     newAddress.CountryId = Convert.ToInt16(consigneeCountryId); // default Canada
-                    newAddress.PostCode = !string.IsNullOrEmpty(consigneePostcode) ? consigneePostcode.Trim().ToUpper() : "";  
+                    newAddress.PostCode = !string.IsNullOrEmpty(consigneePostcode) ? consigneePostcode.Trim().ToUpper() : "";
                     newAddress.CreatedBy = sessionData.UserId;
 
                     var consigneeAddressInfo = addressList.Where(c => c.AddressLine == newAddress.AddressLine && c.CityId == newAddress.CityId && c.ProvinceId == newAddress.ProvinceId).FirstOrDefault();
@@ -329,7 +329,7 @@ namespace LogisticsManagement_Web.Controllers
                     newAddress.CityId = Convert.ToInt16(consigneeCityId);
                     newAddress.ProvinceId = Convert.ToInt16(consigneeProvinceId);
                     newAddress.CountryId = Convert.ToInt16(consigneeCountryId); // default Canada
-                    newAddress.PostCode = !string.IsNullOrEmpty(consigneePostcode) ? consigneePostcode.Trim().ToUpper() : "";  
+                    newAddress.PostCode = !string.IsNullOrEmpty(consigneePostcode) ? consigneePostcode.Trim().ToUpper() : "";
                     newAddress.CreatedBy = sessionData.UserId;
 
                     var consigneeAddressInfo = addressList.Where(c => c.Id == orderPoco.ConsigneeAddressId).FirstOrDefault();
@@ -577,7 +577,7 @@ namespace LogisticsManagement_Web.Controllers
                     var shareAmount = Convert.ToDecimal(orderData[5]);
                     var isSendEmail = Convert.ToBoolean(orderData[6]);
                     var emailAddress = Convert.ToString(orderData[7]);
-
+                    int orderStatusId = 0;
                     string waybillNumbersForEmail = "";
 
                     var orders = _orderLogic.GetList();
@@ -605,7 +605,7 @@ namespace LogisticsManagement_Web.Controllers
                                 status.DispatchedDatetime = order.ScheduledPickupDate; //changed due to customer requested // dispatchDate == null ? DateTime.Now : dispatchDate;
                                 status.StatusLastUpdatedOn = DateTime.Now;
 
-                                _orderStatusLogic.Update(status);
+                                orderStatusId = _orderStatusLogic.Update(status).Id;
 
                                 if (shareAmount > 0)
                                 {
@@ -624,7 +624,10 @@ namespace LogisticsManagement_Web.Controllers
                             SendDispatchEmail(firstName, emailAddress, waybillNumbersForEmail);
                         }
 
-                        scope.Complete();
+                        if (orderStatusId > 0) {
+                            scope.Complete();
+                        }
+                        
 
                         result = "Success";
 
@@ -1238,21 +1241,41 @@ namespace LogisticsManagement_Web.Controllers
             string result = "";
             try
             {
-                var maxNumber = _orderLogic.GetList().Max(c => c.WayBillNumber);
-                if (maxNumber != null)
-                {
-                    result = Convert.ToString(Convert.ToInt32(maxNumber) + 1);
-                }
-                else
-                {
-                    _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
-                    var configItem = _configurationLogic.GetSingleById(1).DeliveryWBNoStartFrom;
-                    if (configItem != null)
-                    {
-                        result = configItem;
-                    }
+                _configurationLogic = new Lms_ConfigurationLogic(_cache, new EntityFrameworkGenericRepository<Lms_ConfigurationPoco>(_dbContext));
+                var configItem = _configurationLogic.GetSingleById(1);
 
+                if (configItem.WaybillSequenceStartsFrom == 0)
+                {
+                    var maxWaybill = _orderLogic.GetList().Max(c => c.WayBillNumber);
+                    if (maxWaybill != null && maxWaybill != "")
+                    {
+                        result = Convert.ToString(Convert.ToInt32(maxWaybill) + 1);
+                    }
+                    else
+                    {
+                        result = configItem.DeliveryWBNoStartFrom;
+                    }
                 }
+                else if (configItem.WaybillSequenceStartsFrom == 1)
+                {
+                    var maxWaybillData = _orderLogic.GetList().OrderByDescending(c => c.Id).FirstOrDefault();
+                    if (maxWaybillData != null)
+                    {
+                        if (maxWaybillData.WayBillNumber != null && maxWaybillData.WayBillNumber != "")
+                        {
+                            result = Convert.ToString(Convert.ToInt32(maxWaybillData.WayBillNumber) + 1);
+                        }
+                        else
+                        {
+                            result = configItem.DeliveryWBNoStartFrom;
+                        }
+                    }
+                    else
+                    {
+                        result = configItem.DeliveryWBNoStartFrom;
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -1368,7 +1391,6 @@ namespace LogisticsManagement_Web.Controllers
             }
         }
 
-
         public JsonResult GetOrderInfoByOrderId(string id)
         {
             ValidateSession();
@@ -1459,7 +1481,6 @@ namespace LogisticsManagement_Web.Controllers
                 return Json("");
             }
         }
-
 
         [HttpPost]
         public JsonResult GetCustomerReferenceNumberCount([FromBody]dynamic customerRefData)
@@ -1714,12 +1735,12 @@ namespace LogisticsManagement_Web.Controllers
 
                             waybillPrintViewModel.BillerCustomerId = orderInfo.BillToCustomerId;
                             waybillPrintViewModel.CustomerRefNo = !string.IsNullOrEmpty(orderInfo.ReferenceNumber) ? orderInfo.ReferenceNumber.ToUpper() : orderInfo.ReferenceNumber;
-                            waybillPrintViewModel.CargoCtlNo = !string.IsNullOrEmpty(orderInfo.CargoCtlNumber) ? orderInfo.CargoCtlNumber.ToUpper() : orderInfo.CargoCtlNumber; 
-                            waybillPrintViewModel.AwbContainerNo = !string.IsNullOrEmpty(orderInfo.AwbCtnNumber) ? orderInfo.AwbCtnNumber.ToUpper() : orderInfo.AwbCtnNumber; 
-                            waybillPrintViewModel.PickupRefNo = !string.IsNullOrEmpty(orderInfo.PickupReferenceNumber) ? orderInfo.PickupReferenceNumber.ToUpper() : orderInfo.PickupReferenceNumber; 
+                            waybillPrintViewModel.CargoCtlNo = !string.IsNullOrEmpty(orderInfo.CargoCtlNumber) ? orderInfo.CargoCtlNumber.ToUpper() : orderInfo.CargoCtlNumber;
+                            waybillPrintViewModel.AwbContainerNo = !string.IsNullOrEmpty(orderInfo.AwbCtnNumber) ? orderInfo.AwbCtnNumber.ToUpper() : orderInfo.AwbCtnNumber;
+                            waybillPrintViewModel.PickupRefNo = !string.IsNullOrEmpty(orderInfo.PickupReferenceNumber) ? orderInfo.PickupReferenceNumber.ToUpper() : orderInfo.PickupReferenceNumber;
                             waybillPrintViewModel.DeliveryRefNo = !string.IsNullOrEmpty(orderInfo.DeliveryReferenceNumber) ? orderInfo.DeliveryReferenceNumber.ToUpper() : orderInfo.DeliveryReferenceNumber;
                             waybillPrintViewModel.BillerCustomerName = customers.Where(c => c.Id == orderInfo.BillToCustomerId).FirstOrDefault().CustomerName.ToUpper();
-                            waybillPrintViewModel.OrderedByName = !string.IsNullOrEmpty(orderInfo.OrderedBy) ? orderInfo.OrderedBy.ToUpper() : orderInfo.OrderedBy; 
+                            waybillPrintViewModel.OrderedByName = !string.IsNullOrEmpty(orderInfo.OrderedBy) ? orderInfo.OrderedBy.ToUpper() : orderInfo.OrderedBy;
                             if (orderInfo.DeliveryOptionId != null && orderInfo.DeliveryOptionId > 0)
                             {
                                 waybillPrintViewModel.DeliveryOptionShortCode = deliveryOptions.Where(c => c.Id == orderInfo.DeliveryOptionId).FirstOrDefault().ShortCode.ToUpper();
@@ -1805,7 +1826,7 @@ namespace LogisticsManagement_Web.Controllers
                             waybillPrintViewModel.ShipperCustomerName = customers.Where(c => c.Id == orderInfo.ShipperCustomerId).FirstOrDefault().CustomerName.ToUpper();
                             var shippperAddress = addresses.Where(c => c.Id == orderInfo.ShipperAddressId).FirstOrDefault();
                             waybillPrintViewModel.ShipperCustomerAddressLine1 = !string.IsNullOrEmpty(shippperAddress.UnitNumber) ? shippperAddress.UnitNumber.ToUpper() + ", " + shippperAddress.AddressLine.ToUpper() : shippperAddress.AddressLine.ToUpper();
-                            waybillPrintViewModel.ShipperCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName.ToUpper() + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode.ToUpper() + "  " + (!string.IsNullOrEmpty(shippperAddress.PostCode) ? shippperAddress.PostCode.ToUpper() : shippperAddress.PostCode); 
+                            waybillPrintViewModel.ShipperCustomerAddressLine2 = cities.Where(c => c.Id == shippperAddress.CityId).FirstOrDefault().CityName.ToUpper() + ", " + provinces.Where(c => c.Id == shippperAddress.ProvinceId).FirstOrDefault().ShortCode.ToUpper() + "  " + (!string.IsNullOrEmpty(shippperAddress.PostCode) ? shippperAddress.PostCode.ToUpper() : shippperAddress.PostCode);
 
                             if (isMiscellaneous == false)
                             {
@@ -2034,7 +2055,7 @@ namespace LogisticsManagement_Web.Controllers
         private ViewModel_DeliveryOrder GetAllRequiredDataForDispatchBoard()
         {
             var deliveryOrderViewModel = GetDeliveryOrderRelatedAdditionalData();
-            deliveryOrderViewModel.DispatchedOrders = GetDispatchedOrders(deliveryOrderViewModel).Where(c=>c.IsOrderDelivered != true).ToList();
+            deliveryOrderViewModel.DispatchedOrders = GetDispatchedOrders(deliveryOrderViewModel).Where(c => c.IsOrderDelivered != true).ToList();
             deliveryOrderViewModel.DeliveredOrders = GetDispatchedOrders(deliveryOrderViewModel).Where(c => c.IsOrderDelivered == true).ToList();
 
             return deliveryOrderViewModel;
@@ -2110,12 +2131,14 @@ namespace LogisticsManagement_Web.Controllers
             #region get datatable for dispatch board
 
             List<ViewModel_OrderDispatched> dispatchedOrders = new List<ViewModel_OrderDispatched>();
-            var orders = _orderLogic.GetList().Where(c => c.IsInvoiced == false && (c.TotalOrderCost + c.TotalAdditionalServiceCost) > 0).ToList(); //Load all orders 
+
+            var orders = _orderLogic.GetList().Where(c => c.IsInvoiced == false && (c.TotalOrderCost + c.TotalAdditionalServiceCost) > 0).ToList(); //Load filtered orders 
+
             var ordersStatus = _orderStatusLogic.GetList();
 
             var filteredOrdersForDispatchBoard = (from order in orders
                                                   join status in ordersStatus on order.Id equals status.OrderId
-                                                  where 1==1 //status.IsDelivered != true
+                                                  where 1 == 1 //status.IsDelivered != true
                                                   select new { order, status }).ToList();
 
             foreach (var item in filteredOrdersForDispatchBoard)
@@ -2150,11 +2173,22 @@ namespace LogisticsManagement_Web.Controllers
                 data.TotalPiece = item.order.TotalPiece;
                 data.SpcIns = "";
                 data.ShipperCustomerId = (int)item.order.ShipperCustomerId;
-                data.ShipperCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ShipperCustomerId).FirstOrDefault().CustomerName;
+                if (data.ShipperCustomerId > 0)
+                {
+                    data.ShipperCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ShipperCustomerId).FirstOrDefault().CustomerName;
+                }
+
                 data.ConsigneeCustomerId = (int)item.order.ConsigneeCustomerId;
-                data.ConsigneeCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ConsigneeCustomerId).FirstOrDefault().CustomerName;
+                if (data.ConsigneeCustomerId > 0)
+                {
+                    data.ConsigneeCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.ConsigneeCustomerId).FirstOrDefault().CustomerName;
+                }
+
                 data.BillerCustomerId = item.order.BillToCustomerId;
-                data.BillerCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.BillerCustomerId).FirstOrDefault().CustomerName;
+                if (data.BillerCustomerId > 0)
+                {
+                    data.BillerCustomerName = deliveryOrderViewModel.Customers.Where(c => c.Id == data.BillerCustomerId).FirstOrDefault().CustomerName;
+                }
 
                 data.IsOrderDelivered = item.status.IsDelivered;
 
@@ -2215,6 +2249,7 @@ namespace LogisticsManagement_Web.Controllers
             string result = "";
             string trackingNumber = "";
             int orderId = 0;
+            int orderStatusId = 0;
             string newWaybillNumber = "";
             try
             {
@@ -2281,11 +2316,15 @@ namespace LogisticsManagement_Web.Controllers
                     orderStatusPoco.StatusLastUpdatedOn = DateTime.Now;
                     orderStatusPoco.CreateDate = orderPoco.CreateDate;
 
-                    _orderStatusLogic.Add(orderStatusPoco);
+                    orderStatusId = _orderStatusLogic.Add(orderStatusPoco).Id;
 
-                    if (orderId > 0)
+                    if (orderId > 0 && orderStatusId > 0)
                     {
                         scope.Complete();
+                    }
+                    else {
+                        scope.Dispose();
+                        return result;
                     }
 
                     var orderInfo = new

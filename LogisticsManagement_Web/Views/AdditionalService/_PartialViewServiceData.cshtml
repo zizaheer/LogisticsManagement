@@ -26,6 +26,8 @@
         <tr>
             <th>Service name</th>
             <th>Code</th>
+            <th>Price applicable?</th>
+            <th>Unit Price</th>
             <th>Is tax applicable</th>
             <th>Pay to driver</th>
             <th>Use for storage</th>
@@ -36,30 +38,36 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @item.ServiceName
-                </td>
-                <td>
-                    @item.ServiceCode
-                </td>
-                <td>
-                    @item.IsTaxApplicable
-                </td>
-                <td>
-                    @item.PayToDriver
-                </td>
-                <td>
-                    @item.IsApplicableForStorage
-                </td>
-                <td>
-                    @item.IsActive
-                </td>
-                <td>
-                    <button id="btnEdit" data-serviceid='@item.Id' class="btn-primary btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
-                    <button id="btnDelete" data-serviceid='@item.Id' class="btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @item.ServiceName
+            </td>
+            <td>
+                @item.ServiceCode
+            </td>
+            <td>
+                @item.IsPriceApplicable
+            </td>
+            <td>
+                @item.UnitPrice
+            </td>
+            <td>
+                @item.IsTaxApplicable
+            </td>
+            <td>
+                @item.PayToDriver
+            </td>
+            <td>
+                @item.IsApplicableForStorage
+            </td>
+            <td>
+                @item.IsActive
+            </td>
+            <td>
+                <button id="btnEdit" data-serviceid='@item.Id' class="btn-primary btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                <button id="btnDelete" data-serviceid='@item.Id' class="btn-danger btnDelete" data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

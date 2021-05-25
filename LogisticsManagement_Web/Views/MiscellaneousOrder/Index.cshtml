@@ -78,11 +78,11 @@
                         </div>
                         <div class="form-group mr-3">
                             <label id="lblOrderedBy" for="txtOrderedBy" class="mr-1 captionWeight">ORDERED BY</label>
-                            <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Ordered by" id="txtOrderedBy" name="txtOrderedBy" title="Ordered by" style="width: 140px">
+                            <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Ordered by" id="txtOrderedBy" name="txtOrderedBy" title="Ordered by" style="width: 135px">
                         </div>
                         <div class="form-group">
                             <label id="lblPhoneNo" for="txtPhoneNo" class="mr-1 captionWeight">PHONE #</label>
-                            <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Phone" id="txtPhoneNo" name="txtPhoneNo" title="Phone #" style="width:118px">
+                            <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Phone" id="txtPhoneNo" name="txtPhoneNo" title="Phone #" style="width:115px">
                         </div>
                     </div>
 
@@ -101,11 +101,11 @@
                         </div>
                         <div class="form-group mr-3">
                             <label id="lblAwbCtnNo" for="txtAwbCtnNo" class="mr-3 captionWeight">AWB/CTN#</label>
-                            <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Awb/CTN#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:139px">
+                            <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Awb/CTN#" id="txtAwbCtnNo" name="txtAwbCtnNo" title="Awb Ctn No" style="width:133px">
                         </div>
                         <div class="form-group">
                             <label id="lblDepartment" for="txtDepartment" class="mr-4 captionWeight">DEPT.</label>
-                            <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Dept." id="txtDepartment" name="txtDepartment" title="Department" style="width:120px">
+                            <input type="text" class="form-control form-control-sm frmfontsize" placeholder="Dept." id="txtDepartment" name="txtDepartment" title="Department" style="width:118px">
                         </div>
                     </div>
 
@@ -161,7 +161,7 @@
                         <div class="col-4" style="padding-left:0px">
                             <div class="row mb-1 mr-0">
                                 <div class="form-group col-sm-6">
-                                    <label class="captionWeight">SERVICE PROVIDED BY</label>
+                                    <label class="captionWeight">SVC. PROVIDED BY</label>
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label class="captionWeight">AGREED RATE</label>
@@ -210,7 +210,7 @@
                                 <div class="col-12 input-group pl-0 pr-0">
                                     <input class="col-3 form-control form-control-sm frmfontsize" placeholder="Qty" id="txtUnitQuantity" type="number" min="1" name="txtUnitQuantity">
                                     <input class="col-3 form-control form-control-sm frmfontsize" placeholder="Skids" id="txtSkidQuantity" type="number" min="1" name="txtSkidQuantity" style="background-color:#b3ffc3">
-                                    <select class="col-2 form-control form-control-sm frmfontsize mr-3" id="ddlUnitTypeId" name="ddlUnitTypeId">
+                                    <select class="col-2 form-control form-control-sm frmfontsize mr-2" id="ddlUnitTypeId" name="ddlUnitTypeId">
                                         @foreach (var item in Model.UnitTypes)
                                         {
                                             if (item.Id == 2)
@@ -223,7 +223,7 @@
 
                                     @*<input class="col-2 form-control form-control-sm" placeholder="PCs" id="txtTotalPieces" type="number" min="1" name="txtTotalPieces" disabled>*@
 
-                                    <input class="col-2 offset-1 form-control form-control-sm frmfontsize ml-4" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
+                                    <input class="col-2 form-control form-control-sm frmfontsize ml-3" placeholder="Wgt." id="txtWeightTotal" type="number" min="0" name="txtWeightTotal" step=".01">
                                     <select class="col-1 form-control form-control-sm frmfontsize" id="ddlWeightScaleId" name="ddlWeightScaleId" style="-webkit-appearance: none;">
                                         @foreach (var item in Model.WeightScales)
                                         {
@@ -238,7 +238,7 @@
 
                                 <div class="form-group col-sm-9 pl-0 pr-0">
                                     <label id="lblDiscountPercent" for="txtDiscountPercent" class="mr-2 captionWeight">DISC.</label>
-                                    <input class="form-control form-control-sm frmfontsize" placeholder="Disc." id="txtDiscountPercent" type="number" name="txtDiscountPercent" style="width:195px;">
+                                    <input class="form-control form-control-sm frmfontsize" placeholder="Disc." id="txtDiscountPercent" type="number" name="txtDiscountPercent" style="width:202px;">
                                 </div>
 
                                 <div class="form-group col-sm-3 pl-0 pr-0">
@@ -259,16 +259,19 @@
                         <div class="col-sm-8">
                             <div style="overflow-y:scroll; height:150px; display:block;border:1px solid #d0d0d0; padding:5px">
                                 <table style="margin-bottom:10px">
-                                    <thead class="dtTheadBg">
+                                    <thead>
                                         <tr>
-                                            <th style="width:300px">Additional service</th>
-                                            <th style="width:190px; padding-right:5px">Srv. Charge</th>
-                                            <th style="width:160px; text-align:center">Apply @Model.Configuration.TaxToCall</th>
-                                            <th style="width:100px; text-align:center; margin-bottom:10px"><button class="btn btn-sm btn-dark additionalServiceControl" id="btnAddAddtionalServiceRow"> <i class="fa fa-eyedropper"></i> Add service</button></th>
+                                            <th style="width: 215px;">Additional svc.</th>
+                                            <th style="width: 70px;">Prc/Unt</th>
+                                            <th style="width: 50px;">Qty</th>
+                                            <th style="width: 95px;">Srv. Chrg</th>
+                                            <th style="width: 95px;">Apply HST</th>
+                                            <th style="width: 75px;">Update</th>
+                                            <th style="width:auto; text-align:center; margin-bottom:10px"><button class="btn btn-sm btn-dark additionalServiceControl" id="btnAddAddtionalServiceRow"> <i class="fa fa-eyedropper"></i> Add service</button></th>
                                         </tr>
                                         <tr>
-                                            <td colspan="6">
-                                                <hr style="width:100%; margin-top:3px; margin-bottom:0px" />
+                                            <td colspan="8">
+                                                <hr style="width:100%; margin-top:3px; margin-bottom:0px">
                                             </td>
                                         </tr>
                                     </thead>
@@ -304,7 +307,7 @@
                         <div class="col-sm-12">
                             <div class="card bg-info mb-0" style="width:100%">
                                 <table class="table table-sm table-striped table-dark mb-1 text-center">
-                                    <thead class="dtTheadBg">
+                                    <thead>
                                         <tr>
                                             <td scope="col"><small>Basic Cost</small></td>
                                             <td scope="col"><small>Sp. Discount</small></td>

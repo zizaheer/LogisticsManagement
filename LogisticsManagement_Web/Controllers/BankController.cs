@@ -108,6 +108,7 @@ namespace LogisticsManagement_Web.Controllers
                         var existingBank = _bankLogic.GetSingleById(bankPoco.Id);
 
                         existingBank.BankName = bankPoco.BankName;
+                        existingBank.BankShortName = bankPoco.BankShortName;
                         var bankId = _bankLogic.Update(existingBank).Id;
                         if (bankId > 0)
                         {

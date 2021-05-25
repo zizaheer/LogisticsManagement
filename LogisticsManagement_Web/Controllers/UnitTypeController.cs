@@ -31,5 +31,26 @@ namespace LogisticsManagement_Web.Controllers
             var customerList = _unitTypeLogic.GetList();
             return View();
         }
+
+        [HttpGet]
+        public JsonResult GetAllTypes()
+        {
+            string result = "";
+            try
+            {
+                var typeList = _unitTypeLogic.GetList();
+                if (typeList != null && typeList.Count > 0)
+                {
+                    result = JsonConvert.SerializeObject(typeList);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(result);
+        }
     }
 }

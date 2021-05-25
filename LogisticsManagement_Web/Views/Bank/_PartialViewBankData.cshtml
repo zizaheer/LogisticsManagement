@@ -25,21 +25,25 @@
     <thead class="dtTheadBg">
         <tr>
             <th>Bank name</th>
+            <th>Bank Short Name</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.Banks)
         {
-            <tr>
-                <td>
-                    @item.BankName
-                </td>
-                <td style="width:80px">
-                    <button id="btnEdit" data-bankid='@item.Id' class="btn-primary btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
-                    <button id="btnDelete" data-bankid='@item.Id' class="btn-danger btnDelete " data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @item.BankName
+            </td>
+            <td>
+                @item.BankShortName
+            </td>
+            <td style="width:80px">
+                <button id="btnEdit" data-bankid='@item.Id' class="btn-primary btnEdit" type="button"><i class="fa fa-pencil"></i> </button>
+                <button id="btnDelete" data-bankid='@item.Id' class="btn-danger btnDelete " data-toggle="modal" data-target="#alert-modal" type="button"><i class="fa fa-trash"></i> </button>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
