@@ -104,7 +104,7 @@ $('#btnNewMiscOrder').unbind().on('click', function () {
     }
 
     isNewEntry = true;
-
+    selectedAdditionalServiceArray = [];
     //$('#txtWayBillNo').prop('disabled', false);
     $('#txtWayBillNo').val(maxWayBill);
 
@@ -289,6 +289,7 @@ function FillCustomerInfoAndAddressInfo(customerId) {
             if (customerInfo !== null) {
                 $('#txtCustomerName').val(customerInfo.CustomerName);
                 $('#hfCustomerId').val(customerId);
+                $('#txtCustomerAccountNo').val(customerId);
 
                 var addressId = 0;
                 addressId = GetCustomerDefaultShippingAddress(customerId);
@@ -830,6 +831,16 @@ function ValidateOrderForm(formData) {
         return false;
     }
 
+    if ($('#txtCustomerAccountNo').val() == '') {
+        bootbox.alert('Please enter or select service location customer');
+        return false;
+    }
+
+    if (formData.customerId <= 0) {
+        bootbox.alert('Please enter or select service location customer');
+        return false;
+    }
+
     if (formData.customerId <= 0) {
         bootbox.alert('Please enter or select service location customer');
         return false;
@@ -921,6 +932,7 @@ function FillOrderDetails(orderRelatedData) {
         $('#txtDepartment').val(orderRelatedData.DepartmentName);
 
         $('#hfCustomerId').val(orderRelatedData.ShipperCustomerId);
+        $('#txtCustomerAccountNo').val(orderRelatedData.ShipperCustomerId);
         if (orderRelatedData.ShipperCustomerId != '' && orderRelatedData.ShipperCustomerId != null) {
             var customerInfo = GetCustomerInfo(orderRelatedData.ShipperCustomerId);
             if (customerInfo != '' && customerInfo != null) {
@@ -1108,6 +1120,7 @@ function GetFormData() {
         departmentName: $('#txtDepartment').val() === "" ? null : $('#txtDepartment').val(),
 
         customerId: $('#hfCustomerId').val() === "" ? 0 : parseInt($('#hfCustomerId').val()),
+        //customerId: $('#hfCustomerId').val() === "" ? 0 : parseInt($('#hfCustomerId').val()),
         customerAddressId: $('#hfCustomerAddressId').val() === "" ? 0 : parseInt($('#hfCustomerAddressId').val()),
         customerAddressline: $('#txtCustomerAddressLine').val(),
         customerUnitNo: $('#txtCustomerUnitNo').val(),

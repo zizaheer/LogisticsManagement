@@ -79,8 +79,6 @@ namespace LogisticsManagement_Web.Controllers
             ValidateSession();
             return View(GetBillToCustomers());
         }
-
-
         public IActionResult SalesReportGenerated([FromBody]dynamic reportParam)
         {
             DateTime _fromDate;
@@ -166,7 +164,6 @@ namespace LogisticsManagement_Web.Controllers
 
             return View(viewModel_SalesReports);
         }
-
         public JsonResult PrintCustomerDueReportAsPdf([FromBody]dynamic reportParam)
         {
             try
@@ -319,7 +316,6 @@ namespace LogisticsManagement_Web.Controllers
             }
             //return View();
         }
-
         private List<Lms_CustomerPoco> GetBillToCustomers()
         {
             var customerList = _customerLogic.GetList();
